@@ -24,10 +24,13 @@ export default {
                 "warm-sand": "#f3e5dc",
                 "coral-orange": "#ff7f50",
                 "light-cyan": "#e0f2f1",
+                "dining-primary": "#13daec",
+                "dining-dark": "#102022",
             },
             fontFamily: {
                 "display": ["Plus Jakarta Sans", "sans-serif"],
                 "serif": ["Playfair Display", "serif"],
+                "manrope": ["Manrope", "sans-serif"],
             },
             borderRadius: {
                 "DEFAULT": "1rem",

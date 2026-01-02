@@ -25,28 +25,20 @@
       <!-- Desktop Navigation Links -->
       <div class="hidden lg:flex items-center gap-8">
         <NuxtLink 
+          to="/clean-dining" 
+          active-class="text-dining-primary font-bold dark:text-dining-primary"
+          class="transition-colors text-sm font-medium"
+          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
+        >
+          Clean Dining
+        </NuxtLink>
+        <NuxtLink 
           to="/transport" 
           active-class="text-primary font-bold dark:text-white"
           class="transition-colors text-sm font-medium"
           :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
         >
           Transport
-        </NuxtLink>
-        <NuxtLink 
-          to="/destinations" 
-          active-class="text-primary font-bold dark:text-white"
-          class="transition-colors text-sm font-medium"
-          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-        >
-          Destinations
-        </NuxtLink>
-        <NuxtLink 
-          to="/plan-trip" 
-          active-class="text-primary font-bold dark:text-white"
-          class="transition-colors text-sm font-medium"
-          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-        >
-          Plan Trip
         </NuxtLink>
         <NuxtLink 
           to="/phrasebook" 
@@ -88,25 +80,18 @@
       >
         <nav class="flex flex-col gap-4 p-6">
           <NuxtLink 
+            to="/clean-dining" 
+            class="text-charcoal text-base font-medium hover:text-primary transition-colors"
+            @click="closeMobileMenu"
+          >
+            Clean Dining
+          </NuxtLink>
+          <NuxtLink 
             to="/transport" 
             class="text-charcoal text-base font-medium hover:text-primary transition-colors"
             @click="closeMobileMenu"
           >
             Transport
-          </NuxtLink>
-          <NuxtLink 
-            to="/destinations" 
-            class="text-charcoal text-base font-medium hover:text-primary transition-colors"
-            @click="closeMobileMenu"
-          >
-            Destinations
-          </NuxtLink>
-          <NuxtLink 
-            to="/plan-trip" 
-            class="text-charcoal text-base font-medium hover:text-primary transition-colors"
-            @click="closeMobileMenu"
-          >
-            Plan Trip
           </NuxtLink>
           <NuxtLink 
             to="/phrasebook" 
