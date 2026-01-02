@@ -23,9 +23,18 @@
       </NuxtLink>
 
       <!-- Desktop Navigation Links -->
-      <div class="hidden md:flex items-center gap-8">
+      <div class="hidden lg:flex items-center gap-8">
+        <NuxtLink 
+          to="/transport" 
+          active-class="text-primary font-bold dark:text-white"
+          class="transition-colors text-sm font-medium"
+          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
+        >
+          Transport
+        </NuxtLink>
         <NuxtLink 
           to="/destinations" 
+          active-class="text-primary font-bold dark:text-white"
           class="transition-colors text-sm font-medium"
           :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
         >
@@ -33,6 +42,7 @@
         </NuxtLink>
         <NuxtLink 
           to="/plan-trip" 
+          active-class="text-primary font-bold dark:text-white"
           class="transition-colors text-sm font-medium"
           :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
         >
@@ -40,6 +50,7 @@
         </NuxtLink>
         <NuxtLink 
           to="/phrasebook" 
+          active-class="text-primary font-bold dark:text-white"
           class="transition-colors text-sm font-medium"
           :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
         >
@@ -47,6 +58,7 @@
         </NuxtLink>
         <NuxtLink 
           to="/scam-alerts" 
+          active-class="text-primary font-bold dark:text-white"
           class="transition-colors text-sm font-medium"
           :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
         >
@@ -60,7 +72,7 @@
       <!-- Mobile Menu Button -->
       <button 
         @click="toggleMobileMenu"
-        class="md:hidden"
+        class="lg:hidden"
         :class="variant === 'transparent' ? 'text-white' : 'text-charcoal dark:text-white'"
         aria-label="Toggle menu"
       >
@@ -72,9 +84,16 @@
     <Transition name="slide-fade">
       <div 
         v-if="isMobileMenuOpen"
-        class="md:hidden bg-white/95 backdrop-blur-lg border-t border-white/20"
+        class="lg:hidden bg-white/95 backdrop-blur-lg border-t border-white/20"
       >
         <nav class="flex flex-col gap-4 p-6">
+          <NuxtLink 
+            to="/transport" 
+            class="text-charcoal text-base font-medium hover:text-primary transition-colors"
+            @click="closeMobileMenu"
+          >
+            Transport
+          </NuxtLink>
           <NuxtLink 
             to="/destinations" 
             class="text-charcoal text-base font-medium hover:text-primary transition-colors"
