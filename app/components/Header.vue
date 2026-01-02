@@ -1,32 +1,56 @@
 <template>
   <!-- Fixed transparent header that overlays hero -->
-  <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/10 backdrop-blur-md border-b border-white/10">
+  <!-- Fixed header that overlays hero or sits on top of content -->
+  <nav 
+    class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b"
+    :class="[
+      variant === 'transparent' 
+        ? 'bg-white/10 backdrop-blur-md border-white/10' 
+        : 'bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-gray-200 dark:border-white/10'
+    ]"
+  >
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <!-- Logo and Brand -->
-      <div class="flex items-center gap-2">
-        <span class="material-symbols-outlined text-white text-3xl">travel_explore</span>
-        <h2 class="text-white font-serif text-2xl font-bold tracking-tight">CeylonGuide</h2>
-      </div>
+      <NuxtLink to="/" class="flex items-center gap-2">
+        <span 
+          class="material-symbols-outlined text-3xl"
+          :class="variant === 'transparent' ? 'text-white' : 'text-primary dark:text-white'"
+        >travel_explore</span>
+        <h2 
+          class="font-serif text-2xl font-bold tracking-tight"
+          :class="variant === 'transparent' ? 'text-white' : 'text-primary dark:text-white'"
+        >CeylonGuide</h2>
+      </NuxtLink>
 
       <!-- Desktop Navigation Links -->
       <div class="hidden md:flex items-center gap-8">
         <NuxtLink 
           to="/destinations" 
-          class="text-white/90 hover:text-accent transition-colors text-sm font-medium"
+          class="transition-colors text-sm font-medium"
+          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
         >
           Destinations
         </NuxtLink>
         <NuxtLink 
           to="/plan-trip" 
-          class="text-white/90 hover:text-accent transition-colors text-sm font-medium"
+          class="transition-colors text-sm font-medium"
+          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
         >
           Plan Trip
         </NuxtLink>
         <NuxtLink 
           to="/phrasebook" 
-          class="text-white/90 hover:text-accent transition-colors text-sm font-medium"
+          class="transition-colors text-sm font-medium"
+          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
         >
           Phrasebook
+        </NuxtLink>
+        <NuxtLink 
+          to="/scam-alerts" 
+          class="transition-colors text-sm font-medium"
+          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
+        >
+          Scam Alerts
         </NuxtLink>
         <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full text-sm font-bold transition-all shadow-lg">
           Login
@@ -36,7 +60,8 @@
       <!-- Mobile Menu Button -->
       <button 
         @click="toggleMobileMenu"
-        class="md:hidden text-white"
+        class="md:hidden"
+        :class="variant === 'transparent' ? 'text-white' : 'text-charcoal dark:text-white'"
         aria-label="Toggle menu"
       >
         <span class="material-symbols-outlined">menu</span>
@@ -71,6 +96,13 @@
           >
             Phrasebook
           </NuxtLink>
+          <NuxtLink 
+            to="/scam-alerts" 
+            class="text-charcoal text-base font-medium hover:text-primary transition-colors"
+            @click="closeMobileMenu"
+          >
+            Scam Alerts
+          </NuxtLink>
           <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full text-sm font-bold transition-all shadow-lg w-full">
             Login
           </button>
@@ -82,6 +114,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
+const props = defineProps({
+  variant: {
+    type: String,
+    default: 'transparent',
+    validator: (value: string) => ['transparent', 'solid'].includes(value)
+  }
+})
 
 const isMobileMenuOpen = ref(false)
 

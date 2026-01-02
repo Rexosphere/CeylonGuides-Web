@@ -30,6 +30,16 @@ export default {
                 "xl": "3rem",
                 "full": "9999px"
             },
+            keyframes: {
+                'pulse-orange': {
+                    '0%': { transform: 'scale(0.95)', boxShadow: '0 0 0 0 rgba(244, 124, 60, 0.7)' },
+                    '70%': { transform: 'scale(1)', boxShadow: '0 0 0 10px rgba(244, 124, 60, 0)' },
+                    '100%': { transform: 'scale(0.95)', boxShadow: '0 0 0 0 rgba(244, 124, 60, 0)' },
+                }
+            },
+            animation: {
+                'pulse-orange': 'pulse-orange 2s infinite',
+            },
         },
     },
 }
