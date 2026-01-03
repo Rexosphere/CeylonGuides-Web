@@ -70,10 +70,21 @@
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full">
         <div 
           v-for="category in categories" 
-          :key="category.name"
-          class="group flex flex-col items-center gap-3 p-6 bg-white rounded-2xl shadow-sm border border-gray-200 hover:border-primary hover:shadow-md cursor-pointer transition-all"
+          :key="category.id"
+          @click="selectCategory(category.id)"
+          :class="[
+            'group flex flex-col items-center gap-3 p-6 bg-white rounded-2xl shadow-sm border cursor-pointer transition-all',
+            selectedCategory === category.id 
+              ? 'border-primary shadow-md bg-primary/5' 
+              : 'border-gray-200 hover:border-primary hover:shadow-md'
+          ]"
         >
-          <div class="h-12 w-12 rounded-full bg-background-light text-primary group-hover:bg-primary group-hover:text-white flex items-center justify-center transition-colors">
+          <div :class="[
+            'h-12 w-12 rounded-full flex items-center justify-center transition-colors',
+            selectedCategory === category.id
+              ? 'bg-primary text-white'
+              : 'bg-background-light text-primary group-hover:bg-primary group-hover:text-white'
+          ]">
             <span class="material-symbols-outlined text-2xl">{{ category.icon }}</span>
           </div>
           <span class="text-charcoal font-bold text-sm text-center">{{ category.name }}</span>
@@ -169,32 +180,68 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
+import type { Phrase, EtiquetteTip } from '~/composables/useApi'
 
 const searchQuery = ref('')
-const selectedLanguage = ref('sinhala')
+const selectedLanguage = ref<'sinhala' | 'tamil'>('sinhala')
+const selectedCategory = ref<string | null>(null)
 
+// Get config
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
+
+// Fetch phrases from API
+const { data: phrasesResponse, pending: phrasesPending } = await useFetch<{ success: boolean; data: Phrase[]; count: number }>(
+  () => {
+    const params = new URLSearchParams()
+    if (selectedCategory.value) params.set('category', selectedCategory.value)
+    if (searchQuery.value) params.set('search', searchQuery.value)
+    const queryStr = params.toString()
+    return `${apiBase}/api/phrases${queryStr ? `?${queryStr}` : ''}`
+  },
+  { watch: [selectedCategory, searchQuery] }
+)
+
+// Fetch etiquette tips from API
+const { data: tipsResponse } = await useFetch<{ success: boolean; data: EtiquetteTip[]; count: number }>(
+  `${apiBase}/api/phrases/etiquette/tips?category=TEMPLE`
+)
+
+const phrases = computed(() => {
+  const data = phrasesResponse.value?.data || []
+  return data.map(p => ({
+    native: selectedLanguage.value === 'sinhala' ? p.sinhala : p.tamil,
+    phonetic: p.pronunciation,
+    english: p.english,
+    category: p.category,
+    cultural_context: p.cultural_context,
+  }))
+})
+
+const templeTips = computed(() => {
+  const data = tipsResponse.value?.data || []
+  return data.map(t => ({
+    title: t.title,
+    desc: t.description,
+    do_list: t.do_list,
+    dont_list: t.dont_list,
+  }))
+})
+
+// Categories with icons
 const categories = [
-  { name: 'Greetings', icon: 'handshake' },
-  { name: 'Directions', icon: 'explore' },
-  { name: 'Dining', icon: 'restaurant' },
-  { name: 'Shopping', icon: 'shopping_bag' },
-  { name: 'Emergency', icon: 'emergency' },
-  { name: 'Temple Rules', icon: 'temple_buddhist' },
+  { name: 'Greetings', id: 'GREETINGS', icon: 'handshake' },
+  { name: 'Directions', id: 'DIRECTIONS', icon: 'explore' },
+  { name: 'Dining', id: 'DINING', icon: 'restaurant' },
+  { name: 'Shopping', id: 'SHOPPING', icon: 'shopping_bag' },
+  { name: 'Emergency', id: 'EMERGENCY', icon: 'emergency' },
+  { name: 'Transport', id: 'TRANSPORT', icon: 'directions_bus' },
 ]
 
-const phrases = [
-  { native: 'ආයුබෝවන්', phonetic: 'Ayu-bo-wan', english: '"May you live long" (Formal Greeting)' },
-  { native: 'ස්තුතියි', phonetic: 'Sthu-thi-yi', english: 'Thank you' },
-  { native: 'කොහොමද?', phonetic: 'Ko-ho-ma-da?', english: 'How are you? (Informal)' },
-  { native: 'මගේ නම...', phonetic: 'Ma-ge na-ma...', english: 'My name is...' },
-]
-
-const templeTips = [
-  { title: 'Remove Footwear', desc: 'Always remove shoes and hats before entering the sacred temple grounds.' },
-  { title: 'Modest Dress', desc: 'Cover shoulders and knees. White clothing is preferred and seen as respectful.' },
-  { title: 'No Backs to Buddha', desc: 'Never turn your back to a Buddha statue for a selfie. It is considered very disrespectful.' },
-]
+function selectCategory(id: string | null) {
+  selectedCategory.value = selectedCategory.value === id ? null : id
+}
 
 // Add custom font for Sinhala text
 useHead({

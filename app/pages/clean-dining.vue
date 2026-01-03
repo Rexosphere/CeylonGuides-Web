@@ -222,9 +222,63 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
+import type { Restaurant } from '~/composables/useApi'
+
 definePageMeta({
   layout: false
 })
+
+// Get config
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
+
+// Filters
+const selectedDietary = ref<string | null>(null)
+const selectedHygiene = ref<string | null>(null)
+const searchQuery = ref('')
+
+// Fetch restaurants from API
+const { data: restaurantsResponse, pending, refresh } = await useFetch<{ 
+  success: boolean
+  data: Restaurant[]
+  count: number 
+}>(
+  () => {
+    const params = new URLSearchParams()
+    if (selectedDietary.value) params.set('dietary', selectedDietary.value)
+    if (selectedHygiene.value) params.set('hygiene', selectedHygiene.value)
+    if (searchQuery.value) params.set('search', searchQuery.value)
+    const queryStr = params.toString()
+    return `${apiBase}/api/dining${queryStr ? `?${queryStr}` : ''}`
+  },
+  { watch: [selectedDietary, selectedHygiene, searchQuery] }
+)
+
+const restaurants = computed(() => restaurantsResponse.value?.data || [])
+
+// Dietary filters
+const dietaryFilters = [
+  { id: null, label: 'All', icon: 'restaurant' },
+  { id: 'VEGETARIAN', label: 'Vegetarian', icon: 'eco' },
+  { id: 'VEGAN', label: 'Vegan', icon: 'psychiatry' },
+  { id: 'HALAL', label: 'Halal', icon: 'mosque' },
+]
+
+// Hygiene rating helper
+function getHygieneStars(rating: string): number {
+  switch (rating) {
+    case 'EXCELLENT': return 5
+    case 'GOOD': return 4
+    case 'FAIR': return 3
+    case 'POOR': return 2
+    default: return 0
+  }
+}
+
+function selectDietary(id: string | null) {
+  selectedDietary.value = selectedDietary.value === id ? null : id
+}
 </script>
 
 <style scoped>

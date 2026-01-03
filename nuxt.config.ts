@@ -12,6 +12,12 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss'
   ],
 
+  runtimeConfig: {
+    public: {
+      apiBase: 'http://localhost:8787'
+    }
+  },
+
   app: {
     head: {
       title: 'CeylonGuide - Your Trusted Virtual Tour Guide for Sri Lanka',

@@ -62,129 +62,95 @@
           
           <!-- Filter Chips -->
           <div class="flex gap-2 overflow-x-auto pb-4 custom-scrollbar -mx-6 px-6">
-            <button class="shrink-0 h-8 px-4 rounded-full bg-charcoal text-white text-xs font-semibold flex items-center gap-1 shadow-sm">
-              All
-            </button>
-            <button class="shrink-0 h-8 px-4 rounded-full bg-white dark:bg-background-dark border border-gray-200 dark:border-white/10 text-charcoal dark:text-white hover:border-accent text-xs font-medium flex items-center gap-1 transition-colors">
-              <span class="size-2 rounded-full bg-orange-500"></span>
-              Tuk-tuk
-            </button>
-            <button class="shrink-0 h-8 px-4 rounded-full bg-white dark:bg-background-dark border border-gray-200 dark:border-white/10 text-charcoal dark:text-white hover:border-accent text-xs font-medium flex items-center gap-1 transition-colors">
-              <span class="size-2 rounded-full bg-purple-500"></span>
-              Gem Scams
-            </button>
-            <button class="shrink-0 h-8 px-4 rounded-full bg-white dark:bg-background-dark border border-gray-200 dark:border-white/10 text-charcoal dark:text-white hover:border-accent text-xs font-medium flex items-center gap-1 transition-colors">
-              <span class="size-2 rounded-full bg-red-500"></span>
-              Fake Guides
-            </button>
-            <button class="shrink-0 h-8 px-4 rounded-full bg-white dark:bg-background-dark border border-gray-200 dark:border-white/10 text-charcoal dark:text-white hover:border-accent text-xs font-medium flex items-center gap-1 transition-colors">
-              <span class="size-2 rounded-full bg-blue-500"></span>
-              Exchange
+            <button 
+              v-for="cat in categories" 
+              :key="cat.id ?? 'all'"
+              @click="selectedCategory = cat.id"
+              :class="[
+                'shrink-0 h-8 px-4 rounded-full text-xs font-medium flex items-center gap-1 transition-colors',
+                selectedCategory === cat.id 
+                  ? 'bg-charcoal text-white shadow-sm' 
+                  : 'bg-white dark:bg-background-dark border border-gray-200 dark:border-white/10 text-charcoal dark:text-white hover:border-accent'
+              ]"
+            >
+              <span v-if="cat.id" :class="['size-2 rounded-full', cat.color]"></span>
+              {{ cat.label }}
             </button>
           </div>
         </div>
 
         <!-- Scrollable List Area -->
         <div class="flex-1 overflow-y-auto custom-scrollbar px-6 pb-20">
-          <div class="flex flex-col gap-4">
-            <!-- Alert Card 1 (High Severity) -->
-            <div class="group relative bg-white dark:bg-background-dark rounded-xl border border-red-100 dark:border-red-900/30 p-4 shadow-sm hover:shadow-md transition-all cursor-pointer">
-              <div class="absolute top-4 right-4 text-xs font-medium text-gray-400">12m ago</div>
+          <!-- Loading State -->
+          <div v-if="pending" class="flex items-center justify-center py-12">
+            <div class="animate-spin size-8 border-2 border-accent border-t-transparent rounded-full"></div>
+          </div>
+
+          <!-- Error State -->
+          <div v-else-if="error" class="text-center py-12 text-red-500">
+            <span class="material-symbols-outlined text-4xl mb-2">error</span>
+            <p>Failed to load alerts. Please try again.</p>
+            <button @click="refresh()" class="mt-4 px-4 py-2 bg-accent text-white rounded-lg">Retry</button>
+          </div>
+
+          <!-- Empty State -->
+          <div v-else-if="scamAlerts.length === 0" class="text-center py-12 text-gray-500">
+            <span class="material-symbols-outlined text-4xl mb-2">verified_user</span>
+            <p>No scam alerts in this area. Stay safe!</p>
+          </div>
+
+          <!-- Alert Cards -->
+          <div v-else class="flex flex-col gap-4">
+            <div 
+              v-for="alert in scamAlerts" 
+              :key="alert.id"
+              :class="[
+                'group relative bg-white dark:bg-background-dark rounded-xl border p-4 shadow-sm hover:shadow-md transition-all cursor-pointer',
+                getSeverityClass(alert.severity)
+              ]"
+            >
+              <div class="absolute top-4 right-4 text-xs font-medium text-gray-400">
+                {{ getTimeAgo(alert.last_reported) }}
+              </div>
               <div class="flex items-start gap-3">
-                <div class="size-10 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined">person_alert</span>
+                <div :class="['size-10 rounded-full flex items-center justify-center shrink-0', getSeverityColor(alert.severity, alert.category)]">
+                  <span class="material-symbols-outlined">{{ getSeverityIcon(alert.category) }}</span>
                 </div>
                 <div class="flex-1">
                   <div class="flex items-center gap-2 mb-1">
-                    <h3 class="font-bold text-charcoal dark:text-white text-base">Fake Guide at Temple</h3>
-                    <span class="bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-300 text-[10px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">High Risk</span>
+                    <h3 class="font-bold text-charcoal dark:text-white text-base">{{ alert.title }}</h3>
+                    <span 
+                      v-if="alert.severity === 'HIGH' || alert.severity === 'CRITICAL'"
+                      class="bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-300 text-[10px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider"
+                    >
+                      High Risk
+                    </span>
                   </div>
                   <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-3">
-                    Man claiming to be "official government guide" demanded 5000 LKR entry fee outside the main gate. The real ticket office is inside.
-                  </p>
-                  <div class="w-full h-32 rounded-lg bg-gray-100 dark:bg-[#3a2e29] mb-3 overflow-hidden bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDxiOxSdXKI5DLnGsh5Q45LIwsp3G66sWh1OKynTcm0-Jrnp7b8fgyu6FxjhQKeIptCpDtKNqhI892h9jI9YwFsdQzL27tF9cDZlTomzT18oEmFa7_tGBwPq1ntck2cIv3ojmI29v7WHFZoxmG1BcFzBtwzKWsT0GxG75Pxa_745qFw6jlCSDmfKP4F88K78aV-ctmQmq5q09lG9rvKP0qkBuROPFR3zL0DBBil9LQdi3zF2OW31i98jVAIvwgj7tPWpxtzAMTvF1Uj');"></div>
-                  <div class="flex items-center justify-between border-t border-gray-100 dark:border-white/10 pt-3 mt-1">
-                    <div class="flex items-center gap-1.5 text-xs font-medium text-gray-500">
-                      <span class="material-symbols-outlined text-[16px]">location_on</span>
-                      Kandy Temple of Tooth
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <button class="p-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 text-gray-400 hover:text-green-600 transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">thumb_up</span>
-                      </button>
-                      <span class="text-xs font-bold text-green-600">42</span>
-                      <button class="p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-600 transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">thumb_down</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Alert Card 2 -->
-            <div class="group relative bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-white/10 p-4 shadow-sm hover:shadow-md transition-all cursor-pointer">
-              <div class="absolute top-4 right-4 text-xs font-medium text-gray-400">2h ago</div>
-              <div class="flex items-start gap-3">
-                <div class="size-10 rounded-full bg-orange-50 dark:bg-orange-900/20 text-orange-500 flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined">local_taxi</span>
-                </div>
-                <div class="flex-1">
-                  <h3 class="font-bold text-charcoal dark:text-white text-base mb-1">Tuk-tuk Meter Rigged</h3>
-                  <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-3">
-                    Driver insisted meter was broken halfway through the trip and demanded triple the price. Avoid blue tuk-tuk plate #QA-4422.
+                    {{ alert.description }}
                   </p>
                   <div class="flex items-center justify-between border-t border-gray-100 dark:border-white/10 pt-3 mt-1">
                     <div class="flex items-center gap-1.5 text-xs font-medium text-gray-500">
                       <span class="material-symbols-outlined text-[16px]">location_on</span>
-                      Galle Face Green
+                      {{ alert.location?.name || 'Unknown location' }}
                     </div>
                     <div class="flex items-center gap-1">
-                      <button class="p-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 text-gray-400 hover:text-green-600 transition-colors">
+                      <button 
+                        @click.stop="confirmAlert(alert.id)" 
+                        class="p-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 text-gray-400 hover:text-green-600 transition-colors"
+                      >
                         <span class="material-symbols-outlined text-[18px]">thumb_up</span>
                       </button>
-                      <span class="text-xs font-bold text-gray-400">12</span>
-                      <button class="p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-600 transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">thumb_down</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Alert Card 3 -->
-            <div class="group relative bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-white/10 p-4 shadow-sm hover:shadow-md transition-all cursor-pointer">
-              <div class="absolute top-4 right-4 text-xs font-medium text-gray-400">5h ago</div>
-              <div class="flex items-start gap-3">
-                <div class="size-10 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined">diamond</span>
-                </div>
-                <div class="flex-1">
-                  <h3 class="font-bold text-charcoal dark:text-white text-base mb-1">Overpriced Gems</h3>
-                  <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-3">
-                    Shop owner near the fort offered "blue moonstones" that turned out to be glass. Very aggressive sales tactics.
-                  </p>
-                  <div class="flex items-center justify-between border-t border-gray-100 dark:border-white/10 pt-3 mt-1">
-                    <div class="flex items-center gap-1.5 text-xs font-medium text-gray-500">
-                      <span class="material-symbols-outlined text-[16px]">location_on</span>
-                      Galle Fort
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <button class="p-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 text-gray-400 hover:text-green-600 transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">thumb_up</span>
-                      </button>
-                      <span class="text-xs font-bold text-green-600">8</span>
-                      <button class="p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-600 transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">thumb_down</span>
-                      </button>
+                      <span :class="['text-xs font-bold', alert.report_count > 20 ? 'text-green-600' : 'text-gray-400']">
+                        {{ alert.report_count }}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="mt-6 text-center">
+          <div v-if="scamAlerts.length > 0" class="mt-6 text-center">
             <button class="text-accent text-sm font-bold hover:underline">Load older reports</button>
           </div>
         </div>
@@ -279,15 +245,98 @@
 </template>
 
 <script setup lang="ts">
-// Nuxt auto-imports ref, but explicit import is also valid. 
-// If you want to rely on auto-imports, you can remove this line.
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import type { ScamAlert } from '~/composables/useApi'
 
 definePageMeta({
   layout: false
 })
 
-const viewMode = ref('list') // 'list' | 'map'
+const viewMode = ref<'list' | 'map'>('list')
+const selectedCategory = ref<string | null>(null)
+
+// Fetch scam alerts from API
+const { data: scamsResponse, pending, error, refresh } = await useFetch<{ success: boolean; data: ScamAlert[]; count: number }>(
+  () => {
+    const config = useRuntimeConfig()
+    const base = config.public.apiBase
+    const params = selectedCategory.value ? `?category=${selectedCategory.value}` : ''
+    return `${base}/api/scams${params}`
+  },
+  { watch: [selectedCategory] }
+)
+
+const scamAlerts = computed(() => scamsResponse.value?.data || [])
+
+// Filter categories
+const categories = [
+  { id: null, label: 'All', color: 'bg-charcoal' },
+  { id: 'TRANSPORT_SCAM', label: 'Tuk-tuk', color: 'bg-orange-500' },
+  { id: 'GEM_SCAM', label: 'Gem Scams', color: 'bg-purple-500' },
+  { id: 'TOUR_GUIDE_SCAM', label: 'Fake Guides', color: 'bg-red-500' },
+  { id: 'SHOPPING_SCAM', label: 'Exchange', color: 'bg-blue-500' },
+]
+
+// Helper functions
+function getTimeAgo(dateStr: string): string {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  if (diffMins < 60) return `${diffMins}m ago`
+  const diffHours = Math.floor(diffMins / 60)
+  if (diffHours < 24) return `${diffHours}h ago`
+  return `${Math.floor(diffHours / 24)}d ago`
+}
+
+function getSeverityClass(severity: string) {
+  switch (severity) {
+    case 'HIGH':
+    case 'CRITICAL':
+      return 'border-red-100 dark:border-red-900/30'
+    case 'MEDIUM':
+      return 'border-orange-100 dark:border-orange-900/30'
+    default:
+      return 'border-gray-200 dark:border-white/10'
+  }
+}
+
+function getSeverityIcon(category: string) {
+  switch (category) {
+    case 'TOUR_GUIDE_SCAM':
+      return 'person_alert'
+    case 'TRANSPORT_SCAM':
+      return 'local_taxi'
+    case 'GEM_SCAM':
+      return 'diamond'
+    case 'SHOPPING_SCAM':
+      return 'currency_exchange'
+    default:
+      return 'warning'
+  }
+}
+
+function getSeverityColor(severity: string, category: string) {
+  if (severity === 'HIGH' || severity === 'CRITICAL') {
+    return 'bg-red-50 dark:bg-red-900/20 text-red-500'
+  }
+  switch (category) {
+    case 'TRANSPORT_SCAM':
+      return 'bg-orange-50 dark:bg-orange-900/20 text-orange-500'
+    case 'GEM_SCAM':
+      return 'bg-purple-50 dark:bg-purple-900/20 text-purple-500'
+    case 'SHOPPING_SCAM':
+      return 'bg-blue-50 dark:bg-blue-900/20 text-blue-500'
+    default:
+      return 'bg-gray-50 dark:bg-gray-900/20 text-gray-500'
+  }
+}
+
+async function confirmAlert(id: string) {
+  const config = useRuntimeConfig()
+  await $fetch(`${config.public.apiBase}/api/scams/${id}/confirm`, { method: 'POST' })
+  refresh()
+}
 </script>
 
 <style scoped>
