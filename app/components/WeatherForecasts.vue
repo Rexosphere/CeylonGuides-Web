@@ -33,58 +33,78 @@
 </template>
 
 <script setup lang="ts">
-const cities = [
-  {
-    name: 'Colombo',
-    region: 'West Coast',
-    icon: 'wb_sunny',
-    iconClass: 'text-weather-primary',
-    temp: 31,
-    condition: 'Partly Cloudy',
-    forecast: [
-      { day: 'Mon', icon: 'wb_sunny', temp: 31 },
-      { day: 'Tue', icon: 'partly_cloudy_day', temp: 30 },
-      { day: 'Wed', icon: 'rainy', temp: 28 }
-    ]
-  },
-  {
-    name: 'Kandy',
-    region: 'Central Hills',
-    icon: 'cloud',
-    iconClass: 'text-blue-500',
-    temp: 24,
-    condition: 'Overcast',
-    forecast: [
-      { day: 'Mon', icon: 'cloud', temp: 24 },
-      { day: 'Tue', icon: 'rainy', temp: 23 },
-      { day: 'Wed', icon: 'thunderstorm', temp: 22 }
-    ]
-  },
-  {
-    name: 'Galle',
-    region: 'South Coast',
-    icon: 'wb_sunny',
-    iconClass: 'text-weather-primary',
-    temp: 29,
-    condition: 'Sunny',
-    forecast: [
-      { day: 'Mon', icon: 'wb_sunny', temp: 29 },
-      { day: 'Tue', icon: 'wb_sunny', temp: 30 },
-      { day: 'Wed', icon: 'partly_cloudy_day', temp: 29 }
-    ]
-  },
-  {
-    name: 'Nuwara Eliya',
-    region: 'Highlands',
-    icon: 'air',
-    iconClass: 'text-gray-400',
-    temp: 16,
-    condition: 'Misty',
-    forecast: [
-      { day: 'Mon', icon: 'foggy', temp: 15 },
-      { day: 'Tue', icon: 'rainy', temp: 14 },
-      { day: 'Wed', icon: 'cloud', temp: 15 }
-    ]
+import { computed } from 'vue'
+
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
+
+// Fetch weather from API
+const { data: weatherResponse } = await useFetch<{
+  success: boolean
+  data: {
+    temperature?: number
+    condition?: string
+    humidity?: number
+    wind_speed?: number
   }
-]
+}>(`${apiBase}/api/safety/weather/current`)
+
+// Default city data with API weather for Colombo
+const cities = computed(() => {
+  const apiWeather = weatherResponse.value?.data
+  return [
+    {
+      name: 'Colombo',
+      region: 'West Coast',
+      icon: apiWeather?.condition?.toLowerCase().includes('sunny') ? 'wb_sunny' : 'partly_cloudy_day',
+      iconClass: 'text-weather-primary',
+      temp: apiWeather?.temperature || 31,
+      condition: apiWeather?.condition || 'Partly Cloudy',
+      forecast: [
+        { day: 'Mon', icon: 'wb_sunny', temp: (apiWeather?.temperature || 31) },
+        { day: 'Tue', icon: 'partly_cloudy_day', temp: (apiWeather?.temperature || 31) - 1 },
+        { day: 'Wed', icon: 'rainy', temp: (apiWeather?.temperature || 31) - 3 }
+      ]
+    },
+    {
+      name: 'Kandy',
+      region: 'Central Hills',
+      icon: 'cloud',
+      iconClass: 'text-blue-500',
+      temp: 24,
+      condition: 'Overcast',
+      forecast: [
+        { day: 'Mon', icon: 'cloud', temp: 24 },
+        { day: 'Tue', icon: 'rainy', temp: 23 },
+        { day: 'Wed', icon: 'thunderstorm', temp: 22 }
+      ]
+    },
+    {
+      name: 'Galle',
+      region: 'South Coast',
+      icon: 'wb_sunny',
+      iconClass: 'text-weather-primary',
+      temp: 29,
+      condition: 'Sunny',
+      forecast: [
+        { day: 'Mon', icon: 'wb_sunny', temp: 29 },
+        { day: 'Tue', icon: 'wb_sunny', temp: 30 },
+        { day: 'Wed', icon: 'partly_cloudy_day', temp: 29 }
+      ]
+    },
+    {
+      name: 'Nuwara Eliya',
+      region: 'Highlands',
+      icon: 'air',
+      iconClass: 'text-gray-400',
+      temp: 16,
+      condition: 'Misty',
+      forecast: [
+        { day: 'Mon', icon: 'foggy', temp: 15 },
+        { day: 'Tue', icon: 'rainy', temp: 14 },
+        { day: 'Wed', icon: 'cloud', temp: 15 }
+      ]
+    }
+  ]
+})
 </script>

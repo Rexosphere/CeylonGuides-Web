@@ -24,21 +24,31 @@
 </template>
 
 <script setup lang="ts">
-const phrases = [
-  {
-    english: 'I need a doctor',
-    sinhala: 'Mata dostara kenek one',
-    tamil: 'Enaku oru maruthuvar venum'
-  },
-  {
-    english: 'Help Me',
-    sinhala: 'Mata udaww karanna',
-    tamil: 'Enaku udhavungal'
-  },
-  {
-    english: 'Take me to the hospital',
-    sinhala: 'Mawa hospital ekata geniyanna',
-    tamil: null
-  }
-]
+import { computed } from 'vue'
+
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
+
+// Fetch emergency phrases from API
+const { data: phrasesResponse } = await useFetch<{
+  success: boolean
+  data: Array<{
+    id: string
+    english: string
+    sinhala: string
+    tamil?: string
+    phonetic_sinhala?: string
+    phonetic_tamil?: string
+    category: string
+  }>
+}>(`${apiBase}/api/phrases?category=emergency`)
+
+const phrases = computed(() => {
+  const data = phrasesResponse.value?.data || []
+  return data.slice(0, 5).map(p => ({
+    english: p.english,
+    sinhala: p.phonetic_sinhala || p.sinhala,
+    tamil: p.phonetic_tamil || p.tamil || null
+  }))
+})
 </script>
