@@ -219,6 +219,56 @@
       </button>
     </div>
   </div>
+
+  <!-- Review Modal -->
+  <Teleport to="body">
+    <div v-if="showReviewModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/50" @click="showReviewModal = false"></div>
+      <div class="relative bg-white dark:bg-dining-dark rounded-2xl shadow-2xl w-full max-w-md">
+        <div class="border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-[#111718] dark:text-white">Leave a Review</h2>
+          <button @click="showReviewModal = false" class="text-gray-400 hover:text-gray-600">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        
+        <form @submit.prevent="submitReview" class="p-6 space-y-5">
+          <div v-if="selectedRestaurant">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Reviewing:</p>
+            <p class="font-bold text-[#111718] dark:text-white">{{ selectedRestaurant.name }}</p>
+          </div>
+          
+          <!-- Star Rating -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rating *</label>
+            <div class="flex gap-2">
+              <button v-for="star in 5" :key="star" type="button" @click="reviewForm.rating = star"
+                class="text-3xl transition-transform hover:scale-110"
+                :class="star <= reviewForm.rating ? 'text-yellow-400' : 'text-gray-300'">
+                ★
+              </button>
+            </div>
+          </div>
+          
+          <!-- Comment -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Comment</label>
+            <textarea v-model="reviewForm.comment" rows="3" maxlength="1000"
+              class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-[#1f2b2e] text-[#111718] dark:text-white focus:ring-2 focus:ring-dining-primary focus:border-transparent resize-none"
+              placeholder="Share your experience..."></textarea>
+          </div>
+          
+          <button type="submit" :disabled="reviewSubmitting || reviewForm.rating === 0"
+            class="w-full py-3 bg-dining-primary hover:bg-dining-primary/90 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all">
+            {{ reviewSubmitting ? 'Submitting...' : 'Submit Review' }}
+          </button>
+          
+          <p v-if="reviewError" class="text-red-500 text-sm text-center">{{ reviewError }}</p>
+          <p v-if="reviewSuccess" class="text-green-500 text-sm text-center">Review submitted!</p>
+        </form>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -237,6 +287,14 @@ const apiBase = config.public.apiBase
 const selectedDietary = ref<string | null>(null)
 const selectedHygiene = ref<string | null>(null)
 const searchQuery = ref('')
+
+// Review Modal State
+const showReviewModal = ref(false)
+const selectedRestaurant = ref<Restaurant | null>(null)
+const reviewSubmitting = ref(false)
+const reviewError = ref('')
+const reviewSuccess = ref(false)
+const reviewForm = ref({ rating: 0, comment: '' })
 
 // Fetch restaurants from API
 const { data: restaurantsResponse, pending, refresh } = await useFetch<{ 
@@ -278,6 +336,41 @@ function getHygieneStars(rating: string): number {
 
 function selectDietary(id: string | null) {
   selectedDietary.value = selectedDietary.value === id ? null : id
+}
+
+function openReviewModal(restaurant: Restaurant) {
+  selectedRestaurant.value = restaurant
+  reviewForm.value = { rating: 0, comment: '' }
+  reviewError.value = ''
+  reviewSuccess.value = false
+  showReviewModal.value = true
+}
+
+async function submitReview() {
+  if (!selectedRestaurant.value || reviewForm.value.rating === 0) return
+  
+  reviewSubmitting.value = true
+  reviewError.value = ''
+  
+  try {
+    await $fetch(`${apiBase}/api/dining/${selectedRestaurant.value.id}/reviews`, {
+      method: 'POST',
+      body: {
+        rating: reviewForm.value.rating,
+        comment: reviewForm.value.comment || undefined
+      }
+    })
+    
+    reviewSuccess.value = true
+    setTimeout(() => {
+      showReviewModal.value = false
+      refresh()
+    }, 1500)
+  } catch (err: any) {
+    reviewError.value = err?.data?.error || 'Failed to submit review'
+  } finally {
+    reviewSubmitting.value = false
+  }
 }
 </script>
 

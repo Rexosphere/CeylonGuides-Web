@@ -2,6 +2,7 @@
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
+  <AIChatWidget />
 </template>
 
 <script setup lang="ts">
