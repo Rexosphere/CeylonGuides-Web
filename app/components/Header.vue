@@ -33,6 +33,36 @@
           Destinations
         </NuxtLink>
 
+          <!-- Activities - Direct Link -->
+        <NuxtLink
+          to="/activities"
+          active-class="text-primary font-bold dark:text-white"
+          class="transition-colors text-sm font-medium"
+          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
+        >
+          Activities
+        </NuxtLink>
+
+          <!-- Photo Spots - Direct Link -->
+        <NuxtLink
+          to="/photos"
+          active-class="text-primary font-bold dark:text-white"
+          class="transition-colors text-sm font-medium"
+          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
+        >
+          Photo Spots
+        </NuxtLink>
+
+          <!-- Shopping - Direct Link -->
+        <NuxtLink
+          to="/shopping"
+          active-class="text-primary font-bold dark:text-white"
+          class="transition-colors text-sm font-medium"
+          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
+        >
+          Shopping Guide
+        </NuxtLink>
+
         <!-- Essentials Dropdown -->
         <div
           class="relative"
@@ -63,13 +93,13 @@
                 <span class="material-symbols-outlined text-lg">translate</span>
                 Phrasebook
               </NuxtLink>
+              <NuxtLink to="/connectivity" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">wifi</span>
+                SIM & Connectivity
+              </NuxtLink>
               <NuxtLink to="/accommodation" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">hotel</span>
                 Accommodation
-              </NuxtLink>
-              <NuxtLink to="/activities" class="dropdown-link">
-                <span class="material-symbols-outlined text-lg">hiking</span>
-                Activities
               </NuxtLink>
               <NuxtLink to="/money" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">payments</span>
@@ -147,7 +177,15 @@
                 <span class="material-symbols-outlined text-lg">badge</span>
                 Visa Information
               </NuxtLink>
+              <NuxtLink to="/community" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">groups</span>
+                Community
+              </NuxtLink>
               <div class="border-t border-gray-200 dark:border-white/10 my-2"></div>
+              <NuxtLink to="/blog" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">article</span>
+                Blog
+              </NuxtLink>
               <NuxtLink to="/about" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">info</span>
                 About
@@ -214,6 +252,30 @@
             <span class="material-symbols-outlined">explore</span>
             Destinations
           </NuxtLink>
+          <NuxtLink
+            to="/activities"
+            class="mobile-link"
+            @click="closeMobileMenu"
+          >
+            <span class="material-symbols-outlined">hiking</span>
+            Activities
+          </NuxtLink>
+          <NuxtLink
+            to="/photos"
+            class="mobile-link"
+            @click="closeMobileMenu"
+          >
+            <span class="material-symbols-outlined">photo_camera</span>
+            Photo Spots
+          </NuxtLink>
+          <NuxtLink
+            to="/shopping"
+            class="mobile-link"
+            @click="closeMobileMenu"
+          >
+            <span class="material-symbols-outlined">shopping_bag</span>
+            Shopping
+          </NuxtLink>
 
           <!-- Essentials Section -->
           <div class="mt-4 mb-2">
@@ -231,13 +293,13 @@
             <span class="material-symbols-outlined">translate</span>
             Phrasebook
           </NuxtLink>
+          <NuxtLink to="/connectivity" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">wifi</span>
+            Connectivity
+          </NuxtLink>
           <NuxtLink to="/accommodation" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">hotel</span>
             Accommodation
-          </NuxtLink>
-          <NuxtLink to="/activities" class="mobile-link" @click="closeMobileMenu">
-            <span class="material-symbols-outlined">hiking</span>
-            Activities
           </NuxtLink>
           <NuxtLink to="/money" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">payments</span>
@@ -280,6 +342,14 @@
           <NuxtLink to="/visa" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">badge</span>
             Visa Info
+          </NuxtLink>
+          <NuxtLink to="/community" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">groups</span>
+            Community
+          </NuxtLink>
+          <NuxtLink to="/blog" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">article</span>
+            Blog
           </NuxtLink>
           <NuxtLink to="/about" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">info</span>
