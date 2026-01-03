@@ -25,6 +25,14 @@
       <!-- Desktop Navigation Links -->
       <div class="hidden lg:flex items-center gap-8">
         <NuxtLink 
+          to="/destinations" 
+          active-class="text-primary font-bold dark:text-white"
+          class="transition-colors text-sm font-medium"
+          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
+        >
+          Destinations
+        </NuxtLink>
+        <NuxtLink 
           to="/clean-dining" 
           active-class="text-dining-primary font-bold dark:text-dining-primary"
           class="transition-colors text-sm font-medium"
@@ -79,6 +87,13 @@
         class="lg:hidden bg-white/95 backdrop-blur-lg border-t border-white/20"
       >
         <nav class="flex flex-col gap-4 p-6">
+          <NuxtLink 
+            to="/destinations" 
+            class="text-charcoal text-base font-medium hover:text-primary transition-colors"
+            @click="closeMobileMenu"
+          >
+            Destinations
+          </NuxtLink>
           <NuxtLink 
             to="/clean-dining" 
             class="text-charcoal text-base font-medium hover:text-primary transition-colors"
