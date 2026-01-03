@@ -12,12 +12,15 @@ export default {
     theme: {
         extend: {
             colors: {
-                "primary": "#0A3D62", // Deep Teal
-                "secondary": "#E6D5B8", // Warm Sand
-                "accent": "#F47C3C", // Coral Orange
-                "accent-light": "#A3E4D7", // Light Cyan
-                "background-light": "#F8F5F0", // Off-white
-                "background-dark": "#111a21", // Dark Charcoal
+                "primary": "var(--color-primary)", // Deep Teal default
+                "secondary": "var(--color-secondary)", // Warm Sand default
+                "accent": "var(--color-accent)", // Coral Orange default
+                "background-light": "var(--color-bg-light)", // Off-white
+                "background-dark": "var(--color-bg-dark)", // Dark Charcoal
+                "surface-light": "var(--color-surface-light)",
+                "surface-dark": "var(--color-surface-dark)",
+                "text-main": "var(--color-text-main)",
+                "text-muted": "var(--color-text-muted)",
                 "charcoal": "#2D3436",
                 "teal-deep": "#004d40",
                 "teal-light": "#00695c",
@@ -26,6 +29,18 @@ export default {
                 "light-cyan": "#e0f2f1",
                 "dining-primary": "#13daec",
                 "dining-dark": "#102022",
+                "culture-primary": "#f45c25",
+                "culture-bg-light": "#f8f6f5",
+                "culture-bg-dark": "#221510",
+                "culture-text-main": "#181311",
+                "culture-text-muted": "#8a6b60",
+                "weather-primary": "#f45c25",
+                "weather-bg-light": "#f8f6f5",
+                "weather-bg-dark": "#221510",
+                "weather-surface-light": "#ffffff",
+                "weather-surface-dark": "#2a1d18",
+                "weather-text-main": "#181311",
+                "weather-text-muted": "#8a6b60",
             },
             fontFamily: {
                 "display": ["Plus Jakarta Sans", "sans-serif"],

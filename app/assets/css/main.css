@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    /* Default Theme (Deep Teal) */
+    --color-primary: #0A3D62;
+    --color-secondary: #E6D5B8;
+    --color-accent: #F47C3C;
+
+    --color-bg-light: #F8F5F0;
+    --color-bg-dark: #111a21;
+
+    --color-surface-light: #ffffff;
+    --color-surface-dark: #1e293b;
+
+    --color-text-main: #2D3436;
+    --color-text-muted: #64748b;
+}
+
+/* Dark Mode Overrides (if needed for vars that change purely on dark/light without class) 
+   But here we are using 'dark:' prefix in tailwind so variables usually stay constant 
+   UNLESS we want the variable itself to switch. 
+   For now, we keep tokens stable and use dark: utility usage.
+   However, for background-dark/light tokens, usually we switch logical tokens.
+   Let's keep it simple: mapped 1:1 to inputs for now.
+*/
+
 /* Custom scrollbar hiding for horizontal scrolls */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -15,6 +39,27 @@
 /* Smooth scrolling */
 html {
     scroll-behavior: smooth;
+}
+
+/* Material Symbols */
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+}
+
+/* Layout Utilities */
+.layout-container {
+    @apply w-full mx-auto;
 }
 
 /* Custom animations */
