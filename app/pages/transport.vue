@@ -16,15 +16,15 @@
               <div class="flex flex-col gap-3 relative z-10">
                 <div class="relative group">
                   <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-teal-deep text-[20px]">trip_origin</span>
-                  <input class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#221510] border-none ring-1 ring-black/5 dark:ring-white/10 focus:ring-2 focus:ring-teal-deep text-sm font-medium text-text-main placeholder:text-text-muted/60 shadow-sm outline-none" placeholder="Starting point" type="text" value="Colombo Fort"/>
+                  <input v-model="origin" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#221510] border-none ring-1 ring-black/5 dark:ring-white/10 focus:ring-2 focus:ring-teal-deep text-sm font-medium text-text-main placeholder:text-text-muted/60 shadow-sm outline-none" placeholder="Starting point" type="text"/>
                 </div>
                 <div class="absolute left-[19px] top-[40px] h-[36px] border-l-2 border-dotted border-teal-deep/30 z-0"></div>
                 <div class="relative group">
                   <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-coral-orange text-[20px]">location_on</span>
-                  <input class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#221510] border-none ring-1 ring-black/5 dark:ring-white/10 focus:ring-2 focus:ring-teal-deep text-sm font-medium text-text-main placeholder:text-text-muted/60 shadow-sm outline-none" placeholder="Destination" type="text" value="Ella Railway Station"/>
+                  <input v-model="destination" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#221510] border-none ring-1 ring-black/5 dark:ring-white/10 focus:ring-2 focus:ring-teal-deep text-sm font-medium text-text-main placeholder:text-text-muted/60 shadow-sm outline-none" placeholder="Destination" type="text"/>
                 </div>
               </div>
-              <button class="absolute right-6 top-1/2 -translate-y-1/2 size-8 bg-white dark:bg-[#4a3b36] rounded-full shadow border border-warm-sand dark:border-transparent flex items-center justify-center text-teal-deep hover:rotate-180 transition-transform duration-300 z-20">
+              <button @click="swapLocations" class="absolute right-6 top-1/2 -translate-y-1/2 size-8 bg-white dark:bg-[#4a3b36] rounded-full shadow border border-warm-sand dark:border-transparent flex items-center justify-center text-teal-deep hover:rotate-180 transition-transform duration-300 z-20">
                 <span class="material-symbols-outlined text-[18px]">swap_vert</span>
               </button>
             </div>
@@ -43,9 +43,9 @@
               <div class="relative z-10">
                 <div class="text-teal-100 text-xs font-medium uppercase tracking-wider mb-1">Estimated Tuk-Tuk Fare</div>
                 <div class="flex items-baseline gap-1 mb-4">
-                  <span class="text-3xl font-bold font-display">LKR 450</span>
+                  <span class="text-3xl font-bold font-display">LKR {{ calculatedFare.min.toLocaleString() }}</span>
                   <span class="text-lg opacity-80">-</span>
-                  <span class="text-2xl font-bold font-display opacity-80">550</span>
+                  <span class="text-2xl font-bold font-display opacity-80">{{ calculatedFare.max.toLocaleString() }}</span>
                 </div>
                 <div class="mb-2">
                   <div class="h-2 w-full rounded-full price-meter relative">
@@ -233,9 +233,63 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, watch } from 'vue'
+
 definePageMeta({
   layout: false
 })
+
+// Get config
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
+
+// Route inputs
+const origin = ref('Colombo Fort')
+const destination = ref('Ella Railway Station')
+const distanceKm = ref(200) // Default distance estimate
+const selectedTransportType = ref<'TUK_TUK' | 'TAXI' | 'BUS' | 'TRAIN' | 'RIDESHARE'>('TUK_TUK')
+
+// Fetch fare rates from API
+const { data: ratesResponse } = await useFetch<{
+  success: boolean
+  data: Record<string, { base: number; perKm: number; minFare: number }>
+}>(`${apiBase}/api/transport/rates`)
+
+// Fetch routes from API
+const { data: routesResponse } = await useFetch<{ success: boolean; data: any[] }>(
+  `${apiBase}/api/transport/routes`
+)
+
+const rates = computed(() => ratesResponse.value?.data || {})
+const routes = computed(() => routesResponse.value?.data || [])
+
+// Calculate fare based on inputs
+const calculatedFare = computed(() => {
+  const rate = rates.value[selectedTransportType.value]
+  if (!rate) return { min: 0, max: 0 }
+  
+  const baseFare = rate.base + (distanceKm.value * rate.perKm)
+  return {
+    min: Math.max(rate.minFare, Math.round(baseFare * 0.9)),
+    max: Math.round(baseFare * 1.2),
+    type: selectedTransportType.value
+  }
+})
+
+// Swap origin and destination
+function swapLocations() {
+  const temp = origin.value
+  origin.value = destination.value
+  destination.value = temp
+}
+
+// Transport types for display
+const transportTypes = [
+  { id: 'TUK_TUK' as const, name: 'Tuk-Tuk', icon: 'local_taxi' },
+  { id: 'TAXI' as const, name: 'Taxi', icon: 'directions_car' },
+  { id: 'BUS' as const, name: 'Bus', icon: 'directions_bus' },
+  { id: 'TRAIN' as const, name: 'Train', icon: 'train' },
+]
 </script>
 
 <style scoped>
