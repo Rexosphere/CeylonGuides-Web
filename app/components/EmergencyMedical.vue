@@ -52,29 +52,36 @@
 </template>
 
 <script setup lang="ts">
-const hospitals = [
-  {
-    name: 'Asiri Surgical Hospital',
-    address: '21 Kirimandala Mawatha, Colombo 05',
-    type: 'Open 24/7',
-    distance: '0.8 km',
-    active: true
-  },
-  {
-    name: 'Lanka Hospitals',
-    address: '578 Elvitigala Mawatha, Colombo 05',
-    type: 'Open 24/7',
-    distance: '1.2 km',
-    active: false
-  },
-  {
-    name: 'National Hospital',
-    address: 'Regent St, Colombo 01000',
-    type: 'Public',
-    distance: '2.5 km',
-    active: false
-  }
-]
+import { ref, computed } from 'vue'
+
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
+
+const activeIndex = ref(0)
+
+// Fetch medical contacts from API
+const { data: medicalResponse } = await useFetch<{
+  success: boolean
+  data: Array<{
+    id: string
+    name: string
+    phone: string
+    category: string
+    description?: string
+    is_available_24x7?: boolean
+  }>
+}>(`${apiBase}/api/emergency?category=MEDICAL`)
+
+const hospitals = computed(() => {
+  const data = medicalResponse.value?.data || []
+  return data.map((h, index) => ({
+    name: h.name,
+    address: h.description || 'Colombo, Sri Lanka',
+    type: h.is_available_24x7 ? 'Open 24/7' : 'Daytime only',
+    distance: `${(index + 1) * 0.8} km`,
+    active: index === activeIndex.value
+  }))
+})
 </script>
 
 <style scoped>

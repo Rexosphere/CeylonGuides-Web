@@ -7,6 +7,9 @@
     </main>
 
     <Footer />
+    
+    <!-- Global AI Chat Widget -->
+    <AIChatWidget />
   </div>
 </template>
 

@@ -70,6 +70,7 @@ export interface Restaurant {
     dietary_options: string[]
     review_count: number
     photo_url?: string
+    district?: string
 }
 
 // Transport Types

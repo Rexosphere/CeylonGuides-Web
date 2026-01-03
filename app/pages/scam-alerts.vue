@@ -151,7 +151,16 @@
             </div>
           </div>
           <div v-if="scamAlerts.length > 0" class="mt-6 text-center">
-            <button class="text-accent text-sm font-bold hover:underline">Load older reports</button>
+            <button 
+              v-if="hasMore"
+              @click="loadMore"
+              :disabled="loadingMore"
+              class="px-6 py-3 bg-accent hover:bg-accent/90 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2 mx-auto"
+            >
+              <span v-if="loadingMore" class="animate-spin size-4 border-2 border-white border-t-transparent rounded-full"></span>
+              <span>{{ loadingMore ? 'Loading...' : 'Load more reports' }}</span>
+            </button>
+            <p v-else class="text-gray-400 text-sm">All reports loaded ({{ totalCount }} total)</p>
           </div>
         </div>
 
@@ -234,13 +243,100 @@
 
         <!-- Floating Action Button (FAB) -->
         <div class="absolute bottom-8 right-8 z-30">
-          <button class="group flex items-center gap-2 bg-accent hover:bg-accent/90 text-white rounded-full pl-5 pr-6 py-4 shadow-lg shadow-accent/30 transition-all active:scale-95">
+          <button @click="showReportModal = true" class="group flex items-center gap-2 bg-accent hover:bg-accent/90 text-white rounded-full pl-5 pr-6 py-4 shadow-lg shadow-accent/30 transition-all active:scale-95">
             <span class="material-symbols-outlined text-[24px]">add_alert</span>
             <span class="text-base font-bold">Report a Scam</span>
           </button>
         </div>
       </div>
     </main>
+
+    <!-- Report Scam Modal -->
+    <Teleport to="body">
+      <div v-if="showReportModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/50" @click="showReportModal = false"></div>
+        <div class="relative bg-white dark:bg-background-dark rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          <!-- Modal Header -->
+          <div class="sticky top-0 bg-white dark:bg-background-dark border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-charcoal dark:text-white">Report a Scam</h2>
+            <button @click="showReportModal = false" class="text-gray-400 hover:text-gray-600">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          
+          <!-- Modal Body -->
+          <form @submit.prevent="submitReport" class="p-6 space-y-5">
+            <!-- Title -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title *</label>
+              <input v-model="reportForm.title" type="text" required minlength="5" maxlength="200" 
+                class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent"
+                placeholder="Brief title for this scam..." />
+            </div>
+            
+            <!-- Description -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description *</label>
+              <textarea v-model="reportForm.description" required minlength="20" maxlength="2000" rows="4"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent resize-none"
+                placeholder="Describe what happened, how to avoid it..."></textarea>
+            </div>
+            
+            <!-- Category -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category *</label>
+              <select v-model="reportForm.category" required
+                class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent">
+                <option value="" disabled>Select a category</option>
+                <option value="GEM_SCAM">Gem Scam</option>
+                <option value="TRANSPORT_SCAM">Transport/Tuk-tuk Scam</option>
+                <option value="ACCOMMODATION_SCAM">Accommodation Scam</option>
+                <option value="TOUR_GUIDE_SCAM">Fake Tour Guide</option>
+                <option value="RESTAURANT_SCAM">Restaurant Scam</option>
+                <option value="SHOPPING_SCAM">Shopping/Exchange Scam</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+            
+            <!-- Severity -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Severity</label>
+              <div class="flex gap-3">
+                <label v-for="sev in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']" :key="sev" class="flex-1">
+                  <input type="radio" v-model="reportForm.severity" :value="sev" class="sr-only peer" />
+                  <div class="text-center py-2 rounded-lg border-2 cursor-pointer transition-all"
+                    :class="[
+                      reportForm.severity === sev 
+                        ? 'border-accent bg-accent/10 text-accent font-bold'
+                        : 'border-gray-200 dark:border-white/20 text-gray-600 dark:text-gray-400 hover:border-gray-300'
+                    ]">
+                    {{ sev }}
+                  </div>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Location -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location *</label>
+              <input v-model="reportForm.location_name" type="text" required
+                class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent"
+                placeholder="e.g., Pettah Market, Colombo" />
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" :disabled="isSubmitting"
+              class="w-full py-4 bg-accent hover:bg-accent/90 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2">
+              <span v-if="isSubmitting" class="animate-spin size-5 border-2 border-white border-t-transparent rounded-full"></span>
+              <span>{{ isSubmitting ? 'Submitting...' : 'Submit Report' }}</span>
+            </button>
+            
+            <p v-if="submitError" class="text-red-500 text-sm text-center">{{ submitError }}</p>
+            <p v-if="submitSuccess" class="text-green-500 text-sm text-center">Report submitted successfully!</p>
+          </form>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -255,18 +351,79 @@ definePageMeta({
 const viewMode = ref<'list' | 'map'>('list')
 const selectedCategory = ref<string | null>(null)
 
+// Report Modal State
+const showReportModal = ref(false)
+const isSubmitting = ref(false)
+const submitError = ref('')
+const submitSuccess = ref(false)
+
+const reportForm = ref({
+  title: '',
+  description: '',
+  category: '',
+  severity: 'MEDIUM',
+  location_name: '',
+  location_lat: 7.8731, // Default to Sri Lanka center
+  location_lng: 80.7718,
+})
+
+// Pagination state
+const currentOffset = ref(0)
+const limit = 20
+const allAlerts = ref<ScamAlert[]>([])
+const hasMore = ref(true)
+const totalCount = ref(0)
+const loadingMore = ref(false)
+
 // Fetch scam alerts from API
-const { data: scamsResponse, pending, error, refresh } = await useFetch<{ success: boolean; data: ScamAlert[]; count: number }>(
+const { data: scamsResponse, pending, error, refresh } = await useFetch<{ 
+  success: boolean; 
+  data: ScamAlert[]; 
+  count: number;
+  total: number;
+  nextOffset: number | null;
+}>(
   () => {
     const config = useRuntimeConfig()
     const base = config.public.apiBase
-    const params = selectedCategory.value ? `?category=${selectedCategory.value}` : ''
-    return `${base}/api/scams${params}`
+    const params = new URLSearchParams()
+    if (selectedCategory.value) params.set('category', selectedCategory.value)
+    params.set('limit', String(limit))
+    params.set('offset', String(currentOffset.value))
+    return `${base}/api/scams?${params}`
   },
-  { watch: [selectedCategory] }
+  { 
+    watch: [selectedCategory],
+    onResponse({ response }) {
+      if (response._data?.success) {
+        if (currentOffset.value === 0) {
+          allAlerts.value = response._data.data || []
+        } else {
+          allAlerts.value = [...allAlerts.value, ...(response._data.data || [])]
+        }
+        totalCount.value = response._data.total || 0
+        hasMore.value = response._data.nextOffset !== null
+      }
+    }
+  }
 )
 
-const scamAlerts = computed(() => scamsResponse.value?.data || [])
+const scamAlerts = computed(() => allAlerts.value)
+
+// Load more function
+async function loadMore() {
+  if (!hasMore.value || loadingMore.value) return
+  loadingMore.value = true
+  currentOffset.value += limit
+  await refresh()
+  loadingMore.value = false
+}
+
+// Reset pagination when category changes
+watch(selectedCategory, () => {
+  currentOffset.value = 0
+  allAlerts.value = []
+})
 
 // Filter categories
 const categories = [
@@ -336,6 +493,48 @@ async function confirmAlert(id: string) {
   const config = useRuntimeConfig()
   await $fetch(`${config.public.apiBase}/api/scams/${id}/confirm`, { method: 'POST' })
   refresh()
+}
+
+async function submitReport() {
+  const config = useRuntimeConfig()
+  isSubmitting.value = true
+  submitError.value = ''
+  submitSuccess.value = false
+  
+  try {
+    await $fetch(`${config.public.apiBase}/api/scams`, {
+      method: 'POST',
+      body: {
+        title: reportForm.value.title,
+        description: reportForm.value.description,
+        category: reportForm.value.category,
+        severity: reportForm.value.severity,
+        location_name: reportForm.value.location_name,
+        location_lat: reportForm.value.location_lat,
+        location_lng: reportForm.value.location_lng,
+      }
+    })
+    
+    submitSuccess.value = true
+    setTimeout(() => {
+      showReportModal.value = false
+      reportForm.value = {
+        title: '',
+        description: '',
+        category: '',
+        severity: 'MEDIUM',
+        location_name: '',
+        location_lat: 7.8731,
+        location_lng: 80.7718,
+      }
+      submitSuccess.value = false
+      refresh()
+    }, 1500)
+  } catch (err: any) {
+    submitError.value = err?.data?.error || 'Failed to submit report. Please try again.'
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>
 

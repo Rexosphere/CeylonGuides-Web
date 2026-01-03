@@ -47,18 +47,37 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
+
 const searchQuery = ref('')
 
-const embassies = [
-  { country: 'United Kingdom', flag: '🇬🇧', address: 'High Commission, Colombo 03', phone: '+94115390639' },
-  { country: 'United States', flag: '🇺🇸', address: 'Embassy, Colombo 03', phone: '+94112498500' },
-  { country: 'Australia', flag: '🇦🇺', address: 'High Commission, Colombo 02', phone: '+94112463200' },
-  { country: 'India', flag: '🇮🇳', address: 'High Commission, Colombo 03', phone: '+94112327587' }
-]
+// Fetch embassies from API
+const { data: embassiesResponse } = await useFetch<{
+  success: boolean
+  data: Array<{
+    id: string
+    name: string
+    phone: string
+    category: string
+    description?: string
+    emoji?: string
+  }>
+}>(`${apiBase}/api/emergency?category=EMBASSY`)
+
+const embassies = computed(() => {
+  const data = embassiesResponse.value?.data || []
+  return data.map(e => ({
+    country: e.name.replace(' Embassy', '').replace(' High Commission', ''),
+    flag: e.emoji || '🏛️',
+    address: e.description || 'Colombo, Sri Lanka',
+    phone: e.phone
+  }))
+})
 
 const filteredEmbassies = computed(() => {
-  if (!searchQuery.value) return embassies
-  return embassies.filter(e => e.country.toLowerCase().includes(searchQuery.value.toLowerCase()))
+  if (!searchQuery.value) return embassies.value
+  return embassies.value.filter(e => e.country.toLowerCase().includes(searchQuery.value.toLowerCase()))
 })
 </script>
 
