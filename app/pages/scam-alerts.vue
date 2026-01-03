@@ -151,7 +151,16 @@
             </div>
           </div>
           <div v-if="scamAlerts.length > 0" class="mt-6 text-center">
-            <button class="text-accent text-sm font-bold hover:underline">Load older reports</button>
+            <button 
+              v-if="hasMore"
+              @click="loadMore"
+              :disabled="loadingMore"
+              class="px-6 py-3 bg-accent hover:bg-accent/90 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2 mx-auto"
+            >
+              <span v-if="loadingMore" class="animate-spin size-4 border-2 border-white border-t-transparent rounded-full"></span>
+              <span>{{ loadingMore ? 'Loading...' : 'Load more reports' }}</span>
+            </button>
+            <p v-else class="text-gray-400 text-sm">All reports loaded ({{ totalCount }} total)</p>
           </div>
         </div>
 
@@ -358,18 +367,63 @@ const reportForm = ref({
   location_lng: 80.7718,
 })
 
+// Pagination state
+const currentOffset = ref(0)
+const limit = 20
+const allAlerts = ref<ScamAlert[]>([])
+const hasMore = ref(true)
+const totalCount = ref(0)
+const loadingMore = ref(false)
+
 // Fetch scam alerts from API
-const { data: scamsResponse, pending, error, refresh } = await useFetch<{ success: boolean; data: ScamAlert[]; count: number }>(
+const { data: scamsResponse, pending, error, refresh } = await useFetch<{ 
+  success: boolean; 
+  data: ScamAlert[]; 
+  count: number;
+  total: number;
+  nextOffset: number | null;
+}>(
   () => {
     const config = useRuntimeConfig()
     const base = config.public.apiBase
-    const params = selectedCategory.value ? `?category=${selectedCategory.value}` : ''
-    return `${base}/api/scams${params}`
+    const params = new URLSearchParams()
+    if (selectedCategory.value) params.set('category', selectedCategory.value)
+    params.set('limit', String(limit))
+    params.set('offset', String(currentOffset.value))
+    return `${base}/api/scams?${params}`
   },
-  { watch: [selectedCategory] }
+  { 
+    watch: [selectedCategory],
+    onResponse({ response }) {
+      if (response._data?.success) {
+        if (currentOffset.value === 0) {
+          allAlerts.value = response._data.data || []
+        } else {
+          allAlerts.value = [...allAlerts.value, ...(response._data.data || [])]
+        }
+        totalCount.value = response._data.total || 0
+        hasMore.value = response._data.nextOffset !== null
+      }
+    }
+  }
 )
 
-const scamAlerts = computed(() => scamsResponse.value?.data || [])
+const scamAlerts = computed(() => allAlerts.value)
+
+// Load more function
+async function loadMore() {
+  if (!hasMore.value || loadingMore.value) return
+  loadingMore.value = true
+  currentOffset.value += limit
+  await refresh()
+  loadingMore.value = false
+}
+
+// Reset pagination when category changes
+watch(selectedCategory, () => {
+  currentOffset.value = 0
+  allAlerts.value = []
+})
 
 // Filter categories
 const categories = [

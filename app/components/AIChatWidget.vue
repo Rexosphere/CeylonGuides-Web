@@ -43,7 +43,7 @@
               : 'bg-white dark:bg-surface-dark text-gray-800 dark:text-white shadow-sm rounded-bl-sm'
           ]"
         >
-          <div v-html="formatMessage(msg.content)"></div>
+          <span v-html="formatMessage(msg.content)"></span>
           
           <!-- Suggestions -->
           <div v-if="msg.suggestions && msg.suggestions.length" class="mt-3 flex flex-wrap gap-2">
@@ -115,10 +115,36 @@ const messages = ref<Message[]>([
   }
 ])
 
+/**
+ * Escape HTML entities to prevent XSS attacks
+ */
+function escapeHtml(text: string): string {
+  const htmlEscapes: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }
+  return text.replace(/[&<>"']/g, (char) => htmlEscapes[char] || char)
+}
+
+/**
+ * Format message with safe HTML rendering
+ * 1. Escape all HTML entities first (prevents XSS)
+ * 2. Convert **bold** to <strong> (safe - only on escaped content)
+ * 3. Convert newlines to <br> (safe)
+ */
 function formatMessage(content: string): string {
-  return content
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n/g, '<br>')
+  // Step 1: Escape ALL HTML to prevent XSS
+  let escaped = escapeHtml(content)
+  
+  // Step 2: Apply safe formatting transformations
+  // Only bold (**text**) and line breaks are allowed
+  escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  escaped = escaped.replace(/\n/g, '<br>')
+  
+  return escaped
 }
 
 async function sendMessage(text: string) {

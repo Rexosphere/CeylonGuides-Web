@@ -45,120 +45,43 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
         <!-- List View (Left) -->
         <div class="lg:col-span-7 flex flex-col gap-6">
-          <!-- Card 1 -->
-          <div class="group flex flex-col sm:flex-row bg-white dark:bg-[#1f2b2e] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-transparent hover:border-dining-primary/20">
-            <div class="sm:w-64 h-56 sm:h-auto shrink-0 bg-cover bg-center relative" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDHr9R3dphpY00UnndZV5SRY95xpd63aoBqiQKVPpNh8rH_ptNlzhy8yPnLPk93wmaqd0X5AYA-vJbhILBbVs0p8f34DdUXHSBsJ-akl49oBoNMtZmg4KcmvH653ZCvEqwQSQZ9sG6TCrsTvTLSHnZrKUJ7l_0EiZsJzJBeQf_vrlt35guRYc5Jzr9PvbbvSrzSE5ioo9F5dn2O95HglYuyuO-u9LuA0qK7zwv-q6FEdgVTj7f4Y9IcI_3e2bmRrWXKE4DJ73Wmm5y8");'>
-              <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-deep-teal dark:text-dining-primary flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">location_on</span>
-                Kandy
-              </div>
-            </div>
-            <div class="flex flex-col flex-grow p-5 justify-between">
-              <div>
-                <div class="flex justify-between items-start mb-2">
-                  <h3 class="text-xl font-bold text-[#111718] dark:text-white group-hover:text-dining-primary transition-colors">The Coconut Tree</h3>
-                  <div class="flex items-center gap-0.5 text-coral-orange" title="5/5 Hygiene Score">
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                  </div>
-                </div>
-                <p class="text-[#618689] dark:text-gray-400 text-sm mb-4 line-clamp-2">Authentic clay pot cooking with verified organic ingredients sourced directly from local farmers.</p>
-              </div>
-              <div class="flex flex-wrap gap-2 mt-2">
-                <span class="px-3 py-1 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 text-xs font-medium border border-green-100 dark:border-green-800">Vegan Friendly</span>
-                <span class="px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-xs font-medium border border-blue-100 dark:border-blue-800">Safe & Secure</span>
-                <span class="px-3 py-1 rounded-lg bg-background-light dark:bg-white/5 text-[#618689] dark:text-gray-400 text-xs font-medium">Outdoor Seating</span>
-              </div>
-            </div>
+          <!-- Dynamic Restaurant Cards -->
+          <div v-if="pending" class="col-span-full flex justify-center py-12">
+            <div class="animate-spin size-8 border-2 border-dining-primary border-t-transparent rounded-full"></div>
           </div>
-
-          <!-- Card 2 -->
-          <div class="group flex flex-col sm:flex-row bg-white dark:bg-[#1f2b2e] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-transparent hover:border-dining-primary/20">
-            <div class="sm:w-64 h-56 sm:h-auto shrink-0 bg-cover bg-center relative" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDCAa926dE3EJJlCGlwmQCOJ9f3dQreiP7fNAFl3tJHmbFO5uLLC8hGOWVb-pub2WkUHStVGx0zZG8jWlNYB_MJALCeur91He9UA3xLf5SXqa06y0KQvxgQ0fVtjqDGL35VMGYQkvFctSpl35TQvLcizazZfSYYhAcw3Mt3jbpykFQ3_UGlSbrt4Hy8f3zKbLARLSbqrf0Qy8uG5zLwRE2wlB_MjUUn-9sOcCySdehFGknEBs0iAjokFzXqwfBWeW-ctFFvTCvTFbqt");'>
-              <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-deep-teal dark:text-dining-primary flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">location_on</span>
-                Colombo 07
-              </div>
-            </div>
-            <div class="flex flex-col flex-grow p-5 justify-between">
-              <div>
-                <div class="flex justify-between items-start mb-2">
-                  <h3 class="text-xl font-bold text-[#111718] dark:text-white group-hover:text-dining-primary transition-colors">Ministry of Crab</h3>
-                  <div class="flex items-center gap-0.5 text-coral-orange">
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                  </div>
-                </div>
-                <p class="text-[#618689] dark:text-gray-400 text-sm mb-4 line-clamp-2">World-renowned lagoon crab prepared with high standards of hygiene and traditional spices.</p>
-              </div>
-              <div class="flex flex-wrap gap-2 mt-2">
-                <span class="px-3 py-1 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 text-xs font-medium border border-purple-100 dark:border-purple-800">Halal Certified</span>
-                <span class="px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-xs font-medium border border-blue-100 dark:border-blue-800">Premium Hygiene</span>
-              </div>
-            </div>
+          
+          <div v-else-if="restaurants.length === 0" class="col-span-full text-center py-12 text-gray-500">
+            <span class="material-symbols-outlined text-4xl mb-2">restaurant</span>
+            <p>No restaurants found. Try adjusting your filters.</p>
           </div>
-
-          <!-- Card 3 -->
-          <div class="group flex flex-col sm:flex-row bg-white dark:bg-[#1f2b2e] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-transparent hover:border-dining-primary/20">
-            <div class="sm:w-64 h-56 sm:h-auto shrink-0 bg-cover bg-center relative" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_X7j8_HRxMzgWiufFHPBxt2lZZvevI_64QQmzqZENt8BoIoDnquNBUAIp-udk3HJVaGbRv3lps8ZqJmh3oC7aBg70OblwCzd5LzSt0AF-1WYOdVYiP1mO0PDj1xJKEqQtxcYNIqoZEGya-Xrd7Mfx-yJkrA63UPuR73EcGgfyeomp5n0JcVhbxfQifh8fajF4dGLhYMbtalMcSA1sFQbcWoINkHGztQJZlvaR854dqCkzvI01dSMG8jgDAGhBvQ8Kbj--uPdxho6L");'>
+          
+          <div v-for="restaurant in restaurants" :key="restaurant.id" class="group flex flex-col sm:flex-row bg-white dark:bg-[#1f2b2e] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-transparent hover:border-dining-primary/20">
+            <div class="sm:w-64 h-56 sm:h-auto shrink-0 bg-cover bg-center relative" :style="`background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400');`">
               <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-deep-teal dark:text-dining-primary flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">location_on</span>
-                Mirissa
+                {{ restaurant.location?.name || restaurant.district || 'Sri Lanka' }}
               </div>
             </div>
             <div class="flex flex-col flex-grow p-5 justify-between">
               <div>
                 <div class="flex justify-between items-start mb-2">
-                  <h3 class="text-xl font-bold text-[#111718] dark:text-white group-hover:text-dining-primary transition-colors">Shady Lane</h3>
-                  <div class="flex items-center gap-0.5 text-coral-orange">
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg text-gray-300 dark:text-gray-600">spa</span>
+                  <h3 class="text-xl font-bold text-[#111718] dark:text-white group-hover:text-dining-primary transition-colors">{{ restaurant.name }}</h3>
+                  <div class="flex items-center gap-0.5 text-coral-orange" :title="`${restaurant.rating || 0}/5 Rating`">
+                    <span v-for="n in 5" :key="n" class="material-symbols-outlined text-lg" :class="n <= Math.round(restaurant.rating || 0) ? 'fill-current' : 'opacity-30'">spa</span>
                   </div>
                 </div>
-                <p class="text-[#618689] dark:text-gray-400 text-sm mb-4 line-clamp-2">A healthy food cafe serving smoothie bowls, toast, and coffee. Verified water filtration systems.</p>
+                <p class="text-[#618689] dark:text-gray-400 text-sm mb-4 line-clamp-2">{{ restaurant.description || 'Delicious local cuisine' }}</p>
               </div>
               <div class="flex flex-wrap gap-2 mt-2">
-                <span class="px-3 py-1 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 text-xs font-medium border border-green-100 dark:border-green-800">Vegetarian</span>
-                <span class="px-3 py-1 rounded-lg bg-background-light dark:bg-white/5 text-[#618689] dark:text-gray-400 text-xs font-medium">Breakfast</span>
+                <span v-if="restaurant.is_verified_halal" class="px-3 py-1 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 text-xs font-medium border border-purple-100 dark:border-purple-800">Halal</span>
+                <span v-for="option in (restaurant.dietary_options || []).slice(0, 2)" :key="option" class="px-3 py-1 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 text-xs font-medium border border-green-100 dark:border-green-800">{{ option }}</span>
+                <span v-if="restaurant.hygiene_rating === 'EXCELLENT'" class="px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-xs font-medium border border-blue-100 dark:border-blue-800">5-Lotus Hygiene</span>
               </div>
-            </div>
-          </div>
-
-          <!-- Card 4 -->
-          <div class="group flex flex-col sm:flex-row bg-white dark:bg-[#1f2b2e] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-transparent hover:border-dining-primary/20">
-            <div class="sm:w-64 h-56 sm:h-auto shrink-0 bg-cover bg-center relative" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAm8KYFa6uvI9L3ry3bRxpi5j3nOjVjG9CfvHlgvSadWPF0Jct_f7peqAdcvxLCR7uUUfHnhNAHQHi7tv8jaMynxe1MTOfyU7Up3HcYFxxUQu4VhyDGzuNqkqoL5cm0ogUiAqb_ka7RV0WC2KCji-UiX8lZLEhGIZqTPbE3iRhI7Dc9qggUZmHMHVmGZaPvrGtIzddYa8HjnxXp9MKjOdUslQ95OcQnDxYj7Ugr8bPEWei6okmPTL9C3ISdDRMmm97cntY94YcYqvS5");'>
-              <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-deep-teal dark:text-dining-primary flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">location_on</span>
-                Galle Fort
-              </div>
-            </div>
-            <div class="flex flex-col flex-grow p-5 justify-between">
-              <div>
-                <div class="flex justify-between items-start mb-2">
-                  <h3 class="text-xl font-bold text-[#111718] dark:text-white group-hover:text-dining-primary transition-colors">Poonie's Kitchen</h3>
-                  <div class="flex items-center gap-0.5 text-coral-orange">
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                    <span class="material-symbols-outlined text-lg fill-current">spa</span>
-                  </div>
-                </div>
-                <p class="text-[#618689] dark:text-gray-400 text-sm mb-4 line-clamp-2">Hidden gem in Galle Fort offering organic salads and squash thalis. Zero-waste kitchen policy.</p>
-              </div>
-              <div class="flex flex-wrap gap-2 mt-2">
-                <span class="px-3 py-1 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 text-xs font-medium border border-green-100 dark:border-green-800">Organic</span>
-                <span class="px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-xs font-medium border border-blue-100 dark:border-blue-800">Safe Certified</span>
-              </div>
+              <!-- Review Button -->
+              <button @click="openReviewModal(restaurant)" class="mt-4 flex items-center gap-2 text-dining-primary text-sm font-medium hover:underline">
+                <span class="material-symbols-outlined text-lg">rate_review</span>
+                Leave a Review
+              </button>
             </div>
           </div>
         </div>

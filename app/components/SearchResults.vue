@@ -1,183 +1,159 @@
 <template>
-  <div class="flex-1 flex flex-col">
-    <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-8 pb-4 border-b border-gray-200 dark:border-white/10">
-      <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Search Results for "Kandy"</h3>
-      <span class="text-sm text-gray-500 dark:text-gray-400 mt-2 sm:mt-0">Showing 4 of 24 results</span>
+  <div class="flex-1">
+    <!-- Loading State -->
+    <div v-if="pending" class="flex flex-col items-center justify-center py-20">
+      <div class="animate-spin size-10 border-3 border-coral-orange border-t-transparent rounded-full mb-4"></div>
+      <p class="text-gray-500">Searching...</p>
     </div>
-    
-    <div class="flex flex-col gap-6">
-      
-      <!-- Result Card 1: Destination -->
-      <div class="group flex flex-col sm:flex-row gap-5 bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-transparent hover:border-primary/20">
-        <div class="sm:w-48 md:w-64 aspect-video sm:aspect-auto h-48 sm:h-auto shrink-0 relative overflow-hidden rounded-lg">
-          <div 
-            class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBo6cFoIBA1uNBSyq_Igdz4yfcA9QSYhFNHRiIUDsUSiZphWDceLXqgXdoU8mQB54Pw1peZwuY5RNt-J2EkvBbWC-2oa0I84EOgSjq0HkMpIurfX_8g8pd5V3c5Tof2rv5rpLFgV284pKZuEMOZD41MpXtfWO7l_zSgU0IuIiABCp1f7n_Dsu3Bs1OKFpOZ-m8sQqrQ3Bb9ZYF8q1TjTzBLUenEKZcf-9gRDIcIJp2GL1gsdD1jsAQ3Ot9Gt-gbBXh4mHmTSySTkbE');"
-          ></div>
-          <div class="absolute top-2 left-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-            Destination
-          </div>
-        </div>
-        <div class="flex flex-col flex-1 justify-between py-1">
-          <div>
-            <div class="flex items-start justify-between">
-              <div>
-                <h4 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">Kandy City Centre</h4>
-                <div class="flex items-center gap-1 mt-1 text-sm text-[#896c61] dark:text-gray-400">
-                  <span class="material-symbols-outlined text-lg">location_on</span>
-                  Central Province, Sri Lanka
-                </div>
-              </div>
-              <button class="text-gray-400 hover:text-primary transition-colors">
-                <span class="material-symbols-outlined">favorite</span>
-              </button>
-            </div>
-            <p class="mt-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-              The cultural capital of Sri Lanka, surrounded by mountains and tea plantations. Home to the sacred Temple of the Tooth Relic and a scenic lake.
-            </p>
-          </div>
-          <div class="mt-4 flex items-center justify-between">
-            <span class="text-xs font-medium text-gray-400 dark:text-gray-500">Updated 2 days ago</span>
-            <button class="flex items-center gap-1 text-sm font-bold text-primary hover:text-orange-700 transition-colors">
-              Explore Details <span class="material-symbols-outlined text-lg">arrow_forward</span>
-            </button>
-          </div>
-        </div>
+
+    <!-- Empty State -->
+    <div v-else-if="!query" class="text-center py-20">
+      <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">search</span>
+      <h2 class="text-2xl font-bold text-gray-600 dark:text-gray-300 mb-2">Start Your Search</h2>
+      <p class="text-gray-500">Search for destinations, restaurants, phrases, and more</p>
+    </div>
+
+    <!-- No Results -->
+    <div v-else-if="results.length === 0" class="text-center py-20">
+      <span class="material-symbols-outlined text-6xl text-gray-300 mb-4">search_off</span>
+      <h2 class="text-2xl font-bold text-gray-600 dark:text-gray-300 mb-2">No results found</h2>
+      <p class="text-gray-500">Try different keywords or filters</p>
+    </div>
+
+    <!-- Results -->
+    <div v-else>
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold">
+          {{ totalCount }} results for "<span class="text-coral-orange">{{ query }}</span>"
+        </h2>
       </div>
 
-      <!-- Result Card 2: Attraction -->
-      <div class="group flex flex-col sm:flex-row gap-5 bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-transparent hover:border-primary/20">
-        <div class="sm:w-48 md:w-64 aspect-video sm:aspect-auto h-48 sm:h-auto shrink-0 relative overflow-hidden rounded-lg">
-          <div 
-            class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDCoDFf-R826YNpSHfoTNKBNCPQmvGE-nB-mKsBgYe62ddzeouK-F0-5bUslKUI53GVQxyHt1f7euO57c2GYE4u3R7giqlEQWSxDVo4RBDaX6VB_Z-9-T76a-Kj3r8D5-M_RRePVHlWfYy7XZoB_vXmmKdYdOJELxN-atj7hUooH-d4Zrm6FAEdoS8U_ZjqovaefLDoYiMadBHwDMWhG_2al9PFAH_LbXhVihD7QmVp7p95XnWixn3G1IFE4JaD4L9hPDUvid-7x5Q');"
-          ></div>
-          <div class="absolute top-2 left-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-            Attraction
-          </div>
-        </div>
-        <div class="flex flex-col flex-1 justify-between py-1">
-          <div>
-            <div class="flex items-start justify-between">
-              <div>
-                <h4 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">Temple of the Sacred Tooth Relic</h4>
-                <div class="flex items-center gap-1 mt-1 text-sm text-[#896c61] dark:text-gray-400">
-                  <span class="material-symbols-outlined text-lg">location_on</span>
-                  Kandy, Sri Lanka
-                </div>
-              </div>
-              <button class="text-gray-400 hover:text-primary transition-colors">
-                <span class="material-symbols-outlined">favorite</span>
-              </button>
+      <div class="space-y-4">
+        <NuxtLink
+          v-for="result in results"
+          :key="`${result.type}-${result.id}`"
+          :to="result.link"
+          class="block bg-white dark:bg-surface-dark rounded-xl p-5 shadow-sm hover:shadow-md transition-all border border-transparent hover:border-coral-orange/20 group"
+        >
+          <div class="flex gap-4">
+            <!-- Type Icon -->
+            <div :class="[
+              'size-12 rounded-xl flex items-center justify-center shrink-0',
+              getTypeColor(result.type)
+            ]">
+              <span class="material-symbols-outlined text-white">{{ getTypeIcon(result.type) }}</span>
             </div>
-            <p class="mt-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-              Sri Dalada Maligawa is a Buddhist temple in the city of Kandy, Sri Lanka. It is located in the royal palace complex of the former Kingdom of Kandy.
-            </p>
-          </div>
-          <div class="mt-4 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="flex items-center text-xs font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded dark:bg-green-900/30 dark:text-green-400">
-                <span class="material-symbols-outlined text-sm mr-1">star</span> 4.8
+
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span :class="['text-xs font-medium px-2 py-0.5 rounded-full capitalize', getTypeBadge(result.type)]">
+                  {{ result.type }}
+                </span>
+                <span v-if="result.extra?.rating" class="text-xs text-gray-500 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-amber-500 text-sm">star</span>
+                  {{ result.extra.rating.toFixed(1) }}
+                </span>
+                <span v-if="result.extra?.severity" :class="['text-xs font-medium px-2 py-0.5 rounded-full', getSeverityClass(result.extra.severity)]">
+                  {{ result.extra.severity }}
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-gray-800 dark:text-white group-hover:text-coral-orange transition-colors truncate">
+                {{ result.title }}
+              </h3>
+              <p class="text-gray-500 dark:text-gray-400 text-sm truncate">{{ result.subtitle }}</p>
+            </div>
+
+            <!-- Arrow -->
+            <div class="flex items-center">
+              <span class="material-symbols-outlined text-gray-400 group-hover:text-coral-orange group-hover:translate-x-1 transition-all">
+                arrow_forward
               </span>
-              <span class="text-xs text-gray-500">(1,240 reviews)</span>
             </div>
-            <button class="flex items-center gap-1 text-sm font-bold text-primary hover:text-orange-700 transition-colors">
-              View Details <span class="material-symbols-outlined text-lg">arrow_forward</span>
-            </button>
           </div>
-        </div>
+        </NuxtLink>
       </div>
-
-      <!-- Result Card 3: Hotel -->
-      <div class="group flex flex-col sm:flex-row gap-5 bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-transparent hover:border-primary/20">
-        <div class="sm:w-48 md:w-64 aspect-video sm:aspect-auto h-48 sm:h-auto shrink-0 relative overflow-hidden rounded-lg">
-          <div 
-            class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCugglnbesjmIAOaJg1U6GmwG2FHyA9ufVBUF9boA5mFa_Pwfm28OFOzlXHx7B9WQvhX1Mu8qJIYHZnSVWe0a0_DB68Jj-CmcBhmgiXHqEo-Ndo9LplKs4YyATx1_xoBUU2zpYD7JyKljWSqyTpajTZeh3pr75NwA1t02VvjlRknd1Rjb5cIF9247GYIrh_Oyf_9oxrWI3ritKdgLdICqQfbEh6gS7oGZNez6ctgPC6Xa0tMmvSCNt3FYBzkRbW0kblD6dhKFLOLvY');"
-          ></div>
-          <div class="absolute top-2 left-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-            Accommodation
-          </div>
-        </div>
-        <div class="flex flex-col flex-1 justify-between py-1">
-          <div>
-            <div class="flex items-start justify-between">
-              <div>
-                <h4 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">The Kandy House</h4>
-                <div class="flex items-center gap-1 mt-1 text-sm text-[#896c61] dark:text-gray-400">
-                  <span class="material-symbols-outlined text-lg">location_on</span>
-                  Gunnepana, Kandy
-                </div>
-              </div>
-              <button class="text-gray-400 hover:text-primary transition-colors">
-                <span class="material-symbols-outlined">favorite</span>
-              </button>
-            </div>
-            <p class="mt-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-              A unique ancestral manor house providing seclusion and serenity for its guests in a lush tropical garden setting.
-            </p>
-          </div>
-          <div class="mt-4 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="text-lg font-bold text-gray-900 dark:text-white">$180</span>
-              <span class="text-xs text-gray-500">/ night</span>
-            </div>
-            <button class="flex items-center gap-1 text-sm font-bold text-primary hover:text-orange-700 transition-colors">
-              Check Availability <span class="material-symbols-outlined text-lg">arrow_forward</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Result Card 4: Article -->
-      <div class="group flex flex-col sm:flex-row gap-5 bg-white dark:bg-surface-dark p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-transparent hover:border-primary/20">
-        <div class="sm:w-48 md:w-64 aspect-video sm:aspect-auto h-48 sm:h-auto shrink-0 relative overflow-hidden rounded-lg">
-          <div 
-            class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBc9XigIGU2mfsmYFEn3qqqZQONuhgGU6Vz7yEqkXEqQL7apxtSYuk_EseBro9s9a600aNHLEVHWN6ntJ9H6LmrUQfiNFTu7J8ihpZpKJ9yN8xKV2NYPCUZLIXFhpqemj8ZiKLGkC20M9OEs8FDz-Kldea7uai2ojUPKWkvk4CO0WL51fc0ZWEfc1rWAUbTB7ufWvSTwDUEGVAafDQvZD53ojlB6aYwTewAjSoQnki5dOeGf2CteCdHTQYHpiZxdNUV193DTnlGjy8');"
-          ></div>
-          <div class="absolute top-2 left-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-            Article
-          </div>
-        </div>
-        <div class="flex flex-col flex-1 justify-between py-1">
-          <div>
-            <div class="flex items-start justify-between">
-              <div>
-                <h4 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">Guide to Esala Perahera Festival</h4>
-                <div class="flex items-center gap-1 mt-1 text-sm text-[#896c61] dark:text-gray-400">
-                  <span class="material-symbols-outlined text-lg">schedule</span>
-                  5 min read
-                </div>
-              </div>
-              <button class="text-gray-400 hover:text-primary transition-colors">
-                <span class="material-symbols-outlined">bookmark</span>
-              </button>
-            </div>
-            <p class="mt-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-              Everything you need to know about witnessing the grandest Buddhist festival in Sri Lanka, featuring traditional dancers and elephants.
-            </p>
-          </div>
-          <div class="mt-4 flex items-center justify-between">
-            <span class="text-xs font-medium text-gray-400 dark:text-gray-500">By Sarah Jenkins</span>
-            <button class="flex items-center gap-1 text-sm font-bold text-primary hover:text-orange-700 transition-colors">
-              Read Article <span class="material-symbols-outlined text-lg">arrow_forward</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-    
-    <!-- Load More -->
-    <div class="mt-10 flex justify-center">
-      <button class="px-8 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-400 transition-all text-sm font-bold flex items-center gap-2">
-        Load More Results
-        <span class="material-symbols-outlined text-lg">expand_more</span>
-      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+interface SearchResult {
+  type: 'scam' | 'phrase' | 'restaurant' | 'facility' | 'destination' | 'activity'
+  id: string
+  title: string
+  subtitle: string
+  link: string
+  extra?: Record<string, any>
+}
+
+const route = useRoute()
+const config = useRuntimeConfig()
+
+const query = computed(() => (route.query.q as string) || '')
+const type = computed(() => (route.query.type as string) || 'all')
+
+const { data: searchResponse, pending } = await useFetch<{
+  success: boolean
+  query: string
+  results: SearchResult[]
+  count: number
+  total: number
+}>(() => {
+  if (!query.value) return null as any
+  const params = new URLSearchParams({ q: query.value, type: type.value, limit: '30' })
+  return `${config.public.apiBase}/api/search?${params}`
+}, {
+  watch: [query, type],
+  immediate: true,
+})
+
+const results = computed(() => searchResponse.value?.results || [])
+const totalCount = computed(() => searchResponse.value?.total || 0)
+
+function getTypeIcon(type: string): string {
+  const icons: Record<string, string> = {
+    destination: 'place',
+    restaurant: 'restaurant',
+    phrase: 'translate',
+    scam: 'warning',
+    activity: 'hiking',
+    facility: 'apartment',
+  }
+  return icons[type] || 'search'
+}
+
+function getTypeColor(type: string): string {
+  const colors: Record<string, string> = {
+    destination: 'bg-emerald-500',
+    restaurant: 'bg-coral-orange',
+    phrase: 'bg-blue-500',
+    scam: 'bg-red-500',
+    activity: 'bg-purple-500',
+    facility: 'bg-gray-500',
+  }
+  return colors[type] || 'bg-gray-500'
+}
+
+function getTypeBadge(type: string): string {
+  const badges: Record<string, string> = {
+    destination: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+    restaurant: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
+    phrase: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+    scam: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+    activity: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+    facility: 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300',
+  }
+  return badges[type] || 'bg-gray-100 text-gray-700'
+}
+
+function getSeverityClass(severity: string): string {
+  const classes: Record<string, string> = {
+    LOW: 'bg-yellow-100 text-yellow-700',
+    MEDIUM: 'bg-orange-100 text-orange-700',
+    HIGH: 'bg-red-100 text-red-700',
+    CRITICAL: 'bg-red-200 text-red-800',
+  }
+  return classes[severity] || 'bg-gray-100 text-gray-700'
+}
 </script>
