@@ -12,11 +12,12 @@ export default {
     theme: {
         extend: {
             colors: {
-                "primary": "var(--color-primary)", // Deep Teal default
-                "secondary": "var(--color-secondary)", // Warm Sand default
-                "accent": "var(--color-accent)", // Coral Orange default
-                "background-light": "var(--color-bg-light)", // Off-white
-                "background-dark": "var(--color-bg-dark)", // Dark Charcoal
+                "primary": "#0A3D62", // Deep Teal
+                "secondary": "#E6D5B8", // Warm Sand
+                "accent": "#F47C3C", // Coral Orange
+                "accent-light": "#A3E4D7", // Light Cyan
+                "background-light": "#F8F5F0", // Off-white
+                "background-dark": "#111a21", // Dark Charcoal equivalent for dark mode base
                 "surface-light": "var(--color-surface-light)",
                 "surface-dark": "var(--color-surface-dark)",
                 "text-main": "var(--color-text-main)",

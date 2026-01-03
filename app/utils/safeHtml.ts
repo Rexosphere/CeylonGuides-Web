@@ -33,7 +33,8 @@ export function formatSafeHtml(content: string): string {
 // ============================================
 // Self-test (run with: npx tsx utils/safeHtml.ts)
 // ============================================
-if (import.meta.url.endsWith(process.argv[1]?.replace(/^file:\/\//, '') || '')) {
+// @ts-expect-error - This code only runs in Node.js environment during testing
+if (typeof process !== 'undefined' && import.meta.url.endsWith(process.argv[1]?.replace(/^file:\/\//, '') || '')) {
     console.log('Running safeHtml tests...\n')
 
     const tests = [
@@ -82,5 +83,6 @@ if (import.meta.url.endsWith(process.argv[1]?.replace(/^file:\/\//, '') || '')) 
     }
 
     console.log(`\n${passed} passed, ${failed} failed`)
+    // @ts-expect-error - process.exit only runs in Node.js environment during testing
     process.exit(failed > 0 ? 1 : 0)
 }

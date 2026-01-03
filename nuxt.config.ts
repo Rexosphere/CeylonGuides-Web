@@ -47,6 +47,17 @@ export default defineNuxtConfig({
     }
   },
 
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    },
+    {
+      path: '~/components/sections',
+      pathPrefix: false,
+    }
+  ],
+
   css: ['~/assets/css/main.css'],
 
   typescript: {
