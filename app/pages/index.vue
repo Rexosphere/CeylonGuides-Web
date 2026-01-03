@@ -1,14 +1,11 @@
 <template>
   <div>
     <HeroSection />
-    <AlertBanner 
-      alert-message="Heavy rain expected in Central Province. Landslide warnings issued for Kandy district."
-      time-ago="2h ago"
-      details-link="#"
-    />
-    <QuickActionsSection />
-    <TravelSmartSection />
-    <CTABand />
+    <MainFeaturesSection />
+    <TravelEssentialsSection />
+    <SafetySection />
+    <CommunityLinksSection />
+    <CtaSection />
   </div>
 </template>
 
@@ -23,3 +20,4 @@ useHead({
   ]
 })
 </script>
+
