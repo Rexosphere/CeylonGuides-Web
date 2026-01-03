@@ -130,13 +130,18 @@ export function useApi() {
     const config = useRuntimeConfig()
     const baseUrl = config.public.apiBase
 
-    // Generic fetch wrapper
+    // Generic fetch wrapper with proper Nitro types
     async function apiFetch<T>(
         endpoint: string,
-        options: RequestInit = {}
+        options: {
+            method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+            body?: string
+            headers?: Record<string, string>
+        } = {}
     ): Promise<ApiResponse<T>> {
         const response = await $fetch<ApiResponse<T>>(`${baseUrl}${endpoint}`, {
-            ...options,
+            method: options.method,
+            body: options.body,
             headers: {
                 'Content-Type': 'application/json',
                 ...options.headers,
