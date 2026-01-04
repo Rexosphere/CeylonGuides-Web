@@ -15,7 +15,7 @@
       <div class="group cursor-pointer flex flex-col gap-3 bg-surface-light dark:bg-surface-dark p-3 rounded-xl hover:shadow-lg transition-all duration-300 border border-transparent hover:border-primary/10">
         <div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden">
           <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all z-10"></div>
-          <div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-700" role="img" aria-label="Ancient Sigiriya rock fortress rising from the jungle" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDd8ZSw3yVRl6JIF7octl25GciI1ep8xoxSqnIk9raAJLJuJAUORG1qOjaQUXjQf1AU9nORCBeQPzOChVpm3GReIGMkbFjfzRyOCbyao-b68BcYdPLM9EBRiJ14j7wNvoSSwbN2_XZ-7g1sw7d7FVrG2Qq_K3sy6f3IfKWwEjZkM_jqUFlUzM4aLWXga2p41oGBoMa2ylcZtdCSYJabCrmAIGi17dYi5uHjChHQuHQ903BvYzfpqTzBTjPJeE6cOicGUh5nKkoCldU');"></div>
+          <div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-700" role="img" aria-label="Ancient Sigiriya rock fortress rising from the jungle" style="background-image: url('/images/downloaded_42e12d701946.avif');"></div>
           <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold z-20 shadow-sm flex items-center gap-1 text-text-main dark:text-white">
             <span class="material-symbols-outlined text-xs">schedule</span> 3 Days
           </div>
@@ -37,7 +37,7 @@
       <div class="group cursor-pointer flex flex-col gap-3 bg-surface-light dark:bg-surface-dark p-3 rounded-xl hover:shadow-lg transition-all duration-300 border border-transparent hover:border-primary/10">
         <div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden">
           <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all z-10"></div>
-          <div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-700" role="img" aria-label="Blue train traveling through lush green tea plantations" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAQlbaA6jId2QbRaUzUyNquII_Ejq8DSst_MPVeKypryvK0sH_fa4rmjH_zNtmJAr_VX7T3EfJSRRz6Qc48vlempHCfk86RaNmpe8gsN9jrg9AWQ1jfncC-G2Cth4opY3N9Ls5-9vUH7ULUGvfOf9d3boVuv1a21oNuR3fQLWkaO0KVbSLIBIXBPE3ok5PqfnUr-I_SEyp_BcDBuzeMywKPMX6hVo05dlE_KgkLfq6CIWblh_UfbZEKBT3P5UYZVPA3Ky2jQi5cvPc');"></div>
+          <div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-700" role="img" aria-label="Blue train traveling through lush green tea plantations" style="background-image: url('/images/downloaded_5ff6b6bbf9ad.avif');"></div>
           <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold z-20 shadow-sm flex items-center gap-1 text-text-main dark:text-white">
             <span class="material-symbols-outlined text-xs">schedule</span> 7 Days
           </div>
@@ -59,7 +59,7 @@
       <div class="group cursor-pointer flex flex-col gap-3 bg-surface-light dark:bg-surface-dark p-3 rounded-xl hover:shadow-lg transition-all duration-300 border border-transparent hover:border-primary/10">
         <div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden">
           <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all z-10"></div>
-          <div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-700" role="img" aria-label="Beautiful sandy beach with palm trees at sunset" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCVreabfxTTF09BoI9h2Upu5tjj7Dz3xhkJXV4Cn3pHU3dDNTECJS9XNTRE_IlRt0GKcQUOquUf9wTdB97hqNrRZJxtyHpHeODFJg-wirpUsg6EpgGWNYPgO89SBQnfNN-H6umzJipYzLJLIHxZCAEsNBdRMGygUzkZ68S9h3Mq4ssh2YFps6SU7Z0rWbmVqI4en-k1JUYaIJuHC5tspYTejKxCCVj0VsFj3dpN2hVN2BBrOzcJReIgV02z6ZM5i-W_6uIsM5HSt3E');"></div>
+          <div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-700" role="img" aria-label="Beautiful sandy beach with palm trees at sunset" style="background-image: url('/images/downloaded_aac0d66ad44a.avif');"></div>
           <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold z-20 shadow-sm flex items-center gap-1 text-text-main dark:text-white">
             <span class="material-symbols-outlined text-xs">schedule</span> 14 Days
           </div>

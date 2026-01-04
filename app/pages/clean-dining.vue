@@ -130,7 +130,7 @@
         <div class="lg:col-span-5 hidden lg:block">
           <div class="sticky top-28 h-[calc(100vh-140px)] w-full rounded-2xl overflow-hidden shadow-sm border border-[#f0f4f4] dark:border-gray-800 bg-[#e5e7eb] relative group/map">
             <!-- Map Image Placeholder -->
-            <div class="absolute inset-0 bg-cover bg-center opacity-80 dark:opacity-60" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuACzXTubaJ8q0wtQ7TAIOO5lDM2IMjgK-FMLeGYM3iuZ-YZP8I8HezCSHT_9klZGrFgWpF-ZrfV-_-falBVrWP6pW6J09HBoeWaiKROUSwE5xMg67qUZ7dPhNmnPNUnOKWVdoN6m2U9FjBq2NSeULQTQ-02yUXnB7395VD4g0K7TWt_CUmVnUKFVRXv75HMUNLJOZX_dNdaS2MbnIV7E6jB-B_xz_JhYcjFJrvNgBuld7LeoomxJaEBn3EwbQxmkbzwe0VuTstp1LZu"); filter: grayscale(20%);'></div>
+            <div class="absolute inset-0 bg-cover bg-center opacity-80 dark:opacity-60" style='background-image: url("/images/downloaded_a5ef9569c1a1.avif"); filter: grayscale(20%);'></div>
             <!-- Map UI Overlay -->
             <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10 pointer-events-none"></div>
             

@@ -8,7 +8,7 @@
         <img 
           alt="Sri Lankan Coastline" 
           class="w-full h-full object-cover" 
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnf9zd7yEt1qXYPDY9HzJa5piPfluFwOAaxo4xlOGZImfb3pyWljpRXJUcja2YVNUrlnDh18sut-2SiMhNJlp-NyBjX7HVvgU_KTA-0ngF6AYsS7dDD6xXaEgovC4u5j_s_8iYdWs2-SLVPBTD9dcrEshLW4lkMHm3YYYjiVeDWQztcRMofN-PxiZUGkVFl63kM9lnFuv1MXW7nYZOkRCHbeEKkzSobC6SVuq2VaYh09IlvSX7TVnKQHI9rznUr3E06Sld6oMnHeo"
+          src="/images/downloaded_d71015a3329c.avif"
         />
         <div class="absolute inset-0 bg-primary/20 dark:bg-primary/40 mix-blend-multiply"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-slate-900/30 to-slate-900/60"></div>

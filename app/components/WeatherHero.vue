@@ -2,7 +2,7 @@
   <div class="relative w-full">
     <div 
       class="flex min-h-[500px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-4 relative" 
-      :style="{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url('https://lh3.googleusercontent.com/aida-public/AB6AXuBG-mFIjRaEGsIQTGBVrkSkWo-rYzYi4XESolg30wfFFjdb3PaomyzxWs8_zZOQX2Is4htVSl45F97oB0eAXuQSLS-lFhh1XgfMHNRp08S-0t4ODVcDSR0QgriJy2qMLgK0J7qICymG50DrgeulAqqNgV8Qtqj5ptepMPEZHk49UcsHvCLj299oppnFeDs-MKHc3fbjM0wOsd7l4JXD7fmE0zDi51Tv88BXQDGlliLrY0AK8anZe3xDfrOnd-sCmpUZ3IVrZP_Mwpk')` }"
+      :style="{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url('/images/downloaded_61761d4e5bd8.avif')` }"
     >
       <div class="flex flex-col gap-3 text-center max-w-3xl z-10">
         <span class="text-white/90 text-sm font-bold tracking-wider uppercase">Planning & Logistics</span>

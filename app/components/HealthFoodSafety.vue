@@ -7,7 +7,7 @@
             <img 
               alt="Fresh tropical fruits" 
               class="object-cover w-full h-full" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjWJiUcp-D4NxcM8N8HZvdOji42P7U3jPKWQ89_Y2EPaMe9O_HWXMQsxjweQrFiBnmM113k77Ig44WonGgyJVwpJNpTm3mIzzyKHluXVCIvptTa2iJbfx1wEY3-UYEu-08DDnRsZ07_ukhWZrmELEWV1xwUQvs9e20qivJKLblIp5KK0WoaBlyvSIq64mlyVHmKEi4AyDs9E41n96DJzWB6vcaRgu-UkHR_VFPMNGME3NJ5lgQx-yiRP19tj1qmmWXRQ0pgZvIo-s"
+              src="/images/downloaded_3b676fb7ea7e.avif"
             />
             <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
               <p class="text-white font-bold text-lg">Eat Fresh, Eat Safe.</p>

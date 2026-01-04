@@ -5,7 +5,7 @@
       <img 
         class="h-full w-full object-cover grayscale opacity-40" 
         alt="Detailed map of Sri Lanka with topography" 
-        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFyNK7fjbRGoMJQgJ0Vt7uKHvny4mc1kU3-9CBJk2F8F_2m75xOGfJZ0ibuVb4EoYjPMiMjS7cOGmsXrfS1SgaK1Pvsq-VF_mm0mcg835xZHEwn9Cmc8CWJuzBCAN8DLvsKBVVg9E2kYe6yNLzcs3sAVOu0yL3sfsHloHYIrYd00UPGJg3MpOVbtnR851S-bq8XPfEdxCnLTyz9LRjtBlK6EoJRExuMJTfcQfLs75DA9wpWkQq68kUDUkJ0hcyyOg047FOkS2s9c0"
+        src="/images/downloaded_2ddda1aff695.avif"
       />
     </div>
     <!-- Map Overlay UI -->

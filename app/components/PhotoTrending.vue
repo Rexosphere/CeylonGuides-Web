@@ -14,7 +14,7 @@
         <div class="snap-center shrink-0 w-[240px] h-[360px] relative rounded-xl overflow-hidden cursor-pointer group">
           <div 
             class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCd6n1WZOSDvSbLzlMMAl6KJt_lY39NsPs62d2NTmCB3sEEhkFPlB9Qt8dInNp52yBllS9cDXFIbnskNwhttpPlBYMTRXbdNgizhkWMQZUKfXVF7IzNFym2x4s37uPHj4Nuvs5Bi5lRrssMjr2-VxGCQ40Ma_Xf6VUi_27PmYwv9O2bjvzrye3NuGS2tCrEfg24_7yLOdJDgl0uAZFfO5sChUcROIgG7voCrpKlg8sW6E0zu8dxUficOvxjW8VbpgPmNiDsnOdK7Ew');"
+            style="background-image: url('/images/downloaded_3aff16898007.avif');"
           ></div>
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
           <div class="absolute bottom-4 left-4 right-4">
@@ -32,7 +32,7 @@
         <div class="snap-center shrink-0 w-[240px] h-[360px] relative rounded-xl overflow-hidden cursor-pointer group">
           <div 
             class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBEqnxLQ9v20GYUkl2Oan_MYDZ_OdfD8Qt_gl_BcTbS7qWEdBpw51ZbEX6JvP9c6rdv89EbYS7Hu2FRl37DJ4RpcM58wH3D4D5bqLKFm36gacDNF2xqUDWgvnUqBc-UdWErbpmP7lRleh6JXj9m9Te3gzdUDihcbxYDH1igVXcKYXa4gjo16pGNgqeQz0NgVQsk-cLry8c5X9DmMid-n8zca6rHGf-21WG1vXOBgRzRhdOBp-04M_AK9MSSsvSIiu8YfVp0qPxSBSk');"
+            style="background-image: url('/images/downloaded_fc2139c08e07.avif');"
           ></div>
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
           <div class="absolute bottom-4 left-4 right-4">
@@ -50,7 +50,7 @@
         <div class="snap-center shrink-0 w-[240px] h-[360px] relative rounded-xl overflow-hidden cursor-pointer group">
           <div 
             class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCVIkI5HSFp8_npZI9Und-QdYefc7Rxc9BxvhLOlz8sxwK7j0RhpYO-o4pXtQmM00fFis2vNhgZUdG04Zb5i5NiHcsuYMraGpzBLghTcM0aCxRuOcbu0_GB6L2c3FTSEw2uuEtFX516KrKsLIvQ-KJzZlAfKWbzyAklV7IXPRKIcpykyD-g9Rsku4LIBTP18TmTpBiV29X261qvIwY7Y83bDRHKOt3SsHr792xRar5qBo_5IczVlBoAJvBXaw8ejZxqFb_hfQVuxa0');"
+            style="background-image: url('/images/downloaded_de06e9b5cd4b.avif');"
           ></div>
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
           <div class="absolute bottom-4 left-4 right-4">
@@ -68,7 +68,7 @@
         <div class="snap-center shrink-0 w-[240px] h-[360px] relative rounded-xl overflow-hidden cursor-pointer group">
           <div 
             class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAZmRTOnD-1MY-E6axQeH0bbHHLi4t0WTLE7UrL_YAfrmcYzUXT3lBFJdYm2uHTeY8H5oj2EqwvWqUfHSJAe5DqWy1G_P3X8JNzJ5GJjWxL0azsL3cZ51mggbBUYO8dAro39rTs7-3b5BYka0nhhthzgrE88MQDmR9yNPz6g6FvaObnhZYARh3sBjRW8xmlX_Ybs0Lh9z_h1saMrzT70NNGxolOszATxr8bqniJItqypl5MbI4ceyDovSoVtjke6cd-9u_Jwq0it3Q');"
+            style="background-image: url('/images/downloaded_93e79b6fbd23.avif');"
           ></div>
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
           <div class="absolute bottom-4 left-4 right-4">

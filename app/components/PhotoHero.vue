@@ -3,7 +3,7 @@
     <!-- Background Image with Overlay -->
     <div 
       class="absolute inset-0 z-0 bg-cover bg-center" 
-      style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBwItQtSsBvtQI-z1zLb-GAs2w6oZs7-6YNXaL5tCDf_lKxtGZLSWVdcjW4xw_MXy81UNzZsTVnY1b0GnBVvu27xYabDb6QAxhHF-ZwEQIP0Fwe5kaneZRfCAuLunzWI2vwLsucpYpx1yeclshzD7VtnrGBh_dpR42gkwhL2VjsxIKNwrFWbK3hNuCvZqVZCb33EKMXIHNe-2XYDsWUgNbkLddwC4SdKT6M0TX1fEHYc7OR-NqSYRBiqCWGWGWeBDdFZ1ku-5oOSIE');"
+      style="background-image: url('/images/downloaded_10a9271d6ee5.avif');"
     >
       <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-background-light dark:to-background-dark"></div>
     </div>

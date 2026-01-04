@@ -31,7 +31,7 @@
                 <div class="absolute top-3 right-3 z-10 text-white drop-shadow-md">
                   <span class="material-symbols-outlined fill-current hover:text-primary transition-colors">favorite</span>
                 </div>
-                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Hiker standing on Little Adam's peak overlooking green mountains" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDnsoqwxEkmR6Skkg8zCk0HglR-wxJ8Tlz-BGW_Kg4em5wYprJM27XxNvWW_YTKC8gtbdpxWna0iEFr3KT2tVKsr71OwiNiCGpHn2RBuXDpAw3xN6LLSOSfsudN83zhBtJPjbPA6YKUK8kGoXRmN4GVcVw6Um_KZJIYp6SiRe9hqA-itGCYsQLaGqhIEqs4YLlxMZlx9GHmP6P6x7_Lj3ZVpxEHE4UjpvYXKcy3LJ4a2bBmfANE_UYUam2b-7--jAQi2Pg06aLzoW0');"></div>
+                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Hiker standing on Little Adam's peak overlooking green mountains" style="background-image: url('/images/downloaded_f042208332ff.avif');"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
                 <div class="absolute bottom-4 left-4 right-4 text-white">
                   <span class="bg-primary px-2 py-0.5 rounded text-xs font-bold">$15 / person</span>
@@ -54,7 +54,7 @@
                 <div class="absolute top-3 right-3 z-10 text-white drop-shadow-md">
                   <span class="material-symbols-outlined fill-current hover:text-primary transition-colors">favorite</span>
                 </div>
-                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Traditional Ayurveda massage setting with oil and flowers" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDXrR2W1PHS9bfslYd88mqxOjnVOXNe7GeZQ96Vkr3U5ZSwd5PMcUOW4jrO4WBqb70p5rrTpcb_rL0dtXjWojJVIUny-kq0qRaPGKE60DUlF6zW6xfwf4fcpK_DDMDDL1RX1TB7t5n11hiXLMLEGcg1ryRrm8B_qWIakq02fFOvP0vFeaAr2mRZqFz0yIMzwtQn-nq9wwwaJcz6DovPCKaifpItRZw6EtnRicNFjJk0d2DMyUjWa55FX8b7-ymrE-njySKkxrI31ck');"></div>
+                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Traditional Ayurveda massage setting with oil and flowers" style="background-image: url('/images/downloaded_7d353ffcc591.avif');"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
                 <div class="absolute bottom-4 left-4 right-4 text-white">
                   <span class="bg-primary px-2 py-0.5 rounded text-xs font-bold">$45 / session</span>
@@ -77,7 +77,7 @@
                 <div class="absolute top-3 right-3 z-10 text-white drop-shadow-md">
                   <span class="material-symbols-outlined fill-current hover:text-primary transition-colors">favorite</span>
                 </div>
-                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Leopard resting on a tree branch in Yala National Park" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDwVwvIjEHEuZmG0GqeXBnB0OJe08eM6D0X73TQiM8D95AJxgGq8tTqNh5b6WrbezakH3_wecpI82KghGxJdXQXAFsHkDdDrPPSSjdJKGLr68GWLHslAWwYbcghwi9dcKQiCXASokFSgw_BGHgKklxWWG2xhMW48-XAVyVzwf8ZsgL0X26Rl3cyCsQGB2EdWqq8C-SkDh12URRhiU4lFSl6shjnFz9gPTfCCAfH6KOQ-QGpQE9bpTcdD8eXMPfQlzxGS7wx3pN7KJI');"></div>
+                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Leopard resting on a tree branch in Yala National Park" style="background-image: url('/images/downloaded_27e8c35d5c2c.avif');"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
                 <div class="absolute bottom-4 left-4 right-4 text-white">
                   <span class="bg-primary px-2 py-0.5 rounded text-xs font-bold">$60 / person</span>
@@ -100,7 +100,7 @@
                 <div class="absolute top-3 right-3 z-10 text-white drop-shadow-md">
                   <span class="material-symbols-outlined fill-current hover:text-primary transition-colors">favorite</span>
                 </div>
-                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Surfer catching a wave in the ocean at sunset" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBvdeSi7ohp8s7ZrnNiUEvaINsmK1uMz2QoIQj1ueedra-r3HGWSLRlMpSJS--Sk_QExlpRDfEQP1d_Qakm9jRiHg5hAQEzL6kMXRAJDKXIcZfq902uWFQnkp7V9ioFym12JWqsD0GNDOoE0YCx4AmbuYr7kkVgQrp5aNWe9UZ_HCe_C3Vee3r8fvc3psbdMp_oBiL6xZC3IR8dhYLoXheXa7k8dc-x_7m_Rl44Bi1qZnRmbFi_zyv9b2OCI90WkitrIplSwdql528');"></div>
+                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Surfer catching a wave in the ocean at sunset" style="background-image: url('/images/downloaded_e4fa93d74062.avif');"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
                 <div class="absolute bottom-4 left-4 right-4 text-white">
                   <span class="bg-primary px-2 py-0.5 rounded text-xs font-bold">$25 / lesson</span>
@@ -123,7 +123,7 @@
                 <div class="absolute top-3 right-3 z-10 text-white drop-shadow-md">
                   <span class="material-symbols-outlined fill-current hover:text-primary transition-colors">favorite</span>
                 </div>
-                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Ancient Sigiriya Rock Fortress rising from the jungle" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJ_3TLVLVxElytdFekD_T02CFH6Ymq-kAFgigbT-nGIBJlwZavA0mC-JJy_gjUqGosO0EYTL69qniYqGKHuyePadbfM3Je7WbjGAllF79_lAXAAq_er4WKwJSWPEs3J0YT9Vw9t1fwzjHWxWFpukGfF0pTXf2JnTZcbuRPI0584z46QLlGstwPfRpTZ_ryMaAvmtBzYodQ_ZbijUos5nnq6czZpCScfs7TF0zkeB-Luei-1g8_ur__joXEboO6wXH0jHBO1W7xV4E');"></div>
+                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Ancient Sigiriya Rock Fortress rising from the jungle" style="background-image: url('/images/downloaded_b6f84a555858.avif');"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
                 <div class="absolute bottom-4 left-4 right-4 text-white">
                   <span class="bg-primary px-2 py-0.5 rounded text-xs font-bold">$30 / entry</span>
@@ -146,7 +146,7 @@
                 <div class="absolute top-3 right-3 z-10 text-white drop-shadow-md">
                   <span class="material-symbols-outlined fill-current hover:text-primary transition-colors">favorite</span>
                 </div>
-                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Blue train passing over the Nine Arches Bridge in Sri Lanka" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBpTs2SZLiaF3mZZZ1R7RM-6e-6oMGlTT6D-vm8cxpNNsbb2KBp1Op0KA4e2i79u6uYLlOYeuHMvypZk5BpMCJVJ64dC2SmuabjYxsUFBwEhfOzI9UTgPyoQqbpa0enftxI7aQ0h90hypnMIvBwm3UeNkdL7D5G1kEzEBvYXOL6TIb_4lXcbXXTN-ZsEu5UCMAX4ieNNY3UPKH-g2UrDj-YXNpyDFC_G8M4E0tfH3aYQKcW0G8uFXNMD27v4CC1Ah8WH4nf5JHFphA');"></div>
+                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Blue train passing over the Nine Arches Bridge in Sri Lanka" style="background-image: url('/images/downloaded_57d1237dafa2.avif');"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
                 <div class="absolute bottom-4 left-4 right-4 text-white">
                   <span class="bg-primary px-2 py-0.5 rounded text-xs font-bold">$3 / ticket</span>
@@ -169,7 +169,7 @@
                 <div class="absolute top-3 right-3 z-10 text-white drop-shadow-md">
                   <span class="material-symbols-outlined fill-current hover:text-primary transition-colors">favorite</span>
                 </div>
-                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Group of wild elephants gathering near water in Minneriya" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDvJ9hYaR8in_S94eBRD9sn68n_bb8fMqfrjoacydkTUZUigdAIY2bjTcf0545W1gJv2gAXLDnduHw2TMNbOMws23O_lXTRi3SmkPqrcmgGaiygH1PP335nVUbUFea9qYDUG7vg1CXMD9AhCOVMRKgKYy72AfU-Tn2V8dkI175HHAc8P6wl-eNaJcsLXfB5OO7-L1PZfnNSSnZtSrbBn81eM3CNNMw3gqHoeh7mN08Eld1yFOoOevP5Ldek9IX3YxQ8ztAMR2DC774');"></div>
+                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Group of wild elephants gathering near water in Minneriya" style="background-image: url('/images/downloaded_dd64a547d93a.avif');"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
                 <div class="absolute bottom-4 left-4 right-4 text-white">
                   <span class="bg-primary px-2 py-0.5 rounded text-xs font-bold">$55 / person</span>
@@ -192,7 +192,7 @@
                 <div class="absolute top-3 right-3 z-10 text-white drop-shadow-md">
                   <span class="material-symbols-outlined fill-current hover:text-primary transition-colors">favorite</span>
                 </div>
-                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Sri Lankan spices and curry dishes in clay pots" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAXl0uVam2rk6vPwS9NbxSwks-DoSzpjIINU31VZ83PUitoeHvnIUxvRaIhylPFZ5gSmUyG9E2EywbJ7Pzi4lx-2-M7Za3jxU9xn6NlWcYgJxqz5iZHBbBOnQeRjlVVLR0V_sTuWssN6GkvMnGNXGnHWbb1JGiO0XbAjTWJaANLAtSoqhy6rqRWTnepVFYUGECdd9t-P2nmkv9Yeh5Nqs6Hs1W5UY_lQrRyaqrUv4ge45SL6JXi7NcyKNeAcdHh66w1YcJ0xP-KQLY');"></div>
+                <div class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" role="img" aria-label="Sri Lankan spices and curry dishes in clay pots" style="background-image: url('/images/downloaded_38dcb2f67ab0.avif');"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
                 <div class="absolute bottom-4 left-4 right-4 text-white">
                   <span class="bg-primary px-2 py-0.5 rounded text-xs font-bold">$20 / person</span>

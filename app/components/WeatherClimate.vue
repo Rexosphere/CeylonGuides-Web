@@ -22,7 +22,7 @@
     </div>
     <div class="relative w-full aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden shadow-xl group">
       <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all"></div>
-      <img class="w-full h-full object-cover" alt="Illustrated map of Sri Lanka highlighting different climate zones and monsoon directions" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR5GsNPEQBVViE67PWJ3jwFfHrdIx4OrBqx2wyNG-qu8zNVNVdOFrxX3XvrMGudI5tBQhcpSD4Biy4QcwpYC77kDHbYvYHaBinidMEhmgpoMDXHv-e8HHqunRQsQVJV8Ju-SdgMf5nTshKeeoZngcNWX1vRt2Jdof59SK5V1ZqwtsuccUjwpgqC6aUNDjvcVl6QgMyHUXXYGQXPnvidbHDU4xmvrJnQMkxW-L4_zLLV-Tm4Uz-TzJgLVzAt5NXQs0u83J4m3sWgOo"/>
+      <img class="w-full h-full object-cover" alt="Illustrated map of Sri Lanka highlighting different climate zones and monsoon directions" src="/images/downloaded_0a1bc3e20e1e.avif"/>
       <!-- Interactive Map Tooltip Simulation -->
       <div class="absolute top-1/4 left-1/4 bg-white dark:bg-surface-dark p-3 rounded-lg shadow-lg max-w-[140px] animate-bounce">
         <div class="text-xs font-bold text-text-muted uppercase">Central Highlands</div>

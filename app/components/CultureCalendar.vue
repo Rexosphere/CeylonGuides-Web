@@ -10,7 +10,7 @@
       
       <!-- Event 1 -->
       <div class="group cursor-pointer bg-white dark:bg-[#2c1e19] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-[#e6e0dd] dark:border-[#3a2d28]">
-        <div class="h-32 bg-cover bg-center relative" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB4wkY9LRvOUBklIix-sjjCDUbE3ygs2ghnvSbbl7Ntq3xbGJBY43Rk-rqd87gD_ueth8KdhDyb18IjvlJ9js_g9SZIKz5gPVQ8hQC7-LRd0E371BiBa7jIjswsbYxOkTSQ420Kg1ZtUzpUoCRmOGWKIqNLw23-wNBj94bKnM3oxRkaK8_nBKZ6b491YEvUUPq-iy2mXOYmIO4Cd9RymzSJ3Gc0jeMZV0yxuellZlHZSBDrbIhrcQSaFt6N233PHmCM9w2gumpgQ6s");'>
+        <div class="h-32 bg-cover bg-center relative" style='background-image: url("/images/downloaded_9cbc6e3f96ba.avif");'>
           <div class="w-full h-full bg-black/30 group-hover:bg-black/10 transition-colors"></div>
         </div>
         <div class="p-5 relative">
@@ -25,7 +25,7 @@
 
       <!-- Event 2 -->
       <div class="group cursor-pointer bg-white dark:bg-[#2c1e19] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-[#e6e0dd] dark:border-[#3a2d28]">
-        <div class="h-32 bg-cover bg-center relative" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBDY5hx4_fOE53ORgyoIdHjw9TFjtGPf_kvfZddUeSR4WZSa7kqQqebQ-y0P62-3AtQYaojsaidvcQhRN5bCqGWHEVBCONVNbV53ymQzd94xizZ8Ajw6dhaJtczocR3TC43Zsw4EBxYZ6_TZAOhiSto3w2z9s7wSNux44jOhyg_emPvYfF6e99wwuCim1_Kk2xRhdUcuxayI4BN7xZmdHVKZTSRJhOQo7di-AQejqysflf2kVuvJlD1ZduGgZf3scC9G3vH3TjVLBA");'>
+        <div class="h-32 bg-cover bg-center relative" style='background-image: url("/images/downloaded_83bd3f2348d8.avif");'>
           <div class="w-full h-full bg-black/30 group-hover:bg-black/10 transition-colors"></div>
         </div>
         <div class="p-5 relative">
@@ -40,7 +40,7 @@
 
       <!-- Event 3 -->
       <div class="group cursor-pointer bg-white dark:bg-[#2c1e19] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-[#e6e0dd] dark:border-[#3a2d28]">
-        <div class="h-32 bg-cover bg-center relative" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAjZdWBrQ-ZjWwgxijyAlA5Tf5mljgZ2JON-UBe3igrcNs0FfOqBwGPfHfa04-Vx2QtIWNXhB-wPL8_-IVGbY6RRmuGoahSXWD2EDAIjDy17tT_n1B2PO9aoABdfsMjNYw-Mp6W7kUTVzqSf6m8-cbMXWv2tizMfSc-z0TsFn5BenVxyl_Pwnc-nx8TstRQd7bYjfkRnd3QufUPev6a5gG3qDumg7ehsO678Fo0cchv1_O9BcPyvi_DCuERUEGRkS_0i-0JYom10uM");'>
+        <div class="h-32 bg-cover bg-center relative" style='background-image: url("/images/downloaded_1647ac3ed391.avif");'>
           <div class="w-full h-full bg-black/30 group-hover:bg-black/10 transition-colors"></div>
         </div>
         <div class="p-5 relative">

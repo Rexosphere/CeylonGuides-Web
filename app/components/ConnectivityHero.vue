@@ -3,7 +3,7 @@
     <div class="@[480px]:p-4">
       <div 
         class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4 relative overflow-hidden" 
-        style='background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBYYJ9trZuFZ_IsCL00aq09Ay48OQg5irwAleyw0Qx8Xb_lxyyJmrDTC_qePwgL-lq3Qm0_AeqF2RgleURwzdSvdfIBK5rvjAgiGxdWH4LAPT-sU8EpPSdgj9hruL83dSbMhovKq-c0ILXDKt_Oh9wnbSysK7XBiTPBBs5p2JfGChMzgzw5oc1RrHFXVcXs5Po4CLVph6Aph9ukjhkIR1FV1jodv87slNsGKgf-mcLeuDegCxmlis_Wje8gezLePdxBkeQd89PqOqo");'
+        style='background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%), url("/images/downloaded_e8ec4d0aae55.avif");'
       >
         <div class="flex flex-col gap-4 text-center max-w-[720px] z-10">
           <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em] drop-shadow-md">

@@ -3,7 +3,7 @@
     <div class="relative w-full rounded-2xl overflow-hidden h-[500px] md:h-[600px] group">
       <div 
         class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
-        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDhcrMFo67D3onyHP2z63JkO21r1TF807XjvfeUMK3sWMVHKZq8AMlrenCYOZEyQOXVU6YCOGIPJELBHOrIVa8FdVCHN9egdsUBBBuwDlp8AJH4NXKnYnRvqcOOcr7EkKKwVZ2DalEdiB7zZXskehU7JdkNCDnNjqV4T9d4aIITTM084z0Mmo3yLBz5KYIxMGHeggS9p39M97aFlNL75Q991n339rmyx2znOLFNltdAnJfNjrdWE19qYyOq66ot_j2-orITQpFYMfw");'
+        style='background-image: url("/images/downloaded_6f4be875f1ff.avif");'
       ></div>
       <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
       

@@ -36,7 +36,7 @@
         </div>
         <div class="lg:w-2/3 h-[400px] lg:h-auto min-h-[400px] rounded-2xl overflow-hidden relative shadow-lg group">
           <!-- Map Placeholder Image -->
-          <img alt="Map view of Colombo with ATM pins" class="w-full h-full object-cover filter brightness-[0.85] group-hover:brightness-100 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmr4weqyYEReVza1MF3Tz8m4OtDW4qCqUdhFWsTWcMeqzE2xzPAe4hhonQWq_d5nQ_1CRYEgH7HJclZubS0vgvYaetjU8kciLR5Td-lvHLmbKdhEFi7wpN5QI8OYZBCsQkcaVRSNfcRePgdT2PqMH3Ogee1lGchvk4xgNWYnCSp576BMwUn5vqtD-vX9ment1K10XQiM-LFzaMPnxgnGQ8fz6wf8QzPxxt96CUpl_ma6C-J4hL7_VKQMJmyBq5WQBc2x1SE3WkhYo"/>
+          <img alt="Map view of Colombo with ATM pins" class="w-full h-full object-cover filter brightness-[0.85] group-hover:brightness-100 transition-all duration-500" src="/images/downloaded_00086a518fc6.avif"/>
           <!-- Decorative Pins -->
           <div class="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center animate-bounce">
             <div class="bg-white dark:bg-surface-dark px-3 py-1 rounded shadow-md text-xs font-bold mb-1 text-text-main dark:text-white">Commercial Bank</div>

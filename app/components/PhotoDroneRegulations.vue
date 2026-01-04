@@ -47,7 +47,7 @@
       
       <div 
         class="w-full md:w-1/3 aspect-video md:aspect-square bg-gray-800 rounded-xl bg-cover bg-center border border-white/10 shadow-2xl" 
-        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtwCp4ivQJTZPdbVjYmyKtx9e6uFqdSQmDTGozFUbiFfvAtqxfKuNPtkqfZ4uasBCxkCZ9EpBNaOFyvwTQ8kCcvtxZYEBn9g04PyNnXwj3KYevKpe6G0eOj8X19HA2ZsHbJjXZKIpdgOId5ZPzW-wLt-488fUd_dNFk5Hq7B6d83jEceD38Fkt_kUt69S6bYMj5MhsKpFSuE_s6UQ2jwqzOAH5uh-blEUkpWFWCEketVHs84AAYwC-606a83aoQ6kBWkWNWi-xCOQ');"
+        style="background-image: url('/images/downloaded_bf035e5d1aaa.avif');"
       ></div>
     </div>
   </div>

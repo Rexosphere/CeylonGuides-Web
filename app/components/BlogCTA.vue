@@ -27,7 +27,7 @@
         <div class="absolute inset-0 bg-gray-300 dark:bg-gray-600 rounded-2xl rotate-3 scale-95 opacity-50"></div>
         <div 
           class="relative h-full w-full rounded-2xl overflow-hidden shadow-2xl bg-cover bg-center" 
-          style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC5QagPNrsv2CneI24lpzxu9F_SFuveo0xRVl9qyK4-fO8rAjUQLa0RAJP4AWrZtRZuUBEOx8koqmOw_kvWwTVJemrIYuOKWR_P6MKRLAB2CiuEbTFm42jzDK7ImBrk8zNPweVTEjgtvYkISelYpTzEKlb6FOZshQj4qtKx6NmbQirDAjMhzmT1Atw49sCF-NZfTo8Bvi081wkNevczpYr0tKJy0CsKHv_ldT9GCDN-bLKIk5IxvKKnwzHaiJRL_cyF-TP-65ZfJCw");'
+          style='background-image: url("/images/downloaded_6cf5e18d1a6b.avif");'
         >
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
             <div class="text-white">

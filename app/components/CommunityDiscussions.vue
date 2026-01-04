@@ -8,7 +8,7 @@
         <div class="flex flex-col items-center gap-1 min-w-[40px]">
           <div 
             class="w-10 h-10 rounded-full bg-gray-200 bg-cover" 
-            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAsLbsDPPo7Nr42lIOBrMac8YuHjCCOinC61dTmGdd9j7MGnrjeKtWN2owmhz2XKWDeDKPPM-drUzyd47SKzJKV03WNymjiPd09PHyIC41gGLXfdlLQRavGdM-_yD8OXuHSTvY-O4uPqu6mZmg-cEb-T8TDBFs3RCBi7JZTiBLypXeGBfQuIJtA0SXGujNSz1GH_GSE_Uv83A3I7mp2S5gG-DWZmppsH2srcF42RK4EuzUJxT1e4yJ82X0MnAeT2PIsbdPz3Oo40co")'
+            style='background-image: url("/images/downloaded_78b24ca8ff52.avif")'
           ></div>
         </div>
         <div class="flex-1">
@@ -44,7 +44,7 @@
         <div class="flex flex-col items-center gap-1 min-w-[40px]">
           <div 
             class="w-10 h-10 rounded-full bg-gray-200 bg-cover" 
-            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCQKbh_ZkK7GDCIUZTXU1AjTQe2EJQc_q3769fizN-oKBTrcbkN9VmKrCIpqZIzSOkG06c3vlACi_BxlABLg7osbswfxyB0ex44vbyl6ttb_T6dqA2YwZDpSXkmwdOdPjgxUosStIoJfPUwqtSuJBi4TnBcS85npDPLb6S_6_rxOI5duzxw8dXqgrQLeuGXYFQmQ68LPUvG6PjIAEbHbw8PwZajzm9xtLxBGUzA4Up9PRNvwAvdz-4sCTTclvr54rZR_abTSzGTKQ4")'
+            style='background-image: url("/images/downloaded_4024a3e6147a.avif")'
           ></div>
         </div>
         <div class="flex-1">
@@ -60,7 +60,7 @@
           <!-- Attached Image Preview -->
           <div 
             class="mb-4 rounded-lg overflow-hidden h-48 w-full md:w-2/3 bg-cover bg-center" 
-            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBf6W4e9Qlt4ux-sjERVAaAxDa_utHM0IlSjOfQe8BL0mUa7p6jOccTjZVvPeHfX0IK26g-C02c1RnluNQhMNiIQYoCNjnTwmqMcoGvlx6d4O3qklx2S0J6o8bqMn21nzARHV5DxVh-30eu1aEkJop0WJPuEHo3SOp3wjsW_n6mtvzNJ-EXCbeUvcJz2LkPf7Zq9Lq98d_j16dI8a-1pd37NPNFO2iYlnrennB8bRcaBJSt7VNc_x0ipZ0XKyx-L2MEbdwhQUM2DaY");'
+            style='background-image: url("/images/downloaded_2a958f931436.avif");'
           ></div>
           <div class="flex items-center gap-6">
             <button class="flex items-center gap-1.5 text-text-subtle hover:text-primary transition-colors text-sm font-medium">
@@ -86,7 +86,7 @@
         <div class="flex flex-col items-center gap-1 min-w-[40px]">
           <div 
             class="w-10 h-10 rounded-full bg-gray-200 bg-cover" 
-            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCfUzSq--dFWFxxoeLrgW7a2Gg6j225YjOPc4RuK2UWP_HAOzTweyu1p6ItS2CPGNOWRDC6uhmtilG5Gb3aI6yTsGInXdJHQjPzd2FItdiRM2JKpl6RbNl5PvnTH7jt5jbqfZR8s6v8cJkA3eswQPzCJJCmgY9Wgtp2yhT_cK_8n4oiAQdMZUDk-HzaJtg1cWFOPdUbUXkExhu0FLIpj8l9pEtXzhycAu8v50TP0D-mbWTB2r2F7IDW6Hsh6W4OxaQpUmvSTb3GELA")'
+            style='background-image: url("/images/downloaded_516d80bf6b62.avif")'
           ></div>
         </div>
         <div class="flex-1">

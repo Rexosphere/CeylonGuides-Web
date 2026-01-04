@@ -5,7 +5,7 @@
     <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-blue-50">
       <div 
         class="absolute inset-0 bg-cover bg-center opacity-60" 
-        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAsEk-eE1S_NQaloqUMcX7o48fH9uNtOCM-reAs2SziCjzjPeUzKyJQw2O1TnwZF73M3Oma6ktk4ViA_WBcJJD2VuciRS5zs-SPkIBwOqW8N4VTTcsHpnmaNmApblJwpT_pysrfFUJRkVMjEJKhaKhHMKOaVvqtd0kLa25tErJ-8wGguCgPeQEj6UJDKlAxegRAjAIJe-Doizky-9YduQ8ndmNHJbFAXTNVJik59OkK4noUrUyBqjIW8x89zS8soyTOyQNkjdA-pu8");'
+        style='background-image: url("/images/downloaded_9d8945823e78.avif");'
       ></div>
       
       <!-- Pin 1 -->

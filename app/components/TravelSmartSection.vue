@@ -34,7 +34,7 @@
         <!-- Image Grid / Feature -->
         <div class="lg:col-span-7 order-1 lg:order-2 relative">
           <div class="relative rounded-[3rem] overflow-hidden shadow-2xl group">
-            <div class="aspect-[4/3] w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Blue train moving along the Nine Arches Bridge in Ella surrounded by dense tea plantations" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB1fliR7-M_tkFML1WjxbrReVPAefPkbogYH5jNYoqxc-wyyITxrxPvXDM8VrSlcadDIVZHho54L0UsbXHAO2HsYnR2GSSFRBJ28pTAebz9ntqjzBq-r5xs6ZC7715dPN6rVj_Eq-oIJ3ALvcj5Wq-2ulszN2b662spmtn8deXnaZOUNIG0gvUqiJU0ALYxYCe1cnRz8a3YhBHQgb-2ab8Tfvc2sICqKGtYfAOexuRrBrkMAgAVMPATvHhKgB7O4vZmnWN1zy_iqTG6');">
+            <div class="aspect-[4/3] w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Blue train moving along the Nine Arches Bridge in Ella surrounded by dense tea plantations" style="background-image: url('/images/downloaded_9f15b6f18e06.avif');">
             </div>
             <!-- Floating Badge -->
             <div class="absolute bottom-6 right-6 bg-white dark:bg-gray-800 px-6 py-3 rounded-full shadow-lg flex items-center gap-2">
