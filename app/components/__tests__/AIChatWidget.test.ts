@@ -27,8 +27,10 @@ describe('AI Chat Widget Logic', () => {
             const input = '<img onerror="alert(1)" src="x">';
             const escaped = escapeHtml(input);
 
-            expect(escaped).not.toContain('onerror=');
+            // Escaping converts special chars but 'onerror' text remains (just not executable)
             expect(escaped).toContain('&lt;img');
+            expect(escaped).toContain('&quot;');
+            expect(escaped).not.toContain('<img');
         });
 
         it('escapes ampersands', () => {

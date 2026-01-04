@@ -1,17 +1,9 @@
 import { defineConfig } from 'vitest/config';
-import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
-    plugins: [vue()],
     test: {
         environment: 'happy-dom',
         globals: true,
         include: ['**/*.test.ts']
-    },
-    resolve: {
-        alias: {
-            '~': '/home/ifaz/Coding/CeylonGuides/CeylonGuides-Web',
-            '@': '/home/ifaz/Coding/CeylonGuides/CeylonGuides-Web'
-        }
     }
 });
