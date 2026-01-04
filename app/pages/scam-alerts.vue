@@ -179,67 +179,22 @@
         class="flex-1 relative bg-gray-200 dark:bg-[#1a1614] overflow-hidden"
         :class="[viewMode === 'map' ? 'block' : 'hidden md:block']"
       >
-        <!-- Map Background Image -->
-        <div 
-          class="absolute inset-0 bg-cover bg-center opacity-80 dark:opacity-40" 
-          style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBye3UqYEOFRFviYlfu1qfGwERk4DvZ7viiSrjotNb6TgCxVxEkt39moOOpk_n8b1P6gQlpieBykVTDhXAIliOY347015xp638Tt93UMGfMa-ZotbaDyrpYqcnH3kfW4Wv2flmN7A5EChkvCBoIBKTDOx4Tz_wqz25eNjNPo6Xyi6J0JSjOytQeabJrkS-jnjg-fUL0x57ePxii6Dcgs2-fM6MVzOMUf3XQ0z1CZgjQRgvtfSwNVdD9dLyYQMkMizcyuTjFWq_PHmYE'); filter: grayscale(100%) sepia(10%) hue-rotate(180deg) contrast(90%);"
-        ></div>
-
-        <!-- Map Controls -->
-        <div class="absolute top-4 right-4 flex flex-col gap-2 z-10">
-          <button class="size-10 bg-white dark:bg-background-dark rounded-lg shadow-md flex items-center justify-center text-charcoal dark:text-white hover:bg-gray-50 transition-colors" title="My Location">
-            <span class="material-symbols-outlined">my_location</span>
-          </button>
-          <button class="size-10 bg-white dark:bg-background-dark rounded-lg shadow-md flex items-center justify-center text-charcoal dark:text-white hover:bg-gray-50 transition-colors" title="Zoom In">
-            <span class="material-symbols-outlined">add</span>
-          </button>
-          <button class="size-10 bg-white dark:bg-background-dark rounded-lg shadow-md flex items-center justify-center text-charcoal dark:text-white hover:bg-gray-50 transition-colors" title="Zoom Out">
-            <span class="material-symbols-outlined">remove</span>
-          </button>
-        </div>
-
-        <!-- Pin: Kandy (Active/High Risk) -->
-        <div class="absolute top-[45%] left-[48%] transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer z-20">
-          <div class="relative flex items-center justify-center">
-            <div class="animate-pulse-orange absolute size-14 rounded-full bg-red-500/20"></div>
-            <div class="relative size-10 bg-red-500 rounded-full border-2 border-white dark:border-[#221510] shadow-lg flex items-center justify-center text-white transform transition-transform group-hover:scale-110">
-              <span class="material-symbols-outlined text-[20px]">person_alert</span>
+        <!-- Interactive Leaflet Map -->
+        <ClientOnly>
+          <ScamAlertsMap 
+            :scams="scamAlerts"
+            @select-scam="(id: string) => console.log('Selected scam:', id)"
+            class="absolute inset-0"
+          />
+          <template #fallback>
+            <div class="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-surface-dark">
+              <div class="text-center">
+                <div class="animate-spin size-8 border-2 border-accent border-t-transparent rounded-full mx-auto mb-2"></div>
+                <p class="text-gray-500">Loading map...</p>
+              </div>
             </div>
-            <!-- Tooltip -->
-            <div class="absolute bottom-12 left-1/2 -translate-x-1/2 w-48 bg-white dark:bg-background-dark rounded-lg shadow-xl p-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none mb-2">
-              <div class="text-xs font-bold text-red-600 mb-1">Fake Guide Scams</div>
-              <div class="text-[10px] text-gray-500">High activity reported in the last 2 hours near Temple of the Tooth.</div>
-              <div class="absolute bottom-[-6px] left-1/2 -translate-x-1/2 size-3 bg-white dark:bg-background-dark transform rotate-45 shadow-sm"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pin: Colombo (Tuk Tuk) -->
-        <div class="absolute top-[65%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer z-20">
-          <div class="relative flex items-center justify-center">
-            <div class="relative size-8 bg-orange-500 rounded-full border-2 border-white dark:border-[#221510] shadow-lg flex items-center justify-center text-white transform transition-transform group-hover:scale-110">
-              <span class="material-symbols-outlined text-[16px]">local_taxi</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pin: Galle (Gem) -->
-        <div class="absolute top-[85%] left-[35%] transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer z-20">
-          <div class="relative flex items-center justify-center">
-            <div class="relative size-8 bg-purple-500 rounded-full border-2 border-white dark:border-[#221510] shadow-lg flex items-center justify-center text-white transform transition-transform group-hover:scale-110">
-              <span class="material-symbols-outlined text-[16px]">diamond</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pin: Ella (Exchange) -->
-        <div class="absolute top-[60%] left-[60%] transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer z-20">
-          <div class="relative flex items-center justify-center">
-            <div class="relative size-8 bg-blue-500 rounded-full border-2 border-white dark:border-[#221510] shadow-lg flex items-center justify-center text-white transform transition-transform group-hover:scale-110">
-              <span class="material-symbols-outlined text-[16px]">currency_exchange</span>
-            </div>
-          </div>
-        </div>
+          </template>
+        </ClientOnly>
 
         <!-- Floating Action Button (FAB) -->
         <div class="absolute bottom-8 right-8 z-30">

@@ -1,52 +1,138 @@
 <template>
-  <header class="relative min-h-[90vh] flex flex-col justify-center items-center text-center px-4 overflow-hidden">
-    <!-- Background Image with Overlay -->
-    <div class="absolute inset-0 z-0">
-      <div 
-        class="w-full h-full bg-cover bg-center bg-no-repeat transform scale-105 transition-transform duration-[20s] animate-kenburns" 
-        style="background-image: linear-gradient(rgba(10, 61, 98, 0.3), rgba(45, 52, 54, 0.5)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuB_qzDllDNJvD480mVeA5gPWrd1aaVugj7JDwzfUQbk3CFFL5mVI1uH6vTg4vcnNNdOxZUyZLIPbved9BBveycTr8SjsRqHZ8dYXntjvF2Wq_x_y0jbN7JtFtIikSwRVOXY-FoPQgDO0GYmcQkvvXwlAM6oG9Z8hWCJwj5bT40MsIKgce2YaTjtZ3SQVzLDL3_crdAjwl5g3rPMHuWG1NHFRqzQxsmHus9YB5qDqvfplmEeN_HWuZlZ9KU9n3mLM4gK-ilMHzAU9Ks');"
-        role="img"
-        aria-label="Stunning aerial view of Galle Fort Lighthouse and coast in Sri Lanka"
-      >
-      </div>
-    </div>
+  <div>
+    <!-- Active Alert Banner (fetched from API) -->
+    <AlertBanner
+      v-if="activeAlert"
+      :type="activeAlert.severity === 'CRITICAL' ? 'danger' : 'warning'"
+      :message="activeAlert.title || activeAlert.description || 'Safety Alert'"
+      action-text="View Details"
+      action-link="/weather"
+    />
 
-    <div class="relative z-10 max-w-5xl mx-auto flex flex-col items-center gap-8 mt-16">
-      <div class="space-y-6">
-        <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-black text-white leading-tight drop-shadow-2xl">
-          CeylonGuide
-        </h1>
-        <p class="text-lg md:text-2xl font-light text-white/95 tracking-wide font-display max-w-2xl mx-auto drop-shadow-lg">
-          Your Trusted Virtual Tour Guide for Sri Lanka
-        </p>
-      </div>
-
-      <!-- Mission Chips -->
-      <div class="flex flex-wrap justify-center gap-3 md:gap-4 my-2">
-        <div class="backdrop-blur-md bg-white/10 border border-white/20 px-5 py-2 rounded-full text-white text-sm font-medium flex items-center gap-2 hover:bg-white/20 transition-colors cursor-default">
-          <span class="material-symbols-outlined text-accent-light text-lg">explore</span> Explore
-        </div>
-        <div class="backdrop-blur-md bg-white/10 border border-white/20 px-5 py-2 rounded-full text-white text-sm font-medium flex items-center gap-2 hover:bg-white/20 transition-colors cursor-default">
-          <span class="material-symbols-outlined text-accent-light text-lg">shield</span> Stay Safe
-        </div>
-        <div class="backdrop-blur-md bg-white/10 border border-white/20 px-5 py-2 rounded-full text-white text-sm font-medium flex items-center gap-2 hover:bg-white/20 transition-colors cursor-default">
-          <span class="material-symbols-outlined text-accent-light text-lg">chat</span> Communicate
-        </div>
-        <div class="backdrop-blur-md bg-white/10 border border-white/20 px-5 py-2 rounded-full text-white text-sm font-medium flex items-center gap-2 hover:bg-white/20 transition-colors cursor-default">
-          <span class="material-symbols-outlined text-accent-light text-lg">local_florist</span> Experience
+    <header class="relative min-h-[90vh] flex flex-col justify-center items-center text-center px-4 overflow-hidden">
+      <!-- Background Image with Overlay -->
+      <div class="absolute inset-0 z-0">
+        <div 
+          class="w-full h-full bg-cover bg-center bg-no-repeat transform scale-105 transition-transform duration-[20s] animate-kenburns" 
+          style="background-image: linear-gradient(rgba(10, 61, 98, 0.3), rgba(45, 52, 54, 0.5)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuB_qzDllDNJvD480mVeA5gPWrd1aaVugj7JDwzfUQbk3CFFL5mVI1uH6vTg4vcnNNdOxZUyZLIPbved9BBveycTr8SjsRqHZ8dYXntjvF2Wq_x_y0jbN7JtFtIikSwRVOXY-FoPQgDO0GYmcQkvvXwlAM6oG9Z8hWCJwj5bT40MsIKgce2YaTjtZ3SQVzLDL3_crdAjwl5g3rPMHuWG1NHFRqzQxsmHus9YB5qDqvfplmEeN_HWuZlZ9KU9n3mLM4gK-ilMHzAU9Ks');"
+          role="img"
+          aria-label="Stunning aerial view of Galle Fort Lighthouse and coast in Sri Lanka"
+        >
         </div>
       </div>
 
-      <button class="group mt-8 bg-accent hover:bg-accent/90 text-white text-base md:text-lg font-bold py-4 px-10 rounded-full transition-all duration-300 shadow-[0_20px_40px_-15px_rgba(244,124,60,0.5)] hover:shadow-2xl hover:-translate-y-1 flex items-center gap-3">
-        Start Exploring
-        <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
-      </button>
-    </div>
+      <div class="relative z-10 max-w-5xl mx-auto flex flex-col items-center gap-8 mt-16">
+        <div class="space-y-6">
+          <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-black text-white leading-tight drop-shadow-2xl">
+            CeylonGuide
+          </h1>
+          <p class="text-lg md:text-2xl font-light text-white/95 tracking-wide font-display max-w-2xl mx-auto drop-shadow-lg">
+            Your Trusted Virtual Tour Guide for Sri Lanka
+          </p>
+        </div>
 
-    <!-- Bottom Fade -->
-    <BottomFade />
-  </header>
+        <!-- Live Stats Grid -->
+        <div class="grid grid-cols-3 gap-4 my-4">
+          <div 
+            v-for="stat in stats" 
+            :key="stat.label"
+            class="backdrop-blur-md bg-white/10 border border-white/20 px-6 py-4 rounded-xl text-white"
+          >
+            <div class="text-2xl md:text-3xl font-bold mb-1">
+              <span v-if="stat.loading" class="animate-pulse">...</span>
+              <span v-else>{{ stat.value }}</span>
+            </div>
+            <div class="text-xs text-white/80">{{ stat.label }}</div>
+          </div>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-wrap justify-center gap-4 mt-4">
+          <NuxtLink 
+            to="/safety-mode"
+            class="group bg-red-600 hover:bg-red-700 text-white text-base md:text-lg font-bold py-4 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center gap-3"
+          >
+            🚨 Safety Mode
+          </NuxtLink>
+          <NuxtLink 
+            to="/destinations"
+            class="group bg-accent hover:bg-accent/90 text-white text-base md:text-lg font-bold py-4 px-8 rounded-full transition-all duration-300 shadow-[0_20px_40px_-15px_rgba(244,124,60,0.5)] hover:shadow-2xl hover:-translate-y-1 flex items-center gap-3"
+          >
+            Start Exploring
+            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+          </NuxtLink>
+        </div>
+      </div>
+
+      <!-- Bottom Fade -->
+      <BottomFade />
+    </header>
+  </div>
 </template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
+
+interface SafetyAlert {
+  id: string
+  title?: string
+  description?: string
+  severity: string
+}
+
+// Fetch active high-priority alerts
+const { data: activeAlert } = await useFetch<SafetyAlert | null>(`${apiBase}/api/safety`, {
+  query: { severity: 'HIGH,CRITICAL' },
+  transform: (response: any) => {
+    const alerts = response.data || []
+    return alerts.length > 0 ? alerts[0] : null
+  }
+})
+
+// Live stats
+const stats = ref([
+  { label: 'Active Alerts', value: '0', loading: true },
+  { label: 'Restaurants', value: '0', loading: true },
+  { label: 'Phrases', value: '0', loading: true }
+])
+
+async function loadStats() {
+  try {
+    const [scamsRes, diningRes, phrasesRes] = await Promise.allSettled([
+      $fetch<any>(`${apiBase}/api/scams`),
+      $fetch<any>(`${apiBase}/api/dining`),
+      $fetch<any>(`${apiBase}/api/phrases`)
+    ])
+    
+    if (scamsRes.status === 'fulfilled' && stats.value[0]) {
+      const count = scamsRes.value?.data?.length || scamsRes.value?.items?.length || 0
+      stats.value[0].value = count.toString()
+      stats.value[0].loading = false
+    }
+    
+    if (diningRes.status === 'fulfilled' && stats.value[1]) {
+      const count = diningRes.value?.data?.length || 0
+      stats.value[1].value = count.toString()
+      stats.value[1].loading = false
+    }
+    
+    if (phrasesRes.status === 'fulfilled' && stats.value[2]) {
+      const count = phrasesRes.value?.data?.length || 0
+      stats.value[2].value = count.toString()
+      stats.value[2].loading = false
+    }
+  } catch (error) {
+    console.error('Failed to load stats:', error)
+    // Set defaults on error
+    stats.value.forEach(s => { s.loading = false; s.value = '—' })
+  }
+}
+
+onMounted(loadStats)
+</script>
 
 <style scoped>
 @keyframes kenburns {

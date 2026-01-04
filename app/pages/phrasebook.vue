@@ -184,23 +184,33 @@ import { ref, computed, watch } from 'vue'
 import type { Phrase, EtiquetteTip } from '~/composables/useApi'
 
 const searchQuery = ref('')
+const debouncedQuery = ref('')
 const selectedLanguage = ref<'sinhala' | 'tamil'>('sinhala')
 const selectedCategory = ref<string | null>(null)
+
+// Debounce search input (300ms)
+let debounceTimer: ReturnType<typeof setTimeout>
+watch(searchQuery, (newVal) => {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    debouncedQuery.value = newVal
+  }, 300)
+})
 
 // Get config
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
 
-// Fetch phrases from API
+// Fetch phrases from API (watches debounced query, not raw input)
 const { data: phrasesResponse, pending: phrasesPending } = await useFetch<{ success: boolean; data: Phrase[]; count: number }>(
   () => {
     const params = new URLSearchParams()
     if (selectedCategory.value) params.set('category', selectedCategory.value)
-    if (searchQuery.value) params.set('search', searchQuery.value)
+    if (debouncedQuery.value) params.set('search', debouncedQuery.value)
     const queryStr = params.toString()
     return `${apiBase}/api/phrases${queryStr ? `?${queryStr}` : ''}`
   },
-  { watch: [selectedCategory, searchQuery] }
+  { watch: [selectedCategory, debouncedQuery] }
 )
 
 // Fetch etiquette tips from API

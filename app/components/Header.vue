@@ -24,74 +24,87 @@
       <!-- Desktop Navigation Links -->
       <div class="hidden lg:flex items-center gap-6">
         <!-- Destinations - Direct Link -->
-        <NuxtLink
-          to="/destinations"
-          active-class="text-primary font-bold dark:text-white"
-          class="transition-colors text-sm font-medium"
-          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-        >
-          Destinations
-        </NuxtLink>
-
-          <!-- Activities - Direct Link -->
-        <NuxtLink
-          to="/activities"
-          active-class="text-primary font-bold dark:text-white"
-          class="transition-colors text-sm font-medium"
-          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-        >
-          Activities
-        </NuxtLink>
-
-          <!-- Photo Spots - Direct Link -->
-        <NuxtLink
-          to="/photos"
-          active-class="text-primary font-bold dark:text-white"
-          class="transition-colors text-sm font-medium"
-          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-        >
-          Photo Spots
-        </NuxtLink>
-
-          <!-- Shopping - Direct Link -->
-        <NuxtLink
-          to="/shopping"
-          active-class="text-primary font-bold dark:text-white"
-          class="transition-colors text-sm font-medium"
-          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-        >
-          Shopping Guide
-        </NuxtLink>
-
-        <!-- Essentials Dropdown -->
+        <!-- Explore Dropdown -->
         <div
           class="relative"
-          @mouseenter="activeDropdown = 'essentials'"
+          @mouseenter="activeDropdown = 'explore'"
           @mouseleave="activeDropdown = null"
         >
           <button
             class="transition-colors text-sm font-medium flex items-center gap-1"
             :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
           >
-            Essentials
+            Explore
             <span class="material-symbols-outlined text-sm">expand_more</span>
           </button>
           <Transition name="dropdown">
             <div
-              v-if="activeDropdown === 'essentials'"
+              v-if="activeDropdown === 'explore'"
               class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2"
             >
-              <NuxtLink to="/clean-dining" class="dropdown-link">
-                <span class="material-symbols-outlined text-lg">restaurant</span>
-                Clean Dining
+              <NuxtLink to="/destinations" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">map</span>
+                Destinations
               </NuxtLink>
+              <NuxtLink to="/activities" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">hiking</span>
+                Activities
+              </NuxtLink>
+              <NuxtLink to="/photos" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">photo_camera</span>
+                Photo Spots
+              </NuxtLink>
+              <NuxtLink to="/itineraries" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">calendar_month</span>
+                Itineraries & Planner
+              </NuxtLink>
+              <div class="border-t border-gray-200 dark:border-white/10 my-2"></div>
+              <NuxtLink to="/weather" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">wb_sunny</span>
+                Weather & Best Times
+              </NuxtLink>
+            </div>
+          </Transition>
+        </div>
+
+        <!-- Travel Tools Dropdown -->
+        <div
+          class="relative"
+          @mouseenter="activeDropdown = 'tools'"
+          @mouseleave="activeDropdown = null"
+        >
+          <button
+            class="transition-colors text-sm font-medium flex items-center gap-1"
+            :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
+          >
+            Travel Tools
+            <span class="material-symbols-outlined text-sm">expand_more</span>
+          </button>
+          <Transition name="dropdown">
+            <div
+              v-if="activeDropdown === 'tools'"
+              class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2"
+            >
               <NuxtLink to="/transport" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">directions_car</span>
-                Transport Assistant
+                Transport & Fares
               </NuxtLink>
               <NuxtLink to="/phrasebook" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">translate</span>
                 Phrasebook
+              </NuxtLink>
+              <NuxtLink to="/clean-dining" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">restaurant</span>
+                Clean Dining
+              </NuxtLink>
+              <NuxtLink to="/facilities" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">wc</span>
+                Facilities Finder
+              </NuxtLink>
+              <div class="border-t border-gray-200 dark:border-white/10 my-2"></div>
+              <NuxtLink to="/money" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">payments</span>
+                Money & Currency
               </NuxtLink>
               <NuxtLink to="/connectivity" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">wifi</span>
@@ -101,9 +114,9 @@
                 <span class="material-symbols-outlined text-lg">hotel</span>
                 Accommodation
               </NuxtLink>
-              <NuxtLink to="/money" class="dropdown-link">
-                <span class="material-symbols-outlined text-lg">payments</span>
-                Money & Currency
+              <NuxtLink to="/shopping" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">shopping_bag</span>
+                Shopping Guide
               </NuxtLink>
             </div>
           </Transition>
@@ -135,44 +148,41 @@
                 <span class="material-symbols-outlined text-lg">emergency</span>
                 Emergency Contacts
               </NuxtLink>
+              <NuxtLink to="/health" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">medical_services</span>
+                Health & Insurance
+              </NuxtLink>
               <NuxtLink to="/culture" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">temple_buddhist</span>
                 Cultural Etiquette
               </NuxtLink>
-              <NuxtLink to="/health" class="dropdown-link">
-                <span class="material-symbols-outlined text-lg">medical_services</span>
-                Health & Insurance
+              <div class="border-t border-gray-200 dark:border-white/10 my-2"></div>
+              <NuxtLink to="/safety-mode" class="dropdown-link text-red-600 dark:text-red-400 font-semibold">
+                <span class="material-symbols-outlined text-lg">emergency</span>
+                🚨 Safety Mode
               </NuxtLink>
             </div>
           </Transition>
         </div>
 
-        <!-- More Dropdown -->
+        <!-- Info Dropdown -->
         <div
           class="relative"
-          @mouseenter="activeDropdown = 'more'"
+          @mouseenter="activeDropdown = 'info'"
           @mouseleave="activeDropdown = null"
         >
           <button
             class="transition-colors text-sm font-medium flex items-center gap-1"
             :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
           >
-            More
+            Info
             <span class="material-symbols-outlined text-sm">expand_more</span>
           </button>
           <Transition name="dropdown">
             <div
-              v-if="activeDropdown === 'more'"
+              v-if="activeDropdown === 'info'"
               class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2"
             >
-              <NuxtLink to="/itineraries" class="dropdown-link">
-                <span class="material-symbols-outlined text-lg">calendar_month</span>
-                Itineraries & Planner
-              </NuxtLink>
-              <NuxtLink to="/weather" class="dropdown-link">
-                <span class="material-symbols-outlined text-lg">wb_sunny</span>
-                Weather & Best Times
-              </NuxtLink>
               <NuxtLink to="/visa" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">badge</span>
                 Visa Information
@@ -190,10 +200,6 @@
                 <span class="material-symbols-outlined text-lg">info</span>
                 About
               </NuxtLink>
-              <NuxtLink to="/blog" class="dropdown-link">
-                <span class="material-symbols-outlined text-lg">article</span>
-                Blog
-              </NuxtLink>
               <NuxtLink to="/contact" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">mail</span>
                 Contact
@@ -210,6 +216,15 @@
         >
           <span class="material-symbols-outlined">search</span>
         </button>
+
+        <!-- Safety Mode Button -->
+        <NuxtLink 
+          to="/safety-mode"
+          class="hidden lg:flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full text-sm font-bold transition-all shadow-lg"
+        >
+          <span class="text-base">🚨</span>
+          Safety Mode
+        </NuxtLink>
 
         <!-- Login Button -->
         <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full text-sm font-bold transition-all shadow-lg">
@@ -242,68 +257,66 @@
               <span class="text-sm font-medium">Search</span>
             </div>
           </div>
-
-          <!-- Destinations -->
-          <NuxtLink
-            to="/destinations"
-            class="mobile-link"
-            @click="closeMobileMenu"
-          >
-            <span class="material-symbols-outlined">explore</span>
+          <!-- Explore Section -->
+          <div class="mt-4 mb-2">
+            <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3">Explore</h3>
+          </div>
+          <NuxtLink to="/destinations" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">map</span>
             Destinations
           </NuxtLink>
-          <NuxtLink
-            to="/activities"
-            class="mobile-link"
-            @click="closeMobileMenu"
-          >
+          <NuxtLink to="/activities" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">hiking</span>
             Activities
           </NuxtLink>
-          <NuxtLink
-            to="/photos"
-            class="mobile-link"
-            @click="closeMobileMenu"
-          >
+          <NuxtLink to="/photos" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">photo_camera</span>
             Photo Spots
           </NuxtLink>
-          <NuxtLink
-            to="/shopping"
-            class="mobile-link"
-            @click="closeMobileMenu"
-          >
-            <span class="material-symbols-outlined">shopping_bag</span>
-            Shopping
+          <NuxtLink to="/itineraries" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">calendar_month</span>
+            Itineraries
+          </NuxtLink>
+          <NuxtLink to="/weather" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">wb_sunny</span>
+            Weather
           </NuxtLink>
 
-          <!-- Essentials Section -->
+          <!-- Travel Tools Section -->
           <div class="mt-4 mb-2">
-            <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3">Essentials</h3>
+            <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3">Travel Tools</h3>
           </div>
-          <NuxtLink to="/clean-dining" class="mobile-link" @click="closeMobileMenu">
-            <span class="material-symbols-outlined">restaurant</span>
-            Clean Dining
-          </NuxtLink>
           <NuxtLink to="/transport" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">directions_car</span>
-            Transport
+            Transport & Fares
           </NuxtLink>
           <NuxtLink to="/phrasebook" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">translate</span>
             Phrasebook
           </NuxtLink>
+          <NuxtLink to="/clean-dining" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">restaurant</span>
+            Clean Dining
+          </NuxtLink>
+          <NuxtLink to="/facilities" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">wc</span>
+            Facilities Finder
+          </NuxtLink>
+          <NuxtLink to="/money" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">payments</span>
+            Money & Currency
+          </NuxtLink>
           <NuxtLink to="/connectivity" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">wifi</span>
-            Connectivity
+            SIM & Connectivity
           </NuxtLink>
           <NuxtLink to="/accommodation" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">hotel</span>
             Accommodation
           </NuxtLink>
-          <NuxtLink to="/money" class="mobile-link" @click="closeMobileMenu">
-            <span class="material-symbols-outlined">payments</span>
-            Money & Currency
+          <NuxtLink to="/shopping" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">shopping_bag</span>
+            Shopping Guide
           </NuxtLink>
 
           <!-- Safety Section -->
@@ -318,27 +331,23 @@
             <span class="material-symbols-outlined">emergency</span>
             Emergency Contacts
           </NuxtLink>
-          <NuxtLink to="/culture" class="mobile-link" @click="closeMobileMenu">
-            <span class="material-symbols-outlined">temple_buddhist</span>
-            Cultural Etiquette
-          </NuxtLink>
           <NuxtLink to="/health" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">medical_services</span>
             Health & Insurance
           </NuxtLink>
+          <NuxtLink to="/culture" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">temple_buddhist</span>
+            Cultural Etiquette
+          </NuxtLink>
+          <NuxtLink to="/safety-mode" class="mobile-link bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-semibold" @click="closeMobileMenu">
+            <span class="text-lg">🚨</span>
+            Safety Mode
+          </NuxtLink>
 
-          <!-- More Section -->
+          <!-- Info Section -->
           <div class="mt-4 mb-2">
-            <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3">More</h3>
+            <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3">Info</h3>
           </div>
-          <NuxtLink to="/itineraries" class="mobile-link" @click="closeMobileMenu">
-            <span class="material-symbols-outlined">calendar_month</span>
-            Itineraries
-          </NuxtLink>
-          <NuxtLink to="/weather" class="mobile-link" @click="closeMobileMenu">
-            <span class="material-symbols-outlined">wb_sunny</span>
-            Weather
-          </NuxtLink>
           <NuxtLink to="/visa" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">badge</span>
             Visa Info
@@ -354,10 +363,6 @@
           <NuxtLink to="/about" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">info</span>
             About
-          </NuxtLink>
-          <NuxtLink to="/blog" class="mobile-link" @click="closeMobileMenu">
-            <span class="material-symbols-outlined">article</span>
-            Blog
           </NuxtLink>
           <NuxtLink to="/contact" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">mail</span>

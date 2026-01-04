@@ -18,25 +18,65 @@
           <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-[#111718] dark:bg-white px-6 transition-transform hover:scale-105">
             <span class="text-white dark:text-[#111718] text-sm font-bold">All</span>
           </button>
-          <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 px-5 hover:border-dining-primary dark:hover:border-dining-primary transition-colors group">
-            <span class="material-symbols-outlined text-[18px] text-green-600">eco</span>
-            <span class="text-[#111718] dark:text-gray-200 text-sm font-medium">Vegetarian</span>
+          <button 
+            @click="selectDietary(selectedDietary === 'VEGETARIAN' ? null : 'VEGETARIAN')"
+            :class="[
+              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
+              selectedDietary === 'VEGETARIAN' 
+                ? 'bg-green-600 text-white border-green-600' 
+                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
+            ]"
+          >
+            <span class="material-symbols-outlined text-[18px]" :class="selectedDietary === 'VEGETARIAN' ? 'text-white' : 'text-green-600'">eco</span>
+            <span class="text-sm font-medium" :class="selectedDietary === 'VEGETARIAN' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Vegetarian</span>
           </button>
-          <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 px-5 hover:border-dining-primary dark:hover:border-dining-primary transition-colors group">
-            <span class="material-symbols-outlined text-[18px] text-green-500">nutrition</span>
-            <span class="text-[#111718] dark:text-gray-200 text-sm font-medium">Vegan</span>
+          <button 
+            @click="selectDietary(selectedDietary === 'VEGAN' ? null : 'VEGAN')"
+            :class="[
+              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
+              selectedDietary === 'VEGAN' 
+                ? 'bg-green-500 text-white border-green-500' 
+                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
+            ]"
+          >
+            <span class="material-symbols-outlined text-[18px]" :class="selectedDietary === 'VEGAN' ? 'text-white' : 'text-green-500'">nutrition</span>
+            <span class="text-sm font-medium" :class="selectedDietary === 'VEGAN' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Vegan</span>
           </button>
-          <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 px-5 hover:border-dining-primary dark:hover:border-dining-primary transition-colors group">
-            <span class="material-symbols-outlined text-[18px] text-purple-500">restaurant</span>
-            <span class="text-[#111718] dark:text-gray-200 text-sm font-medium">Halal</span>
+          <button 
+            @click="selectDietary(selectedDietary === 'HALAL' ? null : 'HALAL')"
+            :class="[
+              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
+              selectedDietary === 'HALAL' 
+                ? 'bg-purple-600 text-white border-purple-600' 
+                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
+            ]"
+          >
+            <span class="material-symbols-outlined text-[18px]" :class="selectedDietary === 'HALAL' ? 'text-white' : 'text-purple-500'">restaurant</span>
+            <span class="text-sm font-medium" :class="selectedDietary === 'HALAL' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Halal</span>
           </button>
-          <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 px-5 hover:border-dining-primary dark:hover:border-dining-primary transition-colors group">
-            <span class="material-symbols-outlined text-[18px] text-blue-500">verified_user</span>
-            <span class="text-[#111718] dark:text-gray-200 text-sm font-medium">Safe & Secure</span>
+          <button 
+            @click="selectHygiene(selectedHygiene === 'GOOD' ? null : 'GOOD')"
+            :class="[
+              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
+              selectedHygiene === 'GOOD' 
+                ? 'bg-blue-600 text-white border-blue-600' 
+                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
+            ]"
+          >
+            <span class="material-symbols-outlined text-[18px]" :class="selectedHygiene === 'GOOD' ? 'text-white' : 'text-blue-500'">verified_user</span>
+            <span class="text-sm font-medium" :class="selectedHygiene === 'GOOD' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Safe & Verified</span>
           </button>
-          <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 px-5 hover:border-dining-primary dark:hover:border-dining-primary transition-colors group">
-            <span class="material-symbols-outlined text-[18px] text-coral-orange">spa</span>
-            <span class="text-[#111718] dark:text-gray-200 text-sm font-medium">5-Lotus Hygiene</span>
+          <button 
+            @click="selectHygiene(selectedHygiene === 'EXCELLENT' ? null : 'EXCELLENT')"
+            :class="[
+              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
+              selectedHygiene === 'EXCELLENT' 
+                ? 'bg-coral-orange text-white border-coral-orange' 
+                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
+            ]"
+          >
+            <span class="material-symbols-outlined text-[18px]" :class="selectedHygiene === 'EXCELLENT' ? 'text-white' : 'text-coral-orange'">spa</span>
+            <span class="text-sm font-medium" :class="selectedHygiene === 'EXCELLENT' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">5-Lotus Hygiene</span>
           </button>
         </div>
       </div>
@@ -210,6 +250,16 @@ const apiBase = config.public.apiBase
 const selectedDietary = ref<string | null>(null)
 const selectedHygiene = ref<string | null>(null)
 const searchQuery = ref('')
+const debouncedQuery = ref('')
+
+// Debounce search input (300ms)
+let debounceTimer: ReturnType<typeof setTimeout>
+watch(searchQuery, (newVal) => {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    debouncedQuery.value = newVal
+  }, 300)
+})
 
 // Review Modal State
 const showReviewModal = ref(false)
@@ -219,7 +269,7 @@ const reviewError = ref('')
 const reviewSuccess = ref(false)
 const reviewForm = ref({ rating: 0, comment: '' })
 
-// Fetch restaurants from API
+// Fetch restaurants from API (watches debounced query)
 const { data: restaurantsResponse, pending, refresh } = await useFetch<{ 
   success: boolean
   data: Restaurant[]
@@ -229,11 +279,11 @@ const { data: restaurantsResponse, pending, refresh } = await useFetch<{
     const params = new URLSearchParams()
     if (selectedDietary.value) params.set('dietary', selectedDietary.value)
     if (selectedHygiene.value) params.set('hygiene', selectedHygiene.value)
-    if (searchQuery.value) params.set('search', searchQuery.value)
+    if (debouncedQuery.value) params.set('search', debouncedQuery.value)
     const queryStr = params.toString()
     return `${apiBase}/api/dining${queryStr ? `?${queryStr}` : ''}`
   },
-  { watch: [selectedDietary, selectedHygiene, searchQuery] }
+  { watch: [selectedDietary, selectedHygiene, debouncedQuery] }
 )
 
 const restaurants = computed(() => restaurantsResponse.value?.data || [])
@@ -259,6 +309,10 @@ function getHygieneStars(rating: string): number {
 
 function selectDietary(id: string | null) {
   selectedDietary.value = selectedDietary.value === id ? null : id
+}
+
+function selectHygiene(id: string | null) {
+  selectedHygiene.value = selectedHygiene.value === id ? null : id
 }
 
 function openReviewModal(restaurant: Restaurant) {
