@@ -41,7 +41,7 @@ const { data: phrasesResponse } = await useFetch<{
     phonetic_tamil?: string
     category: string
   }>
-}>(`${apiBase}/api/phrases?category=emergency`)
+}>(`${apiBase}/api/phrases?category=EMERGENCY`)
 
 const phrases = computed(() => {
   const data = phrasesResponse.value?.data || []

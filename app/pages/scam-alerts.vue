@@ -77,6 +77,57 @@
               {{ cat.label }}
             </button>
           </div>
+
+          <!-- Near Me Toggle -->
+          <div class="flex items-center gap-3 pb-4 -mx-6 px-6">
+            <button
+              v-if="!nearMeMode"
+              @click="enableNearMe"
+              :disabled="gettingLocation"
+              class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-wait text-sm font-medium transition-colors"
+            >
+              <span v-if="gettingLocation" class="animate-spin">⏳</span>
+              <span v-else>📍</span>
+              {{ gettingLocation ? 'Getting location...' : 'Show Near Me' }}
+            </button>
+            
+            <div v-else class="flex items-center gap-3 flex-wrap">
+              <span class="text-green-600 dark:text-green-400 font-semibold text-sm flex items-center gap-1">
+                📍 Near Me
+              </span>
+              <input
+                v-model.number="radiusKm"
+                type="range"
+                min="1"
+                max="20"
+                class="w-24 accent-accent"
+              />
+              <span class="text-xs text-gray-600 dark:text-gray-400">{{ radiusKm }}km</span>
+              <button
+                @click="disableNearMe"
+                class="px-3 py-1 text-xs border border-gray-300 dark:border-white/20 rounded hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Near Me Risk Summary -->
+          <div v-if="nearMeMode && scamAlerts.length > 0" class="pb-4 -mx-6 px-6">
+            <div class="p-3 bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 rounded-r-lg">
+              <div class="flex items-start gap-2">
+                <span class="text-lg">⚠️</span>
+                <div>
+                  <div class="font-semibold text-orange-800 dark:text-orange-300 text-sm">
+                    {{ scamAlerts.filter(s => s.severity === 'HIGH' || s.severity === 'CRITICAL').length }} high-risk alert(s) within {{ radiusKm }}km
+                  </div>
+                  <div class="text-xs text-orange-700 dark:text-orange-400 mt-0.5">
+                    Most common: {{ getMostCommonCategory() }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Scrollable List Area -->
@@ -184,6 +235,7 @@
           <ScamAlertsMap 
             :scams="scamAlerts"
             @select-scam="(id: string) => console.log('Selected scam:', id)"
+            @report-at="handleMapReport"
             class="absolute inset-0"
           />
           <template #fallback>
@@ -195,6 +247,13 @@
             </div>
           </template>
         </ClientOnly>
+
+        <!-- Floating Tip Banner -->
+        <div class="absolute top-4 left-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg px-3 py-2 z-[1000] max-w-[200px]">
+          <p class="text-xs text-blue-800 dark:text-blue-200">
+            💡 <strong>Tip:</strong> Click anywhere on the map to report a scam at that location
+          </p>
+        </div>
 
         <!-- Floating Action Button (FAB) -->
         <div class="absolute bottom-8 right-8 z-30">
@@ -330,6 +389,12 @@ const hasMore = ref(true)
 const totalCount = ref(0)
 const loadingMore = ref(false)
 
+// Near Me mode state
+const userLocation = ref<{ lat: number; lng: number } | null>(null)
+const nearMeMode = ref(false)
+const radiusKm = ref(5)
+const gettingLocation = ref(false)
+
 // Fetch scam alerts from API
 const { data: scamsResponse, pending, error, refresh } = await useFetch<{ 
   success: boolean; 
@@ -345,10 +410,16 @@ const { data: scamsResponse, pending, error, refresh } = await useFetch<{
     if (selectedCategory.value) params.set('category', selectedCategory.value)
     params.set('limit', String(limit))
     params.set('offset', String(currentOffset.value))
+    // Add location params if Near Me mode is active
+    if (nearMeMode.value && userLocation.value) {
+      params.set('lat', String(userLocation.value.lat))
+      params.set('lng', String(userLocation.value.lng))
+      params.set('radius', String(radiusKm.value))
+    }
     return `${base}/api/scams?${params}`
   },
   { 
-    watch: [selectedCategory],
+    watch: [selectedCategory, nearMeMode, radiusKm],
     onResponse({ response }) {
       if (response._data?.success) {
         if (currentOffset.value === 0) {
@@ -372,6 +443,66 @@ async function loadMore() {
   currentOffset.value += limit
   await refresh()
   loadingMore.value = false
+}
+
+// Near Me mode functions
+async function enableNearMe() {
+  if (!navigator.geolocation) {
+    alert('Geolocation not supported by your browser')
+    return
+  }
+  
+  gettingLocation.value = true
+  
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      userLocation.value = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      }
+      nearMeMode.value = true
+      currentOffset.value = 0
+      allAlerts.value = []
+      gettingLocation.value = false
+    },
+    (error) => {
+      alert('Could not get your location. Please enable location access.')
+      console.error('Geolocation error:', error)
+      gettingLocation.value = false
+    },
+    { timeout: 10000 }
+  )
+}
+
+function disableNearMe() {
+  nearMeMode.value = false
+  userLocation.value = null
+  currentOffset.value = 0
+  allAlerts.value = []
+}
+
+function getMostCommonCategory(): string {
+  if (allAlerts.value.length === 0) return 'None'
+  const counts: Record<string, number> = {}
+  allAlerts.value.forEach(s => {
+    counts[s.category] = (counts[s.category] || 0) + 1
+  })
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1])
+  return sorted[0]?.[0]?.replace(/_/g, ' ') || 'Various'
+}
+
+// Handle map click for reporting
+function handleMapReport(coords: { lat: number; lng: number }) {
+  // Pre-fill report form with coordinates
+  reportForm.value = {
+    ...reportForm.value,
+    location_lat: coords.lat,
+    location_lng: coords.lng,
+    location_name: `${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`
+  }
+  
+  // Open report modal
+  showReportModal.value = true
 }
 
 // Reset pagination when category changes

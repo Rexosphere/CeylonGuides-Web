@@ -58,7 +58,7 @@ const { data: embassiesResponse } = await useFetch<{
   data: Array<{
     id: string
     name: string
-    phone: string
+    phone_number: string
     category: string
     description?: string
     emoji?: string
@@ -71,7 +71,7 @@ const embassies = computed(() => {
     country: e.name.replace(' Embassy', '').replace(' High Commission', ''),
     flag: e.emoji || '🏛️',
     address: e.description || 'Colombo, Sri Lanka',
-    phone: e.phone
+    phone: e.phone_number
   }))
 })
 
