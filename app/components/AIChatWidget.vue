@@ -31,6 +31,21 @@
         </button>
       </div>
 
+      <!-- Quick Actions Bar -->
+      <div class="px-3 py-2 border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-surface-dark flex gap-2 overflow-x-auto">
+        <button
+          v-for="action in quickActions"
+          :key="action.id"
+          @click="handleQuickAction(action.id)"
+          :class="[
+            'px-3 py-2 rounded-lg text-white text-xs font-semibold whitespace-nowrap hover:opacity-90 transition-all hover:scale-105 shadow-sm',
+            action.color
+          ]"
+        >
+          {{ action.label }}
+        </button>
+      </div>
+
       <!-- Messages -->
       <div ref="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-[#1a1210]">
         <div 
@@ -44,6 +59,18 @@
           ]"
         >
           <span v-html="formatMessage(msg.content)"></span>
+          
+          <!-- Action Buttons (from AI response) -->
+          <div v-if="msg.actions && msg.actions.length" class="mt-3 flex flex-wrap gap-2">
+            <button 
+              v-for="action in msg.actions" 
+              :key="action"
+              @click="handleAction(action)"
+              class="text-xs px-3 py-2 bg-primary/10 dark:bg-primary/20 text-primary rounded-lg hover:bg-primary hover:text-white transition-colors font-medium"
+            >
+              {{ formatActionLabel(action) }}
+            </button>
+          </div>
           
           <!-- Suggestions -->
           <div v-if="msg.suggestions && msg.suggestions.length" class="mt-3 flex flex-wrap gap-2">
@@ -96,6 +123,7 @@ interface Message {
   role: 'user' | 'assistant'
   content: string
   suggestions?: string[]
+  actions?: string[]
 }
 
 const config = useRuntimeConfig()
@@ -111,9 +139,86 @@ const messages = ref<Message[]>([
   {
     role: 'assistant',
     content: "Ayubowan! 🙏 I'm your AI travel assistant for Sri Lanka. How can I help you today?",
-    suggestions: ['Learn basic phrases', 'Check scam alerts', 'Find restaurants']
+    suggestions: ['Learn basic phrases', 'Check scam alerts', 'Find restaurants'],
+    actions: ['safety-mode', 'scam-alerts', 'clean-dining']
   }
 ])
+
+// Quick action buttons
+const quickActions = [
+  { id: 'emergency', label: '🚨 Emergency', color: 'bg-red-500' },
+  { id: 'scam-report', label: '⚠️ Report Scam', color: 'bg-orange-500' },
+  { id: 'fare-check', label: '🚖 Check Fare', color: 'bg-blue-500' },
+  { id: 'find-food', label: '🍽️ Find Food', color: 'bg-green-500' }
+]
+
+// Quick action handler
+async function handleQuickAction(actionId: string) {
+  switch (actionId) {
+    case 'emergency':
+      await navigateTo('/safety-mode')
+      isOpen.value = false
+      break
+    case 'scam-report':
+      await navigateTo('/scam-alerts')
+      isOpen.value = false
+      break
+    case 'fare-check':
+      await navigateTo('/transport')
+      isOpen.value = false
+      break
+    case 'find-food':
+      await navigateTo('/clean-dining')
+      isOpen.value = false
+      break
+  }
+}
+
+// Action handler for buttons in messages
+function handleAction(action: string) {
+  // Parse action format: "navigate:/path?query=value"
+  if (action.startsWith('navigate:')) {
+    const url = action.replace('navigate:', '')
+    navigateTo(url)
+    isOpen.value = false
+    return
+  }
+  
+  // Simple route mapping
+  const routes: Record<string, string> = {
+    'scam-alerts': '/scam-alerts',
+    'emergency': '/emergency',
+    'safety-mode': '/safety-mode',
+    'transport': '/transport',
+    'phrasebook': '/phrasebook',
+    'clean-dining': '/clean-dining',
+    'facilities': '/facilities',
+    'search': '/search'
+  }
+  
+  const route = routes[action]
+  if (route) {
+    navigateTo(route)
+    isOpen.value = false
+  }
+}
+
+// Format action labels
+function formatActionLabel(action: string): string {
+  if (action.startsWith('navigate:')) {
+    return '→ Go there'
+  }
+  const labels: Record<string, string> = {
+    'scam-alerts': '⚠️ View Scams',
+    'emergency': '🚨 Emergency',
+    'safety-mode': '🛡️ Safety Mode',
+    'transport': '🚖 Transport',
+    'phrasebook': '📖 Phrases',
+    'clean-dining': '🍽️ Dining',
+    'facilities': '🚻 Facilities'
+  }
+  return labels[action] || action.charAt(0).toUpperCase() + action.slice(1).replace(/-/g, ' ')
+}
 
 /**
  * Escape HTML entities to prevent XSS attacks

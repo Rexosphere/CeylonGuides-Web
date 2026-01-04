@@ -26,3 +26,4 @@ logs
 .env
 .env.*
 !.env.example
+HACKATHON_EXECUTION_PLAN.md

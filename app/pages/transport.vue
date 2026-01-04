@@ -57,6 +57,16 @@
                     <span class="text-coral-orange">Tourist Price</span>
                   </div>
                 </div>
+                
+                <!-- Fare Guard Button -->
+                <button 
+                  @click="showFareCard = true"
+                  class="w-full mt-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors"
+                >
+                  <span class="text-lg">🛡️</span>
+                  Show Fare Guard Card
+                </button>
+                
                 <p class="text-xs text-teal-100/80 italic mt-3">*Always negotiate before getting in if not using a meter.</p>
               </div>
             </div>
@@ -229,6 +239,17 @@
         </div>
       </div>
     </main>
+
+    <!-- Fare Guard Modal -->
+    <TransportFareCard
+      v-if="showFareCard"
+      :origin="origin"
+      :destination="destination"
+      :distance="distanceKm"
+      :fare-range="{ min: calculatedFare.min, max: calculatedFare.max, currency: 'LKR' }"
+      :transport-type="selectedTransportType"
+      @close="showFareCard = false"
+    />
   </div>
 </template>
 
@@ -248,6 +269,9 @@ const origin = ref('Colombo Fort')
 const destination = ref('Ella Railway Station')
 const distanceKm = ref(200) // Default distance estimate
 const selectedTransportType = ref<'TUK_TUK' | 'TAXI' | 'BUS' | 'TRAIN' | 'RIDESHARE'>('TUK_TUK')
+
+// Fare Guard modal state
+const showFareCard = ref(false)
 
 // Fetch fare rates from API
 const { data: ratesResponse } = await useFetch<{

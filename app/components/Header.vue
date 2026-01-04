@@ -136,13 +136,18 @@
                 Emergency Contacts
               </NuxtLink>
               <NuxtLink to="/culture" class="dropdown-link">
-                <span class="material-symbols-outlined text-lg">temple_buddhist</span>
-                Cultural Etiquette
-              </NuxtLink>
-              <NuxtLink to="/health" class="dropdown-link">
-                <span class="material-symbols-outlined text-lg">medical_services</span>
-                Health & Insurance
-              </NuxtLink>
+              <span class="material-symbols-outlined text-lg">temple_buddhist</span>
+              Cultural Etiquette
+            </NuxtLink>
+            <NuxtLink to="/health" class="dropdown-link">
+              <span class="material-symbols-outlined text-lg">medical_services</span>
+              Health & Insurance
+            </NuxtLink>
+            <div class="border-t border-gray-200 dark:border-white/10 my-2"></div>
+            <NuxtLink to="/safety-mode" class="dropdown-link text-red-600 dark:text-red-400 font-semibold">
+              <span class="material-symbols-outlined text-lg">emergency</span>
+              🚨 Safety Mode
+            </NuxtLink>
             </div>
           </Transition>
         </div>
@@ -181,6 +186,10 @@
                 <span class="material-symbols-outlined text-lg">groups</span>
                 Community
               </NuxtLink>
+              <NuxtLink to="/facilities" class="dropdown-link">
+                <span class="material-symbols-outlined text-lg">wc</span>
+                Facilities Finder
+              </NuxtLink>
               <div class="border-t border-gray-200 dark:border-white/10 my-2"></div>
               <NuxtLink to="/blog" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">article</span>
@@ -210,6 +219,15 @@
         >
           <span class="material-symbols-outlined">search</span>
         </button>
+
+        <!-- Safety Mode Button -->
+        <NuxtLink 
+          to="/safety-mode"
+          class="hidden lg:flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full text-sm font-bold transition-all shadow-lg"
+        >
+          <span class="text-base">🚨</span>
+          Safety Mode
+        </NuxtLink>
 
         <!-- Login Button -->
         <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full text-sm font-bold transition-all shadow-lg">
@@ -326,6 +344,10 @@
             <span class="material-symbols-outlined">medical_services</span>
             Health & Insurance
           </NuxtLink>
+          <NuxtLink to="/safety-mode" class="mobile-link bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-semibold" @click="closeMobileMenu">
+            <span class="text-lg">🚨</span>
+            Safety Mode
+          </NuxtLink>
 
           <!-- More Section -->
           <div class="mt-4 mb-2">
@@ -346,6 +368,10 @@
           <NuxtLink to="/community" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">groups</span>
             Community
+          </NuxtLink>
+          <NuxtLink to="/facilities" class="mobile-link" @click="closeMobileMenu">
+            <span class="material-symbols-outlined">wc</span>
+            Facilities Finder
           </NuxtLink>
           <NuxtLink to="/blog" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">article</span>
