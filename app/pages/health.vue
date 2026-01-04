@@ -15,13 +15,13 @@
 </template>
 
 <script setup lang="ts">
-import HealthHero from '~/components/HealthHero.vue'
-import HealthQuickNav from '~/components/HealthQuickNav.vue'
-import HealthVaccinations from '~/components/HealthVaccinations.vue'
-import HealthInsurance from '~/components/HealthInsurance.vue'
-import HealthConcerns from '~/components/HealthConcerns.vue'
-import HealthFoodSafety from '~/components/HealthFoodSafety.vue'
-import HealthMedicalDirectory from '~/components/HealthMedicalDirectory.vue'
+import HealthHero from '~/components/Health/HealthHero.vue'
+import HealthQuickNav from '~/components/Health/HealthQuickNav.vue'
+import HealthVaccinations from '~/components/Health/HealthVaccinations.vue'
+import HealthInsurance from '~/components/Health/HealthInsurance.vue'
+import HealthConcerns from '~/components/Health/HealthConcerns.vue'
+import HealthFoodSafety from '~/components/Health/HealthFoodSafety.vue'
+import HealthMedicalDirectory from '~/components/Health/HealthMedicalDirectory.vue'
 
 useHead({
   title: 'Travel Insurance & Health - CeylonGuide',

@@ -12,10 +12,10 @@
 </template>
 
 <script setup lang="ts">
-import ItineraryHero from '~/components/ItineraryHero.vue'
-import ItineraryList from '~/components/ItineraryList.vue'
-import TripBuilder from '~/components/TripBuilder.vue'
-import ItineraryNewsletter from '~/components/ItineraryNewsletter.vue'
+import ItineraryHero from '~/components/Itineraries/ItineraryHero.vue'
+import ItineraryList from '~/components/Itineraries/ItineraryList.vue'
+import TripBuilder from '~/components/Home/TripBuilder.vue'
+import ItineraryNewsletter from '~/components/Itineraries/ItineraryNewsletter.vue'
 
 useHead({
   title: 'Itineraries & Trip Planner - CeylonGuide',

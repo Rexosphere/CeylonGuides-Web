@@ -13,11 +13,11 @@
 </template>
 
 <script setup lang="ts">
-import ActivityHero from '~/components/ActivityHero.vue'
-import ActivityFilters from '~/components/ActivityFilters.vue'
-import ActivityList from '~/components/ActivityList.vue'
-import ActivityFeatured from '~/components/ActivityFeatured.vue'
-import ActivityNewsletter from '~/components/ActivityNewsletter.vue'
+import ActivityHero from '~/components/Activities/ActivityHero.vue'
+import ActivityFilters from '~/components/Activities/ActivityFilters.vue'
+import ActivityList from '~/components/Activities/ActivityList.vue'
+import ActivityFeatured from '~/components/Activities/ActivityFeatured.vue'
+import ActivityNewsletter from '~/components/Activities/ActivityNewsletter.vue'
 
 useHead({
   title: 'Activities & Experiences - CeylonGuide',

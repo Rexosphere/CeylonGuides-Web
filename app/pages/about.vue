@@ -15,11 +15,11 @@
 </template>
 
 <script setup lang="ts">
-import AboutHero from '~/components/AboutHero.vue'
-import AboutMission from '~/components/AboutMission.vue'
-import AboutProblemSolution from '~/components/AboutProblemSolution.vue'
-import AboutTeam from '~/components/AboutTeam.vue'
-import AboutCTA from '~/components/AboutCTA.vue'
+import AboutHero from '~/components/About/AboutHero.vue'
+import AboutMission from '~/components/About/AboutMission.vue'
+import AboutProblemSolution from '~/components/About/AboutProblemSolution.vue'
+import AboutTeam from '~/components/About/AboutTeam.vue'
+import AboutCTA from '~/components/About/AboutCTA.vue'
 
 useHead({
   title: 'About & Mission - CeylonGuide',

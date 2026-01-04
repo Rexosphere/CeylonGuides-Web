@@ -27,12 +27,12 @@
 </template>
 
 <script setup lang="ts">
-import VisaHero from '~/components/VisaHero.vue'
-import VisaStats from '~/components/VisaStats.vue'
-import VisaProcess from '~/components/VisaProcess.vue'
-import VisaRegulations from '~/components/VisaRegulations.vue'
-import VisaExtension from '~/components/VisaExtension.vue'
-import VisaSidebar from '~/components/VisaSidebar.vue'
+import VisaHero from '~/components/Visa/VisaHero.vue'
+import VisaStats from '~/components/Visa/VisaStats.vue'
+import VisaProcess from '~/components/Visa/VisaProcess.vue'
+import VisaRegulations from '~/components/Visa/VisaRegulations.vue'
+import VisaExtension from '~/components/Visa/VisaExtension.vue'
+import VisaSidebar from '~/components/Visa/VisaSidebar.vue'
 
 useHead({
   title: 'Visa & Entry Requirements - CeylonGuide',
