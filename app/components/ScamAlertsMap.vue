@@ -17,12 +17,14 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'selectScam', id: string): void
+  (e: 'reportAt', coords: { lat: number; lng: number }): void
 }>()
 
 const mapContainer = ref<HTMLElement>()
 let L: any = null
 let map: any = null
 const markers: any[] = []
+let reportMarker: any = null  // Temporary marker for report location
 
 // Severity colors
 const severityColors: Record<string, string> = {
@@ -64,6 +66,31 @@ async function initMap() {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>'
   }).addTo(map)
+  
+  // Add click handler for reporting scams
+  map.on('click', (e: any) => {
+    // Remove previous report marker if exists
+    if (reportMarker) {
+      reportMarker.remove()
+    }
+    
+    // Create a temporary marker at click location
+    reportMarker = L.marker([e.latlng.lat, e.latlng.lng], {
+      icon: L.divIcon({
+        className: 'report-marker',
+        html: '<div style="background: #3b82f6; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 12px;">📍</div>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+      })
+    }).addTo(map)
+    
+    reportMarker.bindPopup('Report scam here?').openPopup()
+    
+    emit('reportAt', {
+      lat: e.latlng.lat,
+      lng: e.latlng.lng
+    })
+  })
   
   updateMarkers()
 }

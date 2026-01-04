@@ -65,7 +65,7 @@ const { data: medicalResponse } = await useFetch<{
   data: Array<{
     id: string
     name: string
-    phone: string
+    phone_number: string
     category: string
     description?: string
     is_available_24x7?: boolean

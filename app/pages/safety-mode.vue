@@ -112,11 +112,11 @@
             <button
               v-for="contact in briefing.emergency.contacts.slice(0, 6)"
               :key="contact.id"
-              @click="callNumber(contact.phone)"
+              @click="callNumber(contact.phone_number)"
               class="bg-red-800/50 hover:bg-red-800 p-3 rounded-lg text-left text-sm transition-colors"
             >
               <div class="font-semibold truncate">{{ contact.name }}</div>
-              <div class="font-mono text-red-200">{{ contact.phone }}</div>
+              <div class="font-mono text-red-200">{{ contact.phone_number }}</div>
             </button>
           </div>
         </div>
@@ -228,12 +228,12 @@
           <button
             v-for="embassy in briefing.emergency.embassies.slice(0, 6)"
             :key="embassy.id"
-            @click="callNumber(embassy.phone)"
+            @click="callNumber(embassy.phone_number)"
             class="bg-blue-800/50 hover:bg-blue-800 p-4 rounded-xl text-left transition-colors"
           >
-            <div class="font-semibold">{{ embassy.country }}</div>
-            <div class="text-sm text-blue-200 mt-1">{{ embassy.city }}</div>
-            <div class="font-mono text-blue-100 mt-2">{{ embassy.phone }}</div>
+            <div class="font-semibold">{{ embassy.name }}</div>
+            <div class="text-sm text-blue-200 mt-1">{{ embassy.address }}</div>
+            <div class="font-mono text-blue-100 mt-2">{{ embassy.phone_number }}</div>
           </button>
         </div>
       </section>
@@ -274,9 +274,9 @@ interface SafetyBriefing {
   success: boolean
   location: { lat: number; lng: number; radius: number }
   emergency: {
-    contacts: Array<{ id: string; name: string; phone: string; category: string }>
+    contacts: Array<{ id: string; name: string; phone_number: string; category: string }>
     phrases: Array<{ english: string; sinhala: string; tamil: string; pronunciation: string }>
-    embassies: Array<{ id: string; country: string; city: string; phone: string }>
+    embassies: Array<{ id: string; name: string; address: string; phone_number: string }>
   }
   nearbyThreats: {
     scams: Array<{ id: string; title: string; severity: string; category: string; distance?: number }>

@@ -176,16 +176,16 @@
               <button
                 v-for="i in 5"
                 :key="i"
-                @click="ratingForm.rating = i"
+                @click="ratingForm.overall_rating = i"
                 class="text-4xl hover:scale-110 transition-transform"
               >
-                <span :class="i <= ratingForm.rating ? 'text-amber-400' : 'text-gray-300'">
-                  {{ i <= ratingForm.rating ? '★' : '☆' }}
+                <span :class="i <= ratingForm.overall_rating ? 'text-amber-400' : 'text-gray-300'">
+                  {{ i <= ratingForm.overall_rating ? '★' : '☆' }}
                 </span>
               </button>
             </div>
             <p class="text-center text-sm text-gray-500 mt-2">
-              {{ ratingLabels[ratingForm.rating - 1] }}
+              {{ ratingLabels[ratingForm.overall_rating - 1] }}
             </p>
           </div>
 
@@ -265,7 +265,9 @@ const selectedFacility = ref<Facility | null>(null)
 const submitting = ref(false)
 
 const ratingForm = ref({
-  rating: 5,
+  overall_rating: 5,
+  cleanliness_rating: 5,
+  safety_rating: 5,
   comment: ''
 })
 
@@ -356,7 +358,7 @@ function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): nu
 function openRatingModal(facility: Facility) {
   selectedFacility.value = facility
   showRatingModal.value = true
-  ratingForm.value = { rating: 5, comment: '' }
+  ratingForm.value = { overall_rating: 5, cleanliness_rating: 5, safety_rating: 5, comment: '' }
 }
 
 async function submitRating() {
@@ -364,7 +366,7 @@ async function submitRating() {
   
   submitting.value = true
   try {
-    await $fetch(`${apiBase}/api/facilities/${selectedFacility.value.id}/ratings`, {
+    await $fetch(`${apiBase}/api/facilities/${selectedFacility.value.id}/rate`, {
       method: 'POST',
       body: ratingForm.value
     })
