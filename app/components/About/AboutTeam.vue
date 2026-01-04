@@ -14,7 +14,7 @@
           <img 
             alt="Portrait of Sarah Perera, Founder" 
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAul9o8hiKdtYaRFnD0b9p2XKqfdufVTpssHxSxgSh_b4mVW--5DC9CbZCKv4b5xy9jnYsGfSz7_F50B-BtZ8aJGkCAEN0o0bAOM5QCQQG_bqsknWzxiGUGLQ1wEEi48JNeIzkwpRKsNXeSZxYf7f03gsdiAekB4FehZV0NgCKLO98J4R8fphY9nsa1JV9BQEuWOUsQ2T7NgYvOy7bhURUpWRYoq1BmKKru6OeD4lgp57SWR5pr6t2BxvPYxbLQZnrp7zht9UsNG6o"
+            src="/images/downloaded_c96287e63ba5.avif"
           />
         </div>
         <h3 class="font-bold text-lg text-[#181311] dark:text-white group-hover:text-primary transition-colors">Sarah Perera</h3>
@@ -28,7 +28,7 @@
           <img 
             alt="Portrait of David Silva, Head of Tours" 
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCActWwBtKsTK5ftlYjN06QGmFPLbgfhyTRqUv_y22YpwrQrXCeV8M6jELoBrM78w6eS63xDy3e4G99R3nFcht6JlW5Uva8UxpDGQZQifI4ww_-URwFakn4vEUYrgVIrOEBlzpG_TBknWlPr9OUZlL5JL_xh4UF_MXuGJ3Rbh0blhTWVdjRXsS0PYwuOeKTd_CTAdcDybpGzpvf4rs6hSr7_ulRkSmxq3cRbFuFETUl0kN1Lv8_mtfr-0FYfbab6vsfmMjdW4WRGW8"
+            src="/images/downloaded_11c3f1165e23.avif"
           />
         </div>
         <h3 class="font-bold text-lg text-[#181311] dark:text-white group-hover:text-primary transition-colors">David Silva</h3>
@@ -42,7 +42,7 @@
           <img 
             alt="Portrait of Amara Jayasuriya, Content Lead" 
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrOk_707OLKNxkhgiXRnMmb5KKQfMTuzLafPlDkSLIV2lQHdAY0uEZzm_eaHtJ_vCG7SPe_nAH0qXfQ_koWdegoqECvQykYoeUyRYbl7ia3UEz7HukHu54CVDzPwvnapWdYfvsG2WaVEErIUKlO6aKxxYbdRdQOa7WBhZ2TbwyqqgIsoUOzaA5NHQLNFQ0frZu1TPPdPObDdP4GXuHBMDfGlC9xkHH2bEJ2OuOzOrfSqbF17_G5arOP6wimzZNPThePZifFT8NOFQ"
+            src="/images/downloaded_3e653f77dfd9.avif"
           />
         </div>
         <h3 class="font-bold text-lg text-[#181311] dark:text-white group-hover:text-primary transition-colors">Amara Jayasuriya</h3>
@@ -56,7 +56,7 @@
           <img 
             alt="Portrait of Rajith Fernando, Tech Lead" 
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3ERgoq8CRVMtg6e6_Rspfi_X61xGWIyYId6X1t1SNkGdk2m6HY9_4tIV_W8qqGzuWK47o77bwK5IePM04EEwod2QNJNDug-c0CK2MzdG9dr5QlL_ppiGVHzxNymBrwKrwEvU_uvYrL5so_4-z-EuB3exiTDiEvRXGE-OanGZUBipvaj2o1UaUiV90EIL0sjZesD2Bv7FxB85lR6xLWSfdIU-9haYyJYGRUwWCW-H8BhUkuLfXQG9ICaAEnX08PxqWUYr0NVjObxA"
+            src="/images/downloaded_571149fb59fb.avif"
           />
         </div>
         <h3 class="font-bold text-lg text-[#181311] dark:text-white group-hover:text-primary transition-colors">Rajith Fernando</h3>

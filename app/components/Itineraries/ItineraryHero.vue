@@ -3,7 +3,7 @@
     <div class="w-full h-[500px] bg-cover bg-center flex items-center justify-center relative" 
          role="img" 
          aria-label="Panoramic view of tea plantations in Sri Lanka with misty mountains" 
-         style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuAZywWkDVxfeziJN-CqOoxEUZI_DXMsoZQz-MnE8buTAiKAYOoy7CR_eb2ldJ4gtw_OCkdLievktudTbRF5bJRJl3RUMfwRU5nk1fPXaflQ8blk-9FQs0U9luMpzZRoYxBze-gQXj0ZrQ0-nWmk7LaFdFSvR4ypw5fihfvR-juymThkNeAfdHZUwLeEZbN9EVyssXaf2eCPwO_-3YrpAXuilIDaVR72d-a5CrIx2UHrgYVzQvtQPx--nScsyCGqH7vXNL2rcRQm7zI');">
+         style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url('/images/downloaded_0bded551fdfb.avif');">
       <div class="text-center px-4 max-w-3xl relative z-10">
         <h1 class="text-white text-5xl md:text-6xl font-black leading-tight tracking-[-0.033em] mb-4 drop-shadow-sm">
           Craft Your Ceylon Journey

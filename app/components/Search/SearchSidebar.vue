@@ -39,7 +39,7 @@
     <div class="relative overflow-hidden rounded-xl h-72 flex items-end p-6 group cursor-pointer shadow-md">
       <div 
         class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
-        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB1lLjEGMdVbDr9byEuA0yse4aFdwsG23SX3S9mul9YMuKjOpNzq_pSpZAr5pwC6cXLSIB997JmVqXduqxc_5WwnHznvZD6Jgv_Uyymwt1ochW2QPfKkJLEB69jTp8Wf8f7ULj7oR_C8KvNIFmj6Q0y8MGpTb9WS7r8ztSrG3pf-Kbav8NRsRJ8G_b5laPPJhwzEV8-QyeEbzlOWSpb7k74GirashLX8txweiFzMhxtiLkEUmFJJZt5yOI9lAOslod00cE_sFTOQ9k');"
+        style="background-image: url('/images/downloaded_161cd218c4e4.avif');"
       ></div>
       <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
       <div class="relative z-10 text-white">

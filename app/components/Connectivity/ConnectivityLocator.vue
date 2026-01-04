@@ -44,7 +44,7 @@
         <div class="w-full md:w-2/3 h-[400px] rounded-xl overflow-hidden relative group">
           <div 
             class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
-            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBDm57eiaDIv373KKHT2v1ncR5-Fv8BjaLC4v8-IcruzwTwsne214UDOT2_Bo27ywqOSdN6ZEWmONa7iNHyHhhscaOsXwbETC6ckHTxzG5NxCRrbB1_ERpLV_CYpaeVq2aveK6x1zlY_ilWLng4DeaSYVQALL8VECRbfAxr3yZa9MWM683MS6-ZJUbVNtoZJ8tF90XRae4PxkgR9HU6LRHwoLVygP1Wr8bP7FzrpQB6fbpnQ5gswIzcjnwrjsC_4cav3-80GpktW5k");'
+            style='background-image: url("/images/downloaded_3aa36a8a9228.avif");'
           ></div>
           <div class="absolute inset-0 bg-black/10 hover:bg-black/0 transition-colors"></div>
           

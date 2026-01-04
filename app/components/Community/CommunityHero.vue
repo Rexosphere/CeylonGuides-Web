@@ -1,7 +1,7 @@
 <template>
   <div 
     class="relative w-full h-[400px] flex items-center justify-center bg-cover bg-center" 
-    style='background-image: linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuA26dGZcTzW9u2h_xqthy9ps0aaDZ8dWGXajZIZ9rt5SD0ssV_NjnpxRDZOF_EzcHTAh1G2YOTFNxY1hY1izVl71bwXURPFFKWoOBDY8HhExQY25FRP6K5m1I446sWoGToasaYetMypenEMr9UCZP-C4m0p7A2i5QiCmTg4rr2W19k6LBc6xaFqMwlAlpul6ds1CjiBJ4bEn6yd8e5yUKeWobXNOsfavG5YUNLDF_lUM70k19F4qHXihDIitVxoWC-thUj8p1NoGF4");'
+    style='background-image: linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%), url("/images/downloaded_7f28e8b3d626.avif");'
   >
     <div class="flex flex-col gap-4 text-center max-w-[720px] px-4">
       <h1 class="text-white text-4xl md:text-5xl font-black leading-tight tracking-[-0.033em] drop-shadow-md">

@@ -5,7 +5,7 @@
         <div class="@[480px]:p-4">
           <div 
             class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-6 text-center shadow-sm relative overflow-hidden" 
-            :style="{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%), url('https://lh3.googleusercontent.com/aida-public/AB6AXuAL-BcYYvZwJdYCgG5n34IEQp0Tia3Ps_x14q7vZ3TmoE3LSbh34HwUOSJMC8JM1YbnXKZFmwzhhqgXS74dd63CQIeK8xyJVNabpn8oMcm31ywgWQExOkv_FexyzYBznVNuI_eQh01s52a0o3ML0M71vqxQCLnWDwAHOMqDzNzQDrpTLB0iGB5dQjkNcWSYuLD-Y1lk6QFySr7XM0y6e6DkXiGwB1MnpYD9F9MdfBaQus4n0FHcxk2IYpH1Hc37jmHgyctK0VZUS9E')` }"
+            :style="{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%), url('/images/downloaded_46ef208260ac.avif')` }"
           >
             <div class="flex flex-col gap-2 max-w-[700px] z-10">
               <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black">

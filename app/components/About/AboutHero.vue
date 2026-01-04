@@ -4,7 +4,7 @@
       <!-- Background Image -->
       <div 
         class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
-        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCwqT0XkEmpoEl8du0tRgIo9Ytw-aTHyr1JxsNoiQNS-lH232GL3xsDtxBW9EBUHdNqa65q0I0wY_EA58UiRGfkDXyIqhWI1FEp815zYn_o37vNpUTTOukHZJA8nP1pIMdJtO_RN-Nwnb6h0Z5P5I9q6z5bhs2aEkZ9evWqeGFgHhU9h4LUJWPOeGnD0Gtw6vy_AeLOz_IbFXA8y4KmKHa9sEXYogq6DOI8N353YEdcj03xzdXeZzQ7NVfr8EUhQ1JgBH0EtZmBzG4");'
+        style='background-image: url("/images/downloaded_35584e9960c7.avif");'
       ></div>
       <!-- Gradient Overlay -->
       <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>

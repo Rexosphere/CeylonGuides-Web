@@ -21,7 +21,7 @@ import AccommodationCard from './AccommodationCard.vue'
 const accommodations = [
   {
     id: 1,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZM8OEZTlSaYTJTD9YvNLLltH6Mxj54Sb5lw_cVqEzuyNpfGdSNxxddht8ohKzjvP2IPHnlVDQnltv4e4klfJIYp7fuOvFMPkcxb9vTCeFIXoQrkwlfmZv5I6O0Zd_LLWeZfF04Jsso4HKY6exTlY3LVwL_oPrZT4NM50MkLd--k3Akh4EGnQQbp3-HBNpBAuNLWrZchKDWYzKyMygr3S7w0iQaDNawJ0oVOuszggCDYRY15Fj9QfMkQ-EOz5ayVg0vGYMkomK6ms',
+    image: '/images/downloaded_eea297ee51ba.avif',
     title: 'Galle Fort Heritage Villa',
     location: 'Galle Fort, Southern Province',
     type: 'Hotel',
@@ -37,7 +37,7 @@ const accommodations = [
   },
   {
     id: 2,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCvUhDmYITqqTVj3tC7wxXxWTZCbpZfBv7XERfeAe3QQE1I5ckCmboRcCVJI4bYnHBGjso7bJJPXgY2H-BY55bIkkYzFLgO33pUq2rWokgmCdPTKDDUoZlifuG6oCma5Zjz54Bs8_bG7tRNZu-FDJ9TBJAIIIM_BLBZtGqBo-I_4RlR7OS19a8VjuUpRu1IFU0mTp9VLfacxU-ggqLwQ3r56TmI_zNed9zIQgTkeNDBMsmwPX188HpDNql2uscMBT_3Xee6yvd-NCU',
+    image: '/images/downloaded_d3a4f75fb70f.avif',
     title: 'Ella Jungle Retreat',
     location: 'Ella, Uva Province',
     type: 'Homestay',
@@ -53,7 +53,7 @@ const accommodations = [
   },
   {
     id: 3,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAtlR4cJV-CbhoW8ArDQvBbIKv-WUjRhQN91BlR5zjeL-XyQzolIDhdrlSfHVL1baz-HHGyHRcbvvukgYNy9dpDaKkCRtmWRXnLXg8HACnN-eRGig2vmGQiQDr-pDD_BlQBKkpkp9yok8yM1p6GwouGF109UxhE4gBDp8DT8fPX4YzuIyh6M6tBFt7E3k6x3-HgbN1jvBp9PT7Pbnz8GbkD7OH-RtsEVfN5r6GUycx7VMzGnXjfFfgv_hsBna6TGhU48-zWj6Iv2M0',
+    image: '/images/downloaded_7e6a29c0e4e2.avif',
     title: 'Mirissa Ocean Villa',
     location: 'Mirissa, Southern Province',
     type: 'Villa',

@@ -65,7 +65,7 @@
             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Suggested</p>
             <!-- Item 1 -->
             <div class="group bg-white dark:bg-surface-dark p-2 rounded-lg border border-gray-200 dark:border-neutral-700 hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing flex gap-3">
-              <div class="w-16 h-16 rounded-md bg-cover bg-center shrink-0" role="img" aria-label="Nine Arch Bridge in Ella" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAfSJOB9wqLlGD1TcrKce6UkYyQDx_bevXyS2zPa4Je3ZCkGH7T2ZOxNtmduFT6t2R70KyNCDb1csD6lyJp8gxQ5wX_TCw6WSdote3AxpweKkBi6fckQ1dW1iclYHpAgZzZOHfvr_dyanP84DpF5G03PbM2QqtThPjoo_i_nduRQ42mZIBc1W-FyUDPTwXM-lmKj2_suZHuilcDgHuQYBax_VxmjF8tH8VpL2dH0zzhsKAOKqVYWBGw7f3hX6U6qAJl-hVDLKaXnjk');"></div>
+              <div class="w-16 h-16 rounded-md bg-cover bg-center shrink-0" role="img" aria-label="Nine Arch Bridge in Ella" style="background-image: url('/images/downloaded_3a8fa6a7d1ee.avif');"></div>
               <div class="flex flex-col justify-center flex-1">
                 <h4 class="text-sm font-bold text-neutral-800 dark:text-white">Nine Arch Bridge</h4>
                 <p class="text-xs text-text-muted">Ella • Sightseeing</p>
@@ -77,7 +77,7 @@
             </div>
             <!-- Item 2 -->
             <div class="group bg-white dark:bg-surface-dark p-2 rounded-lg border border-gray-200 dark:border-neutral-700 hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing flex gap-3">
-              <div class="w-16 h-16 rounded-md bg-cover bg-center shrink-0" role="img" aria-label="Leopard resting on a tree branch in Yala National Park" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB958-p3O8WkRwOhlYij5AnrwKCbabE-oageJjwxyd9LYJivGyLfbqh7Ww0TQlE4EAVN-AEddcgbUS4TMEkoq197moZURMmPLD_aBa01StFBXISCXb080dtrHUZhozSFVLyEHlaLVPYYcatOuj1rZqivxT2dfGJtesABtCI0H3jKGeX0eT7548Je7MGJ8b05kUWBgx0S3X0vi79f9vr_cSOM92-_I-qkH3KDeRMiTqElUyaDFBIBafJAeiIdHnuz4EXxaFbXsrDVqc');"></div>
+              <div class="w-16 h-16 rounded-md bg-cover bg-center shrink-0" role="img" aria-label="Leopard resting on a tree branch in Yala National Park" style="background-image: url('/images/downloaded_70a4d73e03d3.avif');"></div>
               <div class="flex flex-col justify-center flex-1">
                 <h4 class="text-sm font-bold text-neutral-800 dark:text-white">Yala Safari</h4>
                 <p class="text-xs text-text-muted">Yala • Wildlife</p>
@@ -89,7 +89,7 @@
             </div>
             <!-- Item 3 -->
             <div class="group bg-white dark:bg-surface-dark p-2 rounded-lg border border-gray-200 dark:border-neutral-700 hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing flex gap-3">
-              <div class="w-16 h-16 rounded-md bg-cover bg-center shrink-0" role="img" aria-label="Galle Fort lighthouse and ramparts" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBE5c8AWhVpuJ4aRJr5ViomQy7L9SHYyZYQwShOzcoA8mzsQTAXX9Roh3zv8bQRyo_sfFr66L50I2rX7okL4uf9YnwSEfg4cJFPQM-S6BkGLGYeO0IPIyTLvJYb_wqSwPDe0aUn9An0bbMev_k4WxHvZgIUM44C-N4bkYGVlGf4c_n9An09lB6BbCInF_9vNGTNL8uNvUviI-crAb7-gbjlFghS-qXaFZirsMSOzWYhvWs2KNi63kVBHs1VqGApNXCoP8O9008naFM');"></div>
+              <div class="w-16 h-16 rounded-md bg-cover bg-center shrink-0" role="img" aria-label="Galle Fort lighthouse and ramparts" style="background-image: url('/images/downloaded_4718d233d0ed.avif');"></div>
               <div class="flex flex-col justify-center flex-1">
                 <h4 class="text-sm font-bold text-neutral-800 dark:text-white">Galle Fort Walk</h4>
                 <p class="text-xs text-text-muted">Galle • History</p>

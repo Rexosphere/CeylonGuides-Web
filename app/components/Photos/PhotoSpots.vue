@@ -23,7 +23,7 @@
           </div>
           <div 
             class="bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-110" 
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBO3ijxctTzQPJfpln4OOzGuC3rGEB7BHvTp3nMm7fG2Rsn3vZ_unBk8h9klbouIkJZZDFwGT69iTVIfUy-_VJRIkPUF_SZiaG6ququ0fBk9KiISS0iYSU2xlBBZsgG406pIgb2cR2RQfqIuKcrm63ehnqsoWXN7cticF4fkhunXv3iKlKQcm5pou3udoLS4TwqFozpSXQkdnRQ5kLCjCJjamZgX2Xgo_RQd_Ln9Fs4XJ5PT_8_uAqFkZsO5sgzy7T-muJqx2VsLNc');"
+            style="background-image: url('/images/downloaded_f999a39c7eaa.avif');"
           ></div>
         </div>
         <div class="p-5 flex flex-col flex-1">
@@ -62,7 +62,7 @@
           </div>
           <div 
             class="bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-110" 
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDENY7r8fm7A8chAHI5MH526v6HG0OEKMZ1we_GOSmzPfNcNk2LKcphBhbeYFLUIoydzhpek1GNHtQz4x1c6ZfVdFGg3uRaDTpdpZxle5GQWZoRlyOa1hbdNbMActFdtj9jAAXxc8zhSbLCfa-abmGG6cE6mM9AIlIHRagQfdFHoLl6puh6Gxi3clLu7zL0AGlYWkyjmSn6POx51RDkKcVkX_V6V9TwuHDrKCKjG1Z_qvWdU6KM6hYfP-ZwIhZJNNaGI991EiA8svk');"
+            style="background-image: url('/images/downloaded_2b8b5c147867.avif');"
           ></div>
         </div>
         <div class="p-5 flex flex-col flex-1">
@@ -100,7 +100,7 @@
           </div>
           <div 
             class="bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-110" 
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDHHA92G4FM1jh9PsWCAdeHIVXA4nhOLerF25vQIVoafvj8WldQQqmLCerksNO1WpLk7HHNkPgmmOSsOvYD1YQ9Wo52D3AgI_bc66vz1Jpq5aTVejxQr6JkEAikbGBbX7epotIVQENw7tzrF5Y_gWfmtbfA2wQG2nwX1SXUM00is4RTRlGvkVxuhJF5kwp4PgkdQcas48X6guUcnEadjjgh-4Ld1K37G5HIst6796YrXAeRjFwf_TANrGHC5yx2HVEDnk8gp5AyowI');"
+            style="background-image: url('/images/downloaded_cd4e419a0ae2.avif');"
           ></div>
         </div>
         <div class="p-5 flex flex-col flex-1">

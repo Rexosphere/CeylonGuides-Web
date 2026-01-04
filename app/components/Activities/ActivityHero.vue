@@ -5,7 +5,7 @@
         <div class="relative overflow-hidden rounded-2xl min-h-[480px] md:min-h-[560px] flex items-center justify-center bg-cover bg-center" 
              role="img" 
              aria-label="Stunning aerial view of Sri Lankan coastline with turquoise water and palm trees" 
-             style="background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url('https://lh3.googleusercontent.com/aida-public/AB6AXuD-3_b6lilYyqwSX0GMOqW6qTbrGI_YIES6X_XEGkTWSt4qTyxdJWUL9VLWdrKY8vjv7SBiVThm8TbQ8BtE_Xrh_y6Hae4HSR7LD9iJSUEZn-idYCal4qe0hronAVnOyOXxJGrnoiMeCVubpBkobEXZJ_ArScJc6SHH96UAaMImiDQcpfqsbNPLY4OdsfISoSx04CjRqjDXXoAYMroh7ZIH9z6gaJEUt8P0uIqsshgNiiVaToTIVnJ932uztOTs8oniFBGHOyn-nkQ');">
+             style="background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url('/images/downloaded_567ff4cb279b.avif');">
           <div class="relative z-10 flex flex-col gap-6 text-center max-w-[720px] px-4 animate-fade-in-up">
             <span class="text-white/90 text-xs md:text-sm font-bold tracking-[0.2em] uppercase">The Wonder of Asia</span>
             <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-[-0.033em]">

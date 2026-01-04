@@ -31,7 +31,7 @@
       <!-- Map Area -->
       <div class="w-full md:w-2/3 relative bg-gray-100">
         <div class="absolute inset-0 bg-cover bg-center" 
-             style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBKotZfq8YbX9xIZ4XTeqh6aK4vS2uprs__koxENRINNRriXY4MEHsBdpE_WD6bRn7gnsKcjnf0ZMDvrk9WCyWj1vesHmE2uGD5mykitPCRIuOyL1chY3su4qSk2XuS7pd-kSqay3mMFI0jMa7e4inBQKP_w91LT7WRoUPm117Civ_nYOt2FPiobvcufiiVG2jWJJ5vSPVnWuNgtAo9LY6PVz4GgOCrzKAxDixm2WYQ7bOeZTDf2MhLFFmBmLbm4MPPPu3iwtDtv4E');">
+             style="background-image: url('/images/downloaded_8ee584077bd7.avif');">
         </div>
         <!-- Map Controls Overlay -->
         <div class="absolute bottom-4 right-4 flex flex-col gap-2">

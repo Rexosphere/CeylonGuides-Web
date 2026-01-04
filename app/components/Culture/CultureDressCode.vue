@@ -9,7 +9,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Appropriate -->
       <div class="flex flex-col gap-4 bg-white dark:bg-[#2c1e19] p-4 rounded-xl shadow-sm border border-green-100 dark:border-green-900/30">
-        <div class="w-full aspect-video bg-cover bg-center rounded-lg overflow-hidden relative" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCGt8a95Y4CBw3uOQRnhaV5snDHcfOsJQCnbOzLtfrLYO_yQ4U9IHbalEZfUg6DG2H0Nn_w22f10ZsHwcFa97979UU8_t160qcXC0EhrXHoZ9ASrQAGke_gasK8px_V86wJhGrpEkfo7MRrkQJQgXJEYDdU6wYXxjOjMcsdXsIb9rEGy4cubWOqwq3y-6jJrF1auKppvU-9jqK2i0KPZxEhNer0Zd4aYc3w0sxoTfL-Qwx9jLVVi21AQL464UPcr2Odk8MeUdN3egk");'>
+        <div class="w-full aspect-video bg-cover bg-center rounded-lg overflow-hidden relative" style='background-image: url("/images/downloaded_b6131c7872ea.avif");'>
           <div class="absolute top-3 right-3 bg-green-500 text-white rounded-full p-1">
             <span class="material-symbols-outlined text-sm font-bold">check</span>
           </div>
@@ -23,7 +23,7 @@
       </div>
       <!-- Inappropriate -->
       <div class="flex flex-col gap-4 bg-white dark:bg-[#2c1e19] p-4 rounded-xl shadow-sm border border-red-100 dark:border-red-900/30">
-        <div class="w-full aspect-video bg-cover bg-center rounded-lg overflow-hidden relative" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBjetrkdvweqbW3BWtbi-xsundXEOzk9SEInil_b_BO0u-Gm2iAndXXSQ8R8qeOdXC5zhEB3RrEljefS7RBTj7DPzmBtEOcLCGjdihszSyVKRA3YAMKj_YmChqiMX5DWIKWeDiJwUNeFSQUcR78ryh_HUypp9ziHhmwewqKhG9QBko8_mUHWYKFG66UpjlFNhUrMTJ0YVvOWQeAYeGDvtKw4hpZoe4O0nKqV5rcHoHRnUOq-yfU8tOKSowUWuav4I1RRHFWCNMlv8s");'>
+        <div class="w-full aspect-video bg-cover bg-center rounded-lg overflow-hidden relative" style='background-image: url("/images/downloaded_8f986fb972ab.avif");'>
           <div class="absolute top-3 right-3 bg-red-500 text-white rounded-full p-1">
             <span class="material-symbols-outlined text-sm font-bold">close</span>
           </div>

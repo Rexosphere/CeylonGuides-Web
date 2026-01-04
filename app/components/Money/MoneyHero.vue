@@ -5,7 +5,7 @@
       <div class="absolute inset-0 bg-cover bg-center z-0" 
            role="img" 
            aria-label="Stunning aerial view of Sri Lanka tea plantations and mountains" 
-           style="background-image: linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%), url('https://lh3.googleusercontent.com/aida-public/AB6AXuCMbF8NdWi6SYF_G8ifxxZGTtPY74ilaMsd-Tz39_6avV552b9CksYAgCOrOlklMrbU0l4mxqVwHkzocqCNRGek2rM4H9F9t5H4ooTdq0jCG0ae_OBb0ZQWSMgKdg-zwakU2VdjZwznASt9blF7JZPT20BcuHmF53zGI9E11djsq-UsvDmwgdDVIvUIxzMphMMRthXYMtjmJBpxqFbL2Mts36K7UcMi7AFv6d1jjlGEcZxyeZPw--RdrjQLIBF0xQ5MyoWqlhLqwYw');">
+           style="background-image: linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%), url('/images/downloaded_2e782d1a6f27.avif');">
       </div>
       <div class="relative z-10 flex flex-col items-center max-w-4xl text-center gap-8 animate-fade-in-up">
         <div class="space-y-4">

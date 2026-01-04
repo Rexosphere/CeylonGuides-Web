@@ -6,7 +6,7 @@
           <div class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-8 relative overflow-hidden group" 
                role="img" 
                aria-label="Vibrant Sri Lankan market scene with spices and textures" 
-               style="background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url('https://lh3.googleusercontent.com/aida-public/AB6AXuCxdJQfpFD-QNyYoJQMaYUz_UeZrja4e1NK1NCFpvvZpTBDd2AoW5T2UNMxkq_dpmi2ScYXMem1cwmfYorRHlBc0R60g-ncmB_Tmqg04mD2KQgEn_8-mD2oYNWHp4rriKNjKlCWS-2j01n0cR2KMaLV2TNfmgyoiRINszwKDwz1mdR0A_HyzZY2JHZwKVtoNm5QlkDA3a5PV24siywBzOP8SGrhH5IioYXJPkC67zLW5E_LSpqR3MmuXYK9oA8KqFURbWJZhmcG9zA');">
+               style="background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url('/images/downloaded_b6813cf50612.avif');">
             <div class="flex flex-col gap-3 text-center z-10 max-w-2xl">
               <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-6xl drop-shadow-lg">
                 Bring a Piece of Sri Lanka Home

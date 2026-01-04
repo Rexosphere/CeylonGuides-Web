@@ -1,7 +1,7 @@
 <template>
   <section class="relative w-full bg-neutral-dark py-12 md:py-20 overflow-hidden">
     <div class="absolute inset-0 z-0 opacity-40 bg-cover bg-center" 
-         style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBmx3BDFrBU86j-l7xB436R_AudbqpCbqDW9gof9ofnXfTnV0IP46XXoAXXovXvC_CgC-JWIJMFg7pRzgB-WFNiCH5LOuGhQ_MCDj0oTjoVgpCwPifBEghCascdRvXMf-00RtXGMcYRclEaVekXs4rwLzxaCWCGGGi941nK052J1NlOtdMFataDaP-nSwwqBjpgpZX8aUVtTfc_dXszk-kcArsjIA-LwryUmzEi6xZ5Khwidyp-M_303CQoNywc-pcahAn3H-grK8o');">
+         style="background-image: url('/images/downloaded_76b4f2112848.avif');">
     </div>
     <div class="absolute inset-0 z-10 bg-gradient-to-r from-neutral-dark/90 to-neutral-dark/40"></div>
     <div class="relative z-20 max-w-[960px] mx-auto px-5 lg:px-0 flex flex-col md:flex-row items-center justify-between gap-8">

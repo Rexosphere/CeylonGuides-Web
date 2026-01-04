@@ -2,7 +2,7 @@
   <div class="@container w-full">
     <div 
       class="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center bg-cover bg-center bg-no-repeat" 
-      style='background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBfbPOMD653GlEFPDP43i-c_81mI8_WGkGe61iy06X3bcZmBTjj94uKy7PfdU-uY2cgAyFBImYyh0LI8XEV7wJ2qN-zHBY0fUcz_PHFbF8Nu3R-nennZ8LGQ6JEmhqfvKHJnNgnKp-bh7fkP67kcrqejlKrfVMNtbihmOPqE4GQKu4Ong-m6ehpvOTrNTdR0WBPLEpkEito9hGq_gugnM5BfzXEMf6euxqtiMhB3nAAJUZgIFf4Grn12CT8jwsew_1bFtHUybotpHU");'
+      style='background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url("/images/downloaded_5890478e8df3.avif");'
     >
       <div class="flex flex-col gap-4 text-center max-w-2xl px-4 animate-fade-in-up">
         <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] md:text-6xl drop-shadow-sm">

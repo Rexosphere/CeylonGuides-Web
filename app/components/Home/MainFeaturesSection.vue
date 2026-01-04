@@ -11,7 +11,7 @@
         
         <!-- Destinations Card -->
         <div class="md:col-span-8 md:row-span-2 group relative h-[500px] rounded-[2.5rem] overflow-hidden shadow-2xl cursor-pointer">
-          <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB1fliR7-M_tkFML1WjxbrReVPAefPkbogYH5jNYoqxc-wyyITxrxPvXDM8VrSlcadDIVZHho54L0UsbXHAO2HsYnR2GSSFRBJ28pTAebz9ntqjzBq-r5xs6ZC7715dPN6rVj_Eq-oIJ3ALvcj5Wq-2ulszN2b662spmtn8deXnaZOUNIG0gvUqiJU0ALYxYCe1cnRz8a3YhBHQgb-2ab8Tfvc2sICqKGtYfAOexuRrBrkMAgAVMPATvHhKgB7O4vZmnWN1zy_iqTG6');">
+          <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style="background-image: url('/images/downloaded_9f15b6f18e06.avif');">
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
           </div>
           <div class="absolute top-6 left-6">
@@ -54,7 +54,7 @@
 
         <!-- Activities Card -->
         <div class="md:col-span-7 h-64 bg-primary rounded-[2.5rem] relative overflow-hidden group cursor-pointer">
-          <div class="absolute inset-0 opacity-10 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAKRc6AqMPOH6AI0OLc22DIlanKPPUlEt0EQ-VniFwGxTN2G4mMN2zbIvRnEw85rSPSaFqAXgHeCL1GZO-0erIeCTNBtuIw0REmv4X1jAAHacJZkLfLsDN9WHrIWZ-Beur66U0x6YkH-57_uuZWFLiGNCsdIwE4piexH_9o_8GEQEG2OfoJblTQWWIQpGYJCXu-kAijQ-iW23ERzU7eZ6ooR-zsTqV44FXdz7mpMDWkYGFbL9IMw0RpfZB7s5ubfiBmGm6gz_81ThoG');"></div>
+          <div class="absolute inset-0 opacity-10 bg-cover bg-center" style="background-image: url('/images/downloaded_43c72220408c.avif');"></div>
           <div class="absolute inset-0 bg-gradient-to-r from-primary to-primary/80"></div>
           <div class="absolute inset-0 p-8 flex flex-col md:flex-row items-start md:items-center justify-between relative z-10">
             <div class="max-w-md">
@@ -65,7 +65,7 @@
               <span class="material-symbols-outlined text-3xl text-white">hiking</span>
             </div>
           </div>
-          <div class="absolute right-0 top-0 w-1/3 h-full bg-cover bg-center opacity-0 group-hover:opacity-40 transition-opacity duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCwBGW3nxKqdP8iNhnphVWF3ONsEuP_vcOFKZTsej1XwPCqoYE_qQkG6VuXanrBjHy8kZPJaQNpk7aVJs2ZwoYRQZg3NDdovWXVRqPv_8kMcI4JezJFyd27wOmFKm0qA5frobg3v-Y4JN53Ma7HclvJ9-X-yjOShfIpxwC7M6jTM9ndTB8x0E1jOS7UOzdLCQN7Hch1vGK2ZiPq1gKpjksj8d80h4tiNSWScXhlAKI0CXqpeqFP99JNMRLxOJVYU9FZ5H_wk3pkqpdS'); object-position: right center;"></div>
+          <div class="absolute right-0 top-0 w-1/3 h-full bg-cover bg-center opacity-0 group-hover:opacity-40 transition-opacity duration-500" style="background-image: url('/images/downloaded_151b36c7aade.avif'); object-position: right center;"></div>
         </div>
 
         <!-- Photo Spots Card -->

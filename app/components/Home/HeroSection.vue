@@ -14,7 +14,7 @@
       <div class="absolute inset-0 z-0">
         <div 
           class="w-full h-full bg-cover bg-center bg-no-repeat transform scale-105 transition-transform duration-[20s] animate-kenburns" 
-          style="background-image: linear-gradient(rgba(10, 61, 98, 0.3), rgba(45, 52, 54, 0.5)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuB_qzDllDNJvD480mVeA5gPWrd1aaVugj7JDwzfUQbk3CFFL5mVI1uH6vTg4vcnNNdOxZUyZLIPbved9BBveycTr8SjsRqHZ8dYXntjvF2Wq_x_y0jbN7JtFtIikSwRVOXY-FoPQgDO0GYmcQkvvXwlAM6oG9Z8hWCJwj5bT40MsIKgce2YaTjtZ3SQVzLDL3_crdAjwl5g3rPMHuWG1NHFRqzQxsmHus9YB5qDqvfplmEeN_HWuZlZ9KU9n3mLM4gK-ilMHzAU9Ks');"
+          style="background-image: linear-gradient(rgba(10, 61, 98, 0.3), rgba(45, 52, 54, 0.5)), url('/images/downloaded_870c30a3afb8.avif');"
           role="img"
           aria-label="Stunning aerial view of Galle Fort Lighthouse and coast in Sri Lanka"
         >

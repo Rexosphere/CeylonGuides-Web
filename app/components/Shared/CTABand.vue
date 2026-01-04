@@ -4,7 +4,7 @@
     <div 
       class="absolute inset-0 opacity-20 bg-cover bg-center mix-blend-overlay" 
       data-alt="Abstract traditional Sri Lankan pattern texture background" 
-      style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAKRc6AqMPOH6AI0OLc22DIlanKPPUlEt0EQ-VniFwGxTN2G4mMN2zbIvRnEw85rSPSaFqAXgHeCL1GZO-0erIeCTNBtuIw0REmv4X1jAAHacJZkLfLsDN9WHrIWZ-Beur66U0x6YkH-57_uuZWFLiGNCsdIwE4piexH_9o_8GEQEG2OfoJblTQWWIQpGYJCXu-kAijQ-iW23ERzU7eZ6ooR-zsTqV44FXdz7mpMDWkYGFbL9IMw0RpfZB7s5ubfiBmGm6gz_81ThoG');"
+      style="background-image: url('/images/downloaded_43c72220408c.avif');"
     >
     </div>
     <div class="max-w-4xl mx-auto text-center relative z-10 px-4">

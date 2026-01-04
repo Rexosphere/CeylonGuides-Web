@@ -174,7 +174,7 @@
 
       <!-- Map Area -->
       <div class="hidden md:block flex-1 relative bg-[#e5e3df] dark:bg-[#1a1614] overflow-hidden map-texture">
-        <div class="absolute inset-0 bg-cover bg-center opacity-70 dark:opacity-30 mix-blend-multiply" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBye3UqYEOFRFviYlfu1qfGwERk4DvZ7viiSrjotNb6TgCxVxEkt39moOOpk_n8b1P6gQlpieBykVTDhXAIliOY347015xp638Tt93UMGfMa-ZotbaDyrpYqcnH3kfW4Wv2flmN7A5EChkvCBoIBKTDOx4Tz_wqz25eNjNPo6Xyi6J0JSjOytQeabJrkS-jnjg-fUL0x57ePxii6Dcgs2-fM6MVzOMUf3XQ0z1CZgjQRgvtfSwNVdD9dLyYQMkMizcyuTjFWq_PHmYE'); filter: grayscale(100%) sepia(20%) hue-rotate(150deg) contrast(90%);"></div>
+        <div class="absolute inset-0 bg-cover bg-center opacity-70 dark:opacity-30 mix-blend-multiply" style="background-image: url('/images/downloaded_874f0a21b149.avif'); filter: grayscale(100%) sepia(20%) hue-rotate(150deg) contrast(90%);"></div>
         
         <!-- SVG Route Animation -->
         <div class="absolute inset-0 pointer-events-none">
@@ -331,7 +331,7 @@ const transportTypes = [
   background-color: #4a3b36;
 }
 .map-texture {
-  background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuBBeakA_CV8CM9DoriwroN769qST4KRGD2jekWs2OiCNEze2Now3z-1KgEoGZ5PZANkGJoXsaJ-iwaw3wcoWyNfKLHd-aiLNEurRhJEtopztvNBtrYZPkmphzw4gawlU7sA1K1v10kvNWX9TGdgNIymdyTZwW-3J8PIUT01oOK8UfAToESvOEC4pzfdogqYeE_afZ7dhmf9rH0nZUfNFLp2RIEpJTHQtgnyF2_SH2Zn3X-05RQRR2dfjr0kbw_B3OMa-TIK9dN--egI);
+  background-image: url(/images/downloaded_fad3b481c225.avif);
 }
 .price-meter {
   background: linear-gradient(90deg, #10b981 0%, #10b981 40%, #f59e0b 40%, #f59e0b 70%, #ef4444 70%, #ef4444 100%);

@@ -35,6 +35,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const heroImage = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAgnpzbZsDyVJ1qXEyKjJmw-cujeE15O3G2xUCWXIpTBAteOMCrMVFal4T4FxxDbwI2W0tL-xQTCYcOIq3CQ86N-v-X0g1icN1u5bd2M4ZAf-XaSaUGOzSuvEF3DSVzB5gft47XNMVK9Eo6q3e_xIYp_KdHJOgDlFG9wlaMcI-ctiNS2n950Q06pgKRdRWFAWc723gm31WaHSsMoZsGIbk3MENcC6zwandGqsqXjmmu5uNaMF_OVzk6o1GJPpxfsWflilZuRsuZGNE'
+const heroImage = '/images/downloaded_3d3dcfa78790.avif'
 const searchQuery = ref('')
 </script>

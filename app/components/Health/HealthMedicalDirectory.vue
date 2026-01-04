@@ -81,7 +81,7 @@
         <!-- Static Map Image Placeholder -->
         <div 
           class="absolute inset-0 bg-cover bg-center" 
-          style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCJrhjgVwf9L0w0K6jhdBzGBEsRlp5I4UUGQrkV71xu3mZwWPizGX75JrfXl6PMVFky5bbxez9Giwb7IJihLbSsFSzYU0m-ZQxRAafY1_gZ2--6RWEXoIAKJDzEs_Bt3klng_FCUhEnQJbqwxdWrloXumvyriheLuZ0Bm31NMgTnGYDkM1pqsQx-KS1DVe59UI24pPSmIDk1b_tjFIx5GEJS2B_qPqva-FskzHGnnsKoN_TJEWKfba5Dmh9WZWSuFaFMkJxFSSMifU");'
+          style='background-image: url("/images/downloaded_81656699918e.avif");'
         ></div>
         <div class="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
         
