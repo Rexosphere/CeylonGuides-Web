@@ -12,12 +12,21 @@ export default {
     theme: {
         extend: {
             colors: {
-                "primary": "#0A3D62", // Deep Teal
-                "secondary": "#E6D5B8", // Warm Sand
+                // Safety Mode Colors (matching the exact reference HTML naming)
+                "primary": "#D94E3B", // Coral Orange - as the alert/primary action color
+                "secondary": "#006D77", // Deep Teal
+                "background-light": "#F9F7F2", // Off-white/Warm Sand light
+                "background-dark": "#2C3539", // Dark Charcoal
+                "card-light": "#FFFBF5", // Slightly lighter warm sand
+                "card-dark": "#374146", // Slightly lighter charcoal
+                "accent-sand": "#E6DCCA", // Warm Sand
+                "accent-cyan": "#E0FBFC", // Light Cyan
+                "text-main-light": "#2C3539", // Dark Charcoal
+                "text-main-dark": "#E0FBFC", // Light Cyan
+
+                // Legacy colors (keeping for backward compatibility)
                 "accent": "#F47C3C", // Coral Orange
                 "accent-light": "#A3E4D7", // Light Cyan
-                "background-light": "#F8F5F0", // Off-white
-                "background-dark": "#111a21", // Dark Charcoal equivalent for dark mode base
                 "surface-light": "var(--color-surface-light)",
                 "surface-dark": "var(--color-surface-dark)",
                 "text-main": "var(--color-text-main)",
@@ -42,11 +51,23 @@ export default {
                 "weather-surface-dark": "#2a1d18",
                 "weather-text-main": "#181311",
                 "weather-text-muted": "#8a6b60",
+                // Original safety mode color aliases (for backward compatibility)
+                "safety-primary": "#D94E3B", // Coral Orange
+                "safety-secondary": "#006D77", // Deep Teal
+                "safety-bg-light": "#F9F7F2", // Off-white/Warm Sand light
+                "safety-bg-dark": "#2C3539", // Dark Charcoal
+                "safety-card-light": "#FFFBF5", // Slightly lighter warm sand
+                "safety-card-dark": "#374146", // Slightly lighter charcoal
+                "safety-accent-sand": "#E6DCCA", // Warm Sand
+                "safety-accent-cyan": "#E0FBFC", // Light Cyan
+                "safety-text-light": "#2C3539", // Dark Charcoal
+                "safety-text-dark": "#E0FBFC", // Light Cyan
             },
             fontFamily: {
                 "display": ["Plus Jakarta Sans", "sans-serif"],
                 "serif": ["Playfair Display", "serif"],
                 "manrope": ["Manrope", "sans-serif"],
+                "lato": ["Lato", "sans-serif"],
             },
             borderRadius: {
                 "DEFAULT": "1rem",
@@ -56,6 +77,7 @@ export default {
             },
             boxShadow: {
                 "soft": "0 4px 20px -2px rgba(0, 77, 64, 0.08)",
+                "glow": "0 0 15px rgba(217, 78, 59, 0.3)", // Safety mode glow
             },
             keyframes: {
                 'pulse-orange': {
