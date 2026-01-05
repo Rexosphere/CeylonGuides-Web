@@ -1,136 +1,198 @@
 <template>
-  <div>
-    <!-- Header -->
-    <div class="text-center mb-8">
-      <h2 class="text-2xl font-serif font-bold text-charcoal dark:text-white mb-2">Create Account</h2>
-      <p class="text-gray-600 dark:text-gray-400">Join us and explore the beauty of Sri Lanka</p>
-    </div>
-
-    <!-- Register Form -->
-    <form @submit.prevent="handleRegister" class="space-y-5">
-      <!-- Error Message -->
-      <Transition name="fade">
-        <div v-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
-          <span class="material-symbols-outlined text-lg">error</span>
-          {{ error }}
+  <div class="flex min-h-screen w-full flex-row bg-background-light dark:bg-background-dark font-display text-[#181311] dark:text-white overflow-x-hidden antialiased">
+    <!-- Left Side: Hero Image (Hidden on mobile, visible on desktop) -->
+    <div class="hidden lg:flex w-1/2 relative bg-background-dark overflow-hidden">
+      <div 
+        class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105" 
+        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBk7gnCuEcpXJG5zSjdj9qt7Xi-YvRDHOfwQn8XgEp0yWKx6KFbtI8FgaMT-Lq63_nyKcbEcXdYGT7ZsRBjH2WMLZVV1JRX-7u15HPELr9fXmU5h16Zh7F7TDF2-SpoibZLyv9bmM_udSES97VBRShtNb5B8Pt_oi2gjkX4nLnG08kby6352ACfZzJ1pypEAOAli10BuzDDs4Pv0xbBDruGHTcUQEAf_3uQ0i0sf1oKKZHyhEZZF84HIW8c5HmrkF_XFne4VHQRkaQ");'
+      ></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30"></div>
+      <div class="relative z-10 flex flex-col justify-between p-12 w-full h-full text-white">
+        <div>
+          <!-- Logo mark -->
+          <div class="size-10 bg-white/20 backdrop-blur-md rounded-lg flex items-center justify-center border border-white/30 text-white">
+            <span class="material-symbols-outlined">travel_explore</span>
+          </div>
         </div>
-      </Transition>
-
-      <!-- Name Field -->
-      <div>
-        <label for="name" class="block text-sm font-medium text-charcoal dark:text-white mb-2">Full Name</label>
-        <div class="relative">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">person</span>
-          <input
-            id="name"
-            v-model="form.name"
-            type="text"
-            placeholder="John Doe"
-            class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-charcoal dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-          />
+        <div class="max-w-lg">
+          <p class="text-3xl font-bold leading-tight mb-4">"Sri Lanka is not just a destination, it's a feeling that stays with you forever."</p>
+          <div class="flex items-center gap-3">
+            <div class="h-[1px] w-8 bg-white/60"></div>
+            <p class="text-sm font-medium text-white/80">Discover the Pearl of the Indian Ocean</p>
+          </div>
         </div>
-      </div>
-
-      <!-- Email Field -->
-      <div>
-        <label for="email" class="block text-sm font-medium text-charcoal dark:text-white mb-2">Email Address</label>
-        <div class="relative">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">mail</span>
-          <input
-            id="email"
-            v-model="form.email"
-            type="email"
-            required
-            placeholder="you@example.com"
-            class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-charcoal dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-          />
-        </div>
-      </div>
-
-      <!-- Password Field -->
-      <div>
-        <label for="password" class="block text-sm font-medium text-charcoal dark:text-white mb-2">Password</label>
-        <div class="relative">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">lock</span>
-          <input
-            id="password"
-            v-model="form.password"
-            :type="showPassword ? 'text' : 'password'"
-            required
-            minlength="6"
-            placeholder="••••••••"
-            class="w-full pl-10 pr-12 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-charcoal dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-          />
-          <button
-            type="button"
-            @click="showPassword = !showPassword"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-          >
-            <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
-          </button>
-        </div>
-        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">Minimum 6 characters</p>
-      </div>
-
-      <!-- Confirm Password Field -->
-      <div>
-        <label for="confirmPassword" class="block text-sm font-medium text-charcoal dark:text-white mb-2">Confirm Password</label>
-        <div class="relative">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">lock</span>
-          <input
-            id="confirmPassword"
-            v-model="form.confirmPassword"
-            :type="showPassword ? 'text' : 'password'"
-            required
-            minlength="6"
-            placeholder="••••••••"
-            class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-charcoal dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-            :class="{ 'ring-2 ring-red-500': form.confirmPassword && form.password !== form.confirmPassword }"
-          />
-        </div>
-        <p v-if="form.confirmPassword && form.password !== form.confirmPassword" class="mt-1.5 text-xs text-red-500">
-          Passwords do not match
-        </p>
-      </div>
-
-      <!-- Submit Button -->
-      <button
-        type="submit"
-        :disabled="loading || !!(form.confirmPassword && form.password !== form.confirmPassword)"
-        class="w-full bg-primary hover:bg-primary/90 disabled:bg-primary/50 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-2"
-      >
-        <span v-if="loading" class="material-symbols-outlined animate-spin">progress_activity</span>
-        <span>{{ loading ? 'Creating account...' : 'Create Account' }}</span>
-      </button>
-    </form>
-
-    <!-- Divider -->
-    <div class="relative my-8">
-      <div class="absolute inset-0 flex items-center">
-        <div class="w-full border-t border-gray-200 dark:border-white/10"></div>
-      </div>
-      <div class="relative flex justify-center text-sm">
-        <span class="px-4 bg-white dark:bg-background-dark text-gray-500">Already have an account?</span>
       </div>
     </div>
 
-    <!-- Login Link -->
-    <NuxtLink
-      to="/auth/login"
-      class="block w-full text-center py-3 px-6 border-2 border-primary text-primary hover:bg-primary hover:text-white font-semibold rounded-xl transition-all"
-    >
-      Sign In
-    </NuxtLink>
+    <!-- Right Side: Signup Form -->
+    <div class="w-full lg:w-1/2 flex flex-col bg-white dark:bg-background-dark relative overflow-y-auto">
+      <!-- Mobile Header Logo -->
+      <div class="lg:hidden p-6 flex items-center gap-2">
+        <div class="size-8 text-primary">
+          <svg class="w-full h-full" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_6_319)">
+              <path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"></path>
+            </g>
+            <defs>
+              <clipPath id="clip0_6_319"><rect fill="white" height="48" width="48"></rect></clipPath>
+            </defs>
+          </svg>
+        </div>
+        <h2 class="text-[#181311] dark:text-white text-lg font-bold tracking-tight">CeylonGuide</h2>
+      </div>
+
+      <!-- Main Content Container -->
+      <div class="flex-1 flex flex-col justify-center px-6 sm:px-12 md:px-20 lg:px-24 py-12">
+        <div class="max-w-md w-full mx-auto space-y-8">
+          <!-- Header -->
+          <div class="space-y-2">
+            <h1 class="text-[#181311] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Start your journey</h1>
+            <p class="text-[#896c61] dark:text-gray-400 text-base font-normal leading-normal">Create an account to explore the wonders of Sri Lanka.</p>
+          </div>
+
+          <!-- Form -->
+          <form @submit.prevent="handleRegister" class="space-y-5">
+             <!-- Error Message -->
+            <Transition name="fade">
+              <div v-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+                <span class="material-symbols-outlined text-lg">error</span>
+                {{ error }}
+              </div>
+            </Transition>
+            
+            <!-- Full Name -->
+            <div class="space-y-2">
+              <label class="text-[#181311] dark:text-white text-sm font-bold leading-normal" for="fullname">Full Name</label>
+              <input 
+                id="fullname" 
+                v-model="form.name"
+                class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#181311] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#e6dedb] dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-[#896c61] dark:placeholder:text-gray-500 px-4 text-base font-normal leading-normal transition-all" 
+                placeholder="Enter your full name" 
+                type="text"
+              />
+            </div>
+
+            <!-- Email -->
+            <div class="space-y-2">
+              <label class="text-[#181311] dark:text-white text-sm font-bold leading-normal" for="email">Email Address</label>
+              <input 
+                id="email" 
+                v-model="form.email"
+                required
+                class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#181311] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#e6dedb] dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-[#896c61] dark:placeholder:text-gray-500 px-4 text-base font-normal leading-normal transition-all" 
+                placeholder="name@example.com" 
+                type="email"
+              />
+            </div>
+
+            <!-- Password Group -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="space-y-2">
+                <label class="text-[#181311] dark:text-white text-sm font-bold leading-normal" for="password">Password</label>
+                <div class="relative">
+                  <input 
+                    id="password" 
+                    v-model="form.password"
+                    required
+                    :type="showPassword ? 'text' : 'password'"
+                    class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#181311] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#e6dedb] dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-[#896c61] dark:placeholder:text-gray-500 px-4 text-base font-normal leading-normal transition-all" 
+                    placeholder="••••••••" 
+                  />
+                  <button 
+                    type="button"
+                    @click="showPassword = !showPassword"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    <span class="material-symbols-outlined text-[20px]">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+                  </button>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="text-[#181311] dark:text-white text-sm font-bold leading-normal" for="confirm-password">Confirm Password</label>
+                <input 
+                  id="confirm-password" 
+                  v-model="form.confirmPassword"
+                  required
+                  :type="showPassword ? 'text' : 'password'"
+                  class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#181311] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#e6dedb] dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-12 placeholder:text-[#896c61] dark:placeholder:text-gray-500 px-4 text-base font-normal leading-normal transition-all" 
+                  placeholder="••••••••" 
+                />
+              </div>
+            </div>
+
+            <!-- CTA Button -->
+             <button 
+                type="submit"
+                :disabled="loading || !!(form.confirmPassword && form.password !== form.confirmPassword)"
+                class="w-full flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-4 bg-primary hover:bg-[#d95223] text-white text-base font-bold leading-normal tracking-[0.015em] transition-colors shadow-lg shadow-primary/20 mt-4 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+                <span v-if="loading" class="material-symbols-outlined animate-spin mr-2">progress_activity</span>
+                {{ loading ? 'Creating Account...' : 'Create Account' }}
+            </button>
+          </form>
+
+          <!-- Divider -->
+          <div class="relative flex items-center py-2">
+            <div class="flex-grow border-t border-[#e6dedb] dark:border-gray-700"></div>
+            <span class="flex-shrink-0 mx-4 text-xs font-medium text-[#896c61] uppercase tracking-wider">Or register with</span>
+            <div class="flex-grow border-t border-[#e6dedb] dark:border-gray-700"></div>
+          </div>
+
+          <!-- Social Login -->
+          <div class="grid grid-cols-2 gap-4">
+            <button class="flex items-center justify-center gap-2 h-12 px-4 rounded-lg border border-[#e6dedb] dark:border-gray-700 hover:bg-[#f4f1f0] dark:hover:bg-gray-800 bg-white dark:bg-transparent transition-colors text-[#181311] dark:text-white text-sm font-bold">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M23.766 12.2764C23.766 11.4607 23.6999 10.6406 23.5588 9.83807H12.24V14.4591H18.7217C18.4528 15.9494 17.5885 17.2678 16.323 18.1056V21.1039H20.19C22.4608 19.0139 23.766 15.9274 23.766 12.2764Z" fill="#4285F4"></path>
+                <path d="M12.2401 24.0008C15.4766 24.0008 18.2059 22.9382 20.1945 21.1039L16.3275 18.1055C15.2517 18.8375 13.8627 19.252 12.2445 19.252C9.11388 19.252 6.45946 17.1399 5.50705 14.3003H1.5166V17.3912C3.55371 21.4434 7.7029 24.0008 12.2401 24.0008Z" fill="#34A853"></path>
+                <path d="M5.50253 14.3003C5.00236 12.8099 5.00236 11.1961 5.50253 9.70575V6.61481H1.51649C-0.18551 10.0056 -0.18551 14.0004 1.51649 17.3912L5.50253 14.3003Z" fill="#FBBC05"></path>
+                <path d="M12.2401 4.74966C13.9509 4.7232 15.6044 5.36697 16.8434 6.54867L20.2695 3.12262C18.1001 1.0855 15.2208 -0.034466 12.2401 0.000808666C7.7029 0.000808666 3.55371 2.55822 1.5166 6.61481L5.50264 9.70575C6.45064 6.86173 9.10947 4.74966 12.2401 4.74966Z" fill="#EA4335"></path>
+              </svg>
+              Google
+            </button>
+            <button class="flex items-center justify-center gap-2 h-12 px-4 rounded-lg border border-[#e6dedb] dark:border-gray-700 hover:bg-[#f4f1f0] dark:hover:bg-gray-800 bg-white dark:bg-transparent transition-colors text-[#181311] dark:text-white text-sm font-bold">
+              <svg class="w-5 h-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24V15.563H7.078V12.073H10.125V9.429C10.125 6.42 11.916 4.76 14.656 4.76C15.97 4.76 17.344 4.996 17.344 4.996V7.951H15.83C14.34 7.951 13.875 8.876 13.875 9.825V12.073H17.203L16.67 15.563H13.875V24C19.612 23.094 24 18.1 24 12.073Z"></path>
+              </svg>
+              Facebook
+            </button>
+          </div>
+
+          <!-- Footer Links -->
+          <div class="text-center pt-4">
+            <p class="text-[#896c61] dark:text-gray-400 text-sm">
+              Already have an account? 
+              <NuxtLink to="/auth/login" class="text-primary font-bold hover:underline">Log in</NuxtLink>
+            </p>
+            <div class="mt-8 text-xs text-[#896c61]/80 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
+              By signing up, you agree to our 
+              <a class="underline hover:text-primary" href="#">Terms &amp; Conditions</a> and 
+              <a class="underline hover:text-primary" href="#">Privacy Policy</a>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Absolute top right corner home link (desktop) -->
+      <div class="hidden lg:block absolute top-6 right-8">
+        <NuxtLink to="/" class="flex items-center gap-2 text-sm font-medium text-[#181311] dark:text-gray-300 hover:text-primary transition-colors">
+          Back to Home
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </NuxtLink>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 definePageMeta({
-  layout: 'auth'
+  layout: false
 })
 
 useHead({
-  title: 'Register'
+  title: 'Sign Up',
+  meta: [
+    { name: 'description', content: 'Create an account to explore the wonders of Sri Lanka' }
+  ]
 })
 
 const { register, loading } = useAuth()
