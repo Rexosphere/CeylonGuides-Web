@@ -95,4 +95,4 @@ npm run build
 
 ---
 
-Built for **Dev{thon} 3.0** by [Team Name]
+Built for **Dev{thon} 3.0** by Rexosphere
