@@ -20,9 +20,19 @@
         >
           <h4 class="font-bold text-neutral-dark dark:text-white">{{ hospital.name }}</h4>
           <p class="text-xs text-neutral-soft mt-1">{{ hospital.address }}</p>
-          <div class="flex items-center gap-3 mt-3">
-            <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">{{ hospital.type }}</span>
-            <span class="text-xs text-neutral-400">{{ hospital.distance }}</span>
+          <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center gap-2">
+              <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">{{ hospital.type }}</span>
+              <span class="text-xs text-neutral-400">{{ hospital.distance }}</span>
+            </div>
+            <a 
+              v-if="hospital.phone"
+              :href="`tel:${hospital.phone}`"
+              class="text-xs bg-primary/10 text-primary px-2 py-1 rounded font-medium hover:bg-primary hover:text-white transition-colors flex items-center gap-1"
+            >
+              <span class="material-symbols-outlined text-sm">call</span>
+              {{ hospital.phone }}
+            </a>
           </div>
         </div>
 
@@ -74,11 +84,12 @@ const { data: medicalResponse } = await useFetch<{
 
 const hospitals = computed(() => {
   const data = medicalResponse.value?.data || []
-  return data.map((h, index) => ({
+  return data.map((h: any, index: number) => ({
     name: h.name,
     address: h.description || 'Colombo, Sri Lanka',
     type: h.is_available_24x7 ? 'Open 24/7' : 'Daytime only',
     distance: `${(index + 1) * 0.8} km`,
+    phone: h.phone || h.phone_number || '',
     active: index === activeIndex.value
   }))
 })

@@ -101,22 +101,23 @@
               </div>
               <span class="text-sm text-slate-600 dark:text-slate-400">
                 {{ facility.average_rating?.toFixed(1) || 'No ratings' }}
-                <span v-if="facility.rating_count" class="text-slate-400">({{ facility.rating_count }})</span>
               </span>
             </div>
 
-            <!-- Cleanliness Badge (for restrooms) -->
-            <div v-if="facility.type === 'RESTROOM' && facility.cleanliness_score" class="mb-4">
-              <span 
-                :class="[
-                  'px-3 py-1 rounded-full text-xs font-semibold',
-                  facility.cleanliness_score >= 4 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' :
-                  facility.cleanliness_score >= 3 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' :
-                  'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
-                ]"
-              >
-                🧹 Cleanliness: {{ facility.cleanliness_score }}/5
-              </span>
+            <!-- Trust Badges -->
+            <div class="flex flex-wrap gap-2 mb-4">
+              <TrustBadge 
+                v-if="facility.rating_count"
+                type="confidence"
+                :value="facility.rating_count"
+                label="Community ratings"
+              />
+              <TrustBadge 
+                v-if="facility.type === 'RESTROOM' && facility.cleanliness_score"
+                type="hygiene"
+                :value="facility.cleanliness_score >= 4 ? 'A' : facility.cleanliness_score >= 3 ? 'B' : 'C'"
+                label="Cleanliness rating"
+              />
             </div>
 
             <!-- Safety Badge (for beaches) -->
@@ -214,16 +215,16 @@
               <button
                 v-for="i in 5"
                 :key="i"
-                @click="ratingForm.overall_rating = i"
+                @click="ratingForm.rating = i"
                 class="text-4xl hover:scale-110 transition-transform"
               >
-                <span :class="i <= ratingForm.overall_rating ? 'text-amber-400' : 'text-slate-300'">
-                  {{ i <= ratingForm.overall_rating ? '★' : '☆' }}
+                <span :class="i <= ratingForm.rating ? 'text-amber-400' : 'text-slate-300'">
+                  {{ i <= ratingForm.rating ? '★' : '☆' }}
                 </span>
               </button>
             </div>
             <p class="text-center text-sm text-slate-500 mt-2">
-              {{ ratingLabels[ratingForm.overall_rating - 1] }}
+              {{ ratingLabels[ratingForm.rating - 1] }}
             </p>
           </div>
 
@@ -312,9 +313,7 @@ const selectedFacility = ref<Facility | null>(null)
 const submitting = ref(false)
 
 const ratingForm = ref({
-  overall_rating: 5,
-  cleanliness_rating: 5,
-  safety_rating: 5,
+  rating: 5,
   comment: ''
 })
 
@@ -417,7 +416,7 @@ function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): nu
 function openRatingModal(facility: Facility) {
   selectedFacility.value = facility
   showRatingModal.value = true
-  ratingForm.value = { overall_rating: 5, cleanliness_rating: 5, safety_rating: 5, comment: '' }
+  ratingForm.value = { rating: 5, comment: '' }
 }
 
 async function submitRating() {

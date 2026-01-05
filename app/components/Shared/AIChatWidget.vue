@@ -193,6 +193,9 @@ function handleAction(action: string) {
     'phrasebook': '/phrasebook',
     'clean-dining': '/clean-dining',
     'facilities': '/facilities',
+    'accommodation': '/accommodation',
+    'weather': '/weather',
+    'money': '/money',
     'search': '/search'
   }
   
@@ -203,19 +206,35 @@ function handleAction(action: string) {
   }
 }
 
-// Format action labels
+// Format action labels with icons
 function formatActionLabel(action: string): string {
+  // Handle navigate: format - extract meaningful label
   if (action.startsWith('navigate:')) {
-    return '→ Go there'
+    const pathPart = action.replace('navigate:', '').split('?')[0] || ''
+    const page = pathPart.split('/').pop() ?? ''
+    const navLabels: Record<string, string> = {
+      'scam-alerts': '⚠️ View Alerts',
+      'safety-mode': '🛡️ Safety Mode',
+      'transport': '🚖 Transport',
+      'phrasebook': '📖 Phrases',
+      'clean-dining': '🍽️ Dining',
+      'facilities': '🚻 Facilities'
+    }
+    return navLabels[page] || '→ ' + page.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
   }
+  
+  // Predefined labels with emojis
   const labels: Record<string, string> = {
-    'scam-alerts': '⚠️ View Scams',
+    'scam-alerts': '⚠️ Scam Alerts',
     'emergency': '🚨 Emergency',
     'safety-mode': '🛡️ Safety Mode',
     'transport': '🚖 Transport',
     'phrasebook': '📖 Phrases',
     'clean-dining': '🍽️ Dining',
-    'facilities': '🚻 Facilities'
+    'facilities': '🚻 Facilities',
+    'accommodation': '🏨 Stay',
+    'weather': '🌦️ Weather',
+    'money': '💰 Money'
   }
   return labels[action] || action.charAt(0).toUpperCase() + action.slice(1).replace(/-/g, ' ')
 }
@@ -284,7 +303,8 @@ async function sendMessage(text: string) {
       messages.value.push({
         role: 'assistant',
         content: response.data.response,
-        suggestions: response.data.suggestions
+        suggestions: response.data.suggestions,
+        actions: (response.data as any).actions || []
       })
       
       // Handle navigation actions

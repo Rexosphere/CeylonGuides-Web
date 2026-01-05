@@ -155,9 +155,11 @@
             <div 
               v-for="alert in scamAlerts" 
               :key="alert.id"
+              :id="`scam-${alert.id}`"
               :class="[
                 'group relative bg-white dark:bg-background-dark rounded-xl border p-4 shadow-sm hover:shadow-md transition-all cursor-pointer',
-                getSeverityClass(alert.severity)
+                getSeverityClass(alert.severity),
+                selectedScamId === alert.id ? 'ring-2 ring-primary' : ''
               ]"
             >
               <div class="absolute top-4 right-4 text-xs font-medium text-gray-400">
@@ -185,16 +187,17 @@
                       <span class="material-symbols-outlined text-[16px]">location_on</span>
                       {{ alert.location?.name || 'Unknown location' }}
                     </div>
-                    <div class="flex items-center gap-1">
-                      <button 
-                        @click.stop="confirmAlert(alert.id)" 
-                        class="p-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 text-gray-400 hover:text-green-600 transition-colors"
-                      >
-                        <span class="material-symbols-outlined text-[18px]">thumb_up</span>
-                      </button>
-                      <span :class="['text-xs font-bold', alert.report_count > 20 ? 'text-green-600' : 'text-gray-400']">
-                        {{ alert.report_count }}
-                      </span>
+                    <div class="flex items-center gap-2">
+                      <!-- Trust Badges -->
+                      <TrustBadge 
+                        type="severity" 
+                        :value="alert.severity" 
+                      />
+                      <TrustBadge 
+                        type="confidence" 
+                        :value="alert.report_count" 
+                        label="Number of confirmations"
+                      />
                     </div>
                   </div>
                 </div>
@@ -355,8 +358,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import type { ScamAlert } from '~/composables/useApi'
+
+const route = useRoute()
 
 definePageMeta({
   layout: false
@@ -394,6 +399,43 @@ const userLocation = ref<{ lat: number; lng: number } | null>(null)
 const nearMeMode = ref(false)
 const radiusKm = ref(5)
 const gettingLocation = ref(false)
+
+// Selected scam for highlighting
+const selectedScamId = ref<string | null>(null)
+
+// Handle deep-link for report modal and scam ID
+onMounted(async () => {
+  if (route.query.openReport) {
+    const category = route.query.openReport as string
+    showReportModal.value = true
+    
+    // Pre-fill category based on query param
+    if (category === 'transport') {
+      reportForm.value.category = 'TRANSPORT_SCAM'
+    }
+  }
+  
+  // Handle ?id= deep-link to highlight specific scam
+  if (route.query.id) {
+    selectedScamId.value = route.query.id as string
+    
+    // Wait for data to load then scroll to the scam
+    nextTick(() => {
+      setTimeout(() => {
+        const element = document.getElementById(`scam-${selectedScamId.value}`)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          element.classList.add('ring-2', 'ring-primary')
+        }
+      }, 500) // Give time for data to load
+    })
+  }
+  
+  // Handle ?category= deep-link
+  if (route.query.category) {
+    selectedCategory.value = route.query.category as string
+  }
+})
 
 // Fetch scam alerts from API
 const { data: scamsResponse, pending, error, refresh } = await useFetch<{ 
@@ -573,6 +615,14 @@ function getSeverityColor(severity: string, category: string) {
     default:
       return 'bg-gray-50 dark:bg-gray-900/20 text-gray-500'
   }
+}
+
+function getDaysAgo(dateStr: string): number {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diffTime = Math.abs(now.getTime() - date.getTime())
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays
 }
 
 async function confirmAlert(id: string) {
