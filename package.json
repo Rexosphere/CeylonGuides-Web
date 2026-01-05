@@ -12,11 +12,9 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@nuxt/content": "^3.10.0",
     "@nuxt/eslint": "^1.12.1",
     "@nuxt/fonts": "^0.12.1",
     "@nuxt/image": "^2.0.0",
-    "better-sqlite3": "^12.5.0",
     "leaflet": "^1.9.4",
     "nuxt": "^4.2.2",
     "vue": "^3.5.26",
@@ -30,10 +28,5 @@
     "typescript": "^5.7.3",
     "vitest": "^2.0.0",
     "vue-tsc": "^2.1.10"
-  },
-  "pnpm": {
-  "onlyBuiltDependencies": [
-    "better-sqlite3"
-  ]
-}
+  }
 }
