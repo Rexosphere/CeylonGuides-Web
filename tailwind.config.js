@@ -13,10 +13,10 @@ export default {
         extend: {
             colors: {
                 // Safety Mode Colors (matching the exact reference HTML naming)
-                "primary": "#D94E3B", // Coral Orange - as the alert/primary action color
+                "primary": "#ee5f2b", // Updated Coral Orange
                 "secondary": "#006D77", // Deep Teal
-                "background-light": "#F9F7F2", // Off-white/Warm Sand light
-                "background-dark": "#2C3539", // Dark Charcoal
+                "background-light": "#f8f6f6", // Updated Off-white
+                "background-dark": "#221510", // Updated Dark background
                 "card-light": "#FFFBF5", // Slightly lighter warm sand
                 "card-dark": "#374146", // Slightly lighter charcoal
                 "accent-sand": "#E6DCCA", // Warm Sand

@@ -226,10 +226,60 @@
           Safety Mode
         </NuxtLink>
 
-        <!-- Login Button -->
-        <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full text-sm font-bold transition-all shadow-lg">
-          Login
-        </button>
+        <!-- Auth Section -->
+        <div v-if="!isAuthenticated" class="flex items-center gap-3">
+          <NuxtLink 
+            to="/auth/login"
+            class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full text-sm font-bold transition-all shadow-lg"
+          >
+            Login
+          </NuxtLink>
+        </div>
+        
+        <!-- User Dropdown (when authenticated) -->
+        <div 
+          v-else
+          class="relative"
+          @mouseenter="activeDropdown = 'user'"
+          @mouseleave="activeDropdown = null"
+        >
+          <button
+            class="flex items-center gap-2 transition-colors"
+            :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
+          >
+            <!-- User Avatar -->
+            <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+              <img 
+                v-if="user?.avatar_url" 
+                :src="user.avatar_url" 
+                :alt="user.name || 'User'"
+                class="w-full h-full object-cover"
+              />
+              <span v-else class="material-symbols-outlined text-primary text-lg">person</span>
+            </div>
+            <span class="text-sm font-medium hidden sm:inline">{{ user?.name || user?.email?.split('@')[0] }}</span>
+            <span class="material-symbols-outlined text-sm">expand_more</span>
+          </button>
+          
+          <Transition name="dropdown">
+            <div
+              v-if="activeDropdown === 'user'"
+              class="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2"
+            >
+              <div class="px-4 py-2 border-b border-gray-200 dark:border-white/10">
+                <p class="text-sm font-medium text-charcoal dark:text-white truncate">{{ user?.name || 'User' }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ user?.email }}</p>
+              </div>
+              <button 
+                @click="handleLogout"
+                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+              >
+                <span class="material-symbols-outlined text-lg">logout</span>
+                Logout
+              </button>
+            </div>
+          </Transition>
+        </div>
       </div>
 
       <!-- Mobile Menu Button -->
@@ -369,10 +419,51 @@
             Contact
           </NuxtLink>
 
-          <!-- Login Button -->
-          <button class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-full text-sm font-bold transition-all shadow-lg w-full mt-6">
-            Login
-          </button>
+          <!-- Auth Section (Mobile) -->
+          <div class="mt-6 pt-4 border-t border-gray-200 dark:border-white/10">
+            <template v-if="!isAuthenticated">
+              <NuxtLink 
+                to="/auth/login"
+                class="block w-full text-center bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-full text-sm font-bold transition-all shadow-lg"
+                @click="closeMobileMenu"
+              >
+                Login
+              </NuxtLink>
+              <NuxtLink 
+                to="/auth/register"
+                class="block w-full text-center mt-3 border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 py-3 rounded-full text-sm font-semibold transition-all"
+                @click="closeMobileMenu"
+              >
+                Create Account
+              </NuxtLink>
+            </template>
+            <template v-else>
+              <!-- User Info -->
+              <div class="flex items-center gap-3 px-3 py-2 mb-3">
+                <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+                  <img 
+                    v-if="user?.avatar_url" 
+                    :src="user.avatar_url" 
+                    :alt="user.name || 'User'"
+                    class="w-full h-full object-cover"
+                  />
+                  <span v-else class="material-symbols-outlined text-primary text-xl">person</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-charcoal dark:text-white truncate">{{ user?.name || 'User' }}</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ user?.email }}</p>
+                </div>
+              </div>
+              <!-- Logout Button -->
+              <button 
+                @click="handleLogout"
+                class="w-full flex items-center justify-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-6 py-3 rounded-full text-sm font-semibold transition-all hover:bg-red-100 dark:hover:bg-red-900/30"
+              >
+                <span class="material-symbols-outlined text-lg">logout</span>
+                Logout
+              </button>
+            </template>
+          </div>
         </nav>
       </div>
     </Transition>
@@ -390,6 +481,9 @@ const props = defineProps({
   }
 })
 
+// Auth state
+const { user, isAuthenticated, logout } = useAuth()
+
 const isMobileMenuOpen = ref(false)
 const activeDropdown = ref<string | null>(null)
 
@@ -399,6 +493,11 @@ const toggleMobileMenu = () => {
 
 const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
+}
+
+const handleLogout = async () => {
+  closeMobileMenu()
+  await logout()
 }
 </script>
 
