@@ -357,6 +357,28 @@ const { data: restaurantsResponse, pending, refresh } = await useFetch<{
   { watch: [selectedDietary, selectedHygiene, debouncedQuery] }
 )
 
+// Handle deep-links for specific restaurant
+const route = useRoute()
+
+onMounted(async () => {
+  // If ?id= in URL, find and open that restaurant
+  if (route.query.id) {
+    const restaurantId = route.query.id as string
+    
+    // Wait for data to load
+    await nextTick()
+    
+    // Find the restaurant
+    const restaurants = restaurantsResponse.value?.data || []
+    const found = restaurants.find(r => r.id === restaurantId)
+    
+    if (found) {
+      selectedRestaurant.value = found
+      showReviewModal.value = true
+    }
+  }
+})
+
 // Near Me mode state
 const userLocation = ref<{ lat: number; lng: number } | null>(null)
 const sortBy = ref<'relevance' | 'distance' | 'rating'>('relevance')

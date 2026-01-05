@@ -155,9 +155,11 @@
             <div 
               v-for="alert in scamAlerts" 
               :key="alert.id"
+              :id="`scam-${alert.id}`"
               :class="[
                 'group relative bg-white dark:bg-background-dark rounded-xl border p-4 shadow-sm hover:shadow-md transition-all cursor-pointer',
-                getSeverityClass(alert.severity)
+                getSeverityClass(alert.severity),
+                highlightedScamId === alert.id ? 'ring-2 ring-primary ring-offset-2' : ''
               ]"
             >
               <div class="absolute top-4 right-4 text-xs font-medium text-gray-400">
@@ -398,8 +400,11 @@ const nearMeMode = ref(false)
 const radiusKm = ref(5)
 const gettingLocation = ref(false)
 
-// Handle deep-link for report modal
-onMounted(() => {
+// Handle deep-links for report modal, category filter, or specific scam
+const highlightedScamId = ref<string | null>(null)
+
+onMounted(async () => {
+  // Handle openReport query param
   if (route.query.openReport) {
     const category = route.query.openReport as string
     showReportModal.value = true
@@ -408,6 +413,23 @@ onMounted(() => {
     if (category === 'transport') {
       reportForm.value.category = 'TRANSPORT_SCAM'
     }
+  }
+  
+  // Handle category filter from URL
+  if (route.query.category) {
+    selectedCategory.value = route.query.category as string
+  }
+  
+  // Handle specific scam ID - highlight and scroll to it
+  if (route.query.id) {
+    highlightedScamId.value = route.query.id as string
+    
+    // Wait for DOM update then scroll
+    await nextTick()
+    setTimeout(() => {
+      const element = document.getElementById(`scam-${highlightedScamId.value}`)
+      element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 500)
   }
 })
 
