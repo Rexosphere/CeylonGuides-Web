@@ -1,260 +1,145 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-red-600 to-red-800 text-white">
-    <!-- Header -->
-    <div class="bg-red-900/80 backdrop-blur-sm border-b border-red-700 p-4 sticky top-0 z-50">
-      <div class="max-w-4xl mx-auto flex items-center justify-between">
+  <div class="bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center p-4 font-lato transition-colors duration-300 bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark relative overflow-hidden">
+    <!-- Unsplash Background -->
+    <div class="absolute inset-0 z-0 opacity-10 pointer-events-none bg-[url('https://images.unsplash.com/photo-1586618428271-9b63897b7b13?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center mix-blend-overlay"></div>
+    
+    <!-- Ambient Glows -->
+    <div class="absolute top-0 right-0 w-96 h-96 bg-secondary/10 dark:bg-secondary/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-primary/10 dark:bg-primary/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+
+    <main class="relative z-10 w-full max-w-lg bg-white/90 dark:bg-card-dark/95 glass-effect rounded-3xl shadow-soft dark:shadow-glow border border-accent-sand/50 dark:border-secondary/30 overflow-hidden flex flex-col max-h-[90vh]">
+      <!-- Header -->
+      <header class="bg-red-600 text-white p-5 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center animate-pulse">
-            <span class="text-2xl">🚨</span>
+          <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
+            <span class="material-icons-round text-2xl">emergency_share</span>
           </div>
           <div>
-            <h1 class="text-xl font-bold">Safety Mode</h1>
-            <p class="text-sm text-red-200">Emergency assistance ready</p>
+            <h1 class="font-display font-bold text-lg leading-tight">Safety Mode</h1>
+            <p class="text-xs text-white/80 font-light">Emergency assistance ready</p>
           </div>
         </div>
-        <NuxtLink to="/" class="flex items-center gap-2 text-sm bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors">
-          <span class="material-symbols-outlined text-sm">close</span>
+        <NuxtLink to="/" class="flex items-center gap-1 bg-black/20 hover:bg-black/30 transition px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm group">
+          <span class="material-icons-round text-sm group-hover:rotate-90 transition-transform">close</span>
           Exit
         </NuxtLink>
-      </div>
-    </div>
+      </header>
 
-    <!-- Loading State -->
-    <div v-if="isLoadingLocation" class="max-w-4xl mx-auto p-6 text-center py-20">
-      <div class="animate-pulse">
-        <span class="material-symbols-outlined text-6xl mb-4">location_searching</span>
-        <p class="text-xl mb-2">Getting your location...</p>
-        <p class="text-red-200">This helps us show nearby threats and resources</p>
-      </div>
-    </div>
+      <!-- Scrollable Content -->
+      <div class="overflow-y-auto p-5 space-y-6">
+        
+        <!-- Emergency Contacts Section -->
+        <section class="bg-red-50 dark:bg-red-900/10 rounded-2xl p-5 border border-red-100 dark:border-red-900/20">
+          <div class="flex items-center gap-2 mb-4 text-primary">
+            <span class="material-icons-round">contact_phone</span>
+            <h2 class="font-display font-bold text-lg">Emergency Contacts</h2>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Police -->
+            <a class="group bg-white dark:bg-card-dark border border-gray-100 dark:border-gray-700 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-primary transition-all duration-200 flex items-center gap-3" href="tel:119">
+              <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/40 text-primary flex items-center justify-center shrink-0">
+                <span class="material-icons-round text-xl">local_police</span>
+              </div>
+              <div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide">Police Emergency</p>
+                <p class="text-2xl font-bold text-primary group-hover:scale-105 origin-left transition-transform">119</p>
+              </div>
+            </a>
 
-    <!-- Error State (but still show content) -->
-    <div v-if="error && !briefing" class="max-w-4xl mx-auto p-6">
-      <div class="bg-red-900/50 border border-red-700 rounded-xl p-6 text-center mb-6">
-        <span class="material-symbols-outlined text-3xl mb-2">location_disabled</span>
-        <p class="text-lg mb-4">{{ error }}</p>
-        <p class="text-red-200 text-sm mb-4">Using default location (Colombo). Enable location for better results.</p>
-        <button 
-          @click="getLocation" 
-          class="bg-white text-red-600 px-6 py-3 rounded-lg font-semibold hover:bg-red-50 transition-colors"
-        >
-          <span class="material-symbols-outlined align-middle mr-1">refresh</span>
-          Try Again
+            <!-- Ambulance -->
+            <a class="group bg-white dark:bg-card-dark border border-gray-100 dark:border-gray-700 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-primary transition-all duration-200 flex items-center gap-3" href="tel:110">
+              <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/40 text-primary flex items-center justify-center shrink-0">
+                <span class="material-icons-round text-xl">medical_services</span>
+              </div>
+              <div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide">Ambulance</p>
+                <p class="text-2xl font-bold text-primary group-hover:scale-105 origin-left transition-transform">110</p>
+              </div>
+            </a>
+
+            <!-- National Hospital -->
+            <a class="group bg-gray-50 dark:bg-gray-800/40 border border-transparent hover:border-primary/30 p-3 rounded-xl flex items-center gap-3 transition-colors" href="tel:0112421052">
+              <div class="w-8 h-8 rounded-full bg-white dark:bg-gray-700 text-primary flex items-center justify-center shadow-sm shrink-0">
+                <span class="material-icons-round text-sm">local_hospital</span>
+              </div>
+              <div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">National Hospital</p>
+                <p class="text-sm font-bold text-gray-800 dark:text-gray-200">011-2421052</p>
+              </div>
+            </a>
+
+            <!-- Tourist Police -->
+            <a class="group bg-gray-50 dark:bg-gray-800/40 border border-transparent hover:border-primary/30 p-3 rounded-xl flex items-center gap-3 transition-colors" href="tel:1912">
+              <div class="w-8 h-8 rounded-full bg-white dark:bg-gray-700 text-primary flex items-center justify-center shadow-sm shrink-0">
+                <span class="material-icons-round text-sm">support_agent</span>
+              </div>
+              <div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Tourist Police</p>
+                <p class="text-sm font-bold text-gray-800 dark:text-gray-200">1912</p>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <!-- Emergency Phrases Section -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-2 mb-2 text-secondary dark:text-accent-cyan">
+            <span class="material-icons-round">translate</span>
+            <h2 class="font-display font-bold text-lg">Say This (Emergency Phrases)</h2>
+          </div>
+
+          <div class="bg-accent-sand/20 dark:bg-gray-800/30 p-4 rounded-xl border border-accent-sand/30 dark:border-gray-700 relative overflow-hidden group">
+            <div class="absolute right-0 top-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span class="material-icons-round text-6xl">campaign</span>
+            </div>
+            <p class="text-xs font-bold text-secondary dark:text-accent-cyan uppercase mb-1">Help!</p>
+            <p class="text-xl font-serif text-gray-800 dark:text-gray-100 mb-1">උදව් කරන්න!</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 italic">Udaw karanna!</p>
+          </div>
+
+          <div class="bg-accent-sand/20 dark:bg-gray-800/30 p-4 rounded-xl border border-accent-sand/30 dark:border-gray-700 relative overflow-hidden group">
+            <div class="absolute right-0 top-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span class="material-icons-round text-6xl">local_police</span>
+            </div>
+            <p class="text-xs font-bold text-secondary dark:text-accent-cyan uppercase mb-1">Call the police</p>
+            <p class="text-xl font-serif text-gray-800 dark:text-gray-100 mb-1">පොලීසියට කතා කරන්න</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 italic">Polisiyata katha karanna</p>
+          </div>
+
+          <div class="bg-accent-sand/20 dark:bg-gray-800/30 p-4 rounded-xl border border-accent-sand/30 dark:border-gray-700 relative overflow-hidden group">
+            <div class="absolute right-0 top-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span class="material-icons-round text-6xl">medical_information</span>
+            </div>
+            <p class="text-xs font-bold text-secondary dark:text-accent-cyan uppercase mb-1">I need a doctor</p>
+            <p class="text-xl font-serif text-gray-800 dark:text-gray-100 mb-1">මට වෛද්‍යවරයෙක් අවශ්‍යයි</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 italic">Mata vaidyavarayek awashyai</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- Footer / AI Assistant -->
+      <div class="p-5 bg-gradient-to-r from-secondary to-[#004d55] dark:from-gray-800 dark:to-gray-900 text-white shrink-0 relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="relative z-10">
+          <div class="flex items-start gap-3 mb-4">
+            <div class="mt-1 bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
+              <span class="material-icons-round text-xl">smart_toy</span>
+            </div>
+            <div>
+              <h3 class="font-display font-bold text-lg">Not sure what to do?</h3>
+              <p class="text-sm text-gray-200 dark:text-gray-400 leading-relaxed max-w-xs">Our AI assistant can help guide you through any situation safely.</p>
+            </div>
+          </div>
+          <button @click="openAIChat" class="w-full bg-white text-secondary font-bold py-3.5 px-6 rounded-xl hover:bg-accent-cyan transition-colors shadow-lg flex items-center justify-center gap-2 group">
+            <span class="material-icons-round text-lg group-hover:animate-bounce">chat</span>
+            Ask AI Travel Assistant
+          </button>
+        </div>
+        <button aria-label="Quick Chat" class="absolute -top-6 right-6 bg-primary text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-20 border-2 border-white dark:border-gray-800">
+          <span class="material-icons-round">android</span>
         </button>
       </div>
-    </div>
-
-    <!-- Main Content -->
-    <div v-if="briefing" class="max-w-4xl mx-auto p-6 space-y-6 pb-20">
-      
-      <!-- Quick Call Buttons - BIGGEST -->
-      <section class="bg-red-900/50 backdrop-blur rounded-xl p-6 border border-red-700">
-        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
-          <span class="material-symbols-outlined">phone_in_talk</span>
-          Emergency Contacts
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <!-- Hardcoded critical numbers -->
-          <button
-            @click="callNumber('119')"
-            class="bg-white text-red-600 p-5 rounded-xl text-left hover:bg-red-50 transition-all hover:scale-[1.02] active:scale-95 shadow-lg"
-          >
-            <div class="flex items-center gap-3">
-              <span class="material-symbols-outlined text-3xl">local_police</span>
-              <div>
-                <div class="font-bold text-lg">Police Emergency</div>
-                <div class="text-3xl font-mono font-bold">119</div>
-              </div>
-            </div>
-          </button>
-          <button
-            @click="callNumber('110')"
-            class="bg-white text-red-600 p-5 rounded-xl text-left hover:bg-red-50 transition-all hover:scale-[1.02] active:scale-95 shadow-lg"
-          >
-            <div class="flex items-center gap-3">
-              <span class="material-symbols-outlined text-3xl">emergency</span>
-              <div>
-                <div class="font-bold text-lg">Ambulance</div>
-                <div class="text-3xl font-mono font-bold">110</div>
-              </div>
-            </div>
-          </button>
-          <button
-            @click="callNumber('011-2421052')"
-            class="bg-white/90 text-red-600 p-4 rounded-xl text-left hover:bg-red-50 transition-all hover:scale-[1.02] active:scale-95"
-          >
-            <div class="flex items-center gap-3">
-              <span class="material-symbols-outlined text-2xl">local_hospital</span>
-              <div>
-                <div class="font-semibold">National Hospital</div>
-                <div class="text-xl font-mono">011-2421052</div>
-              </div>
-            </div>
-          </button>
-          <button
-            @click="callNumber('1912')"
-            class="bg-white/90 text-red-600 p-4 rounded-xl text-left hover:bg-red-50 transition-all hover:scale-[1.02] active:scale-95"
-          >
-            <div class="flex items-center gap-3">
-              <span class="material-symbols-outlined text-2xl">support_agent</span>
-              <div>
-                <div class="font-semibold">Tourist Police</div>
-                <div class="text-xl font-mono">1912</div>
-              </div>
-            </div>
-          </button>
-        </div>
-        
-        <!-- Additional contacts from API -->
-        <div v-if="briefing.emergency.contacts.length > 0" class="mt-4 pt-4 border-t border-red-700">
-          <p class="text-sm text-red-200 mb-3">More contacts:</p>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            <button
-              v-for="contact in briefing.emergency.contacts.slice(0, 6)"
-              :key="contact.id"
-              @click="callNumber(contact.phone_number)"
-              class="bg-red-800/50 hover:bg-red-800 p-3 rounded-lg text-left text-sm transition-colors"
-            >
-              <div class="font-semibold truncate">{{ contact.name }}</div>
-              <div class="font-mono text-red-200">{{ contact.phone_number }}</div>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Emergency Phrases -->
-      <section class="bg-red-900/50 backdrop-blur rounded-xl p-6 border border-red-700">
-        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-          <span class="material-symbols-outlined">translate</span>
-          Say This (Emergency Phrases)
-        </h2>
-        
-        <div v-if="briefing.emergency.phrases.length > 0" class="space-y-3">
-          <button
-            v-for="phrase in briefing.emergency.phrases"
-            :key="phrase.english"
-            class="w-full bg-red-800/50 hover:bg-red-800 rounded-xl p-4 text-left transition-colors"
-            @click="speakPhrase(phrase.sinhala)"
-          >
-            <div class="flex justify-between items-start">
-              <div class="flex-1">
-                <div class="font-semibold text-red-100">{{ phrase.english }}</div>
-                <div class="text-2xl mt-2 font-medium">{{ phrase.sinhala }}</div>
-                <div class="text-sm text-red-300 mt-1 italic">{{ phrase.pronunciation }}</div>
-              </div>
-              <span class="material-symbols-outlined text-red-300 ml-2">volume_up</span>
-            </div>
-          </button>
-        </div>
-        
-        <!-- Fallback phrases if none from API -->
-        <div v-else class="space-y-3">
-          <div class="bg-red-800/50 rounded-xl p-4">
-            <div class="font-semibold text-red-100">Help!</div>
-            <div class="text-2xl mt-2">උදව් කරන්න!</div>
-            <div class="text-sm text-red-300 mt-1 italic">Udaw karanna!</div>
-          </div>
-          <div class="bg-red-800/50 rounded-xl p-4">
-            <div class="font-semibold text-red-100">Call the police</div>
-            <div class="text-2xl mt-2">පොලීසියට කතා කරන්න</div>
-            <div class="text-sm text-red-300 mt-1 italic">Polisiyata katha karanna</div>
-          </div>
-          <div class="bg-red-800/50 rounded-xl p-4">
-            <div class="font-semibold text-red-100">I need a doctor</div>
-            <div class="text-2xl mt-2">මට වෛද්‍යවරයෙක් අවශ්‍යයි</div>
-            <div class="text-sm text-red-300 mt-1 italic">Mata vaidyavarayek awashyai</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Nearby Threats -->
-      <section 
-        v-if="briefing.nearbyThreats && briefing.nearbyThreats.count > 0"
-        class="bg-orange-900/80 border-2 border-orange-500 rounded-xl p-6"
-      >
-        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-          <span class="material-symbols-outlined">warning</span>
-          {{ briefing.nearbyThreats.count }} Scam Alert(s) Nearby
-          <span v-if="briefing.nearbyThreats.highRiskCount" class="ml-auto bg-red-500 px-2 py-1 rounded text-xs">
-            {{ briefing.nearbyThreats.highRiskCount }} High Risk
-          </span>
-        </h2>
-        <div class="space-y-3">
-          <div
-            v-for="scam in briefing.nearbyThreats.scams.slice(0, 5)"
-            :key="scam.id"
-            class="bg-orange-800/50 rounded-xl p-4"
-          >
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex-1">
-                <div class="font-semibold">{{ scam.title }}</div>
-                <div class="text-sm text-orange-200 mt-1 flex items-center gap-2">
-                  <span>{{ scam.category?.replace(/_/g, ' ') }}</span>
-                  <span v-if="scam.distance" class="text-orange-300">• {{ scam.distance }} km away</span>
-                </div>
-              </div>
-              <span 
-                class="px-3 py-1 rounded-full text-xs font-bold shrink-0"
-                :class="{
-                  'bg-red-500': scam.severity === 'CRITICAL',
-                  'bg-red-400': scam.severity === 'HIGH',
-                  'bg-orange-500': scam.severity === 'MEDIUM',
-                  'bg-yellow-500 text-yellow-900': scam.severity === 'LOW'
-                }"
-              >
-                {{ scam.severity }}
-              </span>
-            </div>
-          </div>
-        </div>
-        <NuxtLink 
-          to="/scam-alerts" 
-          class="block mt-4 text-center bg-orange-700 hover:bg-orange-600 py-3 rounded-xl font-semibold transition-colors"
-        >
-          View All Scam Alerts →
-        </NuxtLink>
-      </section>
-
-      <!-- Embassies -->
-      <section 
-        v-if="briefing.emergency.embassies && briefing.emergency.embassies.length > 0"
-        class="bg-blue-900/50 backdrop-blur rounded-xl p-6 border border-blue-700"
-      >
-        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-          <span class="material-symbols-outlined">account_balance</span>
-          Embassies & Consulates
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <button
-            v-for="embassy in briefing.emergency.embassies.slice(0, 6)"
-            :key="embassy.id"
-            @click="callNumber(embassy.phone_number)"
-            class="bg-blue-800/50 hover:bg-blue-800 p-4 rounded-xl text-left transition-colors"
-          >
-            <div class="font-semibold">{{ embassy.name }}</div>
-            <div class="text-sm text-blue-200 mt-1">{{ embassy.address }}</div>
-            <div class="font-mono text-blue-100 mt-2">{{ embassy.phone_number }}</div>
-          </button>
-        </div>
-      </section>
-
-      <!-- Ask AI -->
-      <section class="bg-purple-900/50 backdrop-blur rounded-xl p-6 border border-purple-700">
-        <h2 class="text-xl font-bold mb-3 flex items-center gap-2">
-          <span class="material-symbols-outlined">smart_toy</span>
-          Not sure what to do?
-        </h2>
-        <p class="text-purple-200 mb-4">Our AI assistant can help guide you through any situation.</p>
-        <NuxtLink 
-          to="/"
-          class="block bg-white text-purple-700 py-4 rounded-xl text-center font-bold hover:bg-purple-50 transition-colors"
-        >
-          <span class="material-symbols-outlined align-middle mr-2">chat</span>
-          Ask AI Travel Assistant
-        </NuxtLink>
-      </section>
-
-    </div>
+    </main>
   </div>
 </template>
 
@@ -264,107 +149,44 @@ definePageMeta({
 })
 
 useHead({
-  title: 'Safety Mode - CeylonGuides',
+  title: 'Emergency Assistance Pop-up - CeylonGuide',
   meta: [
-    { name: 'theme-color', content: '#dc2626' }
+    { name: 'theme-color', content: '#D94E3B' }
+  ],
+  link: [
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap'
+    },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/icon?family=Material+Icons+Round'
+    }
   ]
 })
 
-interface SafetyBriefing {
-  success: boolean
-  location: { lat: number; lng: number; radius: number }
-  emergency: {
-    contacts: Array<{ id: string; name: string; phone_number: string; category: string }>
-    phrases: Array<{ english: string; sinhala: string; tamil: string; pronunciation: string }>
-    embassies: Array<{ id: string; name: string; address: string; phone_number: string }>
-  }
-  nearbyThreats: {
-    scams: Array<{ id: string; title: string; severity: string; category: string; distance?: number }>
-    count: number
-    highRiskCount: number
-  }
+function openAIChat() {
+  const router = useRouter()
+  router.push('/')
 }
-
-const config = useRuntimeConfig()
-const apiBase = config.public.apiBase
-
-const location = ref<{ lat: number; lng: number } | null>(null)
-const isLoadingLocation = ref(true)
-const briefing = ref<SafetyBriefing | null>(null)
-const error = ref<string | null>(null)
-
-async function getLocation() {
-  isLoadingLocation.value = true
-  error.value = null
-  
-  if (!navigator.geolocation) {
-    error.value = 'Geolocation not supported by your browser'
-    await loadWithDefaultLocation()
-    return
-  }
-  
-  navigator.geolocation.getCurrentPosition(
-    async (position) => {
-      location.value = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      }
-      await loadBriefing()
-      isLoadingLocation.value = false
-    },
-    async () => {
-      error.value = 'Location access denied'
-      await loadWithDefaultLocation()
-    },
-    { timeout: 10000 }
-  )
-}
-
-async function loadWithDefaultLocation() {
-  // Default to Colombo
-  location.value = { lat: 6.9271, lng: 79.8612 }
-  await loadBriefing()
-  isLoadingLocation.value = false
-}
-
-async function loadBriefing() {
-  if (!location.value) return
-  
-  try {
-    briefing.value = await $fetch<SafetyBriefing>(`${apiBase}/api/safety/briefing/nearby`, {
-      params: {
-        lat: location.value.lat,
-        lng: location.value.lng,
-        radius: 15
-      }
-    })
-  } catch (err) {
-    console.error('Failed to load briefing:', err)
-    // Still create a minimal briefing
-    briefing.value = {
-      success: false,
-      location: { ...location.value, radius: 15 },
-      emergency: { contacts: [], phrases: [], embassies: [] },
-      nearbyThreats: { scams: [], count: 0, highRiskCount: 0 }
-    }
-  }
-}
-
-function callNumber(number: string) {
-  window.location.href = `tel:${number.replace(/[^0-9+]/g, '')}`
-}
-
-function speakPhrase(text: string) {
-  if ('speechSynthesis' in window) {
-    speechSynthesis.cancel()
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.lang = 'si-LK'
-    utterance.rate = 0.8
-    speechSynthesis.speak(utterance)
-  }
-}
-
-onMounted(() => {
-  getLocation()
-})
 </script>
+
+<style scoped>
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+::-webkit-scrollbar-thumb {
+    background: #D94E3B; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #b93c2b; 
+}
+.glass-effect {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+</style>

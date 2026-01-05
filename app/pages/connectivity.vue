@@ -17,11 +17,11 @@
 </template>
 
 <script setup lang="ts">
-import ConnectivityHero from '~/components/ConnectivityHero.vue'
-import ConnectivityProviders from '~/components/ConnectivityProviders.vue'
-import ConnectivityPackages from '~/components/ConnectivityPackages.vue'
-import ConnectivityLocator from '~/components/ConnectivityLocator.vue'
-import ConnectivityTips from '~/components/ConnectivityTips.vue'
+import ConnectivityHero from '~/components/Connectivity/ConnectivityHero.vue'
+import ConnectivityProviders from '~/components/Connectivity/ConnectivityProviders.vue'
+import ConnectivityPackages from '~/components/Connectivity/ConnectivityPackages.vue'
+import ConnectivityLocator from '~/components/Connectivity/ConnectivityLocator.vue'
+import ConnectivityTips from '~/components/Connectivity/ConnectivityTips.vue'
 
 useHead({
   title: 'Local SIM & Connectivity - CeylonGuide',

@@ -14,9 +14,9 @@
 </template>
 
 <script setup lang="ts">
-import SearchBar from '~/components/SearchBar.vue'
-import SearchResults from '~/components/SearchResults.vue'
-import SearchSidebar from '~/components/SearchSidebar.vue'
+import SearchBar from '~/components/Search/SearchBar.vue'
+import SearchResults from '~/components/Search/SearchResults.vue'
+import SearchSidebar from '~/components/Search/SearchSidebar.vue'
 
 useHead({
   title: 'Search Results - CeylonGuide',

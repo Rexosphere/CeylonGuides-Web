@@ -11,11 +11,11 @@
 </template>
 
 <script setup lang="ts">
-import BlogHero from '~/components/BlogHero.vue'
-import BlogFilters from '~/components/BlogFilters.vue'
-import BlogGrid from '~/components/BlogGrid.vue'
-import BlogNewsletter from '~/components/BlogNewsletter.vue'
-import BlogCTA from '~/components/BlogCTA.vue'
+import BlogHero from '~/components/Blog/BlogHero.vue'
+import BlogFilters from '~/components/Blog/BlogFilters.vue'
+import BlogGrid from '~/components/Blog/BlogGrid.vue'
+import BlogNewsletter from '~/components/Blog/BlogNewsletter.vue'
+import BlogCTA from '~/components/Blog/BlogCTA.vue'
 
 useHead({
   title: 'CeylonGuide - Blog & Travel Stories',

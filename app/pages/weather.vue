@@ -18,11 +18,11 @@
 </template>
 
 <script setup lang="ts">
-import WeatherHero from '~/components/WeatherHero.vue'
-import WeatherClimate from '~/components/WeatherClimate.vue'
-import WeatherForecasts from '~/components/WeatherForecasts.vue'
-import WeatherSeasonalGuide from '~/components/WeatherSeasonalGuide.vue'
-import WeatherPacking from '~/components/WeatherPacking.vue'
+import WeatherHero from '~/components/Weather/WeatherHero.vue'
+import WeatherClimate from '~/components/Weather/WeatherClimate.vue'
+import WeatherForecasts from '~/components/Weather/WeatherForecasts.vue'
+import WeatherSeasonalGuide from '~/components/Weather/WeatherSeasonalGuide.vue'
+import WeatherPacking from '~/components/Weather/WeatherPacking.vue'
 
 useHead({
   title: 'Weather & Best Times - CeylonGuide',

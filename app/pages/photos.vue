@@ -13,11 +13,11 @@
 </template>
 
 <script setup lang="ts">
-import PhotoHero from '~/components/PhotoHero.vue'
-import PhotoFilters from '~/components/PhotoFilters.vue'
-import PhotoSpots from '~/components/PhotoSpots.vue'
-import PhotoDroneRegulations from '~/components/PhotoDroneRegulations.vue'
-import PhotoTrending from '~/components/PhotoTrending.vue'
+import PhotoHero from '~/components/Photos/PhotoHero.vue'
+import PhotoFilters from '~/components/Photos/PhotoFilters.vue'
+import PhotoSpots from '~/components/Photos/PhotoSpots.vue'
+import PhotoDroneRegulations from '~/components/Photos/PhotoDroneRegulations.vue'
+import PhotoTrending from '~/components/Photos/PhotoTrending.vue'
 
 useHead({
   title: 'Photo Spots Guide - CeylonGuide',
