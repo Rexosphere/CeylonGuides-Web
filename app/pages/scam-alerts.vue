@@ -112,21 +112,68 @@
             </div>
           </div>
 
-          <!-- Near Me Risk Summary -->
-          <div v-if="nearMeMode && scamAlerts.length > 0" class="pb-4 -mx-6 px-6">
-            <div class="p-3 bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 rounded-r-lg">
-              <div class="flex items-start gap-2">
-                <span class="text-lg">⚠️</span>
+          <!-- Near Me Risk Gauge -->
+          <div v-if="nearMeMode" class="pb-4 -mx-6 px-6">
+            <!-- Risk Gauge Card -->
+            <div 
+              :class="[
+                'rounded-xl p-4 border-2',
+                riskScore >= 70 ? 'bg-red-50 dark:bg-red-900/20 border-red-500' :
+                riskScore >= 40 ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-500' :
+                'bg-green-50 dark:bg-green-900/20 border-green-500'
+              ]"
+            >
+              <div class="flex items-center justify-between mb-3">
                 <div>
-                  <div class="font-semibold text-orange-800 dark:text-orange-300 text-sm">
-                    {{ scamAlerts.filter(s => s.severity === 'HIGH' || s.severity === 'CRITICAL').length }} high-risk alert(s) within {{ radiusKm }}km
+                  <h3 
+                    :class="[
+                      'text-lg font-bold',
+                      riskScore >= 70 ? 'text-red-700 dark:text-red-300' :
+                      riskScore >= 40 ? 'text-orange-700 dark:text-orange-300' :
+                      'text-green-700 dark:text-green-300'
+                    ]"
+                  >
+                    {{ riskScore >= 70 ? '🔴 High Risk' : riskScore >= 40 ? '🟠 Moderate Risk' : '🟢 Low Risk' }}
+                  </h3>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+                    {{ scamAlerts.length }} alert{{ scamAlerts.length !== 1 ? 's' : '' }} 
+                    within {{ radiusKm }}km
+                  </p>
+                </div>
+                <div class="text-right">
+                  <div 
+                    :class="[
+                      'text-3xl font-bold',
+                      riskScore >= 70 ? 'text-red-600 dark:text-red-400' :
+                      riskScore >= 40 ? 'text-orange-600 dark:text-orange-400' :
+                      'text-green-600 dark:text-green-400'
+                    ]"
+                  >
+                    {{ riskScore }}
                   </div>
-                  <div class="text-xs text-orange-700 dark:text-orange-400 mt-0.5">
-                    Most common: {{ getMostCommonCategory() }}
+                  <div class="text-[10px] text-gray-500 uppercase tracking-wide">Risk Score</div>
+                </div>
+              </div>
+              
+              <!-- Risk Details -->
+              <div v-if="scamAlerts.length > 0" class="grid grid-cols-2 gap-3 text-xs">
+                <div class="bg-white/50 dark:bg-black/20 rounded-lg p-2">
+                  <div class="text-gray-500">Most Common</div>
+                  <div class="font-semibold text-gray-800 dark:text-gray-200 truncate">{{ getMostCommonCategory() }}</div>
+                </div>
+                <div class="bg-white/50 dark:bg-black/20 rounded-lg p-2">
+                  <div class="text-gray-500">High/Critical</div>
+                  <div class="font-semibold text-red-600 dark:text-red-400">
+                    {{ scamAlerts.filter(s => s.severity === 'HIGH' || s.severity === 'CRITICAL').length }}
                   </div>
                 </div>
               </div>
             </div>
+            
+            <!-- Location Privacy Note -->
+            <p class="text-[10px] text-gray-400 mt-2 text-center">
+              📍 Your location is used locally only and never stored.
+            </p>
           </div>
         </div>
 
@@ -155,9 +202,11 @@
             <div 
               v-for="alert in scamAlerts" 
               :key="alert.id"
+              :id="`scam-${alert.id}`"
               :class="[
                 'group relative bg-white dark:bg-background-dark rounded-xl border p-4 shadow-sm hover:shadow-md transition-all cursor-pointer',
-                getSeverityClass(alert.severity)
+                getSeverityClass(alert.severity),
+                highlightedScamId === alert.id ? 'ring-2 ring-primary ring-offset-2' : ''
               ]"
             >
               <div class="absolute top-4 right-4 text-xs font-medium text-gray-400">
@@ -398,8 +447,11 @@ const nearMeMode = ref(false)
 const radiusKm = ref(5)
 const gettingLocation = ref(false)
 
-// Handle deep-link for report modal
-onMounted(() => {
+// Handle deep-links for report modal, category filter, or specific scam
+const highlightedScamId = ref<string | null>(null)
+
+onMounted(async () => {
+  // Handle openReport query param
   if (route.query.openReport) {
     const category = route.query.openReport as string
     showReportModal.value = true
@@ -408,6 +460,23 @@ onMounted(() => {
     if (category === 'transport') {
       reportForm.value.category = 'TRANSPORT_SCAM'
     }
+  }
+  
+  // Handle category filter from URL
+  if (route.query.category) {
+    selectedCategory.value = route.query.category as string
+  }
+  
+  // Handle specific scam ID - highlight and scroll to it
+  if (route.query.id) {
+    highlightedScamId.value = route.query.id as string
+    
+    // Wait for DOM update then scroll
+    await nextTick()
+    setTimeout(() => {
+      const element = document.getElementById(`scam-${highlightedScamId.value}`)
+      element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 500)
   }
 })
 
@@ -506,6 +575,21 @@ function getMostCommonCategory(): string {
   const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1])
   return sorted[0]?.[0]?.replace(/_/g, ' ') || 'Various'
 }
+
+// Calculate weighted risk score (0-100)
+const riskScore = computed(() => {
+  if (scamAlerts.value.length === 0) return 0
+  
+  const weights: Record<string, number> = { CRITICAL: 10, HIGH: 5, MEDIUM: 2, LOW: 1 }
+  const total = scamAlerts.value.reduce((sum, scam) => {
+    return sum + (weights[scam.severity] || 1)
+  }, 0)
+  
+  // Normalize: more alerts = higher score, weighted by severity
+  const avgWeight = total / scamAlerts.value.length
+  const countFactor = Math.min(scamAlerts.value.length / 5, 2) // Cap at 2x for 10+ alerts
+  return Math.min(100, Math.round(avgWeight * 10 * countFactor))
+})
 
 // Handle map click for reporting
 function handleMapReport(coords: { lat: number; lng: number }) {

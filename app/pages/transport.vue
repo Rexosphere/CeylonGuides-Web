@@ -68,7 +68,37 @@
                 </button>
                 
                 <p class="text-xs text-teal-100/80 italic mt-3">*Always negotiate before getting in if not using a meter.</p>
+                
+                <!-- Trust Signal -->
+                <div class="mt-4 pt-3 border-t border-white/20 text-center">
+                  <p class="text-xs text-teal-100/80">✓ Based on official transport authority rates</p>
+                  <p class="text-[10px] text-teal-100/60">Updated January 2026</p>
+                </div>
               </div>
+            </div>
+          </div>
+          
+          <!-- Common Routes Quick Access -->
+          <div class="px-6 pb-4">
+            <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Popular Routes</h3>
+            <div class="space-y-2">
+              <button
+                v-for="route in commonRoutes"
+                :key="route.name"
+                @click="fillRoute(route)"
+                class="w-full p-3 rounded-xl border border-warm-sand dark:border-white/10 bg-white dark:bg-[#221510] hover:border-teal-deep hover:bg-light-cyan/20 dark:hover:bg-teal-deep/10 text-left transition-all group"
+              >
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="font-semibold text-sm text-text-main dark:text-white group-hover:text-teal-deep">{{ route.name }}</div>
+                    <div class="text-xs text-text-muted mt-0.5">{{ route.from }} → {{ route.to }}</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-xs text-text-muted">~{{ route.distance }}km</div>
+                    <div class="text-sm font-bold text-teal-deep">LKR {{ route.estimatedMin.toLocaleString() }}-{{ route.estimatedMax.toLocaleString() }}</div>
+                  </div>
+                </div>
+              </button>
             </div>
           </div>
 
@@ -314,6 +344,41 @@ const transportTypes = [
   { id: 'BUS' as const, name: 'Bus', icon: 'directions_bus' },
   { id: 'TRAIN' as const, name: 'Train', icon: 'train' },
 ]
+
+// Common tourist routes for quick access
+const commonRoutes = [
+  {
+    name: 'Airport → Colombo',
+    from: 'Bandaranaike Airport',
+    to: 'Colombo Fort',
+    distance: 35,
+    estimatedMin: 1750,
+    estimatedMax: 2450
+  },
+  {
+    name: 'Colombo → Galle',
+    from: 'Colombo Fort',
+    to: 'Galle Fort',
+    distance: 116,
+    estimatedMin: 5800,
+    estimatedMax: 8120
+  },
+  {
+    name: 'Kandy → Sigiriya',
+    from: 'Kandy',
+    to: 'Sigiriya',
+    distance: 88,
+    estimatedMin: 4400,
+    estimatedMax: 6160
+  }
+]
+
+// Fill route inputs with preset values
+function fillRoute(route: typeof commonRoutes[0]) {
+  origin.value = route.from
+  destination.value = route.to
+  distanceKm.value = route.distance
+}
 </script>
 
 <style scoped>
