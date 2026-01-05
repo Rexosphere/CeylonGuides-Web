@@ -362,6 +362,23 @@ const userLocation = ref<{ lat: number; lng: number } | null>(null)
 const sortBy = ref<'relevance' | 'distance' | 'rating'>('relevance')
 const gettingLocation = ref(false)
 
+// Route for deep-links
+const route = useRoute()
+
+// Handle deep-links on mount
+onMounted(() => {
+  // Handle ?id= deep-link to open restaurant detail
+  if (route.query.id) {
+    const restaurantId = route.query.id as string
+    const restaurants = restaurantsResponse.value?.data || []
+    const found = restaurants.find(r => r.id === restaurantId)
+    if (found) {
+      selectedRestaurant.value = found
+      showReviewModal.value = true
+    }
+  }
+})
+
 // Enable location
 async function enableLocation() {
   if (!navigator.geolocation) {

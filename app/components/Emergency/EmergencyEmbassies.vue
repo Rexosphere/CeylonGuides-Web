@@ -67,11 +67,11 @@ const { data: embassiesResponse } = await useFetch<{
 
 const embassies = computed(() => {
   const data = embassiesResponse.value?.data || []
-  return data.map(e => ({
+  return data.map((e: any) => ({
     country: e.name.replace(' Embassy', '').replace(' High Commission', ''),
     flag: e.emoji || '🏛️',
     address: e.description || 'Colombo, Sri Lanka',
-    phone: e.phone_number
+    phone: e.phone || e.phone_number || ''
   }))
 })
 

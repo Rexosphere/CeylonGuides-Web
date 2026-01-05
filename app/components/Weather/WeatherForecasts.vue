@@ -121,17 +121,25 @@ async function loadWeather() {
             humidity?: number
             wind_speed?: number
           }
+          // Also support flat structure
+          temperature?: number
+          condition?: string
+          humidity?: number
+          wind_speed?: number
         }
       }>(`${apiBase}/api/safety/weather/current`, {
         params: { lat: district.lat, lng: district.lng }
       })
       
-      if (response.success && response.data?.current) {
+      // Handle both nested (data.current) and flat (data) response structures
+      const current = response.data?.current || response.data
+      if (response.success && current) {
         weatherData.value[district.name] = {
-          temperature: response.data.current.temperature ?? 28,
-          description: response.data.current.description ?? 'Partly cloudy',
-          humidity: response.data.current.humidity ?? 75,
-          windSpeed: response.data.current.wind_speed ?? 12,
+          temperature: current.temperature ?? 28,
+          // Handle both 'description' and 'condition' field names
+          description: (current as any).description || (current as any).condition || 'Partly cloudy',
+          humidity: current.humidity ?? 75,
+          windSpeed: current.wind_speed ?? 12,
           lastUpdated: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
         }
       } else {
