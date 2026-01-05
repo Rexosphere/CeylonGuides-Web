@@ -355,8 +355,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import type { ScamAlert } from '~/composables/useApi'
+
+const route = useRoute()
 
 definePageMeta({
   layout: false
@@ -394,6 +396,19 @@ const userLocation = ref<{ lat: number; lng: number } | null>(null)
 const nearMeMode = ref(false)
 const radiusKm = ref(5)
 const gettingLocation = ref(false)
+
+// Handle deep-link for report modal
+onMounted(() => {
+  if (route.query.openReport) {
+    const category = route.query.openReport as string
+    showReportModal.value = true
+    
+    // Pre-fill category based on query param
+    if (category === 'transport') {
+      reportForm.value.category = 'TRANSPORT_SCAM'
+    }
+  }
+})
 
 // Fetch scam alerts from API
 const { data: scamsResponse, pending, error, refresh } = await useFetch<{ 

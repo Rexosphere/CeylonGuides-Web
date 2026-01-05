@@ -106,18 +106,38 @@
           <!-- Actions -->
           <div class="flex gap-3 pt-2">
             <button 
-              @click="copyFare"
-              class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 font-medium flex items-center justify-center gap-2 dark:text-white transition-colors"
+              @click="shareFare"
+              class="flex-1 px-4 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 font-medium flex items-center justify-center gap-2 transition-colors"
             >
-              <span class="material-symbols-outlined text-lg">content_copy</span>
-              {{ copied ? 'Copied!' : 'Copy Fare' }}
+              <span class="material-symbols-outlined text-lg">{{ shareSupported ? 'share' : 'content_copy' }}</span>
+              {{ copied ? 'Copied!' : (shareSupported ? 'Share' : 'Copy') }}
             </button>
             <button 
               @click="emit('close')"
-              class="flex-1 px-4 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 font-medium transition-colors"
+              class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 font-medium dark:text-white transition-colors"
             >
               Done
             </button>
+          </div>
+
+          <!-- Report Overcharge -->
+          <div class="border-t border-gray-200 dark:border-white/10 pt-5">
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl p-4">
+              <h3 class="font-semibold text-red-800 dark:text-red-300 mb-2 flex items-center gap-2">
+                <span class="material-symbols-outlined text-lg">report</span>
+                Charged more than this?
+              </h3>
+              <p class="text-sm text-red-700 dark:text-red-400 mb-3">
+                Help other travelers by reporting overcharging incidents
+              </p>
+              <NuxtLink 
+                to="/scam-alerts?openReport=transport"
+                @click="emit('close')"
+                class="block text-center bg-red-600 text-white py-2.5 rounded-lg hover:bg-red-700 font-medium transition-colors"
+              >
+                Report Transport Scam
+              </NuxtLink>
+            </div>
           </div>
 
           <!-- Footer tip -->
@@ -133,7 +153,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 const props = defineProps<{
   origin: string
@@ -148,6 +168,11 @@ const emit = defineEmits<{
 }>()
 
 const copied = ref(false)
+const shareSupported = ref(false)
+
+onMounted(() => {
+  shareSupported.value = 'share' in navigator
+})
 
 const transportTypeLabel = computed(() => {
   const labels: Record<string, string> = {
@@ -195,5 +220,23 @@ function copyFare() {
   setTimeout(() => {
     copied.value = false
   }, 2000)
+}
+
+async function shareFare() {
+  const text = `Fair ${transportTypeLabel.value} fare from ${props.origin} to ${props.destination}: ${props.fareRange.currency} ${props.fareRange.min}-${props.fareRange.max} (${props.distance}km)`
+  
+  if (shareSupported.value) {
+    try {
+      await navigator.share({
+        title: 'Fair Transport Fare - CeylonGuides',
+        text
+      })
+    } catch (err) {
+      // User cancelled or error, fallback to copy
+      copyFare()
+    }
+  } else {
+    copyFare()
+  }
 }
 </script>
