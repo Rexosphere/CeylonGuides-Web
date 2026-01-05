@@ -103,17 +103,57 @@
             <h3 class="text-xl font-bold text-charcoal font-display">Greetings & Politeness</h3>
           </div>
 
+          <!-- Emergency Phrase Set Banner -->
+          <div v-if="savedPhrases.length > 0" class="p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">⭐</span>
+              <div>
+                <h4 class="font-bold text-yellow-900">Emergency Phrase Set</h4>
+                <p class="text-sm text-yellow-700">{{ savedPhrases.length }} phrase{{ savedPhrases.length > 1 ? 's' : '' }} saved for quick access</p>
+              </div>
+            </div>
+            <NuxtLink 
+              to="/safety-mode"
+              class="shrink-0 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-medium transition-colors"
+            >
+              Use in Safety Mode
+            </NuxtLink>
+          </div>
+
           <!-- Phrases Loops -->
-          <template v-for="(phrase, index) in phrases" :key="index">
+          <template v-for="(phrase, index) in phrases" :key="phrase.id || index">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow gap-4">
-              <div class="flex flex-col gap-1">
+              <div class="flex flex-col gap-1 flex-1">
                 <p class="sinhala-text text-2xl font-bold text-charcoal">{{ phrase.native }}</p>
                 <p class="text-sm font-bold text-primary uppercase tracking-wide">{{ phrase.phonetic }}</p>
                 <p class="text-gray-500 text-sm mt-1">{{ phrase.english }}</p>
               </div>
-              <button class="shrink-0 h-12 w-12 rounded-full bg-background-light text-charcoal hover:bg-primary hover:text-white transition-all flex items-center justify-center border border-gray-200 group">
-                <span class="material-symbols-outlined group-hover:fill-current">play_arrow</span>
-              </button>
+              
+              <!-- Action Buttons -->
+              <div class="flex items-center gap-2">
+                <!-- Speak Button -->
+                <button 
+                  @click="speakPhrase(phrase.native)"
+                  class="shrink-0 h-12 w-12 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center border border-primary/20 group"
+                  title="Speak this phrase"
+                >
+                  <span class="material-symbols-outlined">volume_up</span>
+                </button>
+                
+                <!-- Save Button -->
+                <button 
+                  @click="toggleSavePhrase(phrase.id)"
+                  :class="[
+                    'shrink-0 h-12 w-12 rounded-full transition-all flex items-center justify-center border text-xl',
+                    isSaved(phrase.id) 
+                      ? 'bg-yellow-100 text-yellow-600 border-yellow-300' 
+                      : 'bg-background-light text-gray-400 border-gray-200 hover:border-yellow-300 hover:text-yellow-500'
+                  ]"
+                  :title="isSaved(phrase.id) ? 'Remove from emergency set' : 'Save to emergency set'"
+                >
+                  {{ isSaved(phrase.id) ? '★' : '☆' }}
+                </button>
+              </div>
             </div>
 
             <!-- Insert Etiquette Banner after 2nd item -->
@@ -180,7 +220,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import type { Phrase, EtiquetteTip } from '~/composables/useApi'
 
 const searchQuery = ref('')
@@ -221,13 +261,61 @@ const { data: tipsResponse } = await useFetch<{ success: boolean; data: Etiquett
 const phrases = computed(() => {
   const data = phrasesResponse.value?.data || []
   return data.map(p => ({
+    id: p.id,
     native: selectedLanguage.value === 'sinhala' ? p.sinhala : p.tamil,
+    sinhala: p.sinhala,
+    tamil: p.tamil,
     phonetic: p.pronunciation,
     english: p.english,
     category: p.category,
     cultural_context: p.cultural_context,
   }))
 })
+
+// Saved phrases state
+const savedPhrases = ref<string[]>([])
+
+onMounted(() => {
+  // Load saved phrases from localStorage
+  const saved = localStorage.getItem('ceylon_saved_phrases')
+  if (saved) {
+    try {
+      savedPhrases.value = JSON.parse(saved)
+    } catch (e) {
+      console.error('Failed to parse saved phrases:', e)
+    }
+  }
+})
+
+// Text-to-Speech function
+function speakPhrase(text: string) {
+  if (!('speechSynthesis' in window)) {
+    alert('Text-to-speech not supported in this browser')
+    return
+  }
+  
+  speechSynthesis.cancel() // Stop any ongoing speech
+  const utterance = new SpeechSynthesisUtterance(text)
+  utterance.lang = selectedLanguage.value === 'sinhala' ? 'si-LK' : 'ta-LK'
+  utterance.rate = 0.8 // Slower for learning
+  speechSynthesis.speak(utterance)
+}
+
+// Toggle save phrase
+function toggleSavePhrase(phraseId: string) {
+  const index = savedPhrases.value.indexOf(phraseId)
+  if (index > -1) {
+    savedPhrases.value.splice(index, 1)
+  } else {
+    savedPhrases.value.push(phraseId)
+  }
+  localStorage.setItem('ceylon_saved_phrases', JSON.stringify(savedPhrases.value))
+}
+
+// Check if phrase is saved
+function isSaved(phraseId: string): boolean {
+  return savedPhrases.value.includes(phraseId)
+}
 
 const templeTips = computed(() => {
   const data = tipsResponse.value?.data || []

@@ -79,6 +79,54 @@
             <span class="text-sm font-medium" :class="selectedHygiene === 'EXCELLENT' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">5-Lotus Hygiene</span>
           </button>
         </div>
+
+        <!-- Near Me & Sort Controls -->
+        <div class="flex items-center gap-3 flex-wrap">
+          <button
+            v-if="!userLocation"
+            @click="enableLocation"
+            :disabled="gettingLocation"
+            class="flex h-10 items-center gap-2 px-5 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 text-white rounded-full text-sm font-medium transition-colors"
+          >
+            <span v-if="gettingLocation" class="animate-spin">⏳</span>
+            <span v-else class="material-symbols-outlined text-[18px]">my_location</span>
+            {{ gettingLocation ? 'Getting location...' : 'Near Me' }}
+          </button>
+          
+          <div v-else class="flex gap-2">
+            <button
+              @click="sortBy = 'distance'"
+              :class="[
+                'flex h-10 items-center gap-2 px-4 rounded-full text-sm font-medium transition-colors',
+                sortBy === 'distance' 
+                  ? 'bg-dining-primary text-[#102022]' 
+                  : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 text-[#111718] dark:text-gray-200 hover:border-dining-primary'
+              ]"
+            >
+              <span class="material-symbols-outlined text-[18px]">near_me</span>
+              Nearest
+            </button>
+            <button
+              @click="sortBy = 'rating'"
+              :class="[
+                'flex h-10 items-center gap-2 px-4 rounded-full text-sm font-medium transition-colors',
+                sortBy === 'rating' 
+                  ? 'bg-dining-primary text-[#102022]' 
+                  : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 text-[#111718] dark:text-gray-200 hover:border-dining-primary'
+              ]"
+            >
+              <span class="material-symbols-outlined text-[18px]">star</span>
+              Top Rated
+            </button>
+            <button
+              @click="userLocation = null; sortBy = 'relevance'"
+              class="flex h-10 items-center px-3 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              title="Clear location"
+            >
+              <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Split View Layout -->
@@ -101,6 +149,14 @@
                 <span class="material-symbols-outlined text-sm">location_on</span>
                 {{ restaurant.location?.name || restaurant.district || 'Sri Lanka' }}
               </div>
+              <!-- Distance Badge (when Near Me active) -->
+              <div 
+                v-if="userLocation && restaurant.location?.latitude && restaurant.location?.longitude" 
+                class="absolute top-3 right-3 bg-blue-500 text-white px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1"
+              >
+                <span class="material-symbols-outlined text-sm">straighten</span>
+                {{ getDistance(userLocation.lat, userLocation.lng, restaurant.location.latitude, restaurant.location.longitude).toFixed(1) }} km
+              </div>
             </div>
             <div class="flex flex-col flex-grow p-5 justify-between">
               <div>
@@ -113,9 +169,25 @@
                 <p class="text-[#618689] dark:text-gray-400 text-sm mb-4 line-clamp-2">{{ restaurant.description || 'Delicious local cuisine' }}</p>
               </div>
               <div class="flex flex-wrap gap-2 mt-2">
-                <span v-if="restaurant.is_verified_halal" class="px-3 py-1 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 text-xs font-medium border border-purple-100 dark:border-purple-800">Halal</span>
+                <!-- Halal Badge -->
+                <span v-if="restaurant.is_verified_halal" class="px-3 py-1 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 text-xs font-medium border border-purple-100 dark:border-purple-800 flex items-center gap-1">
+                  <span>✓</span> Halal Certified
+                </span>
+                <!-- Dietary Options -->
                 <span v-for="option in (restaurant.dietary_options || []).slice(0, 2)" :key="option" class="px-3 py-1 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 text-xs font-medium border border-green-100 dark:border-green-800">{{ option }}</span>
-                <span v-if="restaurant.hygiene_rating === 'EXCELLENT'" class="px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-xs font-medium border border-blue-100 dark:border-blue-800">5-Lotus Hygiene</span>
+                <!-- Trust Badges -->
+                <TrustBadge 
+                  v-if="restaurant.hygiene_rating" 
+                  type="hygiene" 
+                  :value="restaurant.hygiene_rating"
+                  label="Hygiene certification"
+                />
+                <TrustBadge 
+                  v-if="restaurant.review_count"
+                  type="confidence"
+                  :value="restaurant.review_count"
+                  label="Community reviews"
+                />
               </div>
               <!-- Review Button -->
               <button @click="openReviewModal(restaurant)" class="mt-4 flex items-center gap-2 text-dining-primary text-sm font-medium hover:underline">
@@ -269,7 +341,6 @@ const reviewError = ref('')
 const reviewSuccess = ref(false)
 const reviewForm = ref({ rating: 0, comment: '' })
 
-// Fetch restaurants from API (watches debounced query)
 const { data: restaurantsResponse, pending, refresh } = await useFetch<{ 
   success: boolean
   data: Restaurant[]
@@ -286,7 +357,79 @@ const { data: restaurantsResponse, pending, refresh } = await useFetch<{
   { watch: [selectedDietary, selectedHygiene, debouncedQuery] }
 )
 
-const restaurants = computed(() => restaurantsResponse.value?.data || [])
+// Near Me mode state
+const userLocation = ref<{ lat: number; lng: number } | null>(null)
+const sortBy = ref<'relevance' | 'distance' | 'rating'>('relevance')
+const gettingLocation = ref(false)
+
+// Enable location
+async function enableLocation() {
+  if (!navigator.geolocation) {
+    alert('Geolocation not supported')
+    return
+  }
+  
+  gettingLocation.value = true
+  
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      userLocation.value = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      }
+      sortBy.value = 'distance'
+      gettingLocation.value = false
+    },
+    (error) => {
+      console.error('Location error:', error)
+      alert('Could not get location')
+      gettingLocation.value = false
+    },
+    { timeout: 10000 }
+  )
+}
+
+// Calculate distance (Haversine formula)
+function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371 // Earth radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLng = (lng2 - lng1) * Math.PI / 180
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return R * c
+}
+
+// Sorted restaurants based on sortBy and location
+const sortedRestaurants = computed(() => {
+  const list = [...(restaurantsResponse.value?.data || [])]
+  
+  if (sortBy.value === 'distance' && userLocation.value) {
+    list.sort((a, b) => {
+      const distA = getDistance(
+        userLocation.value!.lat,
+        userLocation.value!.lng,
+        a.location?.latitude || 0,
+        a.location?.longitude || 0
+      )
+      const distB = getDistance(
+        userLocation.value!.lat,
+        userLocation.value!.lng,
+        b.location?.latitude || 0,
+        b.location?.longitude || 0
+      )
+      return distA - distB
+    })
+  } else if (sortBy.value === 'rating') {
+    list.sort((a, b) => (b.rating || 0) - (a.rating || 0))
+  }
+  
+  return list
+})
+
+const restaurants = computed(() => sortedRestaurants.value)
 
 // Dietary filters
 const dietaryFilters = [

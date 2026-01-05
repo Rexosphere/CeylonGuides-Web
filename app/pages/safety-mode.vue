@@ -81,6 +81,42 @@
           </div>
         </section>
 
+        <!-- Your Saved Emergency Phrases -->
+        <section v-if="savedPhrasesList.length > 0" class="bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-5 border-2 border-yellow-400 dark:border-yellow-600">
+          <div class="flex items-center gap-2 mb-4 text-yellow-700 dark:text-yellow-400">
+            <span class="text-xl">⭐</span>
+            <h2 class="font-display font-bold text-lg">Your Emergency Phrases</h2>
+          </div>
+          <div class="space-y-3">
+            <div 
+              v-for="phrase in savedPhrasesList" 
+              :key="phrase.id"
+              class="bg-yellow-100 dark:bg-yellow-900/30 p-4 rounded-xl border border-yellow-200 dark:border-yellow-700 relative overflow-hidden group"
+            >
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex-1">
+                  <p class="text-xs font-bold text-yellow-700 dark:text-yellow-400 uppercase mb-1">{{ phrase.english }}</p>
+                  <p class="text-xl font-serif text-gray-800 dark:text-gray-100 mb-1">{{ phrase.sinhala }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 italic">{{ phrase.pronunciation }}</p>
+                </div>
+                <button 
+                  @click="speakPhrase(phrase.sinhala)"
+                  class="shrink-0 w-12 h-12 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl flex items-center justify-center transition-colors"
+                  title="Speak this phrase"
+                >
+                  <span class="material-icons-round">volume_up</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <NuxtLink 
+            to="/phrasebook"
+            class="mt-4 block text-center text-sm text-yellow-700 dark:text-yellow-400 hover:underline"
+          >
+            + Add more phrases
+          </NuxtLink>
+        </section>
+
         <!-- Emergency Phrases Section -->
         <section class="space-y-4">
           <div class="flex items-center gap-2 mb-2 text-secondary dark:text-accent-cyan">
@@ -144,9 +180,65 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
 definePageMeta({
   layout: false
 })
+
+// Get config
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
+
+// Saved phrases state
+const savedPhraseIds = ref<string[]>([])
+const savedPhrasesList = ref<Array<{
+  id: string
+  english: string
+  sinhala: string
+  tamil: string
+  pronunciation: string
+}>>([])
+
+onMounted(async () => {
+  // Load saved phrase IDs from localStorage
+  const saved = localStorage.getItem('ceylon_saved_phrases')
+  if (saved) {
+    try {
+      savedPhraseIds.value = JSON.parse(saved)
+      
+      // Fetch full phrase details if we have saved phrases
+      if (savedPhraseIds.value.length > 0) {
+        const response = await $fetch<{ success: boolean; data: any[] }>(`${apiBase}/api/phrases`)
+        if (response.success && response.data) {
+          savedPhrasesList.value = response.data
+            .filter((p: any) => savedPhraseIds.value.includes(p.id))
+            .map((p: any) => ({
+              id: p.id,
+              english: p.english,
+              sinhala: p.sinhala,
+              tamil: p.tamil,
+              pronunciation: p.pronunciation || p.phonetic_sinhala
+            }))
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load saved phrases:', e)
+    }
+  }
+})
+
+// Text-to-Speech function
+function speakPhrase(text: string) {
+  if (!('speechSynthesis' in window)) {
+    return
+  }
+  speechSynthesis.cancel()
+  const utterance = new SpeechSynthesisUtterance(text)
+  utterance.lang = 'si-LK'
+  utterance.rate = 0.8
+  speechSynthesis.speak(utterance)
+}
 
 useHead({
   title: 'Emergency Assistance Pop-up - CeylonGuide',

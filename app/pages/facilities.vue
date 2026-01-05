@@ -101,22 +101,23 @@
               </div>
               <span class="text-sm text-slate-600 dark:text-slate-400">
                 {{ facility.average_rating?.toFixed(1) || 'No ratings' }}
-                <span v-if="facility.rating_count" class="text-slate-400">({{ facility.rating_count }})</span>
               </span>
             </div>
 
-            <!-- Cleanliness Badge (for restrooms) -->
-            <div v-if="facility.type === 'RESTROOM' && facility.cleanliness_score" class="mb-4">
-              <span 
-                :class="[
-                  'px-3 py-1 rounded-full text-xs font-semibold',
-                  facility.cleanliness_score >= 4 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' :
-                  facility.cleanliness_score >= 3 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' :
-                  'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
-                ]"
-              >
-                🧹 Cleanliness: {{ facility.cleanliness_score }}/5
-              </span>
+            <!-- Trust Badges -->
+            <div class="flex flex-wrap gap-2 mb-4">
+              <TrustBadge 
+                v-if="facility.rating_count"
+                type="confidence"
+                :value="facility.rating_count"
+                label="Community ratings"
+              />
+              <TrustBadge 
+                v-if="facility.type === 'RESTROOM' && facility.cleanliness_score"
+                type="hygiene"
+                :value="facility.cleanliness_score >= 4 ? 'A' : facility.cleanliness_score >= 3 ? 'B' : 'C'"
+                label="Cleanliness rating"
+              />
             </div>
 
             <!-- Safety Badge (for beaches) -->

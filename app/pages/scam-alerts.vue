@@ -185,16 +185,17 @@
                       <span class="material-symbols-outlined text-[16px]">location_on</span>
                       {{ alert.location?.name || 'Unknown location' }}
                     </div>
-                    <div class="flex items-center gap-1">
-                      <button 
-                        @click.stop="confirmAlert(alert.id)" 
-                        class="p-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 text-gray-400 hover:text-green-600 transition-colors"
-                      >
-                        <span class="material-symbols-outlined text-[18px]">thumb_up</span>
-                      </button>
-                      <span :class="['text-xs font-bold', alert.report_count > 20 ? 'text-green-600' : 'text-gray-400']">
-                        {{ alert.report_count }}
-                      </span>
+                    <div class="flex items-center gap-2">
+                      <!-- Trust Badges -->
+                      <TrustBadge 
+                        type="severity" 
+                        :value="alert.severity" 
+                      />
+                      <TrustBadge 
+                        type="confidence" 
+                        :value="alert.report_count" 
+                        label="Number of confirmations"
+                      />
                     </div>
                   </div>
                 </div>
@@ -588,6 +589,14 @@ function getSeverityColor(severity: string, category: string) {
     default:
       return 'bg-gray-50 dark:bg-gray-900/20 text-gray-500'
   }
+}
+
+function getDaysAgo(dateStr: string): number {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diffTime = Math.abs(now.getTime() - date.getTime())
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays
 }
 
 async function confirmAlert(id: string) {
