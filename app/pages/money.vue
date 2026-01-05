@@ -13,11 +13,11 @@
 </template>
 
 <script setup lang="ts">
-import MoneyHero from '~/components/MoneyHero.vue'
-import MoneyStats from '~/components/MoneyStats.vue'
-import MoneyATM from '~/components/MoneyATM.vue'
-import MoneyBudget from '~/components/MoneyBudget.vue'
-import MoneyScamAlert from '~/components/MoneyScamAlert.vue'
+import MoneyHero from '~/components/Money/MoneyHero.vue'
+import MoneyStats from '~/components/Money/MoneyStats.vue'
+import MoneyATM from '~/components/Money/MoneyATM.vue'
+import MoneyBudget from '~/components/Money/MoneyBudget.vue'
+import MoneyScamAlert from '~/components/Money/MoneyScamAlert.vue'
 
 useHead({
   title: 'Money & Currency - CeylonGuide',

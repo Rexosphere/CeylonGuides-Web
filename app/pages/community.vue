@@ -35,13 +35,13 @@
 </template>
 
 <script setup lang="ts">
-import CommunityHero from '~/components/CommunityHero.vue'
-import CommunityTabs from '~/components/CommunityTabs.vue'
-import CommunityTrending from '~/components/CommunityTrending.vue'
-import CommunityDiscussions from '~/components/CommunityDiscussions.vue'
-import CommunityLocalGuides from '~/components/CommunityLocalGuides.vue'
-import CommunityActivityMap from '~/components/CommunityActivityMap.vue'
-import CommunityGuidelines from '~/components/CommunityGuidelines.vue'
+import CommunityHero from '~/components/Community/CommunityHero.vue'
+import CommunityTabs from '~/components/Community/CommunityTabs.vue'
+import CommunityTrending from '~/components/Community/CommunityTrending.vue'
+import CommunityDiscussions from '~/components/Community/CommunityDiscussions.vue'
+import CommunityLocalGuides from '~/components/Community/CommunityLocalGuides.vue'
+import CommunityActivityMap from '~/components/Community/CommunityActivityMap.vue'
+import CommunityGuidelines from '~/components/Community/CommunityGuidelines.vue'
 
 useHead({
   title: 'CeylonGuide - Community',

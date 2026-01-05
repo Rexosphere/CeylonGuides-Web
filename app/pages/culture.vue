@@ -14,12 +14,12 @@
 </template>
 
 <script setup lang="ts">
-import CultureHero from '~/components/CultureHero.vue'
-import CultureQuickGuidelines from '~/components/CultureQuickGuidelines.vue'
-import CultureDressCode from '~/components/CultureDressCode.vue'
-import CulturePhotography from '~/components/CulturePhotography.vue'
-import CultureDoDont from '~/components/CultureDoDont.vue'
-import CultureCalendar from '~/components/CultureCalendar.vue'
+import CultureHero from '~/components/Culture/CultureHero.vue'
+import CultureQuickGuidelines from '~/components/Culture/CultureQuickGuidelines.vue'
+import CultureDressCode from '~/components/Culture/CultureDressCode.vue'
+import CulturePhotography from '~/components/Culture/CulturePhotography.vue'
+import CultureDoDont from '~/components/Culture/CultureDoDont.vue'
+import CultureCalendar from '~/components/Culture/CultureCalendar.vue'
 
 useHead({
   title: 'Cultural Guide & Etiquette - CeylonGuide',

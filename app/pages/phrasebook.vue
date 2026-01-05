@@ -4,7 +4,7 @@
     <div class="relative w-full">
       <div 
         class="flex min-h-[420px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-4 relative" 
-        style='background-image: linear-gradient(rgba(16, 34, 31, 0.4) 0%, rgba(16, 34, 31, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuDjEjNjMJxFxsI3nRzu1Nj35p2tjXqo4i8r-a7opPNNryFOPJ1E2D2C5EDxtmBaJtdDMYsB25Uu_J5jAZVd7ZG3HPkwI8TlSOSYs5JdN67tZSVXTn4fH3kB4b-HE6xFvEs82iIRogq-MS0mR_7iX_eEye-odG7HQuCoE6JitFmi2DRUEjRWgi_u5wntLIBszrqCJvNrie8BVQfT8ZzgW_F_P2XnsISu4eRqps-7DpAHP4Vsd-frCDO1slceGZ0wSpavxKmJYAtyD6cT");'
+        style='background-image: linear-gradient(rgba(16, 34, 31, 0.4) 0%, rgba(16, 34, 31, 0.7) 100%), url("/images/downloaded_e51794257d3d.avif");'
       >
         <div class="flex flex-col gap-3 text-center max-w-[720px] z-10 pt-20">
           <h1 class="text-white text-4xl md:text-6xl font-black leading-tight tracking-tight drop-shadow-lg font-display">
@@ -161,7 +161,7 @@
           <!-- Ad Card -->
           <div 
             class="rounded-2xl bg-cover bg-center h-64 relative overflow-hidden group cursor-pointer" 
-            style='background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCY3ePGNrycYwMPrBmJjalSwcYWYjD2vokyFVPeqBlMkc141Cxhlh_KSzlq-CReNWeziyQwNNjpwCQ7wbbdKPBrV6Xmq9pi4Ntaa30ya4z1jJPv1bLyrKyKFc6DO-Pm6p3bN2oRO3NG3rS3o4-ZEaF47Pn0GPqS4Gm9cVdjhXBSlcREki5DlpQIOWLv1xOhFZrfX-xcE7WzkS_T2b_kKHKuYg5aU2ntW6FRqN3-UZE5ntfOvnjJYMiBAAYj3IFnSKjgNBeSuUNML8tz");'
+            style='background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url("/images/downloaded_c08da80504a7.avif");'
           >
             <div class="absolute bottom-0 left-0 p-6 w-full">
               <span class="inline-block px-3 py-1 bg-primary text-white text-xs font-bold rounded-full mb-2">Popular Tour</span>

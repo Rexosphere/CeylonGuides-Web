@@ -20,12 +20,12 @@
 </template>
 
 <script setup lang="ts">
-import AccommodationHero from '~/components/AccommodationHero.vue'
-import AccommodationFilters from '~/components/AccommodationFilters.vue'
-import AccommodationList from '~/components/AccommodationList.vue'
-import AccommodationMap from '~/components/AccommodationMap.vue'
-import Header from '~/components/Header.vue'
-import Footer from '~/components/Footer.vue'
+import AccommodationHero from '~/components/Accommodation/AccommodationHero.vue'
+import AccommodationFilters from '~/components/Accommodation/AccommodationFilters.vue'
+import AccommodationList from '~/components/Accommodation/AccommodationList.vue'
+import AccommodationMap from '~/components/Accommodation/AccommodationMap.vue'
+import Header from '~/components/Shared/Header.vue'
+import Footer from '~/components/Shared/Footer.vue'
 
 definePageMeta({
   layout: false

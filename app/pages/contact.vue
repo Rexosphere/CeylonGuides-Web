@@ -18,10 +18,10 @@
 </template>
 
 <script setup lang="ts">
-import ContactHero from '~/components/ContactHero.vue'
-import ContactTabs from '~/components/ContactTabs.vue'
-import ContactForm from '~/components/ContactForm.vue'
-import ContactSidebar from '~/components/ContactSidebar.vue'
+import ContactHero from '~/components/Contact/ContactHero.vue'
+import ContactTabs from '~/components/Contact/ContactTabs.vue'
+import ContactForm from '~/components/Contact/ContactForm.vue'
+import ContactSidebar from '~/components/Contact/ContactSidebar.vue'
 
 useHead({
   title: 'Contact & Support - CeylonGuide',

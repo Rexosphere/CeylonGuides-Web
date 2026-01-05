@@ -22,11 +22,11 @@
 </template>
 
 <script setup lang="ts">
-import EmergencyHero from '~/components/EmergencyHero.vue'
-import EmergencyQuickActions from '~/components/EmergencyQuickActions.vue'
-import EmergencyEmbassies from '~/components/EmergencyEmbassies.vue'
-import EmergencyPhrases from '~/components/EmergencyPhrases.vue'
-import EmergencyMedical from '~/components/EmergencyMedical.vue'
+import EmergencyHero from '~/components/Emergency/EmergencyHero.vue'
+import EmergencyQuickActions from '~/components/Emergency/EmergencyQuickActions.vue'
+import EmergencyEmbassies from '~/components/Emergency/EmergencyEmbassies.vue'
+import EmergencyPhrases from '~/components/Emergency/EmergencyPhrases.vue'
+import EmergencyMedical from '~/components/Emergency/EmergencyMedical.vue'
 
 
 useHead({

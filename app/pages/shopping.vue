@@ -12,10 +12,10 @@
 </template>
 
 <script setup lang="ts">
-import ShoppingHero from '~/components/ShoppingHero.vue'
-import ShoppingCuratedFinds from '~/components/ShoppingCuratedFinds.vue'
-import ShoppingDistricts from '~/components/ShoppingDistricts.vue'
-import ShoppingSmartGuide from '~/components/ShoppingSmartGuide.vue'
+import ShoppingHero from '~/components/Shopping/ShoppingHero.vue'
+import ShoppingCuratedFinds from '~/components/Shopping/ShoppingCuratedFinds.vue'
+import ShoppingDistricts from '~/components/Shopping/ShoppingDistricts.vue'
+import ShoppingSmartGuide from '~/components/Shopping/ShoppingSmartGuide.vue'
 
 useHead({
   title: 'Shopping Guide - CeylonGuide',
