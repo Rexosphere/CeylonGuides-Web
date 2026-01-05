@@ -275,9 +275,6 @@ const phrases = computed(() => {
 // Saved phrases state
 const savedPhrases = ref<string[]>([])
 
-// Get route for query params
-const route = useRoute()
-
 onMounted(() => {
   // Load saved phrases from localStorage
   const saved = localStorage.getItem('ceylon_saved_phrases')
@@ -287,18 +284,6 @@ onMounted(() => {
     } catch (e) {
       console.error('Failed to parse saved phrases:', e)
     }
-  }
-  
-  // Read category from URL query param
-  if (route.query.category) {
-    selectedCategory.value = route.query.category as string
-  }
-})
-
-// Watch for query changes (in case user navigates with same page)
-watch(() => route.query.category, (newCategory) => {
-  if (newCategory) {
-    selectedCategory.value = newCategory as string
   }
 })
 
