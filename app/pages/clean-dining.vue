@@ -1,9 +1,9 @@
 <template>
   <div class="bg-background-light dark:bg-dining-dark font-manrope text-[#111718] dark:text-white min-h-screen flex flex-col overflow-x-hidden">
-    <Header variant="solid" />
+    <!-- Header handled by layout -->
 
     <!-- Main Content -->
-    <main class="flex-grow w-full max-w-[1440px] mx-auto px-4 md:px-10 py-6 mt-[72px]">
+    <main class="flex-grow w-full max-w-[1440px] mx-auto px-4 md:px-10 py-6">
       <!-- Header & Filters Section -->
       <div class="flex flex-col gap-6 mb-8">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
@@ -379,9 +379,10 @@
 import { ref, computed } from 'vue'
 import type { Restaurant } from '~/types/api'
 
-definePageMeta({
-  layout: false
-})
+// Default layout enabled
+// definePageMeta({
+//   layout: 'default'
+// })
 
 // Get config
 const config = useRuntimeConfig()

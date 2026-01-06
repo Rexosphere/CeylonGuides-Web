@@ -270,6 +270,8 @@
             </button>
             <p v-else class="text-gray-400 text-sm">All reports loaded ({{ totalCount }} total)</p>
           </div>
+          <!-- Footer -->
+          <Footer />
         </div>
 
         <!-- Mobile Toggle Handle -->

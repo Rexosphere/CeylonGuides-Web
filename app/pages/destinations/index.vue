@@ -24,12 +24,20 @@ const apiBase = config.public.apiBase
 
 const selectedCategory = ref<string | null>(null)
 
-const { data: categoriesResponse } = await useFetch<{
-  success: boolean
-  data: Array<{ category: string; count: number }>
-}>(`${apiBase}/api/destinations/categories/list`)
+import destinationsData from '~/assets/data/destinations.json'
 
-const categories = computed(() => categoriesResponse.value?.data || [])
+// Derive unique categories from JSON data
+const categories = computed(() => {
+  const counts: Record<string, number> = {}
+  destinationsData.forEach(d => {
+    counts[d.category] = (counts[d.category] || 0) + 1
+  })
+  
+  return Object.entries(counts).map(([category, count]) => ({
+    category,
+    count
+  })).sort((a, b) => b.count - a.count)
+})
 
 // Page metadata
 useHead({
