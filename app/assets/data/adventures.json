@@ -1,0 +1,511 @@
+[
+    {
+        "id": 1,
+        "title": "Sigiriya Rock Fortress Climb",
+        "slug": "sigiriya-rock-fortress-climb",
+        "category": "Cultural",
+        "region": "Sigiriya",
+        "priceUSD": 30,
+        "difficulty": "moderate",
+        "duration": "3-4 hours",
+        "tags": [
+            "cultural",
+            "heritage",
+            "hiking",
+            "family-friendly"
+        ],
+        "shortDescription": "Scale the ancient Lion Rock fortress, a UNESCO World Heritage site built in the 5th century AD.",
+        "fullDescription": "Scale the ancient Lion Rock fortress of Sigiriya, a UNESCO World Heritage site built in the 5th century AD. At the summit you'll explore the ruins of a king's sky palace and enjoy breathtaking 360-degree views of lush jungle and villages below. The climb includes viewing famous rock frescoes and is rewarded by a sense of history and adventure.",
+        "includes": [
+            "Entry ticket",
+            "Guided tour available"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/sigiriya-climb.jpg",
+        "suggestedPhoto": "Tourists ascending the steep staircase carved into Sigiriya Rock with panoramic green jungle stretching out below.",
+        "isTrending": true
+    },
+    {
+        "id": 2,
+        "title": "Temple of the Sacred Tooth Ceremony",
+        "slug": "temple-of-the-tooth-ceremony",
+        "category": "Cultural",
+        "region": "Kandy",
+        "priceUSD": 10,
+        "difficulty": "easy",
+        "duration": "1-2 hours",
+        "tags": [
+            "cultural",
+            "spiritual",
+            "family-friendly"
+        ],
+        "shortDescription": "Witness the evening Puja ritual at Kandy's Temple of the Sacred Tooth Relic.",
+        "fullDescription": "Witness the evening Puja (ritual) at Kandy's Temple of the Sacred Tooth Relic, where drummers and monks perform sacred rites around Buddha's tooth relic. This revered temple (part of UNESCO's Sacred City of Kandy) offers insight into Sri Lanka's Buddhist heritage as you observe devotees making offerings amid incense and candlelight.",
+        "includes": [
+            "Temple entry"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/tooth-temple-ceremony.jpg",
+        "suggestedPhoto": "Worshippers inside the golden-lit Temple of the Tooth, with monks in orange robes and rhythmic drummers during the evening ceremony.",
+        "isTrending": true
+    },
+    {
+        "id": 3,
+        "title": "Galle Fort Heritage Walk",
+        "slug": "galle-fort-heritage-walk",
+        "category": "Cultural",
+        "region": "Galle",
+        "priceUSD": null,
+        "difficulty": "easy",
+        "duration": "2-3 hours",
+        "tags": [
+            "cultural",
+            "history",
+            "scenic",
+            "relaxed"
+        ],
+        "shortDescription": "Stroll the cobblestone streets of Galle Fort, a 17th-century Dutch fort town and UNESCO World Heritage Site.",
+        "fullDescription": "Stroll the cobblestone streets of Galle Fort, a 17th-century Dutch fort town and UNESCO World Heritage Site. You'll pass colonial churches, ramparts, and the iconic Galle lighthouse overlooking the ocean. Charming cafes and boutiques line the lanes, making it perfect for an afternoon of history and photography, especially at sunset on the fort walls.",
+        "includes": [],
+        "provider": null,
+        "heroImage": "/images/activities/galle-fort-walk.jpg",
+        "suggestedPhoto": "The white Galle lighthouse and old rampart walls at sunset, with locals and tourists walking along the fortifications above the Indian Ocean.",
+        "isTrending": true
+    },
+    {
+        "id": 4,
+        "title": "Cycling Ancient Polonnaruwa",
+        "slug": "cycling-ancient-polonnaruwa",
+        "category": "Cultural",
+        "region": "Polonnaruwa",
+        "priceUSD": 25,
+        "difficulty": "easy",
+        "duration": "4-5 hours",
+        "tags": [
+            "cultural",
+            "heritage",
+            "active",
+            "family-friendly"
+        ],
+        "shortDescription": "Pedal through the ruins of Polonnaruwa, a medieval capital city filled with crumbling temples and stone Buddha statues.",
+        "fullDescription": "Pedal through the ruins of Polonnaruwa, a medieval capital city filled with crumbling temples, stupas, and stone Buddha statues (UNESCO-listed). A gentle 10 km cycling tour lets you discover highlights like the Royal Palace and Gal Vihara Buddhas at your own pace. Monkeys chatter in the trees as you ride, adding to the adventure of exploring Sri Lanka's ancient history.",
+        "includes": [
+            "Bike rental",
+            "Park entry"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/polonnaruwa-cycling.jpg",
+        "suggestedPhoto": "Cyclists riding on a dirt path amid Polonnaruwa's ruins, passing by carved stone temples and curious monkeys in the foreground.",
+        "isTrending": false
+    },
+    {
+        "id": 5,
+        "title": "Jaffna Cultural Discovery",
+        "slug": "jaffna-cultural-discovery",
+        "category": "Cultural",
+        "region": "Jaffna",
+        "priceUSD": 50,
+        "difficulty": "easy",
+        "duration": "Full day",
+        "tags": [
+            "cultural",
+            "off-the-beaten-path",
+            "educational"
+        ],
+        "shortDescription": "Journey to Jaffna, Sri Lanka's Tamil heartland, to experience a distinct culture and history.",
+        "fullDescription": "Journey to Jaffna, Sri Lanka's Tamil heartland, to experience a distinct culture and history. Visit vibrant Hindu temples like Nallur Kandaswamy Kovil, explore the 17th-century Jaffna Fort, and taste authentic Jaffna cuisine (spicy curries and famous crab dishes). This immersive tour reveals Sri Lanka's rich Tamil heritage, far from the typical tourist trail.",
+        "includes": [
+            "Transportation",
+            "Guide",
+            "Lunch"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/jaffna-discovery.jpg",
+        "suggestedPhoto": "The colorful gopuram (tower) of Nallur Temple in Jaffna against a blue sky, with devotees and visitors gathered at its entrance.",
+        "isTrending": false
+    },
+    {
+        "id": 6,
+        "title": "Yala National Park Leopard Safari",
+        "slug": "yala-leopard-safari",
+        "category": "Wildlife",
+        "region": "Yala",
+        "priceUSD": 45,
+        "difficulty": "easy",
+        "duration": "Half day (4-5 hours)",
+        "tags": [
+            "wildlife",
+            "safari",
+            "adventure",
+            "photography"
+        ],
+        "shortDescription": "Embark on a thrilling jeep safari in Yala National Park, renowned for one of the world's highest leopard densities.",
+        "fullDescription": "Embark on a thrilling jeep safari in Yala National Park, renowned for one of the world's highest leopard densities. In this southeastern park of scrub jungles and lagoons, you might spot elusive leopards, herds of elephants, crocodiles, deer, and colorful birds in their natural habitat. A dawn or dusk game drive offers the best chance to see wildlife, including Yala's famous big cats.",
+        "includes": [
+            "Jeep with driver",
+            "Park entry",
+            "Tracker guide"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/yala-safari.jpg",
+        "suggestedPhoto": "A jeep stopped near a dirt track in Yala as a wild leopard crosses in front, with safari-goers eagerly snapping photos.",
+        "isTrending": true
+    },
+    {
+        "id": 7,
+        "title": "Minneriya Elephant Gathering",
+        "slug": "minneriya-elephant-gathering",
+        "category": "Wildlife",
+        "region": "North Central Province",
+        "priceUSD": 30,
+        "difficulty": "easy",
+        "duration": "3-4 hours",
+        "tags": [
+            "wildlife",
+            "safari",
+            "nature",
+            "family-friendly"
+        ],
+        "shortDescription": "Head out on an elephant safari in Minneriya National Park during the famous 'Gathering' of up to 300 wild elephants.",
+        "fullDescription": "Head out on an elephant safari in Minneriya National Park, especially during the dry-season 'Gathering' when up to 300 wild elephants congregate at the Minneriya reservoir. You'll observe family herds bathing, grazing, and playfully interacting - an awe-inspiring wildlife spectacle that is the largest meeting of Asian elephants in the world. Peacock, deer, and buffalo sightings add to this unforgettable experience.",
+        "includes": [
+            "Jeep with driver",
+            "Park entry"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/minneriya-elephants.jpg",
+        "suggestedPhoto": "A vast grassland by a lake in Minneriya with dozens of elephants - mothers, calves, and bulls - all grazing together under the evening sun.",
+        "isTrending": true
+    },
+    {
+        "id": 8,
+        "title": "Whale Watching Cruise",
+        "slug": "mirissa-whale-watching",
+        "category": "Wildlife",
+        "region": "Mirissa",
+        "priceUSD": 50,
+        "difficulty": "easy",
+        "duration": "3-5 hours",
+        "tags": [
+            "wildlife",
+            "marine",
+            "adventure",
+            "seasonal"
+        ],
+        "shortDescription": "Set sail at dawn from Mirissa on a whale watching boat to encounter blue whales - the planet's largest animal.",
+        "fullDescription": "Set sail at dawn from Mirissa on a whale watching boat to encounter the giants of the ocean. The waters off Mirissa are one of the best places in the world to see blue whales - the planet's largest animal - alongside sperm whales and playful dolphins. On this 3-5 hour cruise, you'll scan the horizon for spouts and tails, often rewarded with breathtaking sightings of whales breaching or slapping their fins.",
+        "includes": [
+            "Boat ride",
+            "Light breakfast",
+            "Life jacket"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/mirissa-whales.jpg",
+        "suggestedPhoto": "A tour boat on a calm Indian Ocean, with a massive blue whale's back and tail fluke emerging above the water as excited passengers look on.",
+        "isTrending": true
+    },
+    {
+        "id": 9,
+        "title": "Snorkeling at Pigeon Island",
+        "slug": "pigeon-island-snorkeling",
+        "category": "Adventure",
+        "region": "Trincomalee",
+        "priceUSD": 30,
+        "difficulty": "easy",
+        "duration": "3-4 hours",
+        "tags": [
+            "marine",
+            "adventure",
+            "nature",
+            "family-friendly"
+        ],
+        "shortDescription": "Discover vibrant undersea life at Pigeon Island National Park off Trincomalee.",
+        "fullDescription": "Discover vibrant undersea life at Pigeon Island National Park off Trincomalee. A short boat ride brings you to turquoise waters teeming with coral gardens, reef fish, and sometimes sea turtles or reef sharks. Snorkeling here is beginner-friendly and unforgettable - you'll swim over technicolor corals and schools of tropical fish in one of Sri Lanka's top marine parks. (Note: Best during April-September when seas are calm.)",
+        "includes": [
+            "Boat transfer",
+            "Snorkeling gear",
+            "Park entry"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/pigeon-island-snorkeling.jpg",
+        "suggestedPhoto": "Crystal-clear water revealing a coral reef below, with a snorkeler observing a school of bright tropical fish near Pigeon Island's white sandy shore.",
+        "isTrending": false
+    },
+    {
+        "id": 10,
+        "title": "Adam's Peak Sunrise Trek",
+        "slug": "adams-peak-sunrise-trek",
+        "category": "Hiking",
+        "region": "Central Highlands",
+        "priceUSD": null,
+        "difficulty": "strenuous",
+        "duration": "6-8 hours (overnight)",
+        "tags": [
+            "hiking",
+            "spiritual",
+            "adventure",
+            "strenuous"
+        ],
+        "shortDescription": "Climb Adam's Peak overnight for a magical sunrise at 2,243 m - a sacred pilgrimage for multiple faiths.",
+        "fullDescription": "Climb Adam's Peak (Sri Pada) overnight for a magical sunrise at 2,243 m. This sacred mountain has a revered footprint mark at its summit and is a pilgrimage site for Buddhists, Hindus, Christians, and Muslims. The hike involves 5,000+ steps lit by string lights before dawn. At sunrise, witness the peak's shadow casting a perfect triangle and join pilgrims in ringing the summit bell to mark your ascent.",
+        "includes": [],
+        "provider": null,
+        "heroImage": "/images/activities/adams-peak-trek.jpg",
+        "suggestedPhoto": "Dawn breaking at the summit of Adam's Peak, with pilgrims silhouetted around the shrine and a panoramic view of misty hills, as a golden sun rises over the clouds.",
+        "isTrending": true
+    },
+    {
+        "id": 11,
+        "title": "Horton Plains & World's End Hike",
+        "slug": "horton-plains-worlds-end",
+        "category": "Hiking",
+        "region": "Nuwara Eliya District",
+        "priceUSD": 30,
+        "difficulty": "moderate",
+        "duration": "4-5 hours",
+        "tags": [
+            "hiking",
+            "nature",
+            "moderate",
+            "scenic"
+        ],
+        "shortDescription": "Trek across the misty Horton Plains National Park to World's End, a dramatic cliff with an 870 m drop.",
+        "fullDescription": "Trek across the misty Horton Plains National Park, a highland plateau over 2,000 m high and part of a UNESCO World Heritage ecosystem. The 9.5 km loop trail leads you through grasslands and cloud forests to World's End, a dramatic cliff with an 870 m drop offering jaw-dropping valley views. Along the way, spot sambar deer grazing and pause at Baker's Falls. Hike early morning for the clearest views before the clouds roll in.",
+        "includes": [
+            "Park entry",
+            "Transport"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/horton-plains.jpg",
+        "suggestedPhoto": "The sheer precipice of World's End viewpoint with a traveler sitting cautiously at the edge, looking out over layers of green mountains and valleys disappearing into morning mist.",
+        "isTrending": true
+    },
+    {
+        "id": 12,
+        "title": "Ella's Little Adam's Peak & Nine Arch Bridge",
+        "slug": "ella-little-adams-peak-nine-arch",
+        "category": "Hiking",
+        "region": "Ella",
+        "priceUSD": null,
+        "difficulty": "easy",
+        "duration": "Half day",
+        "tags": [
+            "hiking",
+            "scenic",
+            "easy",
+            "family-friendly"
+        ],
+        "shortDescription": "Enjoy a half-day adventure in Ella hiking Little Adam's Peak and visiting the famous Nine Arch Bridge.",
+        "fullDescription": "Enjoy a half-day adventure in Ella by hiking up Little Adam's Peak (a gentle 45-minute walk through tea plantations) for sweeping sunrise views over the hill country. Then, wander to the famous Nine Arch Bridge, an architectural marvel from 1921 made of stone and brick without any steel support. Time your visit to see the iconic blue train chug across this jungle-fringed viaduct - a truly picturesque moment.",
+        "includes": [],
+        "provider": null,
+        "heroImage": "/images/activities/ella-nine-arch.jpg",
+        "suggestedPhoto": "Travelers standing on Ella's Nine Arch Bridge waving at a blue train as it passes, surrounded by dense green jungle and misty hills in the background.",
+        "isTrending": true
+    },
+    {
+        "id": 13,
+        "title": "White Water Rafting in Kitulgala",
+        "slug": "kitulgala-white-water-rafting",
+        "category": "Adventure",
+        "region": "Kitulgala",
+        "priceUSD": 25,
+        "difficulty": "moderate",
+        "duration": "2-3 hours",
+        "tags": [
+            "adventure",
+            "adrenaline",
+            "water-sports",
+            "teamwork"
+        ],
+        "shortDescription": "Paddle through thrilling rapids on the Kelani River in Kitulgala, Sri Lanka's adventure sports capital.",
+        "fullDescription": "Paddle through thrilling rapids on the Kelani River in Kitulgala, Sri Lanka's adventure sports capital. This fun white-water rafting experience (Grade II-III rapids) takes you through tropical jungle scenery and gentle pools where you can swim. Kitulgala is also famous as the filming location for 'The Bridge on the River Kwai', so you'll be navigating the same river used in the classic film. Expect a soaking wet adrenaline rush suitable for beginners and families.",
+        "includes": [
+            "Rafting equipment",
+            "Safety gear",
+            "Guide"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/kitulgala-rafting.jpg",
+        "suggestedPhoto": "A group of rafters in helmets and life vests paddling vigorously as their inflatable raft plunges through foamy rapids, with lush green jungle lining the riverbanks.",
+        "isTrending": false
+    },
+    {
+        "id": 14,
+        "title": "Surfing Lessons at Arugam Bay",
+        "slug": "arugam-bay-surfing-lessons",
+        "category": "Adventure",
+        "region": "Arugam Bay",
+        "priceUSD": 20,
+        "difficulty": "easy",
+        "duration": "2 hours",
+        "tags": [
+            "adventure",
+            "water-sports",
+            "beginner-friendly"
+        ],
+        "shortDescription": "Catch some waves at Arugam Bay, Sri Lanka's surf mecca known for its consistent breaks and laid-back beach vibe.",
+        "fullDescription": "Catch some waves at Arugam Bay, Sri Lanka's surf mecca known for its consistent breaks and laid-back beach vibe. Under the guidance of local instructors, beginners can learn to surf gentle waves at Baby Point or Whiskey Point, while experienced surfers tackle the famous Main Point. Warm waters, sandy breaks, and a chilled-out surf town atmosphere make this an ideal spot to hang ten and enjoy the ride.",
+        "includes": [
+            "Surfboard rental",
+            "Instructor"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/arugam-surfing.jpg",
+        "suggestedPhoto": "A surf instructor and student high-fiving on their surfboards in the shallow turquoise waters of Arugam Bay, with palm-fringed beach and other surfers in the background.",
+        "isTrending": false
+    },
+    {
+        "id": 15,
+        "title": "Tea Plantation Tour & Tasting",
+        "slug": "tea-plantation-tour-tasting",
+        "category": "Culinary",
+        "region": "Nuwara Eliya",
+        "priceUSD": 5,
+        "difficulty": "easy",
+        "duration": "1-2 hours",
+        "tags": [
+            "culinary",
+            "cultural",
+            "scenic",
+            "relaxing"
+        ],
+        "shortDescription": "Wander through emerald-green tea plantations and learn how world-famous Ceylon tea is made.",
+        "fullDescription": "Wander through emerald-green tea plantations in Sri Lanka's hill country and learn how world-famous Ceylon tea is made. At a working tea estate (e.g., Pedro or Lipton's Seat), you'll see tea pickers at work and tour the factory to witness the drying and rolling process. Finish with a tasting of freshly brewed highland tea while gazing at rolling hills - a serene experience blending flavor and scenery.",
+        "includes": [
+            "Factory tour",
+            "Tea tasting"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/tea-plantation.jpg",
+        "suggestedPhoto": "A close-up of a tea plucker's hands deftly picking bright green tea leaves, with rolling hills of tea bushes and a colonial-era tea factory in the distance.",
+        "isTrending": false
+    },
+    {
+        "id": 16,
+        "title": "Sri Lankan Cooking Class",
+        "slug": "sri-lankan-cooking-class",
+        "category": "Culinary",
+        "region": "Ella / Kandy",
+        "priceUSD": 25,
+        "difficulty": "easy",
+        "duration": "3-4 hours",
+        "tags": [
+            "culinary",
+            "hands-on",
+            "cultural",
+            "vegetarian-friendly"
+        ],
+        "shortDescription": "Join a local chef or family in a traditional cooking class to master Sri Lankan cuisine.",
+        "fullDescription": "Join a local chef or family in a traditional cooking class to master the art of Sri Lankan cuisine. You'll visit a produce market or garden to gather fresh ingredients, then learn to grind spices and cook classic dishes like rice and curry, hoppers, or spicy kottu roti. Under guidance, prepare a fragrant curry spread (usually vegetarian-friendly) and finally savor your homemade feast. It's a delicious way to experience Sri Lanka's rich flavors and hospitality.",
+        "includes": [
+            "Ingredients",
+            "Recipe booklet",
+            "Meal"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/cooking-class.jpg",
+        "suggestedPhoto": "Travelers gathered around a home kitchen table chopping vegetables and grinding spices in mortars, with colorful curries simmering in clay pots over a stove.",
+        "isTrending": false
+    },
+    {
+        "id": 17,
+        "title": "Ayurvedic Spa & Wellness Retreat",
+        "slug": "ayurvedic-spa-wellness-retreat",
+        "category": "Wellness",
+        "region": "Kandy / South Coast",
+        "priceUSD": 40,
+        "difficulty": "easy",
+        "duration": "1-2 hours",
+        "tags": [
+            "wellness",
+            "relaxation",
+            "cultural",
+            "spa"
+        ],
+        "shortDescription": "Rejuvenate with Sri Lanka's ancient Ayurvedic healing traditions, which date back over 3,000 years.",
+        "fullDescription": "Rejuvenate with Sri Lanka's ancient Ayurvedic healing traditions, which date back over 3,000 years. In a tranquil spa or wellness garden, indulge in an herbal oil massage, Shirodhara forehead oil treatment, or steam bath infused with local herbs. Skilled therapists use age-old techniques to balance mind and body, leaving you relaxed and refreshed. This holistic wellness experience offers a glimpse into a cornerstone of local culture focused on natural healing.",
+        "includes": [
+            "Massage treatment",
+            "Herbal tea"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/ayurveda-spa.jpg",
+        "suggestedPhoto": "A serene spa setting with a person lying face-down receiving a warm oil Ayurveda massage, surrounded by dimmed lights, candles, and fragrant lotus flowers.",
+        "isTrending": false
+    },
+    {
+        "id": 18,
+        "title": "Colombo Street Food Walk",
+        "slug": "colombo-street-food-walk",
+        "category": "Culinary",
+        "region": "Colombo",
+        "priceUSD": 30,
+        "difficulty": "easy",
+        "duration": "3 hours",
+        "tags": [
+            "culinary",
+            "urban",
+            "nightlife",
+            "cultural"
+        ],
+        "shortDescription": "Dive into Colombo's buzzing street food scene on an evening walking tour.",
+        "fullDescription": "Dive into Colombo's buzzing street food scene on an evening walking tour. Follow your guide through lively markets and roadside stalls to sample must-try Sri Lankan eats: taste kottu roti being chopped to a rhythmic clang, savor spicy isso vadei (shrimp fritters) on Galle Face Green, slurp a bowl of flavorful lamprais, and finish with sweet curd and treacle. As you snack, you'll mingle with locals and learn about the city's diverse culinary influences - a tasty adventure for the senses.",
+        "includes": [
+            "Guide",
+            "Food samples (5-7 stops)"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/colombo-street-food.jpg",
+        "suggestedPhoto": "A busy night street in Colombo with food carts, where a chef is theatrically chopping kottu roti on a hot griddle, sparks flying, and a crowd of eager locals and tourists gathered around waiting to eat.",
+        "isTrending": false
+    },
+    {
+        "id": 19,
+        "title": "Scenic Train Ride through Hill Country",
+        "slug": "kandy-ella-scenic-train",
+        "category": "Scenic",
+        "region": "Kandy to Ella",
+        "priceUSD": 10,
+        "difficulty": "easy",
+        "duration": "7 hours",
+        "tags": [
+            "scenic",
+            "relaxing",
+            "cultural",
+            "iconic"
+        ],
+        "shortDescription": "Sri Lanka's most scenic train journey from Kandy to Ella, winding past tea plantations and misty mountains.",
+        "fullDescription": "Sit back and soak up Sri Lanka's most scenic train journey from Kandy to Ella. The historic bright-blue train winds its way for 7 hours past emerald tea plantations, misty mountains, cascading waterfalls, and charming hill stations. Lean out of the open windows or doors (safely) for that perfect photo as you chug over bridges and through tunnels. This leisurely ride offers an immersive glimpse into local life - you'll often share laughs with friendly passengers and snack on freshly cut pineapple sold by vendors who hop on board.",
+        "includes": [
+            "Train ticket"
+        ],
+        "provider": null,
+        "heroImage": "/images/activities/kandy-ella-train.jpg",
+        "suggestedPhoto": "The iconic blue train curving through verdant tea hills, with passengers leaning happily out of the windows and a backdrop of clouds hugging the mountain peaks.",
+        "isTrending": true
+    },
+    {
+        "id": 20,
+        "title": "Stilt Fishing with Local Fishermen",
+        "slug": "stilt-fishing-experience",
+        "category": "Cultural",
+        "region": "Koggala (South Coast)",
+        "priceUSD": null,
+        "difficulty": "easy",
+        "duration": "30 minutes - 1 hour",
+        "tags": [
+            "local-culture",
+            "photography",
+            "relaxed",
+            "unique"
+        ],
+        "shortDescription": "Observe stilt fishermen perched on wooden poles in the shallow surf - a traditional method unique to Sri Lanka.",
+        "fullDescription": "Along the southern coast, stop to observe stilt fishermen, who perch on wooden poles planted in the shallow surf to catch fish - a traditional method unique to Sri Lanka. At dawn or dusk, you can chat with friendly fishermen and even try balancing on a stilt for a memorable photo (they'll lend a hand for a small tip). This authentic coastal scene, with fishermen silhouetted against the ocean horizon, offers a peaceful window into local life and an amazing photo opportunity.",
+        "includes": [],
+        "provider": null,
+        "heroImage": "/images/activities/stilt-fishing.jpg",
+        "suggestedPhoto": "A row of stilt fishermen at sunrise, sitting balanced on their poles above gentle ocean waves, with the sky painted in pastel oranges and pinks and a thin line of palm trees ashore.",
+        "isTrending": false
+    }
+]

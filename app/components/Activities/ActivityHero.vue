@@ -18,9 +18,20 @@
               <div class="flex items-center pl-3 text-gray-400">
                 <span class="material-symbols-outlined">search</span>
               </div>
-              <input class="flex-1 bg-transparent border-none focus:ring-0 text-sm md:text-base px-3 text-text-main dark:text-white placeholder:text-gray-400 focus:outline-none" placeholder="Search hiking, surfing, safari..." type="text"/>
-              <button class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-colors">
-                Explore
+              <input 
+                :value="modelValue"
+                @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+                class="flex-1 bg-transparent border-none focus:ring-0 text-sm md:text-base px-3 text-text-main dark:text-white placeholder:text-gray-400 focus:outline-none" 
+                placeholder="Search hiking, surfing, safari..." 
+                type="text"
+              />
+              <button 
+                v-if="modelValue"
+                type="button"
+                @click="$emit('update:modelValue', '')"
+                class="text-gray-400 hover:text-gray-600 px-2"
+              >
+                <span class="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
           </div>
@@ -29,3 +40,13 @@
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+defineProps<{
+  modelValue: string
+}>()
+
+defineEmits<{
+  (e: 'update:modelValue', value: string): void
+}>()
+</script>

@@ -9,9 +9,6 @@
               <h2 class="text-2xl md:text-3xl font-bold text-text-main dark:text-white">Trending Experiences</h2>
               <p class="text-text-muted mt-1">Top-rated adventures loved by travelers this week.</p>
             </div>
-            <a class="hidden sm:flex items-center gap-1 text-primary font-bold text-sm hover:translate-x-1 transition-transform" href="#">
-              View all <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-            </a>
           </div>
         </div>
       </div>
@@ -22,272 +19,280 @@
       <div class="layout-container flex justify-center">
         <div class="w-full max-w-[1440px] px-4 md:px-10">
           
-          <!-- Loading State -->
-          <div v-if="pending" class="flex justify-center py-12">
-            <div class="text-4xl animate-pulse">⏳</div>
-          </div>
-          
           <!-- Grid Container -->
-          <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div 
-              v-for="activity in activities" 
+              v-for="activity in filteredActivities" 
               :key="activity.id"
               :id="`activity-${activity.id}`"
-              class="group flex flex-col gap-3 cursor-pointer transition-all"
-              @click="openDetails(activity.id)"
+              class="group flex flex-col gap-3 cursor-pointer transition-all hover:scale-[1.02]"
+              @click="openDetails(activity)"
             >
               <div class="relative w-full aspect-[4/5] overflow-hidden rounded-xl">
                 <div class="absolute top-3 left-3 z-10 bg-white/90 dark:bg-black/60 backdrop-blur px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider text-text-main dark:text-white">
                   {{ activity.category }}
                 </div>
-                <div class="absolute top-3 right-3 z-10 text-white drop-shadow-md">
-                  <span class="material-symbols-outlined fill-current hover:text-primary transition-colors">favorite</span>
-                </div>
+                <button 
+                  class="absolute top-3 right-3 z-10 text-white drop-shadow-md hover:scale-110 transition-transform"
+                  @click.stop="toggleFavorite(activity.id)"
+                >
+                  <span class="material-symbols-outlined" :class="{ 'fill-icon text-red-500': favorites.includes(activity.id) }">favorite</span>
+                </button>
                 <div 
-                  class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105" 
+                  class="w-full h-full bg-center bg-no-repeat bg-cover transition-transform duration-500 group-hover:scale-105 bg-gray-200 dark:bg-gray-800" 
                   role="img" 
-                  :aria-label="activity.name"
-                  :style="{ backgroundImage: `url('${activity.image}')` }"
+                  :aria-label="activity.title"
+                  :style="{ backgroundImage: activity.heroImage ? `url('${activity.heroImage}')` : `linear-gradient(135deg, var(--color-primary) 0%, #ff8a50 100%)` }"
                 ></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
                 <div class="absolute bottom-4 left-4 right-4 text-white">
-                  <span class="bg-primary px-2 py-0.5 rounded text-xs font-bold">{{ activity.price }}</span>
+                  <span class="bg-primary px-2 py-0.5 rounded text-xs font-bold">
+                    {{ activity.priceUSD ? `$${activity.priceUSD}` : 'Free' }}
+                  </span>
                 </div>
               </div>
               <div>
-                <h3 class="text-lg font-bold leading-tight group-hover:text-primary transition-colors text-text-main dark:text-white">{{ activity.name }}</h3>
+                <h3 class="text-lg font-bold leading-tight group-hover:text-primary transition-colors text-text-main dark:text-white">{{ activity.title }}</h3>
                 <div class="flex items-center gap-2 mt-1 text-sm text-text-muted dark:text-gray-400">
-                  <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> {{ activity.location }}</span>
+                  <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> {{ activity.region }}</span>
                   <span>•</span>
-                  <span>{{ activity.difficulty }}</span>
+                  <span class="capitalize">{{ activity.difficulty || 'Easy' }}</span>
                 </div>
               </div>
             </div>
           </div>
           
-          <div class="mt-12 flex justify-center">
-            <button class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-neutral-800 text-text-main dark:text-white px-8 py-3 rounded-lg text-sm font-bold hover:bg-gray-50 dark:hover:bg-surface-dark/80 transition-colors">
-              Load More Experiences
-            </button>
+          <!-- Empty State -->
+          <div v-if="filteredActivities.length === 0" class="text-center py-16">
+            <span class="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600">search_off</span>
+            <p class="mt-4 text-lg text-text-muted">No experiences match your filters</p>
+            <button @click="$emit('update:category', null)" class="mt-4 text-primary font-bold hover:underline">Clear filters</button>
           </div>
         </div>
       </div>
     </section>
   </div>
 
+  <!-- Modal Popup -->
   <Teleport to="body">
-    <div v-if="showDetails" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div class="absolute inset-0 bg-black/50" @click="closeDetails"></div>
-      <div class="relative bg-white dark:bg-surface-dark rounded-2xl max-w-xl w-full shadow-2xl border border-gray-200 dark:border-white/10">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/10">
-          <h3 class="text-lg font-bold text-text-main dark:text-white">
-            {{ selectedActivity?.name || 'Activity Details' }}
-          </h3>
-          <button @click="closeDetails" class="text-gray-400 hover:text-gray-600">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-        <div class="p-6">
-          <div v-if="detailsLoading" class="text-sm text-text-muted">Loading details...</div>
-          <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
-          <div v-else-if="selectedActivity">
-            <div class="flex flex-col gap-4">
-              <img
-                v-if="selectedActivity.image_url"
-                :src="selectedActivity.image_url"
-                :alt="selectedActivity.name"
-                class="h-48 w-full object-cover rounded-xl"
-              />
-              <p class="text-sm text-text-muted">{{ selectedActivity.description || 'No description available.' }}</p>
-              <div class="flex flex-wrap gap-2 text-xs">
-                <span class="px-2 py-1 rounded bg-primary/10 text-primary">{{ selectedActivity.category }}</span>
-                <span v-if="selectedActivity.difficulty" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ selectedActivity.difficulty }}</span>
-                <span v-if="selectedActivity.duration_hours" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ selectedActivity.duration_hours }} hrs</span>
-                <span v-if="selectedActivity.price_per_person_usd" class="px-2 py-1 rounded bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
-                  ${{ selectedActivity.price_per_person_usd }} / person
-                </span>
-                <span v-else-if="selectedActivity.price_per_person_lkr" class="px-2 py-1 rounded bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
-                  LKR {{ selectedActivity.price_per_person_lkr.toLocaleString() }} / person
-                </span>
-              </div>
-              <div v-if="selectedActivity.includes?.length" class="text-xs text-text-muted">
-                Includes: {{ selectedActivity.includes.join(', ') }}
-              </div>
-              <div v-if="selectedActivity.provider_name" class="text-xs text-text-muted">
-                Provider: {{ selectedActivity.provider_name }}
-              </div>
-              <div class="text-sm text-text-muted">
-                Location: {{ selectedActivity.location?.name || 'Sri Lanka' }}
+    <Transition name="modal">
+      <div v-if="showDetails" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="closeDetails"></div>
+        <div 
+          class="relative bg-white dark:bg-surface-dark rounded-t-2xl sm:rounded-2xl w-full sm:max-w-xl max-h-[90vh] overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10 flex flex-col"
+          @keydown.esc="closeDetails"
+        >
+          <!-- Sticky Header -->
+          <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/10 bg-white dark:bg-surface-dark sticky top-0 z-10">
+            <button @click="closeDetails" class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+            <h3 class="text-base font-bold text-text-main dark:text-white truncate max-w-[70%]">
+              {{ selectedActivity?.title || 'Experience Details' }}
+            </h3>
+            <div class="w-6"></div>
+          </div>
+          
+          <!-- Scrollable Content -->
+          <div class="overflow-y-auto flex-1 overscroll-contain">
+            <div v-if="selectedActivity" class="flex flex-col">
+              <!-- Hero Image -->
+              <div 
+                class="w-full aspect-video bg-gray-200 dark:bg-gray-800 bg-cover bg-center"
+                :style="{ backgroundImage: selectedActivity.heroImage ? `url('${selectedActivity.heroImage}')` : `linear-gradient(135deg, var(--color-primary) 0%, #ff8a50 100%)` }"
+              ></div>
+              
+              <div class="p-5 flex flex-col gap-4">
+                <!-- Short Description -->
+                <p class="text-sm text-text-muted dark:text-gray-300 leading-relaxed">{{ selectedActivity.shortDescription }}</p>
+                
+                <!-- Info Pills -->
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold">{{ selectedActivity.category }}</span>
+                  <span v-if="selectedActivity.difficulty" class="px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/10 text-xs font-medium capitalize">{{ selectedActivity.difficulty }}</span>
+                  <span v-if="selectedActivity.duration" class="px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/10 text-xs font-medium">{{ selectedActivity.duration }}</span>
+                  <span class="px-3 py-1.5 rounded-full bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs font-bold">
+                    {{ selectedActivity.priceUSD ? `$${selectedActivity.priceUSD} / person` : 'Free' }}
+                  </span>
+                </div>
+                
+                <!-- Full Description -->
+                <div>
+                  <h4 class="text-sm font-bold text-text-main dark:text-white mb-2">About This Experience</h4>
+                  <p class="text-sm text-text-muted dark:text-gray-400 leading-relaxed">{{ selectedActivity.fullDescription }}</p>
+                </div>
+                
+                <!-- Includes List -->
+                <div v-if="selectedActivity.includes?.length">
+                  <h4 class="text-sm font-bold text-text-main dark:text-white mb-2">What's Included</h4>
+                  <ul class="space-y-1.5">
+                    <li v-for="item in selectedActivity.includes" :key="item" class="flex items-center gap-2 text-sm text-text-muted dark:text-gray-400">
+                      <span class="material-symbols-outlined text-green-500 text-[16px]">check_circle</span>
+                      {{ item }}
+                    </li>
+                  </ul>
+                </div>
+                
+                <!-- Location -->
+                <div class="flex items-center gap-2 text-sm text-text-muted dark:text-gray-400">
+                  <span class="material-symbols-outlined text-[18px]">location_on</span>
+                  <span>{{ selectedActivity.region }}</span>
+                </div>
               </div>
             </div>
           </div>
-          <div v-else class="text-sm text-text-muted">No details available.</div>
+          
+          <!-- Sticky CTA -->
+          <div class="p-4 border-t border-gray-100 dark:border-white/10 bg-white dark:bg-surface-dark space-y-2">
+            <button class="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-xl text-sm font-bold transition-colors">
+              Book This Experience
+            </button>
+            <button 
+              class="w-full border border-gray-200 dark:border-white/20 text-text-main dark:text-white py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 dark:hover:bg-white/5 transition-colors flex items-center justify-center gap-2"
+              @click="toggleFavorite(selectedActivity?.id); closeDetails()"
+            >
+              <span class="material-symbols-outlined text-[18px]" :class="{ 'fill-icon text-red-500': selectedActivity && favorites.includes(selectedActivity.id) }">favorite</span>
+              {{ selectedActivity && favorites.includes(selectedActivity.id) ? 'Saved' : 'Save for Later' }}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </Transition>
   </Teleport>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, nextTick, ref } from 'vue'
-import type { Activity } from '~/types/api'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
+import adventuresData from '~/assets/data/adventures.json'
 
-const { apiBase } = useRuntimeConfig().public
+interface Adventure {
+  id: number
+  title: string
+  slug: string
+  category: string
+  region: string
+  priceUSD: number | null
+  difficulty: string | null
+  duration: string | null
+  tags: string[]
+  shortDescription: string
+  fullDescription: string
+  includes: string[]
+  provider: string | null
+  heroImage: string | null
+  suggestedPhoto: string
+  isTrending: boolean
+}
 
 const props = defineProps<{
   category: string | null
+  search: string
 }>()
 
-// Fetch activities from API
-const { data: apiActivities, pending } = await useFetch<{ success: boolean; data: Activity[] }>(
-  () => {
-    const params = new URLSearchParams()
-    if (props.category) params.set('category', props.category)
-    const queryStr = params.toString()
-    return `${apiBase}/api/activities${queryStr ? `?${queryStr}` : ''}`
-  },
-  { watch: [() => props.category] }
-)
+const emit = defineEmits(['update:category'])
 
-// Static fallback data
-const staticActivities = [
-  {
-    id: '1',
-    name: 'Sunrise Hike at Little Adam\'s Peak',
-    category: 'Hiking',
-    location: 'Ella',
-    difficulty: 'Moderate',
-    price: '$15 / person',
-    image: '/images/downloaded_f042208332ff.avif'
-  },
-  {
-    id: '2',
-    name: 'Traditional Ayurveda Treatment',
-    category: 'Wellness',
-    location: 'Galle',
-    difficulty: 'Relaxing',
-    price: '$45 / session',
-    image: '/images/downloaded_7d353ffcc591.avif'
-  },
-  {
-    id: '3',
-    name: 'Leopard Safari in Yala',
-    category: 'Wildlife',
-    location: 'Yala',
-    difficulty: 'Adventure',
-    price: '$60 / person',
-    image: '/images/downloaded_27e8c35d5c2c.avif'
-  },
-  {
-    id: '4',
-    name: 'Surfing Lessons in Weligama',
-    category: 'Water Sports',
-    location: 'Weligama',
-    difficulty: 'Active',
-    price: '$25 / lesson',
-    image: '/images/downloaded_e4fa93d74062.avif'
-  },
-  {
-    id: '5',
-    name: 'Climb Sigiriya Lion Rock',
-    category: 'Culture',
-    location: 'Dambulla',
-    difficulty: 'Moderate',
-    price: '$30 / entry',
-    image: '/images/downloaded_b6f84a555858.avif'
-  },
-  {
-    id: '6',
-    name: 'Kandy to Ella Train Journey',
-    category: 'Scenic Train',
-    location: 'Hill Country',
-    difficulty: 'Relaxing',
-    price: '$3 / ticket',
-    image: '/images/downloaded_57d1237dafa2.avif'
-  },
-  {
-    id: '7',
-    name: 'The Elephant Gathering',
-    category: 'Wildlife',
-    location: 'Minneriya',
-    difficulty: 'Family Friendly',
-    price: '$55 / person',
-    image: '/images/downloaded_dd64a547d93a.avif'
-  },
-  {
-    id: '8',
-    name: 'Traditional Cooking Class',
-    category: 'Culinary',
-    location: 'Kandy',
-    difficulty: 'Easy',
-    price: '$20 / person',
-    image: '/images/downloaded_38dcb2f67ab0.avif'
-  }
-]
+// Load adventures from JSON
+const adventures = ref<Adventure[]>(adventuresData as Adventure[])
 
-const activities = computed(() => {
-  const apiList = apiActivities.value?.data || []
-  if (apiList.length) {
-    return apiList.map((a) => ({
-      id: a.id,
-      name: a.name,
-      category: a.category?.replace(/_/g, ' ') || 'Experience',
-      location: a.location?.name || 'Sri Lanka',
-      difficulty: a.difficulty || 'Moderate',
-      price: a.price_per_person_usd
-        ? `$${a.price_per_person_usd} / person`
-        : a.price_per_person_lkr
-          ? `LKR ${a.price_per_person_lkr} / person`
-          : 'Contact for price',
-      image: a.image_url || '/images/downloaded_f042208332ff.avif'
-    }))
+// Filter by category and search
+const filteredActivities = computed(() => {
+  let result = adventures.value
+  
+  // Filter by category
+  if (props.category) {
+    result = result.filter(a => 
+      a.category.toLowerCase() === props.category?.toLowerCase()
+    )
   }
-  return staticActivities
+  
+  // Filter by search query
+  if (props.search && props.search.trim()) {
+    const query = props.search.toLowerCase().trim()
+    result = result.filter(a => 
+      a.title.toLowerCase().includes(query) ||
+      a.region.toLowerCase().includes(query) ||
+      a.category.toLowerCase().includes(query) ||
+      a.shortDescription.toLowerCase().includes(query) ||
+      a.tags.some(tag => tag.toLowerCase().includes(query))
+    )
+  }
+  
+  return result
 })
 
+// Modal state
 const showDetails = ref(false)
-const detailsLoading = ref(false)
-const detailsError = ref('')
-const selectedActivity = ref<Activity | null>(null)
+const selectedActivity = ref<Adventure | null>(null)
 
-async function openDetails(id: string) {
+// Favorites
+const favorites = ref<number[]>([])
+
+function openDetails(activity: Adventure) {
+  selectedActivity.value = activity
   showDetails.value = true
-  detailsLoading.value = true
-  detailsError.value = ''
-  try {
-    const response = await $fetch<{ success: boolean; data: Activity }>(`${apiBase}/api/activities/${id}`)
-    if (response.success) {
-      selectedActivity.value = response.data
-    }
-  } catch (err: any) {
-    detailsError.value = err?.data?.error || 'Failed to load activity details.'
-  } finally {
-    detailsLoading.value = false
-  }
+  document.body.style.overflow = 'hidden'
 }
 
 function closeDetails() {
   showDetails.value = false
   selectedActivity.value = null
+  document.body.style.overflow = ''
 }
 
-// Handle ?id= deep-link query param
-const route = useRoute()
-
-onMounted(async () => {
-  const targetId = route.query.id as string
-  if (targetId) {
-    await openDetails(targetId)
-    nextTick(() => {
-      const el = document.getElementById(`activity-${targetId}`)
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        el.classList.add('ring-2', 'ring-primary', 'ring-offset-2')
-        setTimeout(() => {
-          el.classList.remove('ring-2', 'ring-primary', 'ring-offset-2')
-        }, 3000)
-      }
-    })
+function toggleFavorite(id: number | undefined) {
+  if (!id) return
+  const index = favorites.value.indexOf(id)
+  if (index === -1) {
+    favorites.value.push(id)
+  } else {
+    favorites.value.splice(index, 1)
   }
+}
+
+// Handle ESC key
+function handleKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape' && showDetails.value) {
+    closeDetails()
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeydown)
+  document.body.style.overflow = ''
 })
 </script>
+
+<style scoped>
+.fill-icon {
+  font-variation-settings: 'FILL' 1;
+}
+
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+.modal-enter-active > div:last-child,
+.modal-leave-active > div:last-child {
+  transition: transform 0.3s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+.modal-enter-from > div:last-child {
+  transform: translateY(100%);
+}
+.modal-leave-to > div:last-child {
+  transform: translateY(100%);
+}
+@media (min-width: 640px) {
+  .modal-enter-from > div:last-child,
+  .modal-leave-to > div:last-child {
+    transform: translateY(20px) scale(0.95);
+  }
+}
+</style>

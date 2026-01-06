@@ -2,13 +2,13 @@
   <div class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-display overflow-x-hidden min-h-screen flex flex-col group/design-root">
     
     <main class="flex h-full grow flex-col">
-      <ActivityHero />
+      <ActivityHero v-model="searchQuery" />
       <ActivityFilters
         :categories="categories"
         :category="selectedCategory"
-        @update:category="selectedCategory = $event"
+        @update:category="handleCategoryChange"
       />
-      <ActivityList :category="selectedCategory" />
+      <ActivityList :category="selectedCategory" :search="searchQuery" />
       <ActivityFeatured />
       <ActivityNewsletter />
     </main>
@@ -17,24 +17,42 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import ActivityHero from '~/components/Activities/ActivityHero.vue'
 import ActivityFilters from '~/components/Activities/ActivityFilters.vue'
 import ActivityList from '~/components/Activities/ActivityList.vue'
 import ActivityFeatured from '~/components/Activities/ActivityFeatured.vue'
 import ActivityNewsletter from '~/components/Activities/ActivityNewsletter.vue'
-
-const config = useRuntimeConfig()
-const apiBase = config.public.apiBase
+import adventuresData from '~/assets/data/adventures.json'
 
 const selectedCategory = ref<string | null>(null)
+const searchQuery = ref('')
 
-const { data: categoriesResponse } = await useFetch<{
-  success: boolean
-  data: Array<{ category: string; count: number }>
-}>(`${apiBase}/api/activities/categories/list`)
+// Derive unique categories from JSON data
+const categories = computed(() => {
+  const categorySet = new Set<string>()
+  adventuresData.forEach((adventure: any) => {
+    if (adventure.category) {
+      categorySet.add(adventure.category)
+    }
+  })
+  return Array.from(categorySet).map(category => ({
+    category,
+    count: adventuresData.filter((a: any) => a.category === category).length
+  }))
+})
 
-const categories = computed(() => categoriesResponse.value?.data || [])
+// Clear category when searching
+watch(searchQuery, (newVal) => {
+  if (newVal && newVal.trim()) {
+    selectedCategory.value = null
+  }
+})
+
+function handleCategoryChange(category: string | null) {
+  selectedCategory.value = category
+  searchQuery.value = ''
+}
 
 useHead({
   title: 'Activities & Experiences - CeylonGuide',
