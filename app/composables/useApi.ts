@@ -333,11 +333,8 @@ export function useApi() {
         get: (id: string) => apiFetch<Facility>(`/api/facilities/${id}`),
 
         rate: (facilityId: string, data: {
-            overall_rating: number
-            cleanliness_rating: number
-            safety_rating: number
+            rating: number
             comment?: string
-            photo_urls?: string[]
         }) => apiFetch<{ id: string }>(`/api/facilities/${facilityId}/rate`, {
             method: 'POST',
             body: JSON.stringify(data),

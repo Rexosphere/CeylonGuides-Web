@@ -96,15 +96,24 @@
 </template>
 
 <script setup lang="ts">
-const destinations = [
+const { apiBase } = useRuntimeConfig().public
+
+// Fetch destinations from API
+const { data: apiDestinations, pending, error } = await useFetch<{ success: boolean; data: any[] }>(`${apiBase}/api/destinations`)
+
+// Fallback static destinations for when API is unavailable
+const staticDestinations = [
   {
+    id: 'sigiriya',
+    name: 'Sigiriya',
     title: 'Sigiriya',
     subtitle: 'The Lion Rock',
     description: 'Ascend the ancient rock fortress and marvel at the frescoes and water gardens of a past kingdom. A UNESCO World Heritage site that defies imagination, rising dramatically from the central plains.',
     image: '/images/downloaded_135ae74fa037.avif',
     alt: 'Ancient rock fortress Sigiriya surrounded by green jungle',
-    category: 'Culture',
+    category: 'CULTURAL',
     layout: 'left',
+    district: 'Matale',
     tags: [
       { icon: 'hiking', label: 'Hiking' },
       { icon: 'history_edu', label: 'History' },
@@ -112,13 +121,16 @@ const destinations = [
     ]
   },
   {
+    id: 'mirissa',
+    name: 'Mirissa',
     title: 'Mirissa',
     subtitle: 'Sunset & Whales',
     description: 'Relax on pristine golden sands or embark on a boat safari to spot majestic blue whales. Mirissa offers the perfect blend of laid-back beach vibes and exciting marine adventures.',
     image: '/images/downloaded_e69d8138022b.avif',
     alt: 'Golden sunset over coconut palms and ocean waves at Mirissa beach',
-    category: 'Beaches',
+    category: 'BEACH',
     layout: 'right',
+    district: 'Matara',
     tags: [
       { icon: 'surfing', label: 'Surfing' },
       { icon: 'directions_boat', label: 'Whales' },
@@ -126,23 +138,29 @@ const destinations = [
     ]
   },
   {
+    id: 'ella',
+    name: 'Ella',
     title: 'Ella',
     subtitle: '',
     description: 'Misty tea plantations, the iconic Nine Arch Bridge, and endless hiking trails. Ella is a hill country village that feels like a home away from home.',
     image: '/images/downloaded_6015207707b3.avif',
     alt: 'Train crossing the Nine Arch Bridge in misty Ella highlands',
-    category: 'Mountains',
+    category: 'NATURE',
     layout: 'full',
+    district: 'Badulla',
     tags: []
   },
   {
+    id: 'yala',
+    name: 'Yala',
     title: 'Yala',
     subtitle: 'The Wild Frontier',
     description: 'Home to the highest density of leopards in the world. Experience the thrill of a safari through dry forests and open grasslands teeming with elephants and exotic birds.',
     image: '/images/downloaded_6c82e6b62a7e.avif',
     alt: 'Leopard resting on a tree branch in Yala National Park',
-    category: 'Wildlife',
+    category: 'WILDLIFE',
     layout: 'left',
+    district: 'Hambantota',
     tags: [
       { icon: 'pets', label: 'Safari' },
       { icon: 'camping', label: 'Camping' },
@@ -150,4 +168,25 @@ const destinations = [
     ]
   }
 ]
+
+// Use API data if available, otherwise fallback to static
+const destinations = computed(() => {
+  if (apiDestinations.value?.success && apiDestinations.value.data?.length > 0) {
+    // Transform API data to match component format
+    return apiDestinations.value.data.map((d: any, index: number) => ({
+      id: d.id,
+      name: d.name,
+      title: d.name,
+      subtitle: d.subtitle || '',
+      description: d.description,
+      image: d.image_url || staticDestinations[index % staticDestinations.length]?.image || '/images/downloaded_135ae74fa037.avif',
+      alt: d.name,
+      category: d.category,
+      layout: index === 2 ? 'full' : index % 2 === 0 ? 'left' : 'right',
+      district: d.district || d.location?.district || '',
+      tags: d.highlights?.map((h: string) => ({ icon: 'check', label: h })) || []
+    }))
+  }
+  return staticDestinations
+})
 </script>

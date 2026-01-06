@@ -25,19 +25,30 @@ const { data: tipsResponse } = await useFetch<{
   success: boolean
   data: Array<{
     id: string
-    tip: string
+    title: string
+    description?: string
     category: string
-    icon?: string
+    icon_emoji?: string
+    do_list?: string[]
+    dont_list?: string[]
   }>
 }>(`${apiBase}/api/phrases/etiquette/tips`)
+
+// Icon mapping from category to material icon
+const categoryIcons: Record<string, string> = {
+  'TEMPLE': 'temple_buddhist',
+  'DINING': 'restaurant',
+  'DRESS': 'checkroom',
+  'SOCIAL': 'handshake'
+}
 
 // Map API tips to guidelines format with fallback
 const guidelines = computed(() => {
   const apiTips = tipsResponse.value?.data || []
   if (apiTips.length > 0) {
     return apiTips.slice(0, 4).map(t => ({
-      label: t.tip.length > 20 ? t.tip.substring(0, 20) + '...' : t.tip,
-      icon: t.icon || 'info'
+      label: t.title && t.title.length > 20 ? t.title.substring(0, 20) + '...' : (t.title || 'Guide'),
+      icon: categoryIcons[t.category] || 'info'
     }))
   }
   // Fallback to defaults

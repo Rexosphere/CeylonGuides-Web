@@ -28,6 +28,26 @@
       <!-- Scrollable Content -->
       <div class="overflow-y-auto p-5 space-y-6">
         
+        <!-- Offline Ready Banner -->
+        <div 
+          v-if="savedForOffline"
+          class="bg-green-800 border border-green-500 rounded-xl p-4 flex items-center gap-3"
+        >
+          <span class="text-2xl">✓</span>
+          <div class="flex-1">
+            <div class="font-semibold text-white">Offline Mode Ready</div>
+            <div class="text-sm text-green-200">
+              Emergency info saved to your device. Works without internet.
+            </div>
+          </div>
+          <button
+            @click="printPage"
+            class="px-3 py-1.5 bg-green-700 hover:bg-green-600 rounded-lg text-sm font-medium text-white whitespace-nowrap"
+          >
+            🖨️ Print
+          </button>
+        </div>
+        
         <!-- Location Status / High Risk Banner -->
         <div v-if="briefing">
           <!-- High-Risk Alert Banner -->
@@ -273,7 +293,61 @@ const savedPhrasesList = ref<Array<{
   pronunciation: string
 }>>([])
 
+// Offline pack state
+const savedForOffline = ref(false)
+const offlinePackDate = ref<string | null>(null)
+
+// Save emergency data for offline access
+function saveForOffline() {
+  try {
+    const pack = {
+      savedAt: new Date().toISOString(),
+      contacts: [
+        { name: 'Police Emergency', number: '119' },
+        { name: 'Ambulance', number: '110' },
+        { name: 'National Hospital', number: '011-2421052' },
+        { name: 'Tourist Police', number: '1912' }
+      ],
+      phrases: [
+        { english: 'Help!', sinhala: 'උදව් කරන්න!', pronunciation: 'Udaw karanna!' },
+        { english: 'Call the police', sinhala: 'පොලීසියට කතා කරන්න', pronunciation: 'Polisiyata katha karanna' },
+        { english: 'I need a doctor', sinhala: 'මට වෛද්‍යවරයෙක් අවශ්‍යයි', pronunciation: 'Mata vaidyavarayek awashyai' }
+      ],
+      savedPhrases: savedPhrasesList.value,
+      briefing: briefing.value
+    }
+    localStorage.setItem('offlineEmergencyPack', JSON.stringify(pack))
+    savedForOffline.value = true
+    offlinePackDate.value = pack.savedAt
+  } catch (error) {
+    console.error('Failed to save offline pack:', error)
+  }
+}
+
+// Load offline pack if available
+function loadOfflinePack() {
+  try {
+    const saved = localStorage.getItem('offlineEmergencyPack')
+    if (saved) {
+      const pack = JSON.parse(saved)
+      savedForOffline.value = true
+      offlinePackDate.value = pack.savedAt
+      // Restore saved phrases if API fails
+      if (pack.savedPhrases?.length > 0 && savedPhrasesList.value.length === 0) {
+        savedPhrasesList.value = pack.savedPhrases
+      }
+      return pack
+    }
+  } catch (error) {
+    console.error('Failed to load offline pack:', error)
+  }
+  return null
+}
+
 onMounted(async () => {
+  // First load any existing offline pack
+  loadOfflinePack()
+  
   // Load saved phrase IDs from localStorage
   const saved = localStorage.getItem('ceylon_saved_phrases')
   if (saved) {
@@ -282,17 +356,21 @@ onMounted(async () => {
       
       // Fetch full phrase details if we have saved phrases
       if (savedPhraseIds.value.length > 0) {
-        const response = await $fetch<{ success: boolean; data: any[] }>(`${apiBase}/api/phrases`)
-        if (response.success && response.data) {
-          savedPhrasesList.value = response.data
-            .filter((p: any) => savedPhraseIds.value.includes(p.id))
-            .map((p: any) => ({
-              id: p.id,
-              english: p.english,
-              sinhala: p.sinhala,
-              tamil: p.tamil,
-              pronunciation: p.pronunciation || p.phonetic_sinhala
-            }))
+        try {
+          const response = await $fetch<{ success: boolean; data: any[] }>(`${apiBase}/api/phrases`)
+          if (response.success && response.data) {
+            savedPhrasesList.value = response.data
+              .filter((p: any) => savedPhraseIds.value.includes(p.id))
+              .map((p: any) => ({
+                id: p.id,
+                english: p.english,
+                sinhala: p.sinhala,
+                tamil: p.tamil,
+                pronunciation: p.pronunciation || p.phonetic_sinhala
+              }))
+          }
+        } catch (e) {
+          console.warn('Failed to fetch phrases, using offline cache:', e)
         }
       }
     } catch (e) {
@@ -320,6 +398,8 @@ onMounted(async () => {
           })
           if (response.success) {
             briefing.value = response
+            // Auto-save for offline after successful load
+            saveForOffline()
           }
         } catch (e) {
           console.error('Failed to load safety briefing:', e)
@@ -419,5 +499,48 @@ const loadingBriefing = ref(false)
 .glass-effect {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+}
+
+/* Print styles for emergency info */
+@media print {
+    /* Hide non-essential elements */
+    header, .no-print, button, footer {
+        display: none !important;
+    }
+    
+    /* Make content printable */
+    body, main {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .max-w-lg {
+        max-width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    section {
+        page-break-inside: avoid;
+        border: 1px solid #ccc !important;
+        background: #f9f9f9 !important;
+    }
+    
+    /* Keep emergency numbers visible */
+    a[href^="tel:"] {
+        color: black !important;
+        text-decoration: none;
+    }
+    
+    /* Add print header */
+    main::before {
+        content: "CeylonGuides Emergency Info - Print this page for offline access";
+        display: block;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 20px;
+        padding: 10px;
+        border-bottom: 2px solid #D94E3B;
+    }
 }
 </style>
