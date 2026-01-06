@@ -3,8 +3,12 @@
     
     <main class="flex h-full grow flex-col">
       <ActivityHero />
-      <ActivityFilters />
-      <ActivityList />
+      <ActivityFilters
+        :categories="categories"
+        :category="selectedCategory"
+        @update:category="selectedCategory = $event"
+      />
+      <ActivityList :category="selectedCategory" />
       <ActivityFeatured />
       <ActivityNewsletter />
     </main>
@@ -13,11 +17,24 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import ActivityHero from '~/components/Activities/ActivityHero.vue'
 import ActivityFilters from '~/components/Activities/ActivityFilters.vue'
 import ActivityList from '~/components/Activities/ActivityList.vue'
 import ActivityFeatured from '~/components/Activities/ActivityFeatured.vue'
 import ActivityNewsletter from '~/components/Activities/ActivityNewsletter.vue'
+
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
+
+const selectedCategory = ref<string | null>(null)
+
+const { data: categoriesResponse } = await useFetch<{
+  success: boolean
+  data: Array<{ category: string; count: number }>
+}>(`${apiBase}/api/activities/categories/list`)
+
+const categories = computed(() => categoriesResponse.value?.data || [])
 
 useHead({
   title: 'Activities & Experiences - CeylonGuide',

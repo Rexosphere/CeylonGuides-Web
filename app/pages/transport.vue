@@ -41,7 +41,7 @@
                 <span class="material-symbols-outlined text-[100px]">local_taxi</span>
               </div>
               <div class="relative z-10">
-                <div class="text-teal-100 text-xs font-medium uppercase tracking-wider mb-1">Estimated Tuk-Tuk Fare</div>
+                <div class="text-teal-100 text-xs font-medium uppercase tracking-wider mb-1">Estimated {{ selectedTransportLabel }} Fare</div>
                 <div class="flex items-baseline gap-1 mb-4">
                   <span class="text-3xl font-bold font-display">LKR {{ calculatedFare.min.toLocaleString() }}</span>
                   <span class="text-lg opacity-80">-</span>
@@ -60,12 +60,15 @@
                 
                 <!-- Fare Guard Button -->
                 <button 
-                  @click="showFareCard = true"
-                  class="w-full mt-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors"
+                  @click="openFareGuard"
+                  :disabled="fareLoading"
+                  class="w-full mt-4 bg-white/20 hover:bg-white/30 disabled:opacity-70 backdrop-blur-sm text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors"
                 >
                   <span class="text-lg">🛡️</span>
-                  Show Fare Guard Card
+                  <span v-if="fareLoading">Calculating...</span>
+                  <span v-else>Show Fare Guard Card</span>
                 </button>
+                <p v-if="fareError" class="text-xs text-red-200 mt-2">{{ fareError }}</p>
                 
                 <p class="text-xs text-teal-100/80 italic mt-3">*Always negotiate before getting in if not using a meter.</p>
                 
@@ -285,6 +288,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import type { FareEstimate } from '~/types/api'
 
 definePageMeta({
   layout: false
@@ -302,6 +306,9 @@ const selectedTransportType = ref<'TUK_TUK' | 'TAXI' | 'BUS' | 'TRAIN' | 'RIDESH
 
 // Fare Guard modal state
 const showFareCard = ref(false)
+const fareLoading = ref(false)
+const fareError = ref('')
+const fareEstimate = ref<FareEstimate | null>(null)
 
 // Fetch fare rates from API
 const { data: ratesResponse } = await useFetch<{
@@ -317,11 +324,20 @@ const { data: routesResponse } = await useFetch<{ success: boolean; data: any[] 
 const rates = computed(() => ratesResponse.value?.data || {})
 const routes = computed(() => routesResponse.value?.data || [])
 
-// Calculate fare based on inputs
+// Calculate fare based on inputs (fallback if API not available)
 const calculatedFare = computed(() => {
+  const estimate = fareEstimate.value
+  if (estimate && estimate.transport_type === selectedTransportType.value) {
+    return {
+      min: estimate.fair_range_min,
+      max: estimate.fair_range_max,
+      type: estimate.transport_type
+    }
+  }
+
   const rate = rates.value[selectedTransportType.value]
-  if (!rate) return { min: 0, max: 0 }
-  
+  if (!rate) return { min: 0, max: 0, type: selectedTransportType.value }
+
   const baseFare = rate.base + (distanceKm.value * rate.perKm)
   return {
     min: Math.max(rate.minFare, Math.round(baseFare * 0.9)),
@@ -329,6 +345,35 @@ const calculatedFare = computed(() => {
     type: selectedTransportType.value
   }
 })
+
+async function fetchFareEstimate() {
+  fareLoading.value = true
+  fareError.value = ''
+  try {
+    const response = await $fetch<{ success: boolean; data: FareEstimate }>(`${apiBase}/api/transport/fare`, {
+      method: 'POST',
+      body: {
+        origin: origin.value,
+        destination: destination.value,
+        distance_km: distanceKm.value,
+        transport_type: selectedTransportType.value
+      }
+    })
+
+    if (response.success) {
+      fareEstimate.value = response.data
+    }
+  } catch (error: any) {
+    fareError.value = error?.data?.error || 'Failed to calculate fare'
+  } finally {
+    fareLoading.value = false
+  }
+}
+
+async function openFareGuard() {
+  await fetchFareEstimate()
+  showFareCard.value = true
+}
 
 // Swap origin and destination
 function swapLocations() {
@@ -344,6 +389,10 @@ const transportTypes = [
   { id: 'BUS' as const, name: 'Bus', icon: 'directions_bus' },
   { id: 'TRAIN' as const, name: 'Train', icon: 'train' },
 ]
+
+const selectedTransportLabel = computed(() => {
+  return transportTypes.find((type) => type.id === selectedTransportType.value)?.name || selectedTransportType.value
+})
 
 // Common tourist routes for quick access
 const commonRoutes = [

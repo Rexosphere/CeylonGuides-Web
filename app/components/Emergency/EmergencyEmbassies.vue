@@ -2,14 +2,26 @@
   <section class="flex flex-col gap-6">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <h2 class="text-xl font-bold text-neutral-dark dark:text-white">Embassies & Consulates</h2>
-      <div class="relative w-full sm:w-64">
-        <span class="material-symbols-outlined absolute left-3 top-2.5 text-neutral-soft text-[20px]">search</span>
-        <input 
-          class="w-full pl-10 pr-4 py-2 bg-white dark:bg-[#2a1d18] border border-neutral-200 dark:border-[#3a2d28] rounded-lg text-sm focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder-neutral-soft" 
-          placeholder="Filter by country..." 
-          type="text"
-          v-model="searchQuery"
-        />
+      <div class="flex gap-3 w-full sm:w-auto">
+        <div class="relative w-full sm:w-40">
+          <select
+            v-model="selectedCategory"
+            class="w-full px-3 py-2 bg-white dark:bg-[#2a1d18] border border-neutral-200 dark:border-[#3a2d28] rounded-lg text-sm focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+          >
+            <option v-for="category in categories" :key="category.category" :value="category.category">
+              {{ formatCategory(category.category) }}
+            </option>
+          </select>
+        </div>
+        <div class="relative w-full sm:w-64">
+          <span class="material-symbols-outlined absolute left-3 top-2.5 text-neutral-soft text-[20px]">search</span>
+          <input 
+            class="w-full pl-10 pr-4 py-2 bg-white dark:bg-[#2a1d18] border border-neutral-200 dark:border-[#3a2d28] rounded-lg text-sm focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder-neutral-soft" 
+            placeholder="Filter by name..." 
+            type="text"
+            v-model="searchQuery"
+          />
+        </div>
       </div>
     </div>
     <div class="bg-white dark:bg-[#2a1d18] rounded-xl border border-neutral-100 dark:border-[#3a2d28] divide-y divide-neutral-100 dark:divide-[#3a2d28] max-h-[400px] overflow-y-auto custom-scrollbar">
@@ -51,8 +63,20 @@ const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
 
 const searchQuery = ref('')
+const selectedCategory = ref('EMBASSY')
 
-// Fetch embassies from API
+const { data: categoriesResponse } = await useFetch<{
+  success: boolean
+  data: Array<{ category: string; count: number }>
+}>(`${apiBase}/api/emergency/categories/list`)
+
+const categories = computed(() => categoriesResponse.value?.data || [{ category: 'EMBASSY', count: 0 }])
+
+function formatCategory(value: string) {
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+}
+
+// Fetch contacts from API
 const { data: embassiesResponse } = await useFetch<{
   success: boolean
   data: Array<{
@@ -63,14 +87,14 @@ const { data: embassiesResponse } = await useFetch<{
     description?: string
     emoji?: string
   }>
-}>(`${apiBase}/api/emergency?category=EMBASSY`)
+}>(() => `${apiBase}/api/emergency?category=${selectedCategory.value}`, { watch: [selectedCategory] })
 
 const embassies = computed(() => {
   const data = embassiesResponse.value?.data || []
   return data.map((e: any) => ({
     country: e.name.replace(' Embassy', '').replace(' High Commission', ''),
     flag: e.emoji || '🏛️',
-    address: e.description || 'Colombo, Sri Lanka',
+    address: e.description || 'Sri Lanka',
     phone: e.phone || e.phone_number || ''
   }))
 })

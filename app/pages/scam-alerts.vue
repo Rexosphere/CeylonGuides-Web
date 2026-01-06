@@ -203,6 +203,7 @@
               v-for="alert in scamAlerts" 
               :key="alert.id"
               :id="`scam-${alert.id}`"
+              @click="openScamDetails(alert.id)"
               :class="[
                 'group relative bg-white dark:bg-background-dark rounded-xl border p-4 shadow-sm hover:shadow-md transition-all cursor-pointer',
                 getSeverityClass(alert.severity),
@@ -245,6 +246,12 @@
                         :value="alert.report_count" 
                         label="Number of confirmations"
                       />
+                      <button
+                        class="text-xs font-semibold text-accent hover:text-accent/80"
+                        @click.stop="openScamDetails(alert.id)"
+                      >
+                        View details
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -284,7 +291,7 @@
         <ClientOnly>
           <ScamAlertsMap 
             :scams="scamAlerts"
-            @select-scam="(id: string) => console.log('Selected scam:', id)"
+            @select-scam="openScamDetails"
             @report-at="handleMapReport"
             class="absolute inset-0"
           />
@@ -401,12 +408,100 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- Scam Details Modal -->
+    <Teleport to="body">
+      <div v-if="showDetailsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/50" @click="closeScamDetails"></div>
+        <div class="relative bg-white dark:bg-background-dark rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div class="sticky top-0 bg-white dark:bg-background-dark border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-charcoal dark:text-white">Scam Details</h2>
+            <button @click="closeScamDetails" class="text-gray-400 hover:text-gray-600">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <div class="p-6">
+            <div v-if="detailsLoading" class="flex items-center justify-center py-10">
+              <div class="animate-spin size-8 border-2 border-accent border-t-transparent rounded-full"></div>
+            </div>
+
+            <div v-else-if="detailsError" class="text-center py-8 text-red-500">
+              <span class="material-symbols-outlined text-4xl mb-2">error</span>
+              <p>{{ detailsError }}</p>
+              <button @click="openScamDetails(selectedScamId || highlightedScamId || '')" class="mt-4 px-4 py-2 bg-accent text-white rounded-lg">Retry</button>
+            </div>
+
+            <div v-else-if="scamDetails" class="space-y-5">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <h3 class="text-xl font-bold text-charcoal dark:text-white">{{ scamDetails.title }}</h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    {{ formatCategoryLabel(scamDetails.category) }} · {{ scamDetails.severity }}
+                  </p>
+                </div>
+                <span :class="['text-xs font-bold px-2.5 py-1 rounded-full uppercase', scamDetails.severity === 'CRITICAL' || scamDetails.severity === 'HIGH' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-700']">
+                  {{ scamDetails.severity }}
+                </span>
+              </div>
+
+              <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                {{ scamDetails.description }}
+              </p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
+                  <div class="text-gray-500">Location</div>
+                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ scamDetails.location?.name || 'Unknown location' }}</div>
+                </div>
+                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
+                  <div class="text-gray-500">Last reported</div>
+                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ getTimeAgo(scamDetails.last_reported) }}</div>
+                </div>
+                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
+                  <div class="text-gray-500">Confirmations</div>
+                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ scamDetails.report_count }}</div>
+                </div>
+                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
+                  <div class="text-gray-500">Verified</div>
+                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ scamDetails.is_verified ? 'Yes' : 'Pending' }}</div>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="text-sm font-bold text-charcoal dark:text-white mb-2">How to avoid</h4>
+                <ul v-if="scamDetails.prevention_tips?.length" class="list-disc pl-5 text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li v-for="tip in scamDetails.prevention_tips" :key="tip">{{ tip }}</li>
+                </ul>
+                <p v-else class="text-sm text-gray-500">No prevention tips yet.</p>
+              </div>
+
+              <div class="flex items-center justify-between gap-3 pt-2">
+                <button
+                  class="px-4 py-2 bg-accent text-white rounded-lg font-semibold hover:bg-accent/90 disabled:opacity-60"
+                  :disabled="confirmingDetails"
+                  @click="confirmDetailsAlert"
+                >
+                  {{ confirmingDetails ? 'Confirming...' : 'Confirm this report' }}
+                </button>
+                <button
+                  class="px-4 py-2 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-semibold hover:bg-gray-50 dark:hover:bg-white/5"
+                  @click="closeScamDetails"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import type { ScamAlert } from '~/composables/useApi'
+import type { ScamAlert } from '~/types/api'
 
 const route = useRoute()
 
@@ -419,6 +514,7 @@ const selectedCategory = ref<string | null>(null)
 
 // Report Modal State
 const showReportModal = ref(false)
+const showDetailsModal = ref(false)
 const isSubmitting = ref(false)
 const submitError = ref('')
 const submitSuccess = ref(false)
@@ -432,6 +528,12 @@ const reportForm = ref({
   location_lat: 7.8731, // Default to Sri Lanka center
   location_lng: 80.7718,
 })
+
+// Details modal state
+const detailsLoading = ref(false)
+const detailsError = ref('')
+const scamDetails = ref<ScamAlert | null>(null)
+const confirmingDetails = ref(false)
 
 // Pagination state
 const currentOffset = ref(0)
@@ -449,6 +551,7 @@ const gettingLocation = ref(false)
 
 // Handle deep-links for report modal, category filter, or specific scam
 const highlightedScamId = ref<string | null>(null)
+const selectedScamId = ref<string | null>(null)
 
 onMounted(async () => {
   // Handle openReport query param
@@ -477,6 +580,8 @@ onMounted(async () => {
       const element = document.getElementById(`scam-${highlightedScamId.value}`)
       element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }, 500)
+
+    openScamDetails(highlightedScamId.value)
   }
 })
 
@@ -687,6 +792,57 @@ async function confirmAlert(id: string) {
   const config = useRuntimeConfig()
   await $fetch(`${config.public.apiBase}/api/scams/${id}/confirm`, { method: 'POST' })
   refresh()
+}
+
+async function openScamDetails(id: string) {
+  const config = useRuntimeConfig()
+  if (!id) {
+    detailsError.value = 'Missing scam ID.'
+    showDetailsModal.value = true
+    return
+  }
+  selectedScamId.value = id
+  showReportModal.value = false
+  showDetailsModal.value = true
+  detailsLoading.value = true
+  detailsError.value = ''
+  scamDetails.value = null
+  
+  try {
+    const response = await $fetch<{ success: boolean; data: ScamAlert; error?: string }>(`${config.public.apiBase}/api/scams/${id}`)
+    if (response.success) {
+      scamDetails.value = response.data
+    } else {
+      detailsError.value = response.error || 'Failed to load scam details.'
+    }
+  } catch (err: any) {
+    detailsError.value = err?.data?.error || 'Failed to load scam details.'
+  } finally {
+    detailsLoading.value = false
+  }
+}
+
+function closeScamDetails() {
+  showDetailsModal.value = false
+  detailsError.value = ''
+}
+
+async function confirmDetailsAlert() {
+  if (!scamDetails.value || confirmingDetails.value) return
+  confirmingDetails.value = true
+  try {
+    await confirmAlert(scamDetails.value.id)
+    scamDetails.value = {
+      ...scamDetails.value,
+      report_count: (scamDetails.value.report_count || 0) + 1
+    }
+  } finally {
+    confirmingDetails.value = false
+  }
+}
+
+function formatCategoryLabel(value: string) {
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
 }
 
 async function submitReport() {

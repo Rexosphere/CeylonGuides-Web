@@ -7,10 +7,19 @@
           <p class="text-sm font-medium text-text-main dark:text-white">Region</p>
           <span class="material-symbols-outlined text-gray-400 group-hover:text-primary text-[20px]">keyboard_arrow_down</span>
         </button>
-        <button class="group flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-surface-dark border border-gray-200 dark:border-neutral-700 hover:border-primary pl-4 pr-3 transition-all">
+        <div class="group flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-surface-dark border border-gray-200 dark:border-neutral-700 hover:border-primary pl-4 pr-3 transition-all">
           <p class="text-sm font-medium text-text-main dark:text-white">Activity Type</p>
-          <span class="material-symbols-outlined text-gray-400 group-hover:text-primary text-[20px]">keyboard_arrow_down</span>
-        </button>
+          <select
+            class="bg-transparent text-sm font-medium text-text-main dark:text-white focus:outline-none"
+            :value="category || ''"
+            @change="setCategory(($event.target as HTMLSelectElement).value)"
+          >
+            <option value="">All</option>
+            <option v-for="item in categoryOptions" :key="item.category" :value="item.category">
+              {{ formatLabel(item.category) }}
+            </option>
+          </select>
+        </div>
         <button class="group flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-surface-dark border border-gray-200 dark:border-neutral-700 hover:border-primary pl-4 pr-3 transition-all">
           <p class="text-sm font-medium text-text-main dark:text-white">Difficulty</p>
           <span class="material-symbols-outlined text-gray-400 group-hover:text-primary text-[20px]">keyboard_arrow_down</span>
@@ -20,9 +29,41 @@
           <span class="material-symbols-outlined text-gray-400 group-hover:text-primary text-[20px]">keyboard_arrow_down</span>
         </button>
         <div class="ml-auto flex items-center gap-2">
-          <button class="text-sm font-medium text-text-muted hover:text-primary underline decoration-transparent hover:decoration-current transition-all">Reset Filters</button>
+          <button
+            class="text-sm font-medium text-text-muted hover:text-primary underline decoration-transparent hover:decoration-current transition-all"
+            @click="resetFilters"
+          >
+            Reset Filters
+          </button>
         </div>
       </div>
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+
+const props = defineProps<{
+  categories: Array<{ category: string; count: number }>
+  category: string | null
+}>()
+
+const emit = defineEmits<{
+  (e: 'update:category', value: string | null): void
+}>()
+
+const categoryOptions = computed(() => props.categories || [])
+
+function formatLabel(value: string) {
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+}
+
+function setCategory(value: string) {
+  emit('update:category', value || null)
+}
+
+function resetFilters() {
+  emit('update:category', null)
+}
+</script>

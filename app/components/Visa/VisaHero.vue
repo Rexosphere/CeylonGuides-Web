@@ -14,16 +14,28 @@
         <p class="text-white/90 text-base sm:text-lg max-w-2xl font-normal leading-relaxed">
           Everything you need to know before landing in paradise. Check specific requirements for your nationality below.
         </p>
+        <p v-if="selectedCountry" class="text-white/80 text-sm">
+          Showing requirements for <span class="font-semibold text-white">{{ selectedCountry }}</span>
+        </p>
         <!-- Search Box -->
         <div class="w-full max-w-md mt-6">
           <label class="relative flex items-center w-full h-14 bg-white dark:bg-card-dark rounded-xl shadow-xl overflow-hidden group focus-within:ring-2 focus-within:ring-primary/50 transition-all">
             <div class="pl-4 pr-2 text-text-secondary flex items-center justify-center">
               <span class="material-symbols-outlined">search</span>
             </div>
-            <input class="w-full h-full border-none bg-transparent text-text-main dark:text-white placeholder:text-text-secondary/70 focus:ring-0 text-base" placeholder="I am a citizen of..."/>
+            <input
+              v-model="searchInput"
+              class="w-full h-full border-none bg-transparent text-text-main dark:text-white placeholder:text-text-secondary/70 focus:ring-0 text-base"
+              placeholder="I am a citizen of..."
+              @keyup.enter="submitSearch"
+            />
             <div class="pr-2">
-              <button class="bg-primary hover:bg-primary/90 text-white rounded-lg h-10 px-4 text-sm font-bold transition-colors">
-                Check
+              <button
+                class="bg-primary hover:bg-primary/90 text-white rounded-lg h-10 px-4 text-sm font-bold transition-colors disabled:opacity-70"
+                :disabled="isLoading"
+                @click.prevent="submitSearch"
+              >
+                {{ isLoading ? 'Checking...' : 'Check' }}
               </button>
             </div>
           </label>
@@ -32,3 +44,23 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+defineProps<{
+  selectedCountry?: string | null
+  isLoading?: boolean
+}>()
+
+const emit = defineEmits<{
+  (e: 'search', query: string): void
+}>()
+
+const searchInput = ref('')
+
+function submitSearch() {
+  if (!searchInput.value.trim()) return
+  emit('search', searchInput.value)
+}
+</script>

@@ -147,6 +147,13 @@
             </div>
 
             <!-- Actions -->
+            <button
+              @click="openDetails(facility.id)"
+              class="w-full mb-2 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/5 py-2.5 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+            >
+              <span class="material-icons-round text-lg">info</span>
+              View Details
+            </button>
             <button 
               @click="openRatingModal(facility)"
               class="w-full bg-primary/10 dark:bg-primary/20 text-primary hover:bg-primary hover:text-white py-2.5 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
@@ -260,6 +267,47 @@
       </div>
     </Teleport>
 
+    <!-- Details Modal -->
+    <Teleport to="body">
+      <div
+        v-if="showDetailsModal"
+        class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+        @click.self="closeDetails"
+      >
+        <div class="bg-surface-light dark:bg-surface-dark rounded-2xl max-w-md w-full p-6 shadow-2xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-slate-800 dark:text-white">
+              {{ facilityDetails?.name || 'Facility Details' }}
+            </h3>
+            <button @click="closeDetails" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+              <span class="material-icons-round">close</span>
+            </button>
+          </div>
+          <div v-if="detailsLoading" class="text-sm text-slate-500">Loading details...</div>
+          <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
+          <div v-else-if="facilityDetails" class="space-y-3">
+            <p class="text-sm text-slate-600 dark:text-slate-400">
+              {{ facilityDetails.location?.name || facilityDetails.location?.district || 'Sri Lanka' }}
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <span class="px-2 py-1 rounded bg-primary/10 text-primary">{{ facilityDetails.type || facilityDetails.facility_type }}</span>
+              <span v-if="facilityDetails.average_rating" class="px-2 py-1 rounded bg-amber-100 text-amber-700">
+                {{ facilityDetails.average_rating.toFixed(1) }} / 5
+              </span>
+            </div>
+            <div v-if="facilityDetails.photos?.length">
+              <img
+                :src="facilityDetails.photos[0]"
+                :alt="facilityDetails.name"
+                class="h-40 w-full object-cover rounded-xl"
+              />
+            </div>
+          </div>
+          <div v-else class="text-sm text-slate-500">No details available.</div>
+        </div>
+      </div>
+    </Teleport>
+
     <!-- AI Chat Widget -->
     <button class="fixed bottom-6 right-6 bg-secondary hover:bg-orange-600 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 z-50 group">
       <span class="material-icons-round text-2xl group-hover:rotate-12 transition-transform">smart_toy</span>
@@ -275,6 +323,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, nextTick } from 'vue'
+import type { Facility as ApiFacility } from '~/types/api'
 
 definePageMeta({
   layout: false
@@ -290,22 +339,7 @@ useHead({
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
 
-interface Facility {
-  id: string
-  name: string
-  type: string
-  location?: {
-    latitude: number
-    longitude: number
-    name: string
-    district?: string
-  }
-  average_rating?: number
-  rating_count?: number
-  cleanliness_rating?: number
-  safety_rating?: number
-  amenities?: string[]
-}
+type Facility = ApiFacility
 
 const selectedType = ref<string>('RESTROOM')
 const userLocation = ref<{ lat: number; lng: number } | null>(null)
@@ -314,6 +348,10 @@ const isLoading = ref(false)
 const showRatingModal = ref(false)
 const selectedFacility = ref<Facility | null>(null)
 const submitting = ref(false)
+const showDetailsModal = ref(false)
+const detailsLoading = ref(false)
+const detailsError = ref('')
+const facilityDetails = ref<Facility | null>(null)
 
 const ratingForm = ref({
   rating: 5,
@@ -322,14 +360,40 @@ const ratingForm = ref({
 
 const ratingLabels = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent']
 
-const facilityTypes = [
-  { value: 'RESTROOM', label: 'Restrooms', icon: '🚻', iconName: 'wc', iconClass: '' },
-  { value: 'BEACH', label: 'Beaches', icon: '🏖️', iconName: 'beach_access', iconClass: 'text-secondary group-hover:scale-110 transition-transform' },
-  { value: 'ATTRACTION', label: 'Attractions', icon: '🎭', iconName: 'attractions', iconClass: 'text-blue-400 group-hover:scale-110 transition-transform' }
-]
+const { data: typesResponse } = await useFetch<{
+  success: boolean
+  data: Array<{ facility_type: string; count: number; category?: string }>
+}>(`${apiBase}/api/facilities/types/list`)
+
+const iconMap: Record<string, { icon: string; iconName: string; iconClass: string }> = {
+  RESTROOM: { icon: '🚻', iconName: 'wc', iconClass: '' },
+  BEACH: { icon: '🏖️', iconName: 'beach_access', iconClass: 'text-secondary group-hover:scale-110 transition-transform' },
+  ATTRACTION: { icon: '🎭', iconName: 'attractions', iconClass: 'text-blue-400 group-hover:scale-110 transition-transform' }
+}
+
+const facilityTypes = computed(() => {
+  const data = typesResponse.value?.data || []
+  if (!data.length) {
+    return [
+      { value: 'RESTROOM', label: 'Restrooms', icon: '🚻', iconName: 'wc', iconClass: '' },
+      { value: 'BEACH', label: 'Beaches', icon: '🏖️', iconName: 'beach_access', iconClass: 'text-secondary group-hover:scale-110 transition-transform' },
+      { value: 'ATTRACTION', label: 'Attractions', icon: '🎭', iconName: 'attractions', iconClass: 'text-blue-400 group-hover:scale-110 transition-transform' }
+    ]
+  }
+
+  return data.map((item) => {
+    const type = item.facility_type || item.category
+    const iconInfo = iconMap[type] || { icon: '📍', iconName: 'place', iconClass: '' }
+    return {
+      value: type,
+      label: type.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase()),
+      ...iconInfo
+    }
+  })
+})
 
 const selectedTypeLabel = computed(() => 
-  facilityTypes.find(t => t.value === selectedType.value)?.label.toLowerCase() || 'facilities'
+  facilityTypes.value.find(t => t.value === selectedType.value)?.label.toLowerCase() || 'facilities'
 )
 
 async function getUserLocation(): Promise<{ lat: number; lng: number } | null> {
@@ -441,6 +505,27 @@ async function submitRating() {
   } finally {
     submitting.value = false
   }
+}
+
+async function openDetails(id: string) {
+  showDetailsModal.value = true
+  detailsLoading.value = true
+  detailsError.value = ''
+  try {
+    const response = await $fetch<{ success: boolean; data: Facility }>(`${apiBase}/api/facilities/${id}`)
+    if (response.success) {
+      facilityDetails.value = response.data
+    }
+  } catch (err: any) {
+    detailsError.value = err?.data?.error || 'Failed to load facility details.'
+  } finally {
+    detailsLoading.value = false
+  }
+}
+
+function closeDetails() {
+  showDetailsModal.value = false
+  facilityDetails.value = null
 }
 
 watch(selectedType, loadFacilities)

@@ -7,7 +7,7 @@
         </div>
         <div>
           <p class="text-xs text-text-muted uppercase tracking-wider font-semibold">Processing Time</p>
-          <p class="text-text-main dark:text-white font-bold">Usually 24-48 Hours</p>
+          <p class="text-text-main dark:text-white font-bold">{{ processingTime || 'Usually 24-48 Hours' }}</p>
         </div>
       </div>
       <div class="flex items-center gap-4 py-2 md:py-0 md:pl-6">
@@ -16,7 +16,7 @@
         </div>
         <div>
           <p class="text-xs text-text-muted uppercase tracking-wider font-semibold">Standard Fee</p>
-          <p class="text-text-main dark:text-white font-bold">$50 USD (Tourist)</p>
+          <p class="text-text-main dark:text-white font-bold">{{ fee || '$50 USD (Tourist)' }}</p>
         </div>
       </div>
       <div class="flex items-center gap-4 py-2 md:py-0 md:pl-6">
@@ -25,9 +25,17 @@
         </div>
         <div>
           <p class="text-xs text-text-muted uppercase tracking-wider font-semibold">Validity</p>
-          <p class="text-text-main dark:text-white font-bold">30 Days (Extendable)</p>
+          <p class="text-text-main dark:text-white font-bold">{{ duration || '30 Days (Extendable)' }}</p>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+defineProps<{
+  processingTime?: string | null
+  fee?: string | null
+  duration?: string | null
+}>()
+</script>

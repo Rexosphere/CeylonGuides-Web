@@ -1,12 +1,12 @@
 <template>
   <div>
     <!-- Active Alert Banner (fetched from API) -->
-    <AlertBanner
+  <AlertBanner
       v-if="activeAlert"
       :type="activeAlert.severity === 'CRITICAL' ? 'danger' : 'warning'"
       :message="activeAlert.title || activeAlert.description || 'Safety Alert'"
       action-text="View Details"
-      action-link="/weather"
+      :action-link="alertLink"
     />
 
     <header class="relative min-h-[90vh] flex flex-col justify-center items-center text-center px-4 overflow-hidden">
@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
@@ -92,6 +92,8 @@ const { data: activeAlert } = await useFetch<SafetyAlert | null>(`${apiBase}/api
   }
 })
 
+const alertLink = computed(() => activeAlert.value?.id ? `/safety-mode?alertId=${activeAlert.value.id}` : '/safety-mode')
+
 // Live stats
 const stats = ref([
   { label: 'Active Alerts', value: '0', loading: true },
@@ -102,16 +104,17 @@ const stats = ref([
 
 async function loadStats() {
   try {
-    const [scamsRes, diningRes, phrasesRes, facilitiesRes] = await Promise.allSettled([
-      $fetch<any>(`${apiBase}/api/scams`),
+    const [safetyRes, diningRes, phrasesRes, facilitiesRes] = await Promise.allSettled([
+      $fetch<any>(`${apiBase}/api/safety/summary/stats`),
       $fetch<any>(`${apiBase}/api/dining`),
       $fetch<any>(`${apiBase}/api/phrases`),
       $fetch<any>(`${apiBase}/api/facilities`)
     ])
     
-    if (scamsRes.status === 'fulfilled' && stats.value[0]) {
-      const count = scamsRes.value?.data?.length || scamsRes.value?.items?.length || 0
-      stats.value[0].value = count.toString()
+    if (safetyRes.status === 'fulfilled' && stats.value[0]) {
+      const rows = safetyRes.value?.data || []
+      const total = rows.reduce((sum: number, row: any) => sum + Number(row.count || 0), 0)
+      stats.value[0].value = total.toString()
       stats.value[0].loading = false
     }
     

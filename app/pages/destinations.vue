@@ -4,8 +4,12 @@
          Assuming default layout for now as per plan. -->
     
     <DestinationHero />
-    <DestinationFilters />
-    <DestinationList />
+    <DestinationFilters
+      :categories="categories"
+      :category="selectedCategory"
+      @update:category="selectedCategory = $event"
+    />
+    <DestinationList :category="selectedCategory" />
     <DestinationCTA />
 
     <!-- Footer is automatically included by default layout -->
@@ -13,6 +17,20 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
+
+const selectedCategory = ref<string | null>(null)
+
+const { data: categoriesResponse } = await useFetch<{
+  success: boolean
+  data: Array<{ category: string; count: number }>
+}>(`${apiBase}/api/destinations/categories/list`)
+
+const categories = computed(() => categoriesResponse.value?.data || [])
+
 // Page metadata
 useHead({
   title: 'CeylonGuide - Explore Destinations'
