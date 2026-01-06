@@ -169,7 +169,7 @@ const activities = computed(() => {
       location: a.location?.name || a.district || staticActivities[index % staticActivities.length]?.location || 'Sri Lanka',
       difficulty: a.difficulty || 'Moderate',
       price: a.price_per_person_usd ? `$${a.price_per_person_usd} / person` : staticActivities[index % staticActivities.length]?.price || 'Contact for price',
-      image: a.image_url || staticActivities[index % staticActivities.length]?.image || '/images/downloaded_f042208332ff.avif'
+      image: a.image_url || a.photo_url || staticActivities[index % staticActivities.length]?.image || '/images/downloaded_f042208332ff.avif'
     }))
   }
   return staticActivities

@@ -37,8 +37,7 @@ const { data: phrasesResponse } = await useFetch<{
     english: string
     sinhala: string
     tamil?: string
-    phonetic_sinhala?: string
-    phonetic_tamil?: string
+    pronunciation?: string
     category: string
   }>
 }>(`${apiBase}/api/phrases?category=EMERGENCY`)
@@ -47,8 +46,8 @@ const phrases = computed(() => {
   const data = phrasesResponse.value?.data || []
   return data.slice(0, 5).map(p => ({
     english: p.english,
-    sinhala: p.phonetic_sinhala || p.sinhala,
-    tamil: p.phonetic_tamil || p.tamil || null
+    sinhala: p.sinhala,
+    tamil: p.tamil || null
   }))
 })
 </script>
