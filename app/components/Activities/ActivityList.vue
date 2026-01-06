@@ -32,7 +32,8 @@
             <div 
               v-for="activity in activities" 
               :key="activity.id"
-              class="group flex flex-col gap-3 cursor-pointer"
+              :id="`activity-${activity.id}`"
+              class="group flex flex-col gap-3 cursor-pointer transition-all"
             >
               <div class="relative w-full aspect-[4/5] overflow-hidden rounded-xl">
                 <div class="absolute top-3 left-3 z-10 bg-white/90 dark:bg-black/60 backdrop-blur px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider text-text-main dark:text-white">
@@ -75,6 +76,8 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, nextTick } from 'vue'
+
 const { apiBase } = useRuntimeConfig().public
 
 // Fetch activities from API
@@ -170,5 +173,24 @@ const activities = computed(() => {
     }))
   }
   return staticActivities
+})
+
+// Handle ?id= deep-link query param
+const route = useRoute()
+
+onMounted(() => {
+  const targetId = route.query.id as string
+  if (targetId) {
+    nextTick(() => {
+      const el = document.getElementById(`activity-${targetId}`)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        el.classList.add('ring-2', 'ring-primary', 'ring-offset-2')
+        setTimeout(() => {
+          el.classList.remove('ring-2', 'ring-primary', 'ring-offset-2')
+        }, 3000)
+      }
+    })
+  }
 })
 </script>

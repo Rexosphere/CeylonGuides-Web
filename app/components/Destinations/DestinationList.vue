@@ -3,8 +3,9 @@
     <article 
       v-for="(dest, index) in destinations" 
       :key="index"
+      :id="`destination-${dest.id}`"
       :class="[
-        'group',
+        'group transition-all',
         dest.layout === 'full' ? 'relative w-full h-[500px] md:h-[600px] rounded-2xl overflow-hidden' : 'flex flex-col md:flex-row gap-8 md:gap-16 items-center',
         dest.layout === 'right' ? 'md:flex-row-reverse' : ''
       ]"
@@ -96,6 +97,8 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, nextTick } from 'vue'
+
 const { apiBase } = useRuntimeConfig().public
 
 // Fetch destinations from API
@@ -188,5 +191,24 @@ const destinations = computed(() => {
     }))
   }
   return staticDestinations
+})
+
+// Handle ?id= deep-link query param
+const route = useRoute()
+
+onMounted(() => {
+  const targetId = route.query.id as string
+  if (targetId) {
+    nextTick(() => {
+      const el = document.getElementById(`destination-${targetId}`)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        el.classList.add('ring-2', 'ring-primary', 'ring-offset-4')
+        setTimeout(() => {
+          el.classList.remove('ring-2', 'ring-primary', 'ring-offset-4')
+        }, 3000)
+      }
+    })
+  }
 })
 </script>
