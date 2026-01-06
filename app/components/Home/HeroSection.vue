@@ -32,7 +32,7 @@
         </div>
 
         <!-- Live Stats Grid -->
-        <div class="grid grid-cols-3 gap-4 my-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-4">
           <div 
             v-for="stat in stats" 
             :key="stat.label"
@@ -96,15 +96,17 @@ const { data: activeAlert } = await useFetch<SafetyAlert | null>(`${apiBase}/api
 const stats = ref([
   { label: 'Active Alerts', value: '0', loading: true },
   { label: 'Restaurants', value: '0', loading: true },
-  { label: 'Phrases', value: '0', loading: true }
+  { label: 'Phrases', value: '0', loading: true },
+  { label: 'Facilities', value: '0', loading: true }
 ])
 
 async function loadStats() {
   try {
-    const [scamsRes, diningRes, phrasesRes] = await Promise.allSettled([
+    const [scamsRes, diningRes, phrasesRes, facilitiesRes] = await Promise.allSettled([
       $fetch<any>(`${apiBase}/api/scams`),
       $fetch<any>(`${apiBase}/api/dining`),
-      $fetch<any>(`${apiBase}/api/phrases`)
+      $fetch<any>(`${apiBase}/api/phrases`),
+      $fetch<any>(`${apiBase}/api/facilities`)
     ])
     
     if (scamsRes.status === 'fulfilled' && stats.value[0]) {
@@ -123,6 +125,12 @@ async function loadStats() {
       const count = phrasesRes.value?.data?.length || 0
       stats.value[2].value = count.toString()
       stats.value[2].loading = false
+    }
+    
+    if (facilitiesRes.status === 'fulfilled' && stats.value[3]) {
+      const count = facilitiesRes.value?.data?.length || 0
+      stats.value[3].value = count.toString()
+      stats.value[3].loading = false
     }
   } catch (error) {
     console.error('Failed to load stats:', error)
