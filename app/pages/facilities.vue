@@ -80,8 +80,8 @@
               <div class="text-4xl">
                 {{ facilityTypes.find(t => t.value === facility.type)?.icon || '📍' }}
               </div>
-              <div v-if="userLocation && facility.latitude && facility.longitude" class="text-xs bg-slate-100 dark:bg-white/10 px-2 py-1 rounded-full text-slate-600 dark:text-slate-300">
-                {{ getDistance(userLocation.lat, userLocation.lng, facility.latitude, facility.longitude).toFixed(1) }} km
+              <div v-if="userLocation && facility.location?.latitude && facility.location?.longitude" class="text-xs bg-slate-100 dark:bg-white/10 px-2 py-1 rounded-full text-slate-600 dark:text-slate-300">
+                {{ getDistance(userLocation.lat, userLocation.lng, facility.location.latitude, facility.location.longitude).toFixed(1) }} km
               </div>
             </div>
 
@@ -89,7 +89,7 @@
             <h3 class="font-bold text-lg mb-2 text-slate-800 dark:text-white">{{ facility.name }}</h3>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 flex items-center gap-1">
               <span class="material-icons-round text-sm">location_on</span>
-              {{ facility.location || facility.district || 'Sri Lanka' }}
+              {{ facility.location?.name || facility.location?.district || 'Sri Lanka' }}
             </p>
 
             <!-- Rating Display -->
@@ -113,9 +113,9 @@
                 label="Community ratings"
               />
               <TrustBadge 
-                v-if="facility.type === 'RESTROOM' && facility.cleanliness_score"
+                v-if="facility.type === 'RESTROOM' && facility.cleanliness_rating"
                 type="hygiene"
-                :value="facility.cleanliness_score >= 4 ? 'A' : facility.cleanliness_score >= 3 ? 'B' : 'C'"
+                :value="facility.cleanliness_rating >= 4 ? 'A' : facility.cleanliness_rating >= 3 ? 'B' : 'C'"
                 label="Cleanliness rating"
               />
             </div>
@@ -293,13 +293,15 @@ interface Facility {
   id: string
   name: string
   type: string
-  location?: string
-  district?: string
-  latitude?: number
-  longitude?: number
+  location?: {
+    latitude: number
+    longitude: number
+    name: string
+    district?: string
+  }
   average_rating?: number
   rating_count?: number
-  cleanliness_score?: number
+  cleanliness_rating?: number
   safety_rating?: number
   amenities?: string[]
 }
@@ -383,11 +385,11 @@ async function loadFacilities() {
     // Sort by distance if we have user location
     if (userLocation.value) {
       facilities.value.sort((a, b) => {
-        const distA = a.latitude && a.longitude 
-          ? getDistance(userLocation.value!.lat, userLocation.value!.lng, a.latitude, a.longitude)
+        const distA = a.location?.latitude && a.location?.longitude 
+          ? getDistance(userLocation.value!.lat, userLocation.value!.lng, a.location.latitude, a.location.longitude)
           : Infinity
-        const distB = b.latitude && b.longitude 
-          ? getDistance(userLocation.value!.lat, userLocation.value!.lng, b.latitude, b.longitude)
+        const distB = b.location?.latitude && b.location?.longitude 
+          ? getDistance(userLocation.value!.lat, userLocation.value!.lng, b.location.latitude, b.location.longitude)
           : Infinity
         return distA - distB
       })

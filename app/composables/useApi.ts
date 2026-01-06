@@ -100,7 +100,6 @@ export interface SafetyAlert {
     expires_at: string
 }
 
-// Emergency Types
 export interface EmergencyContact {
     id: string
     name: string
@@ -109,6 +108,14 @@ export interface EmergencyContact {
     description?: string
     is_available_24x7: boolean
     emoji?: string
+}
+
+// Quick dial numbers have a different shape from full emergency contacts
+export interface QuickDialNumber {
+    name: string
+    phone: string
+    category: string
+    emoji: string
 }
 
 // Facility Types
@@ -311,7 +318,7 @@ export function useApi() {
             return apiFetch<EmergencyContact[]>(`/api/emergency${query}`)
         },
 
-        getQuickDial: () => apiFetch<EmergencyContact[]>('/api/emergency/quick'),
+        getQuickDial: () => apiFetch<QuickDialNumber[]>('/api/emergency/quick'),
 
         getCategories: () =>
             apiFetch<{ category: string; count: number }[]>('/api/emergency/categories/list'),
