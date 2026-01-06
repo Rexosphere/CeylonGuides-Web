@@ -23,9 +23,9 @@
             <h3 class="font-serif text-3xl md:text-5xl font-bold text-white mb-3">Destinations</h3>
             <p class="text-white/90 text-lg md:text-xl font-light mb-6 line-clamp-2">Explore iconic locations like the misty train ride to Ella, ancient Sigiriya, and pristine southern beaches.</p>
             <div class="flex items-center gap-4">
-              <span class="inline-flex items-center gap-2 bg-accent text-white px-6 py-3 rounded-full font-bold text-sm transition-transform group-hover:translate-x-2">
+              <NuxtLink to="/destinations" class="inline-flex items-center gap-2 bg-accent text-white px-6 py-3 rounded-full font-bold text-sm transition-transform group-hover:translate-x-2">
                 Explore All <span class="material-symbols-outlined text-lg">arrow_right_alt</span>
-              </span>
+              </NuxtLink>
               <div class="hidden md:flex items-center gap-2 text-white/80 text-sm font-medium">
                 <span class="material-symbols-outlined">star</span> 4.9/5 from Travelers
               </div>
@@ -46,9 +46,9 @@
             </p>
           </div>
           <div class="relative z-10 mt-8">
-            <a href="#" class="text-primary dark:text-white font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
+            <NuxtLink to="/itineraries" class="text-primary dark:text-white font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
               Start Planning <span class="material-symbols-outlined">chevron_right</span>
-            </a>
+            </NuxtLink>
           </div>
         </div>
 
@@ -76,7 +76,7 @@
           <div>
             <h3 class="font-serif text-2xl font-bold text-primary dark:text-white mb-1">Photo Spots</h3>
             <p class="text-charcoal/60 dark:text-gray-400 text-sm mb-3">Instagrammable locations mapped for you.</p>
-            <span class="text-accent text-sm font-bold flex items-center gap-1">View Gallery <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <NuxtLink to="/photos" class="text-accent text-sm font-bold flex items-center gap-1">View Gallery <span class="material-symbols-outlined text-sm">arrow_forward</span></NuxtLink>
           </div>
         </div>
 

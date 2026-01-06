@@ -10,7 +10,7 @@
           <h2 class="font-serif text-3xl md:text-4xl font-bold text-primary dark:text-white">Safety & Well-being</h2>
         </div>
         <div class="relative z-10 mt-4 md:mt-0">
-          <a href="#" class="text-primary dark:text-accent-light hover:underline font-bold text-sm">View Official Advisories</a>
+          <NuxtLink to="/safety-mode" class="text-primary dark:text-accent-light hover:underline font-bold text-sm">View Official Advisories</NuxtLink>
         </div>
       </div>
 
