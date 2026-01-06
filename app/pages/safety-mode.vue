@@ -366,7 +366,7 @@ onMounted(async () => {
                 english: p.english,
                 sinhala: p.sinhala,
                 tamil: p.tamil,
-                pronunciation: p.pronunciation || p.phonetic_sinhala
+                pronunciation: p.pronunciation || ''
               }))
           }
         } catch (e) {

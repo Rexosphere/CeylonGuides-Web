@@ -18,6 +18,18 @@
           <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-[#111718] dark:bg-white px-6 transition-transform hover:scale-105">
             <span class="text-white dark:text-[#111718] text-sm font-bold">All</span>
           </button>
+          <div class="flex h-10 shrink-0 items-center gap-x-2 rounded-full bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 px-5">
+            <span class="material-symbols-outlined text-[18px] text-dining-primary">category</span>
+            <select
+              v-model="selectedCategory"
+              class="bg-transparent text-sm font-medium text-[#111718] dark:text-gray-200 focus:outline-none"
+            >
+              <option value="">All Categories</option>
+              <option v-for="item in categories" :key="item.category" :value="item.category">
+                {{ formatCategory(item.category) }}
+              </option>
+            </select>
+          </div>
           <button 
             @click="selectDietary(selectedDietary === 'VEGETARIAN' ? null : 'VEGETARIAN')"
             :class="[
@@ -190,6 +202,10 @@
                 />
               </div>
               <!-- Review Button -->
+              <button @click="openDetails(restaurant.id)" class="flex items-center gap-2 text-[#111718] dark:text-gray-200 text-sm font-medium hover:underline">
+                <span class="material-symbols-outlined text-lg">info</span>
+                View Details
+              </button>
               <button @click="openReviewModal(restaurant)" class="mt-4 flex items-center gap-2 text-dining-primary text-sm font-medium hover:underline">
                 <span class="material-symbols-outlined text-lg">rate_review</span>
                 Leave a Review
@@ -304,11 +320,46 @@
       </div>
     </div>
   </Teleport>
+
+  <!-- Details Modal -->
+  <Teleport to="body">
+    <div v-if="showDetailsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/50" @click="closeDetails"></div>
+      <div class="relative bg-white dark:bg-dining-dark rounded-2xl shadow-2xl w-full max-w-md">
+        <div class="border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-[#111718] dark:text-white">Restaurant Details</h2>
+          <button @click="closeDetails" class="text-gray-400 hover:text-gray-600">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="p-6 space-y-4">
+          <div v-if="detailsLoading" class="text-sm text-gray-500">Loading details...</div>
+          <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
+          <div v-else-if="restaurantDetails">
+            <h3 class="font-bold text-[#111718] dark:text-white">{{ restaurantDetails.name }}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{{ restaurantDetails.description || 'No description available.' }}</p>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <span class="px-2 py-1 rounded bg-primary/10 text-primary">{{ restaurantDetails.category }}</span>
+              <span v-if="restaurantDetails.price_range" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ restaurantDetails.price_range }} range</span>
+            </div>
+            <div v-if="restaurantDetails.cuisine_types?.length" class="text-xs text-gray-500 dark:text-gray-400">
+              Cuisine: {{ restaurantDetails.cuisine_types.join(', ') }}
+            </div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">
+              Location: {{ restaurantDetails.location?.name || restaurantDetails.district || 'Sri Lanka' }}
+            </div>
+          </div>
+          <div v-else class="text-sm text-gray-500">No details available.</div>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { Restaurant } from '~/composables/useApi'
+import type { Restaurant } from '~/types/api'
 
 definePageMeta({
   layout: false
@@ -319,6 +370,7 @@ const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
 
 // Filters
+const selectedCategory = ref<string | null>(null)
 const selectedDietary = ref<string | null>(null)
 const selectedHygiene = ref<string | null>(null)
 const searchQuery = ref('')
@@ -333,6 +385,17 @@ watch(searchQuery, (newVal) => {
   }, 300)
 })
 
+const { data: categoriesResponse } = await useFetch<{
+  success: boolean
+  data: Array<{ category: string; count: number }>
+}>(`${apiBase}/api/dining/categories/list`)
+
+const categories = computed(() => categoriesResponse.value?.data || [])
+
+function formatCategory(value: string) {
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+}
+
 // Review Modal State
 const showReviewModal = ref(false)
 const selectedRestaurant = ref<Restaurant | null>(null)
@@ -340,6 +403,10 @@ const reviewSubmitting = ref(false)
 const reviewError = ref('')
 const reviewSuccess = ref(false)
 const reviewForm = ref({ rating: 0, comment: '' })
+const showDetailsModal = ref(false)
+const detailsLoading = ref(false)
+const detailsError = ref('')
+const restaurantDetails = ref<Restaurant | null>(null)
 
 const { data: restaurantsResponse, pending, refresh } = await useFetch<{ 
   success: boolean
@@ -348,13 +415,14 @@ const { data: restaurantsResponse, pending, refresh } = await useFetch<{
 }>(
   () => {
     const params = new URLSearchParams()
+    if (selectedCategory.value) params.set('category', selectedCategory.value)
     if (selectedDietary.value) params.set('dietary', selectedDietary.value)
     if (selectedHygiene.value) params.set('hygiene', selectedHygiene.value)
     if (debouncedQuery.value) params.set('search', debouncedQuery.value)
     const queryStr = params.toString()
     return `${apiBase}/api/dining${queryStr ? `?${queryStr}` : ''}`
   },
-  { watch: [selectedDietary, selectedHygiene, debouncedQuery] }
+  { watch: [selectedCategory, selectedDietary, selectedHygiene, debouncedQuery] }
 )
 
 // Handle deep-links for specific restaurant
@@ -486,6 +554,27 @@ function openReviewModal(restaurant: Restaurant) {
   reviewError.value = ''
   reviewSuccess.value = false
   showReviewModal.value = true
+}
+
+async function openDetails(restaurantId: string) {
+  showDetailsModal.value = true
+  detailsLoading.value = true
+  detailsError.value = ''
+  try {
+    const response = await $fetch<{ success: boolean; data: Restaurant }>(`${apiBase}/api/dining/${restaurantId}`)
+    if (response.success) {
+      restaurantDetails.value = response.data
+    }
+  } catch (err: any) {
+    detailsError.value = err?.data?.error || 'Failed to load restaurant details.'
+  } finally {
+    detailsLoading.value = false
+  }
+}
+
+function closeDetails() {
+  showDetailsModal.value = false
+  restaurantDetails.value = null
 }
 
 async function submitReview() {

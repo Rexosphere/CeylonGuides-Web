@@ -85,7 +85,10 @@
             <p class="text-[#5c4a44] dark:text-[#bcaaa4] text-base leading-relaxed mb-6">
               {{ dest.description }}
             </p>
-            <button class="w-full py-3 rounded-lg bg-[#181311] dark:bg-white text-white dark:text-[#181311] font-bold text-sm hover:opacity-90 transition-opacity">
+            <button
+              class="w-full py-3 rounded-lg bg-[#181311] dark:bg-white text-white dark:text-[#181311] font-bold text-sm hover:opacity-90 transition-opacity"
+              @click="openDetails(dest.id)"
+            >
               Explore Destination
             </button>
           </div>
@@ -94,15 +97,71 @@
 
     </article>
   </div>
+
+  <Teleport to="body">
+    <div v-if="showDetails" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/50" @click="closeDetails"></div>
+      <div class="relative bg-white dark:bg-surface-dark rounded-2xl max-w-xl w-full shadow-2xl border border-gray-200 dark:border-white/10">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/10">
+          <h3 class="text-lg font-bold text-text-main dark:text-white">
+            {{ selectedDestination?.name || 'Destination Details' }}
+          </h3>
+          <button @click="closeDetails" class="text-gray-400 hover:text-gray-600">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="p-6">
+          <div v-if="detailsLoading" class="text-sm text-text-muted">Loading details...</div>
+          <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
+          <div v-else-if="selectedDestination">
+            <div class="flex flex-col gap-4">
+              <img
+                v-if="selectedDestination.image_url"
+                :src="selectedDestination.image_url"
+                :alt="selectedDestination.name"
+                class="h-48 w-full object-cover rounded-xl"
+              />
+              <p class="text-sm text-text-muted">{{ selectedDestination.description || 'No description available.' }}</p>
+              <div class="flex flex-wrap gap-2 text-xs">
+                <span class="px-2 py-1 rounded bg-primary/10 text-primary">{{ selectedDestination.category }}</span>
+                <span v-if="selectedDestination.is_unesco" class="px-2 py-1 rounded bg-amber-100 text-amber-700">UNESCO</span>
+                <span v-if="selectedDestination.best_time_to_visit" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ selectedDestination.best_time_to_visit }}</span>
+              </div>
+              <div v-if="selectedDestination.highlights?.length" class="text-xs text-text-muted">
+                Highlights: {{ selectedDestination.highlights.join(', ') }}
+              </div>
+              <div class="text-sm text-text-muted">
+                Location: {{ selectedDestination.location?.name || selectedDestination.location?.district || 'Sri Lanka' }}
+              </div>
+            </div>
+          </div>
+          <div v-else class="text-sm text-text-muted">No details available.</div>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { onMounted, nextTick } from 'vue'
+import { computed, onMounted, nextTick, ref } from 'vue'
+import type { Destination } from '~/types/api'
 
 const { apiBase } = useRuntimeConfig().public
 
+const props = defineProps<{
+  category: string | null
+}>()
+
 // Fetch destinations from API
-const { data: apiDestinations, pending, error } = await useFetch<{ success: boolean; data: any[] }>(`${apiBase}/api/destinations`)
+const { data: apiDestinations, pending, error } = await useFetch<{ success: boolean; data: Destination[] }>(
+  () => {
+    const params = new URLSearchParams()
+    if (props.category) params.set('category', props.category)
+    const queryStr = params.toString()
+    return `${apiBase}/api/destinations${queryStr ? `?${queryStr}` : ''}`
+  },
+  { watch: [() => props.category] }
+)
 
 // Fallback static destinations for when API is unavailable
 const staticDestinations = [
@@ -175,12 +234,11 @@ const staticDestinations = [
 // Use API data if available, otherwise fallback to static
 const destinations = computed(() => {
   if (apiDestinations.value?.success && apiDestinations.value.data?.length > 0) {
-    // Transform API data to match component format
     return apiDestinations.value.data.map((d: any, index: number) => ({
       id: d.id,
       name: d.name,
       title: d.name,
-      subtitle: d.subtitle || '',
+      subtitle: d.subtitle || d.best_time_to_visit || '',
       description: d.description,
       image: d.image_url || staticDestinations[index % staticDestinations.length]?.image || '/images/downloaded_135ae74fa037.avif',
       alt: d.name,
@@ -192,6 +250,32 @@ const destinations = computed(() => {
   }
   return staticDestinations
 })
+
+const showDetails = ref(false)
+const detailsLoading = ref(false)
+const detailsError = ref('')
+const selectedDestination = ref<Destination | null>(null)
+
+async function openDetails(id: string) {
+  showDetails.value = true
+  detailsLoading.value = true
+  detailsError.value = ''
+  try {
+    const response = await $fetch<{ success: boolean; data: Destination }>(`${apiBase}/api/destinations/${id}`)
+    if (response.success) {
+      selectedDestination.value = response.data
+    }
+  } catch (err: any) {
+    detailsError.value = err?.data?.error || 'Failed to load destination details.'
+  } finally {
+    detailsLoading.value = false
+  }
+}
+
+function closeDetails() {
+  showDetails.value = false
+  selectedDestination.value = null
+}
 
 // Handle ?id= deep-link query param
 const route = useRoute()

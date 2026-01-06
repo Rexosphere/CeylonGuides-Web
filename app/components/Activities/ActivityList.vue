@@ -34,6 +34,7 @@
               :key="activity.id"
               :id="`activity-${activity.id}`"
               class="group flex flex-col gap-3 cursor-pointer transition-all"
+              @click="openDetails(activity.id)"
             >
               <div class="relative w-full aspect-[4/5] overflow-hidden rounded-xl">
                 <div class="absolute top-3 left-3 z-10 bg-white/90 dark:bg-black/60 backdrop-blur px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider text-text-main dark:text-white">
@@ -73,15 +74,71 @@
       </div>
     </section>
   </div>
+
+  <Teleport to="body">
+    <div v-if="showDetails" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/50" @click="closeDetails"></div>
+      <div class="relative bg-white dark:bg-surface-dark rounded-2xl max-w-xl w-full shadow-2xl border border-gray-200 dark:border-white/10">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/10">
+          <h3 class="text-lg font-bold text-text-main dark:text-white">
+            {{ selectedActivity?.name || 'Activity Details' }}
+          </h3>
+          <button @click="closeDetails" class="text-gray-400 hover:text-gray-600">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="p-6">
+          <div v-if="detailsLoading" class="text-sm text-text-muted">Loading details...</div>
+          <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
+          <div v-else-if="selectedActivity">
+            <div class="flex flex-col gap-4">
+              <img
+                v-if="selectedActivity.image_url"
+                :src="selectedActivity.image_url"
+                :alt="selectedActivity.name"
+                class="h-48 w-full object-cover rounded-xl"
+              />
+              <p class="text-sm text-text-muted">{{ selectedActivity.description || 'No description available.' }}</p>
+              <div class="flex flex-wrap gap-2 text-xs">
+                <span class="px-2 py-1 rounded bg-primary/10 text-primary">{{ selectedActivity.category }}</span>
+                <span v-if="selectedActivity.difficulty" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ selectedActivity.difficulty }}</span>
+                <span v-if="selectedActivity.duration_hours" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ selectedActivity.duration_hours }} hrs</span>
+              </div>
+              <div v-if="selectedActivity.includes?.length" class="text-xs text-text-muted">
+                Includes: {{ selectedActivity.includes.join(', ') }}
+              </div>
+              <div class="text-sm text-text-muted">
+                Location: {{ selectedActivity.location?.name || 'Sri Lanka' }}
+              </div>
+            </div>
+          </div>
+          <div v-else class="text-sm text-text-muted">No details available.</div>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { onMounted, nextTick } from 'vue'
+import { computed, onMounted, nextTick, ref } from 'vue'
+import type { Activity } from '~/types/api'
 
 const { apiBase } = useRuntimeConfig().public
 
+const props = defineProps<{
+  category: string | null
+}>()
+
 // Fetch activities from API
-const { data: apiActivities, pending } = await useFetch<{ success: boolean; data: any[] }>(`${apiBase}/api/activities`)
+const { data: apiActivities, pending } = await useFetch<{ success: boolean; data: Activity[] }>(
+  () => {
+    const params = new URLSearchParams()
+    if (props.category) params.set('category', props.category)
+    const queryStr = params.toString()
+    return `${apiBase}/api/activities${queryStr ? `?${queryStr}` : ''}`
+  },
+  { watch: [() => props.category] }
+)
 
 // Static fallback data
 const staticActivities = [
@@ -159,21 +216,51 @@ const staticActivities = [
   }
 ]
 
-// Use API data if available, otherwise fallback to static
 const activities = computed(() => {
-  if (apiActivities.value?.success && apiActivities.value.data?.length > 0) {
-    return apiActivities.value.data.map((a: any, index: number) => ({
+  const apiList = apiActivities.value?.data || []
+  if (apiList.length) {
+    return apiList.map((a) => ({
       id: a.id,
       name: a.name,
       category: a.category?.replace(/_/g, ' ') || 'Experience',
-      location: a.location?.name || a.district || staticActivities[index % staticActivities.length]?.location || 'Sri Lanka',
+      location: a.location?.name || 'Sri Lanka',
       difficulty: a.difficulty || 'Moderate',
-      price: a.price_per_person_usd ? `$${a.price_per_person_usd} / person` : staticActivities[index % staticActivities.length]?.price || 'Contact for price',
-      image: a.image_url || staticActivities[index % staticActivities.length]?.image || '/images/downloaded_f042208332ff.avif'
+      price: a.price_per_person_usd
+        ? `$${a.price_per_person_usd} / person`
+        : a.price_per_person_lkr
+          ? `LKR ${a.price_per_person_lkr} / person`
+          : 'Contact for price',
+      image: a.image_url || '/images/downloaded_f042208332ff.avif'
     }))
   }
   return staticActivities
 })
+
+const showDetails = ref(false)
+const detailsLoading = ref(false)
+const detailsError = ref('')
+const selectedActivity = ref<Activity | null>(null)
+
+async function openDetails(id: string) {
+  showDetails.value = true
+  detailsLoading.value = true
+  detailsError.value = ''
+  try {
+    const response = await $fetch<{ success: boolean; data: Activity }>(`${apiBase}/api/activities/${id}`)
+    if (response.success) {
+      selectedActivity.value = response.data
+    }
+  } catch (err: any) {
+    detailsError.value = err?.data?.error || 'Failed to load activity details.'
+  } finally {
+    detailsLoading.value = false
+  }
+}
+
+function closeDetails() {
+  showDetails.value = false
+  selectedActivity.value = null
+}
 
 // Handle ?id= deep-link query param
 const route = useRoute()

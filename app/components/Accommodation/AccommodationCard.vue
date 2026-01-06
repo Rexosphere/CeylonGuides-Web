@@ -59,7 +59,7 @@
             <span class="text-xs font-bold text-neutral-dark dark:text-white">{{ accommodation.rating }}</span>
             <span class="text-xs text-neutral-gray">({{ accommodation.reviews }} reviews)</span>
           </div>
-          <button class="text-sm font-bold text-primary hover:underline">View Details</button>
+          <button class="text-sm font-bold text-primary hover:underline" @click.stop="emit('view', accommodation.id)">View Details</button>
         </div>
       </div>
     </div>
@@ -89,5 +89,9 @@ interface Accommodation {
 
 defineProps<{
   accommodation: Accommodation
+}>()
+
+const emit = defineEmits<{
+  (e: 'view', id: string | number): void
 }>()
 </script>

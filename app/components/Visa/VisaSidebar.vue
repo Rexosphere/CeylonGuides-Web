@@ -10,29 +10,17 @@
         <p class="text-xs text-text-secondary dark:text-text-muted mt-1">Have these ready at immigration.</p>
       </div>
       <div class="p-6 flex flex-col gap-4">
-        <label class="flex items-start gap-3 cursor-pointer group">
-          <input checked class="mt-1 rounded border-border-color dark:border-neutral-600 text-primary focus:ring-primary/20" type="checkbox"/>
-          <span class="text-sm text-text-secondary dark:text-text-muted group-hover:text-text-main dark:group-hover:text-white transition-colors">Passport (valid for 6 months)</span>
-        </label>
-        <label class="flex items-start gap-3 cursor-pointer group">
-          <input class="mt-1 rounded border-border-color dark:border-neutral-600 text-primary focus:ring-primary/20" type="checkbox"/>
-          <span class="text-sm text-text-secondary dark:text-text-muted group-hover:text-text-main dark:group-hover:text-white transition-colors">Printed ETA Approval Notice</span>
-        </label>
-        <label class="flex items-start gap-3 cursor-pointer group">
-          <input class="mt-1 rounded border-border-color dark:border-neutral-600 text-primary focus:ring-primary/20" type="checkbox"/>
-          <span class="text-sm text-text-secondary dark:text-text-muted group-hover:text-text-main dark:group-hover:text-white transition-colors">Return / Onward Ticket</span>
-        </label>
-        <label class="flex items-start gap-3 cursor-pointer group">
-          <input class="mt-1 rounded border-border-color dark:border-neutral-600 text-primary focus:ring-primary/20" type="checkbox"/>
-          <span class="text-sm text-text-secondary dark:text-text-muted group-hover:text-text-main dark:group-hover:text-white transition-colors">Proof of Sufficient Funds</span>
-        </label>
-        <label class="flex items-start gap-3 cursor-pointer group">
-          <input class="mt-1 rounded border-border-color dark:border-neutral-600 text-primary focus:ring-primary/20" type="checkbox"/>
-          <span class="text-sm text-text-secondary dark:text-text-muted group-hover:text-text-main dark:group-hover:text-white transition-colors">Hotel Booking Confirmation</span>
-        </label>
-        <label class="flex items-start gap-3 cursor-pointer group">
-          <input class="mt-1 rounded border-border-color dark:border-neutral-600 text-primary focus:ring-primary/20" type="checkbox"/>
-          <span class="text-sm text-text-secondary dark:text-text-muted group-hover:text-text-main dark:group-hover:text-white transition-colors">Arrival Card (Filled)</span>
+        <label
+          v-for="(item, index) in checklistItems"
+          :key="item"
+          class="flex items-start gap-3 cursor-pointer group"
+        >
+          <input
+            :checked="index === 0"
+            class="mt-1 rounded border-border-color dark:border-neutral-600 text-primary focus:ring-primary/20"
+            type="checkbox"
+          />
+          <span class="text-sm text-text-secondary dark:text-text-muted group-hover:text-text-main dark:group-hover:text-white transition-colors">{{ item }}</span>
         </label>
       </div>
       <div class="p-4 border-t border-border-color dark:border-neutral-700">
@@ -64,3 +52,24 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+
+const props = defineProps<{
+  requirements?: string[] | null
+}>()
+
+const checklistItems = computed(() => {
+  return props.requirements && props.requirements.length
+    ? props.requirements
+    : [
+        'Passport (valid for 6 months)',
+        'Printed ETA Approval Notice',
+        'Return / Onward Ticket',
+        'Proof of Sufficient Funds',
+        'Hotel Booking Confirmation',
+        'Arrival Card (Filled)',
+      ]
+})
+</script>

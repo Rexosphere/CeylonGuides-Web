@@ -131,6 +131,14 @@
               
               <!-- Action Buttons -->
               <div class="flex items-center gap-2">
+                <!-- Details Button -->
+                <button
+                  @click="openDetails(phrase.id)"
+                  class="shrink-0 h-12 w-12 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all flex items-center justify-center border border-gray-200"
+                  title="View details"
+                >
+                  <span class="material-symbols-outlined">info</span>
+                </button>
                 <!-- Speak Button -->
                 <button 
                   @click="speakPhrase(phrase.native)"
@@ -217,11 +225,37 @@
       </div>
     </div>
   </div>
+
+  <Teleport to="body">
+    <div v-if="showDetailsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/50" @click="closeDetails"></div>
+      <div class="relative bg-white dark:bg-[#2a1d18] rounded-2xl shadow-2xl w-full max-w-md">
+        <div class="border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-charcoal dark:text-white">Phrase Details</h2>
+          <button @click="closeDetails" class="text-gray-400 hover:text-gray-600">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="p-6 space-y-4">
+          <div v-if="detailsLoading" class="text-sm text-gray-500">Loading details...</div>
+          <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
+          <div v-else-if="selectedPhrase">
+            <p class="text-2xl font-bold text-charcoal">{{ selectedPhrase.english }}</p>
+            <p class="text-lg text-primary mt-2">{{ selectedPhrase.sinhala }}</p>
+            <p class="text-lg text-primary">{{ selectedPhrase.tamil }}</p>
+            <p v-if="selectedPhrase.pronunciation" class="text-sm text-gray-500 mt-1">{{ selectedPhrase.pronunciation }}</p>
+            <p v-if="selectedPhrase.cultural_context" class="text-sm text-gray-500 mt-3">{{ selectedPhrase.cultural_context }}</p>
+          </div>
+          <div v-else class="text-sm text-gray-500">No details available.</div>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
-import type { Phrase, EtiquetteTip } from '~/composables/useApi'
+import type { Phrase, EtiquetteTip } from '~/types/api'
 
 const searchQuery = ref('')
 const debouncedQuery = ref('')
@@ -240,6 +274,11 @@ watch(searchQuery, (newVal) => {
 // Get config
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
+
+const { data: categoriesResponse } = await useFetch<{
+  success: boolean
+  data: Array<{ category: string; count: number }>
+}>(`${apiBase}/api/phrases/categories/list`)
 
 // Fetch phrases from API (watches debounced query, not raw input)
 const { data: phrasesResponse, pending: phrasesPending } = await useFetch<{ success: boolean; data: Phrase[]; count: number }>(
@@ -274,6 +313,11 @@ const phrases = computed(() => {
 
 // Saved phrases state
 const savedPhrases = ref<string[]>([])
+
+const showDetailsModal = ref(false)
+const detailsLoading = ref(false)
+const detailsError = ref('')
+const selectedPhrase = ref<Phrase | null>(null)
 
 // Read route for query params
 const route = useRoute()
@@ -342,18 +386,61 @@ const templeTips = computed(() => {
   }))
 })
 
-// Categories with icons
-const categories = [
-  { name: 'Greetings', id: 'GREETINGS', icon: 'handshake' },
-  { name: 'Directions', id: 'DIRECTIONS', icon: 'explore' },
-  { name: 'Dining', id: 'DINING', icon: 'restaurant' },
-  { name: 'Shopping', id: 'SHOPPING', icon: 'shopping_bag' },
-  { name: 'Emergency', id: 'EMERGENCY', icon: 'emergency' },
-  { name: 'Transport', id: 'TRANSPORT', icon: 'directions_bus' },
-]
+const categoryIconMap: Record<string, string> = {
+  GREETINGS: 'handshake',
+  DIRECTIONS: 'explore',
+  DINING: 'restaurant',
+  SHOPPING: 'shopping_bag',
+  EMERGENCY: 'emergency',
+  TRANSPORT: 'directions_bus',
+}
+
+function formatCategoryLabel(value: string) {
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+}
+
+const categories = computed(() => {
+  const apiList = categoriesResponse.value?.data || []
+  if (apiList.length) {
+    return apiList.map((item) => ({
+      name: formatCategoryLabel(item.category),
+      id: item.category,
+      icon: categoryIconMap[item.category] || 'translate'
+    }))
+  }
+  return [
+    { name: 'Greetings', id: 'GREETINGS', icon: 'handshake' },
+    { name: 'Directions', id: 'DIRECTIONS', icon: 'explore' },
+    { name: 'Dining', id: 'DINING', icon: 'restaurant' },
+    { name: 'Shopping', id: 'SHOPPING', icon: 'shopping_bag' },
+    { name: 'Emergency', id: 'EMERGENCY', icon: 'emergency' },
+    { name: 'Transport', id: 'TRANSPORT', icon: 'directions_bus' },
+  ]
+})
 
 function selectCategory(id: string | null) {
   selectedCategory.value = selectedCategory.value === id ? null : id
+}
+
+async function openDetails(id: string) {
+  showDetailsModal.value = true
+  detailsLoading.value = true
+  detailsError.value = ''
+  try {
+    const response = await $fetch<{ success: boolean; data: Phrase }>(`${apiBase}/api/phrases/${id}`)
+    if (response.success) {
+      selectedPhrase.value = response.data
+    }
+  } catch (err: any) {
+    detailsError.value = err?.data?.error || 'Failed to load phrase details.'
+  } finally {
+    detailsLoading.value = false
+  }
+}
+
+function closeDetails() {
+  showDetailsModal.value = false
+  selectedPhrase.value = null
 }
 
 // Add custom font for Sinhala text

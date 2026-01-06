@@ -22,33 +22,17 @@
           </p>
           
           <div class="space-y-6">
-            <div class="flex gap-4">
+            <div
+              v-for="tip in tipsList"
+              :key="tip.title"
+              class="flex gap-4"
+            >
               <div class="w-12 h-12 shrink-0 rounded-full bg-background-light dark:bg-gray-800 flex items-center justify-center text-primary">
-                <span class="material-symbols-outlined">local_drink</span>
+                <span class="material-symbols-outlined">{{ tip.icon }}</span>
               </div>
               <div>
-                <h4 class="font-bold text-gray-900 dark:text-gray-100">Drink Bottled Water Only</h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Tap water is not safe for drinking. Ensure the seal on your bottle is intact.</p>
-              </div>
-            </div>
-            
-            <div class="flex gap-4">
-              <div class="w-12 h-12 shrink-0 rounded-full bg-background-light dark:bg-gray-800 flex items-center justify-center text-primary">
-                <span class="material-symbols-outlined">restaurant</span>
-              </div>
-              <div>
-                <h4 class="font-bold text-gray-900 dark:text-gray-100">Eat Cooked Food</h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Ensure street food is cooked piping hot in front of you. Avoid raw salads in budget places.</p>
-              </div>
-            </div>
-            
-            <div class="flex gap-4">
-              <div class="w-12 h-12 shrink-0 rounded-full bg-background-light dark:bg-gray-800 flex items-center justify-center text-primary">
-                <span class="material-symbols-outlined">icecream</span>
-              </div>
-              <div>
-                <h4 class="font-bold text-gray-900 dark:text-gray-100">Avoid Ice</h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Unless you are in a high-end hotel, it's safer to skip ice in your drinks.</p>
+                <h4 class="font-bold text-gray-900 dark:text-gray-100">{{ tip.title }}</h4>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{{ tip.content }}</p>
               </div>
             </div>
           </div>
@@ -59,4 +43,26 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import type { HealthInfo } from '~/types/api'
+
+const props = defineProps<{
+  tips?: HealthInfo[]
+}>()
+
+const defaultTips: HealthInfo[] = [
+  { id: 'f1', title: 'Drink Bottled Water Only', content: 'Tap water is not safe for drinking. Ensure the seal on your bottle is intact.', category: 'FOOD_SAFETY' },
+  { id: 'f2', title: 'Eat Cooked Food', content: 'Ensure street food is cooked piping hot in front of you. Avoid raw salads in budget places.', category: 'FOOD_SAFETY' },
+  { id: 'f3', title: 'Avoid Ice', content: 'Unless you are in a high-end hotel, it is safer to skip ice in your drinks.', category: 'FOOD_SAFETY' },
+]
+
+const iconMap = ['local_drink', 'restaurant', 'icecream']
+
+const tipsList = computed(() => {
+  const list = props.tips && props.tips.length ? props.tips : defaultTips
+  return list.map((item, index) => ({
+    ...item,
+    icon: iconMap[index % iconMap.length],
+  }))
+})
 </script>

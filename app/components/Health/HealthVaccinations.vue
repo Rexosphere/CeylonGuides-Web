@@ -19,46 +19,24 @@
           Recommended Vaccines
         </h3>
         <div class="space-y-4">
-          <label class="flex gap-x-4 items-start cursor-pointer group">
-            <input 
-              checked 
-              class="mt-1 h-5 w-5 rounded border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-primary focus:ring-offset-0" 
-              disabled 
-              type="checkbox"
-            />
-            <div>
-              <p class="text-base font-semibold text-gray-900 dark:text-gray-200">Hepatitis A & B</p>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Recommended for most travelers due to potential food/water contamination.</p>
+          <div v-if="loading" class="text-sm text-gray-500 dark:text-gray-400">Loading recommendations...</div>
+          <template v-else>
+            <div v-for="(vaccine, index) in vaccinesList" :key="vaccine.title">
+              <label class="flex gap-x-4 items-start cursor-pointer group">
+                <input
+                  checked
+                  class="mt-1 h-5 w-5 rounded border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-primary focus:ring-offset-0"
+                  disabled
+                  type="checkbox"
+                />
+                <div>
+                  <p class="text-base font-semibold text-gray-900 dark:text-gray-200">{{ vaccine.title }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ vaccine.content }}</p>
+                </div>
+              </label>
+              <div v-if="index < vaccinesList.length - 1" class="h-px bg-gray-100 dark:bg-gray-800 w-full"></div>
             </div>
-          </label>
-          <div class="h-px bg-gray-100 dark:bg-gray-800 w-full"></div>
-          
-          <label class="flex gap-x-4 items-start cursor-pointer group">
-            <input 
-              checked 
-              class="mt-1 h-5 w-5 rounded border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-primary focus:ring-offset-0" 
-              disabled 
-              type="checkbox"
-            />
-            <div>
-              <p class="text-base font-semibold text-gray-900 dark:text-gray-200">Typhoid</p>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Especially if you are visiting smaller cities or rural areas.</p>
-            </div>
-          </label>
-          <div class="h-px bg-gray-100 dark:bg-gray-800 w-full"></div>
-          
-          <label class="flex gap-x-4 items-start cursor-pointer group">
-            <input 
-              checked 
-              class="mt-1 h-5 w-5 rounded border-gray-300 dark:border-gray-600 bg-transparent text-primary focus:ring-primary focus:ring-offset-0" 
-              disabled 
-              type="checkbox"
-            />
-            <div>
-              <p class="text-base font-semibold text-gray-900 dark:text-gray-200">Routine Vaccines</p>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Measles-Mumps-Rubella (MMR), Diphtheria-Tetanus-Pertussis, Chickenpox, Polio.</p>
-            </div>
-          </label>
+          </template>
         </div>
       </div>
       
@@ -69,21 +47,10 @@
           Packing Essentials
         </h3>
         <ul class="space-y-4">
-          <li class="flex items-start gap-3">
+          <li v-if="loading" class="text-sm text-gray-500 dark:text-gray-400">Loading essentials...</li>
+          <li v-else v-for="item in packingList" :key="item.title" class="flex items-start gap-3">
             <span class="material-symbols-outlined text-primary text-sm mt-1">circle</span>
-            <span class="text-gray-700 dark:text-gray-300"><strong>Prescription Meds:</strong> Bring enough for your entire trip in original bottles.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="material-symbols-outlined text-primary text-sm mt-1">circle</span>
-            <span class="text-gray-700 dark:text-gray-300"><strong>Insect Repellent:</strong> DEET or Picaridin based spray is crucial for dengue prevention.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="material-symbols-outlined text-primary text-sm mt-1">circle</span>
-            <span class="text-gray-700 dark:text-gray-300"><strong>Antihistamines:</strong> For mild allergic reactions to insect bites or food.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="material-symbols-outlined text-primary text-sm mt-1">circle</span>
-            <span class="text-gray-700 dark:text-gray-300"><strong>ORS Packets:</strong> Oral Rehydration Salts are vital for recovering from dehydration.</span>
+            <span class="text-gray-700 dark:text-gray-300"><strong>{{ item.title }}:</strong> {{ item.content }}</span>
           </li>
         </ul>
         <div class="mt-8 p-4 bg-white dark:bg-gray-800 rounded-lg flex gap-3 items-start shadow-sm">
@@ -96,4 +63,28 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import type { HealthInfo } from '~/types/api'
+
+const props = defineProps<{
+  vaccines?: HealthInfo[]
+  packing?: HealthInfo[]
+  loading?: boolean
+}>()
+
+const defaultVaccines: HealthInfo[] = [
+  { id: 'v1', title: 'Hepatitis A & B', content: 'Recommended for most travelers due to potential food and water contamination.', category: 'VACCINATION' },
+  { id: 'v2', title: 'Typhoid', content: 'Especially if you are visiting smaller cities or rural areas.', category: 'VACCINATION' },
+  { id: 'v3', title: 'Routine Vaccines', content: 'MMR, Diphtheria-Tetanus-Pertussis, Chickenpox, Polio.', category: 'VACCINATION' },
+]
+
+const defaultPacking: HealthInfo[] = [
+  { id: 'p1', title: 'Prescription Meds', content: 'Bring enough for your entire trip in original bottles.', category: 'PACKING' },
+  { id: 'p2', title: 'Insect Repellent', content: 'DEET or Picaridin based spray is crucial for dengue prevention.', category: 'PACKING' },
+  { id: 'p3', title: 'Antihistamines', content: 'For mild allergic reactions to insect bites or food.', category: 'PACKING' },
+  { id: 'p4', title: 'ORS Packets', content: 'Oral Rehydration Salts help recover from dehydration.', category: 'PACKING' },
+]
+
+const vaccinesList = computed(() => props.vaccines && props.vaccines.length ? props.vaccines : defaultVaccines)
+const packingList = computed(() => props.packing && props.packing.length ? props.packing : defaultPacking)
 </script>

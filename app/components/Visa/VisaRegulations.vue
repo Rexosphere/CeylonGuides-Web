@@ -16,10 +16,9 @@
         </summary>
         <div class="px-5 pb-5 pt-0 text-text-secondary dark:text-gray-400 text-sm leading-relaxed border-t border-transparent group-open:border-border-color dark:group-open:border-neutral-700 group-open:pt-4">
           <p class="mb-2">Apart from the ETA, visitors must hold a passport valid for at least 6 months from the date of arrival. Travelers may be asked to show:</p>
+          <p v-if="notes" class="mb-2 text-primary/80">{{ notes }}</p>
           <ul class="list-disc pl-5 space-y-1">
-            <li>A confirmed return ticket.</li>
-            <li>Proof of sufficient funds for the stay.</li>
-            <li>Yellow Fever Vaccination Certificate (if arriving from infected areas).</li>
+            <li v-for="item in requirementsList" :key="item">{{ item }}</li>
           </ul>
         </div>
       </details>
@@ -58,6 +57,25 @@
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+
+const props = defineProps<{
+  requirements?: string[] | null
+  notes?: string | null
+}>()
+
+const requirementsList = computed(() => {
+  return props.requirements && props.requirements.length
+    ? props.requirements
+    : [
+        'A confirmed return ticket.',
+        'Proof of sufficient funds for the stay.',
+        'Yellow Fever Vaccination Certificate (if arriving from infected areas).',
+      ]
+})
+</script>
 
 <style scoped>
 details > summary {
