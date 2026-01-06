@@ -73,6 +73,7 @@
           <div
             v-for="facility in facilities"
             :key="facility.id"
+            :id="`facility-${facility.id}`"
             class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm hover:shadow-lg transition-all p-6 border border-slate-100 dark:border-white/10"
           >
             <!-- Type Icon & Distance Badge -->
@@ -273,7 +274,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 
 definePageMeta({
   layout: false
@@ -444,8 +445,30 @@ async function submitRating() {
 
 watch(selectedType, loadFacilities)
 
+// Handle ?id= deep-link query param
+const route = useRoute()
+
+function scrollToFacility(id: string) {
+  nextTick(() => {
+    const el = document.getElementById(`facility-${id}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('ring-2', 'ring-primary', 'ring-offset-2')
+      setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-primary', 'ring-offset-2')
+      }, 3000)
+    }
+  })
+}
+
 onMounted(async () => {
   userLocation.value = await getUserLocation()
-  loadFacilities()
+  await loadFacilities()
+  
+  // Handle deep-link ?id= param
+  const targetId = route.query.id as string
+  if (targetId) {
+    scrollToFacility(targetId)
+  }
 })
 </script>
