@@ -60,6 +60,9 @@
             <div class="max-w-md">
               <h3 class="font-serif text-2xl md:text-3xl font-bold text-white mb-2">Activities</h3>
               <p class="text-white/70 text-sm mb-6 md:mb-0">Hiking, Surfing, Tea Tasting, Safari, and more.</p>
+              <NuxtLink to="/activities" class="inline-flex items-center gap-2 text-white font-bold text-sm mt-4 hover:gap-3 transition-all">
+                View Activities <span class="material-symbols-outlined text-lg">arrow_right_alt</span>
+              </NuxtLink>
             </div>
             <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-accent transition-colors duration-300">
               <span class="material-symbols-outlined text-3xl text-white">hiking</span>
