@@ -382,7 +382,7 @@ const facilityTypes = computed(() => {
   }
 
   return data.map((item) => {
-    const type = item.facility_type || item.category
+    const type = item.facility_type || item.category || 'OTHER'
     const iconInfo = iconMap[type] || { icon: '📍', iconName: 'place', iconClass: '' }
     return {
       value: type,

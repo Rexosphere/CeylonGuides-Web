@@ -87,6 +87,7 @@ export interface Facility {
   safety_rating: number
   rating_count: number
   photos: string[]
+  amenities?: string[]
 }
 
 export interface EmergencyContact {
