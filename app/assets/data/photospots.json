@@ -19,7 +19,7 @@
         "latitude": 7.9569,
         "longitude": 80.7597,
         "recommendedShot": "Panoramic view from summit showing symmetrical water gardens and jungle canopy at golden hour",
-        "heroImage": null
+        "heroImage": "/images/photospots/sigiriya-rock-fortress.jpg"
     },
     {
         "id": 2,
@@ -41,7 +41,7 @@
         "latitude": 6.8767,
         "longitude": 81.0611,
         "recommendedShot": "Blue train crossing the curved bridge with misty tea hills in background",
-        "heroImage": null
+        "heroImage": "/images/photospots/nine-arch-bridge-ella.jpg"
     },
     {
         "id": 3,
@@ -64,7 +64,7 @@
         "latitude": 6.0258,
         "longitude": 80.2175,
         "recommendedShot": "Lighthouse silhouette against fiery sunset sky with ocean waves crashing on ramparts",
-        "heroImage": null
+        "heroImage": "/images/photospots/galle-fort-lighthouse.jpg"
     },
     {
         "id": 4,
@@ -87,7 +87,7 @@
         "latitude": 5.9393,
         "longitude": 80.4681,
         "recommendedShot": "Silhouetted palm trees on the cliff against colorful sunrise sky with turquoise ocean below",
-        "heroImage": null
+        "heroImage": "/images/photospots/mirissa-coconut-tree-hill.jpg"
     },
     {
         "id": 5,
@@ -107,10 +107,10 @@
         ],
         "droneStatus": "not-allowed",
         "droneNotes": "Not allowed without special permission. Drones are restricted in national parks to avoid disturbing wildlife. Park rangers enforce no-drone rules.",
-        "latitude": 6.8000,
-        "longitude": 80.8000,
+        "latitude": 6.8,
+        "longitude": 80.8,
         "recommendedShot": "Panoramic cliff edge view with mist rising from valley and golden morning light",
-        "heroImage": null
+        "heroImage": "/images/photospots/horton-plains-worlds-end.jpg"
     },
     {
         "id": 6,
@@ -133,7 +133,7 @@
         "latitude": 7.2936,
         "longitude": 80.6414,
         "recommendedShot": "Temple exterior reflected in Kandy Lake at blue hour with golden roof illuminated",
-        "heroImage": null
+        "heroImage": "/images/photospots/temple-sacred-tooth-kandy.jpg"
     },
     {
         "id": 7,
@@ -156,7 +156,7 @@
         "latitude": 9.6745,
         "longitude": 80.0293,
         "recommendedShot": "Colorful gopuram tower against blue sky with devotees at entrance",
-        "heroImage": null
+        "heroImage": "/images/photospots/jaffna-nallur-temple.jpg"
     },
     {
         "id": 8,
@@ -179,7 +179,7 @@
         "latitude": 6.8094,
         "longitude": 80.4997,
         "recommendedShot": "Triangular shadow phenomenon at sunrise with sea of clouds and golden glow over highlands",
-        "heroImage": null
+        "heroImage": "/images/photospots/adams-peak-sri-pada.jpg"
     },
     {
         "id": 9,
@@ -199,10 +199,10 @@
         ],
         "droneStatus": "permit-required",
         "droneNotes": "Allowed with permission. As a UNESCO World Heritage site, obtain approval for drone flights. Fly high enough to frame the complex but avoid going too low over temples or wildlife.",
-        "latitude": 7.9330,
-        "longitude": 81.0000,
+        "latitude": 7.933,
+        "longitude": 81.0,
         "recommendedShot": "Gal Vihara reclining Buddha statue with soft morning light accentuating stone textures",
-        "heroImage": null
+        "heroImage": "/images/photospots/polonnaruwa-ancient-city.jpg"
     },
     {
         "id": 10,
@@ -225,7 +225,7 @@
         "latitude": 5.9903,
         "longitude": 80.3225,
         "recommendedShot": "Row of silhouetted fishermen on stilts against dramatic orange sunrise with ocean reflections",
-        "heroImage": null
+        "heroImage": "/images/photospots/stilt-fishermen-koggala.jpg"
     },
     {
         "id": 11,
@@ -248,7 +248,7 @@
         "latitude": 6.9667,
         "longitude": 80.7667,
         "recommendedShot": "Layered tea terraces with morning mist and tea plucker in bright sari as focal point",
-        "heroImage": null
+        "heroImage": "/images/photospots/tea-plantations-nuwara-eliya.jpg"
     },
     {
         "id": 12,
@@ -271,7 +271,7 @@
         "latitude": 6.3728,
         "longitude": 81.5169,
         "recommendedShot": "Leopard on tree branch with golden afternoon light and dusty savannah backdrop",
-        "heroImage": null
+        "heroImage": "/images/photospots/yala-national-park.jpg"
     },
     {
         "id": 13,
@@ -294,7 +294,7 @@
         "latitude": 7.9789,
         "longitude": 80.8489,
         "recommendedShot": "Herd of elephants silhouetted against sunset sky at Minneriya Tank with dust catching golden light",
-        "heroImage": null
+        "heroImage": "/images/photospots/minneriya-national-park.jpg"
     },
     {
         "id": 14,
@@ -315,9 +315,9 @@
         "droneStatus": "not-allowed",
         "droneNotes": "Not allowed. Strictly protected reserve - no drones permitted inside the forest. The canopy is thick with little open space to fly anyway. Focus on ground photography.",
         "latitude": 6.4167,
-        "longitude": 80.5000,
+        "longitude": 80.5,
         "recommendedShot": "Sunlight shafts filtering through dense canopy with mist and endemic bird perched on branch",
-        "heroImage": null
+        "heroImage": "/images/photospots/sinharaja-forest-reserve.jpg"
     },
     {
         "id": 15,
@@ -340,7 +340,7 @@
         "latitude": 6.7333,
         "longitude": 81.0315,
         "recommendedShot": "Aerial view of waterfall cascade with natural infinity pools and valley stretching to horizon",
-        "heroImage": null
+        "heroImage": "/images/photospots/diyaluma-falls-koslanda.jpg"
     },
     {
         "id": 16,
@@ -360,9 +360,9 @@
         ],
         "droneStatus": "permit-required",
         "droneNotes": "Allowed with heavy restrictions. Must have permission to fly as living UNESCO heritage city. Avoid flying during prayer times or over the Bodhi Tree and crowds.",
-        "latitude": 8.3350,
+        "latitude": 8.335,
         "longitude": 80.4108,
         "recommendedShot": "Giant white stupa (Ruwanwelisaya) glowing in pink sunset light with monks in white robes in foreground",
-        "heroImage": null
+        "heroImage": "/images/photospots/anuradhapura-sacred-city.jpg"
     }
 ]
