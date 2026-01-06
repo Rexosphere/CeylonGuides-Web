@@ -1,4 +1,4 @@
-# 🇱🇰 CeylonGuides - Tourist Safety Platform
+# CeylonGuides - Tourist Safety Platform
 
 > Real-time scam alerts, emergency tools, and AI travel assistant for safer travel in Sri Lanka
 
