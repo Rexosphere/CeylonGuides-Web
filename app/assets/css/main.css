@@ -78,3 +78,80 @@ html {
 .animate-fade-in-up {
     animation: fade-in-up 0.6s ease-out;
 }
+
+/* Reduced Motion Support - Accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .animate-pulse,
+    .animate-bounce,
+    .animate-spin,
+    .animate-fade-in-up {
+        animation: none !important;
+    }
+
+    /* Keep essential transitions very short */
+    .transition-all,
+    .transition-colors,
+    .transition-opacity,
+    .transition-transform {
+        transition: none !important;
+    }
+}
+
+/* Optional class for users who toggle reduced motion in-app */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+}
+
+/* High Contrast Mode - Accessibility */
+@media (prefers-contrast: more) {
+    :root {
+        --color-text-muted: #4a5568;
+        /* Darker for better contrast */
+    }
+
+    .text-gray-400,
+    .text-gray-500 {
+        color: #4a5568 !important;
+    }
+
+    .dark .text-gray-400,
+    .dark .text-gray-500 {
+        color: #e2e8f0 !important;
+    }
+}
+
+/* Focus visible utility for keyboard navigation */
+.focus-visible-ring:focus-visible {
+    outline: 2px solid #ee5f2b;
+    outline-offset: 2px;
+}
+
+/* Skip to main content link for screen readers */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #ee5f2b;
+    color: white;
+    padding: 8px 16px;
+    z-index: 100;
+    font-weight: bold;
+    transition: top 0.1s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+}

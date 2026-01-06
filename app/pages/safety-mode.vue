@@ -28,6 +28,54 @@
       <!-- Scrollable Content -->
       <div class="overflow-y-auto p-5 space-y-6">
         
+        <!-- PROMINENT SHARE MY LOCATION SECTION -->
+        <section class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-5 text-white shadow-lg">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+              <span class="material-icons-round text-2xl">location_on</span>
+            </div>
+            <div>
+              <h2 class="font-bold text-lg">Share My Location</h2>
+              <p class="text-blue-100 text-sm">Send your coordinates to someone you trust</p>
+            </div>
+          </div>
+          
+          <div v-if="userLocation" class="mb-4 bg-white/10 rounded-lg px-3 py-2 text-sm font-mono">
+            📍 {{ userLocation.lat.toFixed(5) }}, {{ userLocation.lng.toFixed(5) }}
+          </div>
+          <div v-else class="mb-4 text-blue-200 text-sm flex items-center gap-2">
+            <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+            Getting your location...
+          </div>
+          
+          <div class="grid grid-cols-3 gap-2">
+            <button 
+              @click="shareViaWhatsApp"
+              :disabled="!userLocation"
+              class="flex flex-col items-center gap-1 bg-green-500 hover:bg-green-600 disabled:opacity-50 py-3 rounded-xl transition-colors"
+            >
+              <span class="text-xl">📱</span>
+              <span class="text-xs font-semibold">WhatsApp</span>
+            </button>
+            <button 
+              @click="shareViaSMS"
+              :disabled="!userLocation"
+              class="flex flex-col items-center gap-1 bg-blue-500 hover:bg-blue-400 disabled:opacity-50 py-3 rounded-xl transition-colors"
+            >
+              <span class="text-xl">💬</span>
+              <span class="text-xs font-semibold">SMS</span>
+            </button>
+            <button 
+              @click="copyLocationToClipboard"
+              :disabled="!userLocation"
+              class="flex flex-col items-center gap-1 bg-white/20 hover:bg-white/30 disabled:opacity-50 py-3 rounded-xl transition-colors"
+            >
+              <span class="text-xl">📋</span>
+              <span class="text-xs font-semibold">Copy</span>
+            </button>
+          </div>
+        </section>
+
         <!-- Offline Ready Banner -->
         <div 
           v-if="savedForOffline"
@@ -112,47 +160,19 @@
             <h2 class="font-display font-bold text-lg">Emergency Contacts</h2>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <!-- Police -->
-            <a class="group bg-white dark:bg-card-dark border border-gray-100 dark:border-gray-700 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-primary transition-all duration-200 flex items-center gap-3" href="tel:119">
-              <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/40 text-primary flex items-center justify-center shrink-0">
-                <span class="material-icons-round text-xl">local_police</span>
+            <a
+              v-for="contact in emergencyContacts"
+              :key="contact.id"
+              :href="`tel:${contact.phone}`"
+              class="group bg-white dark:bg-card-dark border border-gray-100 dark:border-gray-700 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-primary transition-all duration-200 flex items-center gap-3"
+            >
+              <div :class="['w-10 h-10 rounded-full flex items-center justify-center shrink-0', contact.iconWrapClass]">
+                <span class="material-icons-round text-xl">{{ contact.icon }}</span>
               </div>
-              <div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide">Police Emergency</p>
-                <p class="text-2xl font-bold text-primary group-hover:scale-105 origin-left transition-transform">119</p>
-              </div>
-            </a>
-
-            <!-- Ambulance -->
-            <a class="group bg-white dark:bg-card-dark border border-gray-100 dark:border-gray-700 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-primary transition-all duration-200 flex items-center gap-3" href="tel:110">
-              <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/40 text-primary flex items-center justify-center shrink-0">
-                <span class="material-icons-round text-xl">medical_services</span>
-              </div>
-              <div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide">Ambulance</p>
-                <p class="text-2xl font-bold text-primary group-hover:scale-105 origin-left transition-transform">110</p>
-              </div>
-            </a>
-
-            <!-- National Hospital -->
-            <a class="group bg-gray-50 dark:bg-gray-800/40 border border-transparent hover:border-primary/30 p-3 rounded-xl flex items-center gap-3 transition-colors" href="tel:0112421052">
-              <div class="w-8 h-8 rounded-full bg-white dark:bg-gray-700 text-primary flex items-center justify-center shadow-sm shrink-0">
-                <span class="material-icons-round text-sm">local_hospital</span>
-              </div>
-              <div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">National Hospital</p>
-                <p class="text-sm font-bold text-gray-800 dark:text-gray-200">011-2421052</p>
-              </div>
-            </a>
-
-            <!-- Tourist Police -->
-            <a class="group bg-gray-50 dark:bg-gray-800/40 border border-transparent hover:border-primary/30 p-3 rounded-xl flex items-center gap-3 transition-colors" href="tel:1912">
-              <div class="w-8 h-8 rounded-full bg-white dark:bg-gray-700 text-primary flex items-center justify-center shadow-sm shrink-0">
-                <span class="material-icons-round text-sm">support_agent</span>
-              </div>
-              <div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Tourist Police</p>
-                <p class="text-sm font-bold text-gray-800 dark:text-gray-200">1912</p>
+              <div class="min-w-0">
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide truncate">{{ contact.name }}</p>
+                <p class="text-2xl font-bold text-primary group-hover:scale-105 origin-left transition-transform">{{ contact.phone }}</p>
+                <p v-if="contact.description" class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{{ contact.description }}</p>
               </div>
             </a>
           </div>
@@ -201,31 +221,29 @@
             <h2 class="font-display font-bold text-lg">Say This (Emergency Phrases)</h2>
           </div>
 
-          <div class="bg-accent-sand/20 dark:bg-gray-800/30 p-4 rounded-xl border border-accent-sand/30 dark:border-gray-700 relative overflow-hidden group">
+          <div
+            v-for="(phrase, index) in emergencyPhrases"
+            :key="phrase.id || index"
+            class="bg-accent-sand/20 dark:bg-gray-800/30 p-4 rounded-xl border border-accent-sand/30 dark:border-gray-700 relative overflow-hidden group"
+          >
             <div class="absolute right-0 top-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-              <span class="material-icons-round text-6xl">campaign</span>
+              <span class="material-icons-round text-6xl">{{ getPhraseIcon(index as number) }}</span>
             </div>
-            <p class="text-xs font-bold text-secondary dark:text-accent-cyan uppercase mb-1">Help!</p>
-            <p class="text-xl font-serif text-gray-800 dark:text-gray-100 mb-1">උදව් කරන්න!</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400 italic">Udaw karanna!</p>
-          </div>
-
-          <div class="bg-accent-sand/20 dark:bg-gray-800/30 p-4 rounded-xl border border-accent-sand/30 dark:border-gray-700 relative overflow-hidden group">
-            <div class="absolute right-0 top-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-              <span class="material-icons-round text-6xl">local_police</span>
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex-1">
+                <p class="text-xs font-bold text-secondary dark:text-accent-cyan uppercase mb-1">{{ phrase.english }}</p>
+                <p class="text-xl font-serif text-gray-800 dark:text-gray-100 mb-1">{{ phrase.sinhala }}</p>
+                <p v-if="phrase.tamil" class="text-sm text-gray-600 dark:text-gray-300">{{ phrase.tamil }}</p>
+                <p v-if="phrase.pronunciation" class="text-sm text-gray-500 dark:text-gray-400 italic">{{ phrase.pronunciation }}</p>
+              </div>
+              <button 
+                @click="speakPhrase(phrase.sinhala)"
+                class="shrink-0 w-12 h-12 bg-secondary hover:bg-secondary/80 text-white rounded-xl flex items-center justify-center transition-colors"
+                title="Speak this phrase"
+              >
+                <span class="material-icons-round">volume_up</span>
+              </button>
             </div>
-            <p class="text-xs font-bold text-secondary dark:text-accent-cyan uppercase mb-1">Call the police</p>
-            <p class="text-xl font-serif text-gray-800 dark:text-gray-100 mb-1">පොලීසියට කතා කරන්න</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400 italic">Polisiyata katha karanna</p>
-          </div>
-
-          <div class="bg-accent-sand/20 dark:bg-gray-800/30 p-4 rounded-xl border border-accent-sand/30 dark:border-gray-700 relative overflow-hidden group">
-            <div class="absolute right-0 top-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-              <span class="material-icons-round text-6xl">medical_information</span>
-            </div>
-            <p class="text-xs font-bold text-secondary dark:text-accent-cyan uppercase mb-1">I need a doctor</p>
-            <p class="text-xl font-serif text-gray-800 dark:text-gray-100 mb-1">මට වෛද්‍යවරයෙක් අවශ්‍යයි</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400 italic">Mata vaidyavarayek awashyai</p>
           </div>
         </section>
         
@@ -331,9 +349,19 @@
                   <div class="text-gray-500">Expires</div>
                   <div class="font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(alertDetails.expires_at) }}</div>
                 </div>
-                <div v-if="alertDetails.source" class="bg-gray-50 dark:bg-white/5 rounded-lg p-3 sm:col-span-2">
+                <div v-if="alertDetails.source || alertDetails.source_url" class="bg-gray-50 dark:bg-white/5 rounded-lg p-3 sm:col-span-2">
                   <div class="text-gray-500">Source</div>
-                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ alertDetails.source }}</div>
+                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ alertDetails.source || 'Official advisory' }}</div>
+                  <a
+                    v-if="alertDetails.source_url"
+                    :href="alertDetails.source_url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="mt-1 inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                  >
+                    View advisory
+                    <span class="material-icons-round text-[14px]">open_in_new</span>
+                  </a>
                 </div>
               </div>
 
@@ -354,7 +382,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import type { SafetyAlert } from '~/types/api'
 
 definePageMeta({
@@ -537,7 +565,33 @@ function openAIChat() {
   router.push('/')
 }
 
-// Share location feature
+// Share location via WhatsApp
+function shareViaWhatsApp() {
+  if (!userLocation.value) return
+  const text = encodeURIComponent(
+    `🚨 EMERGENCY: I need help!\n\n📍 My Location:\nhttps://www.google.com/maps?q=${userLocation.value.lat},${userLocation.value.lng}\n\nCoordinates: ${userLocation.value.lat.toFixed(5)}, ${userLocation.value.lng.toFixed(5)}\n\nSent via CeylonGuides Safety Mode`
+  )
+  window.open(`https://wa.me/?text=${text}`, '_blank')
+}
+
+// Share location via SMS
+function shareViaSMS() {
+  if (!userLocation.value) return
+  const text = encodeURIComponent(
+    `EMERGENCY: I need help! My location: https://www.google.com/maps?q=${userLocation.value.lat},${userLocation.value.lng}`
+  )
+  window.location.href = `sms:?body=${text}`
+}
+
+// Copy location to clipboard
+function copyLocationToClipboard() {
+  if (!userLocation.value) return
+  const text = `I'm at: https://www.google.com/maps?q=${userLocation.value.lat},${userLocation.value.lng}\nCoordinates: ${userLocation.value.lat.toFixed(5)}, ${userLocation.value.lng.toFixed(5)}`
+  navigator.clipboard.writeText(text)
+  alert('📋 Location copied! Paste in any app to share.')
+}
+
+// Share location feature (fallback)
 async function shareLocation() {
   if (!userLocation.value) return
   
@@ -547,10 +601,10 @@ async function shareLocation() {
     try {
       await navigator.share({ text })
     } catch (err) {
-      copyToClipboard(text)
+      copyLocationToClipboard()
     }
   } else {
-    copyToClipboard(text)
+    copyLocationToClipboard()
   }
 }
 
@@ -567,6 +621,87 @@ function printPage() {
 const userLocation = ref<{ lat: number; lng: number } | null>(null)
 const briefing = ref<any>(null)
 const loadingBriefing = ref(false)
+
+const fallbackEmergencyContacts = [
+  { id: 'police', name: 'Police Emergency', phone: '119', category: 'POLICE', description: 'National police emergency hotline' },
+  { id: 'ambulance', name: 'Ambulance / Fire', phone: '110', category: 'MEDICAL', description: 'Ambulance and fire services' },
+  { id: 'hospital', name: 'National Hospital', phone: '011-2421052', category: 'MEDICAL', description: 'Accident & emergency service' },
+  { id: 'tourist-police', name: 'Tourist Police', phone: '1912', category: 'TOURIST_POLICE', description: 'English-speaking tourist assistance' }
+]
+
+const contactStyles: Record<string, { icon: string; iconWrapClass: string }> = {
+  POLICE: {
+    icon: 'local_police',
+    iconWrapClass: 'bg-red-100 dark:bg-red-900/40 text-primary'
+  },
+  MEDICAL: {
+    icon: 'medical_services',
+    iconWrapClass: 'bg-red-100 dark:bg-red-900/40 text-primary'
+  },
+  TOURIST_POLICE: {
+    icon: 'support_agent',
+    iconWrapClass: 'bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300'
+  },
+  FIRE: {
+    icon: 'local_fire_department',
+    iconWrapClass: 'bg-red-100 dark:bg-red-900/40 text-primary'
+  },
+  EMBASSY: {
+    icon: 'flag',
+    iconWrapClass: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+  },
+  GENERAL: {
+    icon: 'phone_in_talk',
+    iconWrapClass: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
+  }
+}
+
+const emergencyContacts = computed(() => {
+  const contacts = briefing.value?.emergency?.contacts?.length
+    ? briefing.value.emergency.contacts
+    : fallbackEmergencyContacts
+
+  return contacts
+    .map((contact: any, index: number) => {
+      const category = contact.category || 'GENERAL'
+      const style = contactStyles[category] || contactStyles.GENERAL || { icon: 'phone', iconWrapClass: 'bg-gray-500' }
+      return {
+        id: contact.id || `${category}-${index}`,
+        name: contact.name || 'Emergency Contact',
+        phone: contact.phone || contact.phone_number || '',
+        description: contact.description || contact.address || '',
+        icon: style.icon,
+        iconWrapClass: style.iconWrapClass
+      }
+    })
+    .filter((contact: any) => contact.phone)
+})
+
+const fallbackEmergencyPhrases = [
+  { id: 'help', english: 'Help!', sinhala: 'උදව් කරන්න!', tamil: 'உதவி!', pronunciation: 'Udaw karanna!' },
+  { id: 'police', english: 'Call the police', sinhala: 'පොලීසියට කතා කරන්න', tamil: 'காவல்துறையை அழைக்கவும்', pronunciation: 'Polisiyata katha karanna' },
+  { id: 'doctor', english: 'I need a doctor', sinhala: 'මට වෛද්‍යවරයෙක් අවශ්‍යයි', tamil: 'எனக்கு மருத்துவர் தேவை', pronunciation: 'Mata vaidyavarayek awashyai' }
+]
+
+const emergencyPhrases = computed(() => {
+  const phrases = briefing.value?.emergency?.phrases?.length
+    ? briefing.value.emergency.phrases
+    : fallbackEmergencyPhrases
+
+  return phrases.slice(0, 5).map((phrase: any, index: number) => ({
+    id: phrase.id || `phrase-${index}`,
+    english: phrase.english,
+    sinhala: phrase.sinhala,
+    tamil: phrase.tamil || '',
+    pronunciation: phrase.pronunciation || ''
+  }))
+})
+
+const phraseIcons: string[] = ['campaign', 'local_police', 'medical_information', 'health_and_safety']
+
+function getPhraseIcon(index: number): string {
+  return phraseIcons[index % phraseIcons.length] || 'campaign'
+}
 
 const showAlertModal = ref(false)
 const alertLoading = ref(false)

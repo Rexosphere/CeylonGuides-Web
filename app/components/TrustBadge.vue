@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 
 const props = defineProps<{
-  type: 'verification' | 'freshness' | 'confidence' | 'hygiene' | 'severity'
+  type: 'verification' | 'freshness' | 'confidence' | 'hygiene' | 'severity' | 'rating' | 'source'
   value: string | number | boolean
   label?: string
 }>()
@@ -65,6 +65,26 @@ const config = computed(() => {
         icon: '⚠️',
         ...severityColors,
         display: severity.charAt(0) + severity.slice(1).toLowerCase()
+      }
+    case 'rating':
+      const rating = Number(props.value) || 0
+      const ratingColors = rating >= 4.5
+        ? { icon: '⭐', bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400', border: 'border-amber-200 dark:border-amber-800' }
+        : rating >= 3.5
+        ? { icon: '★', bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-400', border: 'border-blue-200 dark:border-blue-800' }
+        : { icon: '☆', bg: 'bg-gray-100 dark:bg-gray-800', text: 'text-gray-600 dark:text-gray-400', border: 'border-gray-200 dark:border-gray-700' }
+      return {
+        ...ratingColors,
+        display: rating > 0 ? rating.toFixed(1) : 'No rating'
+      }
+    case 'source':
+      const source = String(props.value)
+      return {
+        icon: '📍',
+        bg: 'bg-purple-100 dark:bg-purple-900/30',
+        text: 'text-purple-700 dark:text-purple-400',
+        border: 'border-purple-200 dark:border-purple-800',
+        display: source || 'Community'
       }
     default:
       return {

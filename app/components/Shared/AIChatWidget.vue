@@ -216,6 +216,13 @@ async function handleQuickAction(actionId: string) {
 
 // Action handler for buttons in messages
 function handleAction(action: string) {
+  // Parse action format: "call:1912" for phone calls
+  if (action.startsWith('call:')) {
+    const phoneNumber = action.replace('call:', '')
+    window.location.href = `tel:${phoneNumber}`
+    return
+  }
+  
   // Parse action format: "navigate:/path?query=value"
   if (action.startsWith('navigate:')) {
     const url = action.replace('navigate:', '')
@@ -255,6 +262,12 @@ function handleAction(action: string) {
 
 // Format action labels with icons
 function formatActionLabel(action: string): string {
+  // Handle call: format - phone numbers
+  if (action.startsWith('call:')) {
+    const number = action.replace('call:', '')
+    return `📞 Call ${number}`
+  }
+  
   // Handle navigate: format - extract meaningful label
   if (action.startsWith('navigate:')) {
     const pathPart = action.replace('navigate:', '').split('?')[0] || ''
@@ -413,8 +426,8 @@ async function loadHistory() {
   try {
     const response = await $fetch<{ success: boolean; data: Array<{ role: string; content: string }> }>(`${apiBase}/api/ai/chat/${sessionId.value}`)
     if (response.success) {
-      const historyMessages = (response.data || []).map((msg) => ({
-        role: msg.role === 'assistant' ? 'assistant' : 'user',
+      const historyMessages: Message[] = (response.data || []).map((msg) => ({
+        role: (msg.role === 'assistant' ? 'assistant' : 'user') as 'user' | 'assistant',
         content: msg.content
       }))
       if (historyMessages.length > 0) {

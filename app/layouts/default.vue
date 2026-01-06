@@ -10,6 +10,9 @@
     
     <!-- Global AI Chat Widget -->
     <AIChatWidget />
+    
+    <!-- Global Toast Notifications -->
+    <ToastContainer />
   </div>
 </template>
 

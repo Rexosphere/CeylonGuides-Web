@@ -78,6 +78,7 @@ const { data: medicalResponse } = await useFetch<{
     phone_number: string
     category: string
     description?: string
+    location_name?: string
     is_available_24x7?: boolean
   }>
 }>(`${apiBase}/api/emergency?category=MEDICAL`)
@@ -86,7 +87,7 @@ const hospitals = computed(() => {
   const data = medicalResponse.value?.data || []
   return data.map((h: any, index: number) => ({
     name: h.name,
-    address: h.description || 'Colombo, Sri Lanka',
+    address: h.location_name || h.description || 'Colombo, Sri Lanka',
     type: h.is_available_24x7 ? 'Open 24/7' : 'Daytime only',
     distance: `${(index + 1) * 0.8} km`,
     phone: h.phone || h.phone_number || '',

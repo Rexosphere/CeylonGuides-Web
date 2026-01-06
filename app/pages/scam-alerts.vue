@@ -502,6 +502,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import type { ScamAlert } from '~/types/api'
+import { useModal } from '~/composables/useModal'
 
 const route = useRoute()
 
@@ -518,6 +519,10 @@ const showDetailsModal = ref(false)
 const isSubmitting = ref(false)
 const submitError = ref('')
 const submitSuccess = ref(false)
+
+// Modal Esc-close support
+useModal(showReportModal, () => { showReportModal.value = false })
+useModal(showDetailsModal, () => { showDetailsModal.value = false })
 
 const reportForm = ref({
   title: '',
@@ -722,7 +727,10 @@ const categories = [
   { id: 'TRANSPORT_SCAM', label: 'Tuk-tuk', color: 'bg-orange-500' },
   { id: 'GEM_SCAM', label: 'Gem Scams', color: 'bg-purple-500' },
   { id: 'TOUR_GUIDE_SCAM', label: 'Fake Guides', color: 'bg-red-500' },
+  { id: 'ACCOMMODATION_SCAM', label: 'Stays', color: 'bg-slate-500' },
+  { id: 'RESTAURANT_SCAM', label: 'Dining', color: 'bg-emerald-500' },
   { id: 'SHOPPING_SCAM', label: 'Exchange', color: 'bg-blue-500' },
+  { id: 'OTHER', label: 'Other', color: 'bg-gray-500' },
 ]
 
 // Helper functions
@@ -757,6 +765,10 @@ function getSeverityIcon(category: string) {
       return 'local_taxi'
     case 'GEM_SCAM':
       return 'diamond'
+    case 'ACCOMMODATION_SCAM':
+      return 'hotel'
+    case 'RESTAURANT_SCAM':
+      return 'restaurant'
     case 'SHOPPING_SCAM':
       return 'currency_exchange'
     default:
@@ -773,6 +785,10 @@ function getSeverityColor(severity: string, category: string) {
       return 'bg-orange-50 dark:bg-orange-900/20 text-orange-500'
     case 'GEM_SCAM':
       return 'bg-purple-50 dark:bg-purple-900/20 text-purple-500'
+    case 'ACCOMMODATION_SCAM':
+      return 'bg-slate-50 dark:bg-slate-900/20 text-slate-500'
+    case 'RESTAURANT_SCAM':
+      return 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500'
     case 'SHOPPING_SCAM':
       return 'bg-blue-50 dark:bg-blue-900/20 text-blue-500'
     default:

@@ -126,9 +126,18 @@
                 <span class="px-2 py-1 rounded bg-primary/10 text-primary">{{ selectedDestination.category }}</span>
                 <span v-if="selectedDestination.is_unesco" class="px-2 py-1 rounded bg-amber-100 text-amber-700">UNESCO</span>
                 <span v-if="selectedDestination.best_time_to_visit" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ selectedDestination.best_time_to_visit }}</span>
+                <span v-if="selectedDestination.entry_fee_tourist_usd" class="px-2 py-1 rounded bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                  ${{ selectedDestination.entry_fee_tourist_usd }} entry
+                </span>
+                <span v-else-if="selectedDestination.entry_fee_lkr" class="px-2 py-1 rounded bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                  LKR {{ selectedDestination.entry_fee_lkr.toLocaleString() }} entry
+                </span>
               </div>
               <div v-if="selectedDestination.highlights?.length" class="text-xs text-text-muted">
                 Highlights: {{ selectedDestination.highlights.join(', ') }}
+              </div>
+              <div v-if="selectedDestination.opening_hours" class="text-xs text-text-muted">
+                Hours: {{ selectedDestination.opening_hours }}
               </div>
               <div class="text-sm text-text-muted">
                 Location: {{ selectedDestination.location?.name || selectedDestination.location?.district || 'Sri Lanka' }}
@@ -280,9 +289,10 @@ function closeDetails() {
 // Handle ?id= deep-link query param
 const route = useRoute()
 
-onMounted(() => {
+onMounted(async () => {
   const targetId = route.query.id as string
   if (targetId) {
+    await openDetails(targetId)
     nextTick(() => {
       const el = document.getElementById(`destination-${targetId}`)
       if (el) {

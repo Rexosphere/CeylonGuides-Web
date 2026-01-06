@@ -1,5 +1,5 @@
 <template>
-  <div class="group flex flex-col gap-4 overflow-hidden rounded-xl border border-neutral-light bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-white/10 dark:bg-white/5 sm:flex-row">
+  <div :id="`accommodation-${accommodation.id}`" class="group flex flex-col gap-4 overflow-hidden rounded-xl border border-neutral-light bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-white/10 dark:bg-white/5 sm:flex-row">
     <div class="relative h-48 w-full shrink-0 overflow-hidden rounded-lg sm:h-auto sm:w-48 bg-neutral-200">
       <img 
         :src="accommodation.image" 

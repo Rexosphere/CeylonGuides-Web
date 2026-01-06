@@ -155,7 +155,7 @@
             <p>No restaurants found. Try adjusting your filters.</p>
           </div>
           
-          <div v-for="restaurant in restaurants" :key="restaurant.id" class="group flex flex-col sm:flex-row bg-white dark:bg-[#1f2b2e] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-transparent hover:border-dining-primary/20">
+          <div v-for="restaurant in restaurants" :key="restaurant.id" :id="`restaurant-${restaurant.id}`" class="group flex flex-col sm:flex-row bg-white dark:bg-[#1f2b2e] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-transparent hover:border-dining-primary/20">
             <div class="sm:w-64 h-56 sm:h-auto shrink-0 bg-cover bg-center relative" :style="`background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400');`">
               <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-deep-teal dark:text-dining-primary flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">location_on</span>
@@ -342,12 +342,30 @@
             <div class="flex flex-wrap gap-2 text-xs">
               <span class="px-2 py-1 rounded bg-primary/10 text-primary">{{ restaurantDetails.category }}</span>
               <span v-if="restaurantDetails.price_range" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ restaurantDetails.price_range }} range</span>
+              <span v-if="restaurantDetails.hygiene_rating" class="px-2 py-1 rounded bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                Hygiene: {{ restaurantDetails.hygiene_rating }}
+              </span>
+              <span v-if="restaurantDetails.is_verified_halal" class="px-2 py-1 rounded bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
+                Halal Certified
+              </span>
             </div>
             <div v-if="restaurantDetails.cuisine_types?.length" class="text-xs text-gray-500 dark:text-gray-400">
               Cuisine: {{ restaurantDetails.cuisine_types.join(', ') }}
             </div>
             <div class="text-sm text-gray-500 dark:text-gray-400">
               Location: {{ restaurantDetails.location?.name || restaurantDetails.district || 'Sri Lanka' }}
+            </div>
+            <div v-if="restaurantDetails.reviews?.length" class="pt-3 border-t border-gray-100 dark:border-white/10">
+              <h4 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Recent reviews</h4>
+              <div class="space-y-2">
+                <div v-for="review in restaurantDetails.reviews.slice(0, 3)" :key="review.id" class="text-xs text-gray-600 dark:text-gray-300">
+                  <div class="flex items-center justify-between">
+                    <span class="font-semibold">{{ review.user_name || 'Traveler' }}</span>
+                    <span class="text-amber-600">{{ review.rating.toFixed(1) }}★</span>
+                  </div>
+                  <p v-if="review.comment" class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">{{ review.comment }}</p>
+                </div>
+              </div>
             </div>
           </div>
           <div v-else class="text-sm text-gray-500">No details available.</div>
@@ -428,22 +446,25 @@ const { data: restaurantsResponse, pending, refresh } = await useFetch<{
 // Handle deep-links for specific restaurant
 const route = useRoute()
 
+function scrollToRestaurant(id: string) {
+  nextTick(() => {
+    const el = document.getElementById(`restaurant-${id}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('ring-2', 'ring-dining-primary', 'ring-offset-2')
+      setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-dining-primary', 'ring-offset-2')
+      }, 3000)
+    }
+  })
+}
+
 onMounted(async () => {
-  // If ?id= in URL, find and open that restaurant
   if (route.query.id) {
     const restaurantId = route.query.id as string
-    
-    // Wait for data to load
     await nextTick()
-    
-    // Find the restaurant
-    const restaurants = restaurantsResponse.value?.data || []
-    const found = restaurants.find(r => r.id === restaurantId)
-    
-    if (found) {
-      selectedRestaurant.value = found
-      showReviewModal.value = true
-    }
+    await openDetails(restaurantId)
+    scrollToRestaurant(restaurantId)
   }
 })
 

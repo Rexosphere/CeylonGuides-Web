@@ -79,7 +79,7 @@
 
 <script setup lang="ts">
 interface SearchResult {
-  type: 'scam' | 'phrase' | 'restaurant' | 'facility' | 'destination' | 'activity'
+  type: 'scam' | 'phrase' | 'restaurant' | 'facility' | 'destination' | 'activity' | 'accommodation'
   id: string
   title: string
   subtitle: string
@@ -114,6 +114,7 @@ const totalCount = computed(() => searchResponse.value?.total || 0)
 function getTypeIcon(type: string): string {
   const icons: Record<string, string> = {
     destination: 'place',
+    accommodation: 'hotel',
     restaurant: 'restaurant',
     phrase: 'translate',
     scam: 'warning',
@@ -126,6 +127,7 @@ function getTypeIcon(type: string): string {
 function getTypeColor(type: string): string {
   const colors: Record<string, string> = {
     destination: 'bg-emerald-500',
+    accommodation: 'bg-slate-700',
     restaurant: 'bg-coral-orange',
     phrase: 'bg-blue-500',
     scam: 'bg-red-500',
@@ -138,6 +140,7 @@ function getTypeColor(type: string): string {
 function getTypeBadge(type: string): string {
   const badges: Record<string, string> = {
     destination: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+    accommodation: 'bg-slate-100 text-slate-700 dark:bg-slate-900/30 dark:text-slate-200',
     restaurant: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
     phrase: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
     scam: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',

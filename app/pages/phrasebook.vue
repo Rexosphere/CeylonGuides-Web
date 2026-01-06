@@ -337,6 +337,11 @@ onMounted(() => {
   if (route.query.category) {
     selectedCategory.value = route.query.category as string
   }
+  
+  // Handle ?id= deep-link to auto-open phrase details
+  if (route.query.id) {
+    openDetails(route.query.id as string)
+  }
 })
 
 // Watch for route query changes (e.g., user navigates with different category)

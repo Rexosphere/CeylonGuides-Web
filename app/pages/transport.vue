@@ -86,7 +86,7 @@
             <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Popular Routes</h3>
             <div class="space-y-2">
               <button
-                v-for="route in commonRoutes"
+                v-for="route in popularRoutes"
                 :key="route.name"
                 @click="fillRoute(route)"
                 class="w-full p-3 rounded-xl border border-warm-sand dark:border-white/10 bg-white dark:bg-[#221510] hover:border-teal-deep hover:bg-light-cyan/20 dark:hover:bg-teal-deep/10 text-left transition-all group"
@@ -394,8 +394,18 @@ const selectedTransportLabel = computed(() => {
   return transportTypes.find((type) => type.id === selectedTransportType.value)?.name || selectedTransportType.value
 })
 
-// Common tourist routes for quick access
-const commonRoutes = [
+interface RouteOption {
+  name: string
+  from: string
+  to: string
+  distance: number
+  estimatedMin: number
+  estimatedMax: number
+  transport_type?: 'TUK_TUK' | 'TAXI' | 'BUS' | 'TRAIN' | 'RIDESHARE'
+}
+
+// Common tourist routes for quick access (fallback)
+const commonRoutes: RouteOption[] = [
   {
     name: 'Airport → Colombo',
     from: 'Bandaranaike Airport',
@@ -422,11 +432,38 @@ const commonRoutes = [
   }
 ]
 
+const popularRoutes = computed<RouteOption[]>(() => {
+  const apiRoutes = routes.value || []
+  if (!apiRoutes.length) return commonRoutes
+
+  return apiRoutes.map((route: any) => {
+    const distance = Number(route.distance_km || route.distanceKm || 0)
+    const averageFare = Number(route.average_fare_lkr || 0)
+    const rate = route.transport_type ? rates.value[route.transport_type] : undefined
+    const estimatedBase = averageFare || (distance && rate ? rate.base + distance * rate.perKm : 0)
+    const estimatedMin = estimatedBase ? Math.round(estimatedBase * 0.85) : 0
+    const estimatedMax = estimatedBase ? Math.round(estimatedBase * 1.15) : 0
+
+    return {
+      name: route.name || `${route.origin} → ${route.destination}`,
+      from: route.origin || route.from || 'Sri Lanka',
+      to: route.destination || route.to || 'Sri Lanka',
+      distance: distance || 0,
+      estimatedMin,
+      estimatedMax,
+      transport_type: route.transport_type,
+    }
+  }).filter((route: RouteOption) => route.name && route.from && route.to)
+})
+
 // Fill route inputs with preset values
-function fillRoute(route: typeof commonRoutes[0]) {
+function fillRoute(route: RouteOption) {
   origin.value = route.from
   destination.value = route.to
   distanceKm.value = route.distance
+  if (route.transport_type) {
+    selectedTransportType.value = route.transport_type
+  }
 }
 </script>
 

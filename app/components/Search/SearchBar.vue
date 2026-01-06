@@ -8,7 +8,7 @@
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Search destinations, restaurants, phrases..."
+              placeholder="Search destinations, stays, facilities, phrases..."
               class="w-full pl-12 pr-4 py-4 rounded-xl bg-white/95 backdrop-blur text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50 text-lg"
               @input="handleInputChange"
             />
@@ -74,6 +74,8 @@ const showSuggestions = ref(false)
 const filters = [
   { label: 'All', value: 'all' },
   { label: 'Destinations', value: 'destinations' },
+  { label: 'Stays', value: 'accommodations' },
+  { label: 'Facilities', value: 'facilities' },
   { label: 'Restaurants', value: 'dining' },
   { label: 'Phrases', value: 'phrases' },
   { label: 'Scam Alerts', value: 'scams' },
@@ -88,6 +90,8 @@ function getTypeIcon(type: string): string {
     scam: 'warning',
     activity: 'hiking',
     facility: 'apartment',
+    facilities: 'apartment',
+    accommodation: 'hotel',
   }
   return icons[type] || 'search'
 }
