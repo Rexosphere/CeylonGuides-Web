@@ -500,7 +500,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import type { ScamAlert } from '~/types/api'
 
 const route = useRoute()
@@ -842,7 +842,7 @@ async function confirmDetailsAlert() {
 }
 
 function formatCategoryLabel(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
 }
 
 async function submitReport() {

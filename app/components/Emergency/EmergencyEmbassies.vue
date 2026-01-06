@@ -73,7 +73,7 @@ const { data: categoriesResponse } = await useFetch<{
 const categories = computed(() => categoriesResponse.value?.data || [{ category: 'EMBASSY', count: 0 }])
 
 function formatCategory(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
 }
 
 // Fetch contacts from API

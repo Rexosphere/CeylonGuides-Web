@@ -396,7 +396,7 @@ const categoryIconMap: Record<string, string> = {
 }
 
 function formatCategoryLabel(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
 }
 
 const categories = computed(() => {

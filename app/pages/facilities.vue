@@ -386,7 +386,7 @@ const facilityTypes = computed(() => {
     const iconInfo = iconMap[type] || { icon: '📍', iconName: 'place', iconClass: '' }
     return {
       value: type,
-      label: type.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase()),
+      label: type.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase()),
       ...iconInfo
     }
   })

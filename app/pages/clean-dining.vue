@@ -393,7 +393,7 @@ const { data: categoriesResponse } = await useFetch<{
 const categories = computed(() => categoriesResponse.value?.data || [])
 
 function formatCategory(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
 }
 
 // Review Modal State

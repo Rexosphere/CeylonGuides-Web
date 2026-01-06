@@ -43,7 +43,7 @@ const emit = defineEmits<{
 }>()
 
 function formatLabel(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
 }
 
 const filters = computed(() => {

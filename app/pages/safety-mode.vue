@@ -269,11 +269,93 @@
         </button>
       </div>
     </main>
+
+    <!-- Safety Alert Details Modal -->
+    <Teleport to="body">
+      <div v-if="showAlertModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/50" @click="closeAlertDetails"></div>
+        <div class="relative bg-white dark:bg-background-dark rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div class="sticky top-0 bg-white dark:bg-background-dark border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-charcoal dark:text-white">Safety Alert</h2>
+            <button @click="closeAlertDetails" class="text-gray-400 hover:text-gray-600">
+              <span class="material-icons-round">close</span>
+            </button>
+          </div>
+
+          <div class="p-6">
+            <div v-if="alertLoading" class="flex items-center justify-center py-10">
+              <div class="animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full"></div>
+            </div>
+
+            <div v-else-if="alertError" class="text-center py-8 text-red-500">
+              <span class="material-icons-round text-4xl mb-2">error</span>
+              <p>{{ alertError }}</p>
+              <button @click="fetchAlertDetails(route.query.alertId as string)" class="mt-4 px-4 py-2 bg-primary text-white rounded-lg">Retry</button>
+            </div>
+
+            <div v-else-if="alertDetails" class="space-y-5">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <h3 class="text-xl font-bold text-charcoal dark:text-white">{{ alertDetails.title }}</h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    {{ formatAlertType(alertDetails.alert_type) }}
+                  </p>
+                </div>
+                <span :class="['text-xs font-bold px-2.5 py-1 rounded-full uppercase', alertDetails.severity === 'CRITICAL' || alertDetails.severity === 'HIGH' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-700']">
+                  {{ alertDetails.severity }}
+                </span>
+              </div>
+
+              <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                {{ alertDetails.description }}
+              </p>
+
+              <div v-if="alertDetails.action_required" class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-lg p-3 text-sm text-red-700 dark:text-red-300">
+                <strong>Action required:</strong> {{ alertDetails.action_required }}
+              </div>
+
+              <div>
+                <h4 class="text-sm font-bold text-charcoal dark:text-white mb-2">Affected areas</h4>
+                <ul v-if="alertDetails.affected_areas?.length" class="list-disc pl-5 text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li v-for="area in alertDetails.affected_areas" :key="area">{{ area }}</li>
+                </ul>
+                <p v-else class="text-sm text-gray-500">No areas specified.</p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
+                  <div class="text-gray-500">Issued</div>
+                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(alertDetails.issued_at) }}</div>
+                </div>
+                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
+                  <div class="text-gray-500">Expires</div>
+                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(alertDetails.expires_at) }}</div>
+                </div>
+                <div v-if="alertDetails.source" class="bg-gray-50 dark:bg-white/5 rounded-lg p-3 sm:col-span-2">
+                  <div class="text-gray-500">Source</div>
+                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ alertDetails.source }}</div>
+                </div>
+              </div>
+
+              <div class="flex justify-end">
+                <button
+                  class="px-4 py-2 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-semibold hover:bg-gray-50 dark:hover:bg-white/5"
+                  @click="closeAlertDetails"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import type { SafetyAlert } from '~/types/api'
 
 definePageMeta({
   layout: false
@@ -282,6 +364,7 @@ definePageMeta({
 // Get config
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
+const route = useRoute()
 
 // Saved phrases state
 const savedPhraseIds = ref<string[]>([])
@@ -347,6 +430,10 @@ function loadOfflinePack() {
 onMounted(async () => {
   // First load any existing offline pack
   loadOfflinePack()
+
+  if (route.query.alertId) {
+    fetchAlertDetails(route.query.alertId as string)
+  }
   
   // Load saved phrase IDs from localStorage
   const saved = localStorage.getItem('ceylon_saved_phrases')
@@ -480,6 +567,50 @@ function printPage() {
 const userLocation = ref<{ lat: number; lng: number } | null>(null)
 const briefing = ref<any>(null)
 const loadingBriefing = ref(false)
+
+const showAlertModal = ref(false)
+const alertLoading = ref(false)
+const alertError = ref('')
+const alertDetails = ref<SafetyAlert | null>(null)
+
+function formatAlertType(value: string) {
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
+}
+
+function formatDate(value: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return date.toLocaleString()
+}
+
+async function fetchAlertDetails(id: string) {
+  if (!id) {
+    alertError.value = 'Missing alert ID.'
+    showAlertModal.value = true
+    return
+  }
+  showAlertModal.value = true
+  alertLoading.value = true
+  alertError.value = ''
+  alertDetails.value = null
+  try {
+    const response = await $fetch<{ success: boolean; data: SafetyAlert; error?: string }>(`${apiBase}/api/safety/${id}`)
+    if (response.success) {
+      alertDetails.value = response.data
+    } else {
+      alertError.value = response.error || 'Failed to load alert.'
+    }
+  } catch (error: any) {
+    alertError.value = error?.data?.error || 'Failed to load alert.'
+  } finally {
+    alertLoading.value = false
+  }
+}
+
+function closeAlertDetails() {
+  showAlertModal.value = false
+  alertError.value = ''
+}
 </script>
 
 <style scoped>
