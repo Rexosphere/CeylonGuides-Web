@@ -140,15 +140,28 @@
         <!-- Right Column (Sidebar) -->
         <aside class="lg:col-span-4 flex flex-col gap-8">
           
-          <!-- 6. Interactive Map Placeholder -->
-          <div class="bg-gray-200 dark:bg-gray-800 rounded-3xl h-64 relative overflow-hidden group">
-            <div class="absolute inset-0 flex items-center justify-center">
+          <!-- 6. Interactive Map -->
+          <div class="bg-gray-100 dark:bg-gray-800 rounded-3xl h-72 relative overflow-hidden group">
+            <iframe 
+              v-if="destination.coordinates"
+              :src="`https://www.openstreetmap.org/export/embed.html?bbox=${destination.coordinates.lng - 0.05}%2C${destination.coordinates.lat - 0.03}%2C${destination.coordinates.lng + 0.05}%2C${destination.coordinates.lat + 0.03}&layer=mapnik&marker=${destination.coordinates.lat}%2C${destination.coordinates.lng}`"
+              class="w-full h-full border-0"
+              loading="lazy"
+              :title="`Map of ${destination.name}`"
+            ></iframe>
+            <div v-else class="absolute inset-0 flex items-center justify-center">
               <span class="material-symbols-outlined text-6xl text-gray-400 dark:text-gray-600">map</span>
             </div>
-            <div class="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
-            <button class="absolute bottom-6 left-1/2 -translate-x-1/2 px-6 py-2 bg-white text-primary font-bold rounded-full shadow-lg hover:scale-105 transition-transform">
-              View on Map
-            </button>
+            <a
+              v-if="destination.coordinates"
+              :href="`https://www.google.com/maps/search/?api=1&query=${destination.coordinates.lat},${destination.coordinates.lng}`"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="absolute bottom-4 left-1/2 -translate-x-1/2 px-5 py-2.5 bg-white/95 dark:bg-gray-900/95 backdrop-blur text-primary dark:text-white font-bold rounded-full shadow-lg hover:scale-105 transition-transform flex items-center gap-2 text-sm"
+            >
+              <span class="material-symbols-outlined text-lg">open_in_new</span>
+              Open in Google Maps
+            </a>
           </div>
 
           <!-- 8. Travel Tips (Accordion) -->
