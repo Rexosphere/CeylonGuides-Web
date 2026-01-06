@@ -55,10 +55,64 @@
         </div>
 
         <!-- Location Access Alert -->
-        <div v-if="!userLocation" class="flex items-center justify-center mb-16">
+        <div v-if="!userLocation" class="flex items-center justify-center mb-8">
           <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800/30 text-orange-600 dark:text-orange-400 text-sm font-medium shadow-sm">
             <span class="material-icons-round text-lg animate-pulse">location_disabled</span>
             <span>Location access unavailable • <button @click="requestLocation" class="underline hover:text-orange-700 dark:hover:text-orange-300">Enable location</button> for distance sorting</span>
+          </div>
+        </div>
+
+        <!-- Nearest Restroom Quick Action -->
+        <div class="flex justify-center mb-8">
+          <button
+            @click="findNearestRestroom"
+            :disabled="!userLocation || findingNearest"
+            :class="[
+              'inline-flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg',
+              !userLocation 
+                ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
+                : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600 hover:scale-105 active:scale-95'
+            ]"
+          >
+            <span v-if="findingNearest" class="animate-spin">⏳</span>
+            <span v-else class="text-2xl">🚻</span>
+            <span>{{ findingNearest ? 'Finding...' : 'Nearest Restroom NOW' }}</span>
+          </button>
+        </div>
+
+        <!-- Nearest Restroom Results -->
+        <div v-if="nearestRestrooms.length > 0" class="mb-8 p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-lg text-blue-800 dark:text-blue-200 flex items-center gap-2">
+              🚻 Nearest {{ nearestRestrooms.length }} Restrooms
+            </h3>
+            <button @click="nearestRestrooms = []" class="text-blue-500 hover:text-blue-700 text-sm">
+              Clear
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div
+              v-for="(restroom, idx) in nearestRestrooms"
+              :key="restroom.id"
+              :class="[
+                'bg-white dark:bg-surface-dark rounded-xl p-4 border shadow-sm cursor-pointer hover:shadow-md transition-shadow',
+                idx === 0 ? 'border-green-400 ring-2 ring-green-200' : 'border-gray-200 dark:border-white/10'
+              ]"
+              @click="openDetails(restroom.id)"
+            >
+              <div class="flex items-start justify-between mb-2">
+                <span class="text-2xl">{{ idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉' }}</span>
+                <span class="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-0.5 rounded-full font-semibold">
+                  {{ restroom.distance?.toFixed(1) }} km
+                </span>
+              </div>
+              <h4 class="font-bold text-sm text-slate-800 dark:text-white mb-1">{{ restroom.name }}</h4>
+              <p class="text-xs text-slate-500 mb-2">{{ restroom.location?.name }}</p>
+              <div class="flex items-center gap-1 text-amber-400 text-sm">
+                <span v-for="i in 5" :key="i">{{ i <= Math.round(restroom.cleanliness_rating || 0) ? '★' : '☆' }}</span>
+                <span class="text-xs text-slate-500 ml-1">Cleanliness</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -294,6 +348,9 @@
               <span v-if="facilityDetails.average_rating" class="px-2 py-1 rounded bg-amber-100 text-amber-700">
                 {{ facilityDetails.average_rating.toFixed(1) }} / 5
               </span>
+              <span v-if="facilityDetails.rating_count" class="px-2 py-1 rounded bg-slate-100 text-slate-700 dark:bg-white/10 dark:text-slate-200">
+                {{ facilityDetails.rating_count }} ratings
+              </span>
             </div>
             <div v-if="facilityDetails.photos?.length">
               <img
@@ -301,6 +358,32 @@
                 :alt="facilityDetails.name"
                 class="h-40 w-full object-cover rounded-xl"
               />
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-xs text-slate-600 dark:text-slate-300">
+              <div class="rounded-lg bg-slate-50 dark:bg-white/5 p-2 text-center">
+                <div class="font-semibold">{{ facilityDetails.cleanliness_rating.toFixed(1) }}</div>
+                <div class="text-[10px] uppercase tracking-wide text-slate-400">Clean</div>
+              </div>
+              <div class="rounded-lg bg-slate-50 dark:bg-white/5 p-2 text-center">
+                <div class="font-semibold">{{ facilityDetails.safety_rating.toFixed(1) }}</div>
+                <div class="text-[10px] uppercase tracking-wide text-slate-400">Safety</div>
+              </div>
+              <div class="rounded-lg bg-slate-50 dark:bg-white/5 p-2 text-center">
+                <div class="font-semibold">{{ facilityDetails.average_rating.toFixed(1) }}</div>
+                <div class="text-[10px] uppercase tracking-wide text-slate-400">Overall</div>
+              </div>
+            </div>
+            <div v-if="facilityDetails.ratings?.length" class="pt-3 border-t border-slate-100 dark:border-white/10">
+              <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Recent ratings</h4>
+              <div class="space-y-2">
+                <div v-for="rating in facilityDetails.ratings.slice(0, 3)" :key="rating.id" class="text-xs text-slate-600 dark:text-slate-300">
+                  <div class="flex items-center justify-between">
+                    <span class="font-semibold">{{ rating.user_name || 'Traveler' }}</span>
+                    <span class="text-amber-600">{{ rating.overall_rating.toFixed(1) }}★</span>
+                  </div>
+                  <p v-if="rating.comment" class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{{ rating.comment }}</p>
+                </div>
+              </div>
             </div>
           </div>
           <div v-else class="text-sm text-slate-500">No details available.</div>
@@ -358,6 +441,10 @@ const ratingForm = ref({
   comment: ''
 })
 
+// Nearest Restroom feature
+const findingNearest = ref(false)
+const nearestRestrooms = ref<(Facility & { distance?: number })[]>([])
+
 const ratingLabels = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent']
 
 const { data: typesResponse } = await useFetch<{
@@ -386,7 +473,7 @@ const facilityTypes = computed(() => {
     const iconInfo = iconMap[type] || { icon: '📍', iconName: 'place', iconClass: '' }
     return {
       value: type,
-      label: type.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase()),
+      label: type.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase()),
       ...iconInfo
     }
   })
@@ -426,6 +513,43 @@ async function requestLocation() {
 
 function clearFilters() {
   selectedType.value = 'RESTROOM'
+}
+
+// Find nearest restroom function
+async function findNearestRestroom() {
+  if (!userLocation.value) return
+  
+  findingNearest.value = true
+  try {
+    const response = await $fetch<{ success: boolean; data: Facility[] }>(`${apiBase}/api/facilities`, {
+      params: {
+        type: 'RESTROOM',
+        lat: userLocation.value.lat,
+        lng: userLocation.value.lng,
+        radius: 50
+      }
+    })
+    
+    const restrooms = (response.data || []).map(r => ({
+      ...r,
+      distance: r.location?.latitude && r.location?.longitude
+        ? getDistance(userLocation.value!.lat, userLocation.value!.lng, r.location.latitude, r.location.longitude)
+        : Infinity
+    }))
+    
+    // Sort by distance and take closest 3
+    restrooms.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity))
+    nearestRestrooms.value = restrooms.slice(0, 3)
+    
+    // Also switch to restroom view
+    selectedType.value = 'RESTROOM'
+    
+  } catch (error) {
+    console.error('Failed to find nearest restroom:', error)
+    nearestRestrooms.value = []
+  } finally {
+    findingNearest.value = false
+  }
 }
 
 async function loadFacilities() {
@@ -553,6 +677,7 @@ onMounted(async () => {
   // Handle deep-link ?id= param
   const targetId = route.query.id as string
   if (targetId) {
+    await openDetails(targetId)
     scrollToFacility(targetId)
   }
 })

@@ -46,8 +46,42 @@
         </button>
       </div>
 
+      <!-- Suggested Prompts -->
+      <div v-if="suggestions.length" class="px-3 py-2 border-b border-gray-200 dark:border-white/10 bg-white dark:bg-background-dark">
+        <div class="text-[10px] uppercase tracking-wider text-gray-400 mb-2">Suggested prompts</div>
+        <div class="flex gap-2 overflow-x-auto">
+          <button
+            v-for="sug in suggestions"
+            :key="sug.text"
+            :disabled="isTyping"
+            @click="sendMessage(sug.text)"
+            class="shrink-0 text-xs px-3 py-1.5 bg-gray-100 dark:bg-white/10 rounded-full hover:bg-gray-200 dark:hover:bg-white/20 transition-colors disabled:opacity-50"
+          >
+            {{ sug.text }}
+          </button>
+        </div>
+      </div>
+
       <!-- Messages -->
       <div ref="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-[#1a1210]">
+        <div v-if="showHistoryPrompt" class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/10 rounded-xl p-3 text-xs flex items-center justify-between gap-3">
+          <div>
+            <div class="font-semibold text-gray-700 dark:text-gray-200">Resume previous chat?</div>
+            <div class="text-gray-500 dark:text-gray-400">Load your last session history.</div>
+          </div>
+          <button
+            class="px-3 py-2 bg-coral-orange text-white rounded-lg text-xs font-semibold hover:bg-orange-600 disabled:opacity-60"
+            :disabled="historyLoading"
+            @click="loadHistory"
+          >
+            {{ historyLoading ? 'Loading...' : 'Load history' }}
+          </button>
+        </div>
+
+        <div v-if="historyError" class="text-xs text-red-500 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-lg p-2">
+          {{ historyError }}
+        </div>
+
         <div 
           v-for="(msg, idx) in messages" 
           :key="idx"
@@ -117,7 +151,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, nextTick, onMounted, watch, computed } from 'vue'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -134,6 +168,12 @@ const isTyping = ref(false)
 const inputMessage = ref('')
 const messagesContainer = ref<HTMLElement | null>(null)
 const sessionId = ref<string>('')
+const suggestions = ref<Array<{ text: string; category?: string }>>([])
+const suggestionsLoading = ref(false)
+const suggestionsLoaded = ref(false)
+const historyLoading = ref(false)
+const historyError = ref('')
+const historyLoaded = ref(false)
 
 const messages = ref<Message[]>([
   {
@@ -176,6 +216,13 @@ async function handleQuickAction(actionId: string) {
 
 // Action handler for buttons in messages
 function handleAction(action: string) {
+  // Parse action format: "call:1912" for phone calls
+  if (action.startsWith('call:')) {
+    const phoneNumber = action.replace('call:', '')
+    window.location.href = `tel:${phoneNumber}`
+    return
+  }
+  
   // Parse action format: "navigate:/path?query=value"
   if (action.startsWith('navigate:')) {
     const url = action.replace('navigate:', '')
@@ -184,7 +231,7 @@ function handleAction(action: string) {
     return
   }
   
-  // Simple route mapping
+  // Simple route mapping - all routes verified to exist in app/pages/
   const routes: Record<string, string> = {
     'scam-alerts': '/scam-alerts',
     'emergency': '/emergency',
@@ -196,7 +243,14 @@ function handleAction(action: string) {
     'accommodation': '/accommodation',
     'weather': '/weather',
     'money': '/money',
-    'search': '/search'
+    'search': '/search',
+    'destinations': '/destinations',
+    'activities': '/activities',
+    'culture': '/culture',
+    'health': '/health',
+    'visa': '/visa',
+    'blog': '/blog',
+    'community': '/community'
   }
   
   const route = routes[action]
@@ -208,6 +262,12 @@ function handleAction(action: string) {
 
 // Format action labels with icons
 function formatActionLabel(action: string): string {
+  // Handle call: format - phone numbers
+  if (action.startsWith('call:')) {
+    const number = action.replace('call:', '')
+    return `📞 Call ${number}`
+  }
+  
   // Handle navigate: format - extract meaningful label
   if (action.startsWith('navigate:')) {
     const pathPart = action.replace('navigate:', '').split('?')[0] || ''
@@ -238,6 +298,10 @@ function formatActionLabel(action: string): string {
   }
   return labels[action] || action.charAt(0).toUpperCase() + action.slice(1).replace(/-/g, ' ')
 }
+
+const showHistoryPrompt = computed(() => {
+  return !!sessionId.value && !historyLoaded.value && messages.value.length <= 1
+})
 
 /**
  * Escape HTML entities to prevent XSS attacks
@@ -273,7 +337,7 @@ function formatMessage(content: string): string {
 
 async function sendMessage(text: string) {
   if (!text.trim()) return
-  
+  historyLoaded.value = true
   messages.value.push({ role: 'user', content: text })
   inputMessage.value = ''
   isTyping.value = true
@@ -300,6 +364,9 @@ async function sendMessage(text: string) {
     
     if (response.success) {
       sessionId.value = response.data.session_id
+      if (import.meta.client) {
+        localStorage.setItem('ceylon_ai_session', response.data.session_id)
+      }
       messages.value.push({
         role: 'assistant',
         content: response.data.response,
@@ -335,4 +402,62 @@ function scrollToBottom() {
     messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
   }
 }
+
+async function loadSuggestions() {
+  if (suggestionsLoading.value || suggestionsLoaded.value) return
+  suggestionsLoading.value = true
+  try {
+    const response = await $fetch<{ success: boolean; data: Array<{ text: string; category?: string }> }>(`${apiBase}/api/ai/suggestions`)
+    if (response.success && response.data) {
+      suggestions.value = response.data
+    }
+  } catch (error) {
+    console.warn('Failed to load AI suggestions:', error)
+  } finally {
+    suggestionsLoading.value = false
+    suggestionsLoaded.value = true
+  }
+}
+
+async function loadHistory() {
+  if (!sessionId.value || historyLoading.value || historyLoaded.value) return
+  historyLoading.value = true
+  historyError.value = ''
+  try {
+    const response = await $fetch<{ success: boolean; data: Array<{ role: string; content: string }> }>(`${apiBase}/api/ai/chat/${sessionId.value}`)
+    if (response.success) {
+      const historyMessages: Message[] = (response.data || []).map((msg) => ({
+        role: (msg.role === 'assistant' ? 'assistant' : 'user') as 'user' | 'assistant',
+        content: msg.content
+      }))
+      if (historyMessages.length > 0) {
+        messages.value = historyMessages
+      }
+      historyLoaded.value = true
+      await nextTick()
+      scrollToBottom()
+    } else {
+      historyError.value = 'Failed to load chat history.'
+    }
+  } catch (error) {
+    historyError.value = 'Failed to load chat history.'
+  } finally {
+    historyLoading.value = false
+  }
+}
+
+onMounted(() => {
+  if (import.meta.client) {
+    const storedSession = localStorage.getItem('ceylon_ai_session')
+    if (storedSession) {
+      sessionId.value = storedSession
+    }
+  }
+})
+
+watch(isOpen, (open) => {
+  if (open) {
+    loadSuggestions()
+  }
+})
 </script>

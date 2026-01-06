@@ -6,6 +6,22 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
+
+const config = useRuntimeConfig()
+const authPinged = useState<boolean>('auth_pinged', () => false)
+
+onMounted(async () => {
+  if (authPinged.value) return
+  authPinged.value = true
+  try {
+    const response = await $fetch<{ success: boolean }>(`${config.public.apiBase}/api/auth/ping`)
+    console.info('Auth ping:', response.success ? 'ok' : 'failed')
+  } catch (error) {
+    console.warn('Auth ping failed:', error)
+  }
+})
+
 useHead({
   titleTemplate: (titleChunk) => {
     return titleChunk ? `${titleChunk} - CeylonGuides` : 'CeylonGuides'

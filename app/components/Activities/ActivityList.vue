@@ -103,9 +103,18 @@
                 <span class="px-2 py-1 rounded bg-primary/10 text-primary">{{ selectedActivity.category }}</span>
                 <span v-if="selectedActivity.difficulty" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ selectedActivity.difficulty }}</span>
                 <span v-if="selectedActivity.duration_hours" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ selectedActivity.duration_hours }} hrs</span>
+                <span v-if="selectedActivity.price_per_person_usd" class="px-2 py-1 rounded bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                  ${{ selectedActivity.price_per_person_usd }} / person
+                </span>
+                <span v-else-if="selectedActivity.price_per_person_lkr" class="px-2 py-1 rounded bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                  LKR {{ selectedActivity.price_per_person_lkr.toLocaleString() }} / person
+                </span>
               </div>
               <div v-if="selectedActivity.includes?.length" class="text-xs text-text-muted">
                 Includes: {{ selectedActivity.includes.join(', ') }}
+              </div>
+              <div v-if="selectedActivity.provider_name" class="text-xs text-text-muted">
+                Provider: {{ selectedActivity.provider_name }}
               </div>
               <div class="text-sm text-text-muted">
                 Location: {{ selectedActivity.location?.name || 'Sri Lanka' }}
@@ -265,9 +274,10 @@ function closeDetails() {
 // Handle ?id= deep-link query param
 const route = useRoute()
 
-onMounted(() => {
+onMounted(async () => {
   const targetId = route.query.id as string
   if (targetId) {
+    await openDetails(targetId)
     nextTick(() => {
       const el = document.getElementById(`activity-${targetId}`)
       if (el) {

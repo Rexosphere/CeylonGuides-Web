@@ -337,6 +337,11 @@ onMounted(() => {
   if (route.query.category) {
     selectedCategory.value = route.query.category as string
   }
+  
+  // Handle ?id= deep-link to auto-open phrase details
+  if (route.query.id) {
+    openDetails(route.query.id as string)
+  }
 })
 
 // Watch for route query changes (e.g., user navigates with different category)
@@ -396,7 +401,7 @@ const categoryIconMap: Record<string, string> = {
 }
 
 function formatCategoryLabel(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
 }
 
 const categories = computed(() => {

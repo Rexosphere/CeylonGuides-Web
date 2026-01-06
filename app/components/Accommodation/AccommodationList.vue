@@ -64,6 +64,15 @@
               <div class="text-sm text-neutral-gray dark:text-neutral-400">
                 <div v-if="selectedAccommodation.contact_phone">Phone: {{ selectedAccommodation.contact_phone }}</div>
                 <div v-if="selectedAccommodation.contact_email">Email: {{ selectedAccommodation.contact_email }}</div>
+                <a
+                  v-if="selectedAccommodation.website_url"
+                  :href="selectedAccommodation.website_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="block text-primary hover:underline"
+                >
+                  Visit website
+                </a>
               </div>
             </div>
           </div>
@@ -76,7 +85,7 @@
 
 <script setup lang="ts">
 import AccommodationCard from './AccommodationCard.vue'
-import { computed, ref } from 'vue'
+import { computed, ref, nextTick, watch } from 'vue'
 import type { Accommodation } from '~/types/api'
 
 const props = defineProps<{
@@ -140,6 +149,22 @@ const showDetails = ref(false)
 const detailsLoading = ref(false)
 const detailsError = ref('')
 const selectedAccommodation = ref<Accommodation | null>(null)
+const deepLinkHandled = ref(false)
+
+const route = useRoute()
+
+function scrollToAccommodation(id: string) {
+  nextTick(() => {
+    const el = document.getElementById(`accommodation-${id}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('ring-2', 'ring-primary', 'ring-offset-2')
+      setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-primary', 'ring-offset-2')
+      }, 3000)
+    }
+  })
+}
 
 async function openDetails(id: string | number) {
   showDetails.value = true
@@ -161,4 +186,15 @@ function closeDetails() {
   showDetails.value = false
   selectedAccommodation.value = null
 }
+
+watch(
+  () => [route.query.id, accommodations.value.length],
+  async ([id]) => {
+    if (!id || deepLinkHandled.value || accommodations.value.length === 0) return
+    deepLinkHandled.value = true
+    await openDetails(id as string)
+    scrollToAccommodation(id as string)
+  },
+  { immediate: true }
+)
 </script>

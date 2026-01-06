@@ -56,7 +56,7 @@ const emit = defineEmits<{
 const categoryOptions = computed(() => props.categories || [])
 
 function formatLabel(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
 }
 
 function setCategory(value: string) {

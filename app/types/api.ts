@@ -74,6 +74,16 @@ export interface Restaurant {
   review_count: number
   photo_url?: string
   district?: string
+  reviews?: RestaurantReview[]
+}
+
+export interface RestaurantReview {
+  id: string
+  rating: number
+  comment?: string | null
+  photo_urls?: string[]
+  user_name?: string | null
+  created_at?: string | null
 }
 
 export interface Facility {
@@ -88,6 +98,18 @@ export interface Facility {
   rating_count: number
   photos: string[]
   amenities?: string[]
+  ratings?: FacilityRating[]
+}
+
+export interface FacilityRating {
+  id: string
+  overall_rating: number
+  cleanliness_rating: number
+  safety_rating: number
+  comment?: string | null
+  photo_urls?: string[]
+  user_name?: string | null
+  created_at?: string | null
 }
 
 export interface EmergencyContact {
@@ -161,6 +183,7 @@ export interface SafetyAlert {
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
   affected_areas: string[]
   source?: string
+  source_url?: string
   action_required?: string
   issued_at: string
   expires_at: string

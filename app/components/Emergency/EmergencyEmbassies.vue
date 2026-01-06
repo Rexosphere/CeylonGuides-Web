@@ -73,7 +73,7 @@ const { data: categoriesResponse } = await useFetch<{
 const categories = computed(() => categoriesResponse.value?.data || [{ category: 'EMBASSY', count: 0 }])
 
 function formatCategory(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\\s)\\S/g, (t) => t.toUpperCase())
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
 }
 
 // Fetch contacts from API
@@ -85,6 +85,7 @@ const { data: embassiesResponse } = await useFetch<{
     phone_number: string
     category: string
     description?: string
+    location_name?: string
     emoji?: string
   }>
 }>(() => `${apiBase}/api/emergency?category=${selectedCategory.value}`, { watch: [selectedCategory] })
@@ -94,7 +95,7 @@ const embassies = computed(() => {
   return data.map((e: any) => ({
     country: e.name.replace(' Embassy', '').replace(' High Commission', ''),
     flag: e.emoji || '🏛️',
-    address: e.description || 'Sri Lanka',
+    address: e.location_name || e.description || 'Sri Lanka',
     phone: e.phone || e.phone_number || ''
   }))
 })
