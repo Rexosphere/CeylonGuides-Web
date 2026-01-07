@@ -14,18 +14,26 @@
         <div class="bg-surface-light dark:bg-surface-dark p-2 rounded-xl shadow-xl flex flex-col md:flex-row gap-2 max-w-2xl mx-auto">
           <div class="flex-1 flex items-center px-4 border-b md:border-b-0 md:border-r border-gray-200 dark:border-neutral-700 py-3 md:py-0">
             <span class="material-symbols-outlined text-primary mr-3">calendar_month</span>
-            <input class="w-full bg-transparent border-none focus:ring-0 text-sm dark:text-white dark:placeholder-neutral-400 placeholder-text-muted focus:outline-none" placeholder="When are you going?" type="text"/>
+            <input 
+              v-model="tripDate" 
+              class="w-full bg-transparent border-none focus:ring-0 text-sm dark:text-white dark:placeholder-neutral-400 placeholder-text-muted focus:outline-none" 
+              placeholder="When are you going?" 
+              type="text"
+            />
           </div>
           <div class="flex-1 flex items-center px-4 py-3 md:py-0">
             <span class="material-symbols-outlined text-primary mr-3">travel_explore</span>
-            <select class="w-full bg-transparent border-none focus:ring-0 text-sm dark:text-white dark:bg-surface-dark cursor-pointer focus:outline-none text-text-main">
-              <option>Any Travel Style</option>
-              <option>Luxury & Leisure</option>
-              <option>Backpacking</option>
-              <option>Nature & Wildlife</option>
+            <select v-model="travelStyle" class="w-full bg-transparent border-none focus:ring-0 text-sm dark:text-white dark:bg-surface-dark cursor-pointer focus:outline-none text-text-main">
+              <option value="">Any Travel Style</option>
+              <option value="luxury">Luxury & Leisure</option>
+              <option value="backpacking">Backpacking</option>
+              <option value="nature">Nature & Wildlife</option>
             </select>
           </div>
-          <button class="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:bg-primary/90 transition-colors whitespace-nowrap">
+          <button 
+            @click="startPlanning" 
+            class="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:bg-primary/90 transition-colors whitespace-nowrap"
+          >
             Start Planning
           </button>
         </div>
@@ -33,3 +41,24 @@
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+const router = useRouter()
+
+const tripDate = ref('')
+const travelStyle = ref('')
+
+function startPlanning() {
+  // Build query params based on inputs
+  const query: Record<string, string> = {}
+  if (travelStyle.value) {
+    query.style = travelStyle.value
+  }
+  
+  // Navigate to trip builder
+  router.push({
+    path: '/trip-builder',
+    query
+  })
+}
+</script>
