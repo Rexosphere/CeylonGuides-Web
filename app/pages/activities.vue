@@ -1,28 +1,15 @@
 <template>
-  <div class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-display overflow-x-hidden min-h-screen flex flex-col group/design-root">
-    
-    <main class="flex h-full grow flex-col">
-      <ActivityHero v-model="searchQuery" />
-      <ActivityFilters
-        :categories="categories"
-        :category="selectedCategory"
-        @update:category="handleCategoryChange"
-      />
-      <ActivityList :category="selectedCategory" :search="searchQuery" />
-      <ActivityFeatured />
-      <ActivityNewsletter />
-    </main>
-
+  <div class="bg-background-light dark:bg-background-dark min-h-screen">
+    <ActivityHero v-model="searchQuery" />
+    <ActivityFilters :categories="categories" :category="selectedCategory" @update:category="handleCategoryChange" />
+    <ActivityList :category="selectedCategory" :search="searchQuery" />
+    <ActivityFeatured />
+    <ActivityNewsletter />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import ActivityHero from '~/components/Activities/ActivityHero.vue'
-import ActivityFilters from '~/components/Activities/ActivityFilters.vue'
-import ActivityList from '~/components/Activities/ActivityList.vue'
-import ActivityFeatured from '~/components/Activities/ActivityFeatured.vue'
-import ActivityNewsletter from '~/components/Activities/ActivityNewsletter.vue'
 import adventuresData from '~/assets/data/adventures.json'
 
 const selectedCategory = ref<string | null>(null)
@@ -61,13 +48,3 @@ useHead({
   ]
 })
 </script>
-
-<style scoped>
-/* Override global theme for Activities page (Orange Theme) */
-.group\/design-root {
-  --color-primary: #f45c25;
-  --color-bg-light: #f8f6f5;
-  --color-bg-dark: #221510;
-  --color-text-main: #181311;
-}
-</style>

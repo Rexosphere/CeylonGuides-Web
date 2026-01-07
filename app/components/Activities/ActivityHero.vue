@@ -1,41 +1,25 @@
 <template>
-  <section class="relative w-full">
-    <div class="layout-container flex justify-center">
-      <div class="w-full max-w-[1440px] px-4 md:px-6 lg:px-10 pt-6 pb-2">
-        <div class="relative overflow-hidden rounded-2xl min-h-[480px] md:min-h-[560px] flex items-center justify-center bg-cover bg-center" 
-             role="img" 
-             aria-label="Stunning aerial view of Sri Lankan coastline with turquoise water and palm trees" 
-             style="background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url('/images/downloaded_567ff4cb279b.avif');">
-          <div class="relative z-10 flex flex-col gap-6 text-center max-w-[720px] px-4 animate-fade-in-up">
-            <span class="text-white/90 text-xs md:text-sm font-bold tracking-[0.2em] uppercase">The Wonder of Asia</span>
-            <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-[-0.033em]">
-              Curated Adventures in the Pearl of the Indian Ocean
-            </h1>
-            <p class="text-white/90 text-sm md:text-lg font-normal leading-relaxed max-w-lg mx-auto">
-              From the misty peaks of Ella to the golden shores of Mirissa, discover authentic experiences that move you.
-            </p>
-            <div class="mt-4 flex w-full max-w-[500px] mx-auto bg-white dark:bg-[#2d2420] p-2 rounded-xl shadow-xl">
-              <div class="flex items-center pl-3 text-gray-400">
-                <span class="material-symbols-outlined">search</span>
-              </div>
-              <input 
-                :value="modelValue"
-                @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-                class="flex-1 bg-transparent border-none focus:ring-0 text-sm md:text-base px-3 text-text-main dark:text-white placeholder:text-gray-400 focus:outline-none" 
-                placeholder="Search hiking, surfing, safari..." 
-                type="text"
-              />
-              <button 
-                v-if="modelValue"
-                type="button"
-                @click="$emit('update:modelValue', '')"
-                class="text-gray-400 hover:text-gray-600 px-2"
-              >
-                <span class="material-symbols-outlined text-[20px]">close</span>
-              </button>
-            </div>
-          </div>
-        </div>
+  <section class="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img alt="Hero Background" class="w-full h-full object-cover"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1YiC7YVXGt-xuGkViSLL7V1J6pGQ4HtWRQB80jgm6vCBH5nlpqcXbVdolhv_QkznZwBtRM6w0QdJmyi0ERRlSWtxDGEbASd9SxoYTENDXchan4g2yEoHbTuYa3G7YJ0qeTe69qqbuVXXnHl9hQjsMm4n4U5CQ38dFpRHqQZVaRyyDFQAnhJ73d4xTxlvcYiC961g5D-YxTxc0AFQzGXX2N5lhws0ZF1w5bLF-SGRi1HDKnwb0L28HL0Qdr4zstG9qBUJX__AffTg" />
+      <div class="absolute inset-0 bg-black/40"></div>
+      <div class="absolute inset-0 bg-primary/30 mix-blend-multiply"></div>
+    </div>
+    <div class="container mx-auto px-6 relative z-10 text-center pt-20">
+      <span class="text-white/90 text-sm font-bold tracking-widest uppercase mb-4 block">The Wonder of Asia</span>
+      <h1
+        class="text-4xl md:text-6xl font-display font-bold text-white mb-6 drop-shadow-lg leading-tight max-w-4xl mx-auto">
+        Curated Adventures in the Pearl of the Indian Ocean
+      </h1>
+      <p class="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
+        From the misty peaks of Ella to the golden shores of Mirissa, discover authentic experiences that move you.
+      </p>
+      <div class="max-w-xl mx-auto bg-white rounded-full p-2 flex items-center shadow-lg">
+        <span class="material-icons text-gray-400 ml-3">search</span>
+        <input :value="modelValue" @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+          class="w-full border-none focus:ring-0 text-sm text-gray-700 bg-transparent placeholder-gray-400"
+          placeholder="Search hiking, surfing, safari..." type="text" />
       </div>
     </div>
   </section>

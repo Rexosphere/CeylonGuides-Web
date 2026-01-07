@@ -1,31 +1,41 @@
 <template>
-  <section id="community" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 pt-8 px-4 md:px-6 max-w-7xl mx-auto">
-    <!-- Community Forum -->
-    <NuxtLink to="/community" class="group flex flex-col gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-center md:text-left">
-      <span class="material-symbols-outlined text-4xl text-primary/60 group-hover:text-primary transition-colors">groups</span>
-      <span class="font-bold text-lg text-charcoal dark:text-white">Community Forum</span>
-      <span class="text-xs text-gray-400">Connect with fellow travelers</span>
-    </NuxtLink>
+  <section class="py-12 bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800">
+    <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+      <!-- Community Forum -->
+      <NuxtLink to="/community"
+        class="group flex flex-col items-start p-4 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-colors">
+        <span class="material-icons text-secondary mb-2 group-hover:scale-110 transition-transform">groups</span>
+        <h4 class="font-bold text-primary dark:text-white mb-1">Community Forum</h4>
+        <span class="text-xs text-text-muted dark:text-gray-500">Connect with fellow travelers</span>
+      </NuxtLink>
 
-    <!-- Travel Blog -->
-    <NuxtLink to="/blog" class="group flex flex-col gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-center md:text-left">
-      <span class="material-symbols-outlined text-4xl text-primary/60 group-hover:text-primary transition-colors">article</span>
-      <span class="font-bold text-lg text-charcoal dark:text-white">Travel Blog</span>
-      <span class="text-xs text-gray-400">Stories & hidden gems</span>
-    </NuxtLink>
+      <!-- Travel Blog -->
+      <NuxtLink to="/blog"
+        class="group flex flex-col items-start p-4 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-colors">
+        <span class="material-icons text-secondary mb-2 group-hover:scale-110 transition-transform">article</span>
+        <h4 class="font-bold text-primary dark:text-white mb-1">Travel Blog</h4>
+        <span class="text-xs text-text-muted dark:text-gray-500">Stories & hidden gems</span>
+      </NuxtLink>
 
-    <!-- About Us -->
-    <NuxtLink to="/about" class="group flex flex-col gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-center md:text-left">
-      <span class="material-symbols-outlined text-4xl text-primary/60 group-hover:text-primary transition-colors">info</span>
-      <span class="font-bold text-lg text-charcoal dark:text-white">About Us</span>
-      <span class="text-xs text-gray-400">Our mission & team</span>
-    </NuxtLink>
+      <!-- About Us -->
+      <NuxtLink to="/about"
+        class="group flex flex-col items-start p-4 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-colors">
+        <span class="material-icons text-secondary mb-2 group-hover:scale-110 transition-transform">info</span>
+        <h4 class="font-bold text-primary dark:text-white mb-1">About Us</h4>
+        <span class="text-xs text-text-muted dark:text-gray-500">Our mission & team</span>
+      </NuxtLink>
 
-    <!-- Contact -->
-    <NuxtLink to="/contact" class="group flex flex-col gap-2 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-center md:text-left">
-      <span class="material-symbols-outlined text-4xl text-primary/60 group-hover:text-primary transition-colors">mail</span>
-      <span class="font-bold text-lg text-charcoal dark:text-white">Contact</span>
-      <span class="text-xs text-gray-400">Get in touch with support</span>
-    </NuxtLink>
+      <!-- Contact -->
+      <NuxtLink to="/contact"
+        class="group flex flex-col items-start p-4 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-colors">
+        <span class="material-icons text-secondary mb-2 group-hover:scale-110 transition-transform">mail</span>
+        <h4 class="font-bold text-primary dark:text-white mb-1">Contact</h4>
+        <span class="text-xs text-text-muted dark:text-gray-500">Get in touch with support</span>
+      </NuxtLink>
+    </div>
   </section>
 </template>
+
+<script setup lang="ts">
+// No script needed for this static layout
+</script>
