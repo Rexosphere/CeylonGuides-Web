@@ -26,7 +26,7 @@
 
     <!-- Main Content -->
     <div class="w-full px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-24 py-6 md:py-8 lg:py-12">
-      <div class="flex flex-col lg:flex-row gap-6 lg:gap-10 xl:gap-12 items-start">
+      <div class="flex flex-col lg:flex-row gap-6 lg:gap-10 xl:gap-12 items-stretch">
         
         <!-- Left Column - Journey Planner Card -->
         <div class="w-full lg:w-[600px] xl:w-[650px] 2xl:w-[700px] flex-shrink-0 space-y-6">
@@ -284,7 +284,7 @@
         <div class="flex-1 w-full space-y-6">
           
           <!-- Map -->
-          <div class="relative w-full h-[450px] bg-slate-50 rounded-2xl overflow-hidden shadow-inner border border-slate-200 group">
+          <div class="relative w-full h-full min-h-[500px] bg-slate-50 rounded-2xl overflow-hidden shadow-inner border border-slate-200 group">
              <ClientOnly fallback-tag="div" fallback="Loading map...">
                 <TransportMap
                     :origin="origin"
@@ -303,206 +303,274 @@
                   Pick {{ pickMode === 'from' ? 'Origin' : 'Destination' }}
                </div>
              </div>
-          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          <!-- Fare Result Card -->
-          <div v-if="routeResult" class="relative rounded-xl overflow-hidden shadow-floating">
-            <div class="bg-[#3b82f6] p-6 text-white relative overflow-hidden">
-              <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-              <div class="relative z-10 flex justify-between items-start mb-6">
-                <div>
-                  <div class="text-[10px] uppercase font-bold tracking-wider opacity-80 mb-1">Estimated Fare</div>
-                  <div class="text-4xl font-display font-bold mb-3">{{ calculatedFare.display }}</div>
-                  <div class="flex gap-4 text-sm font-medium opacity-90">
-                    <div class="flex items-center gap-1.5">
-                      <span class="material-symbols-outlined text-[18px]">straighten</span> {{ routeResult.distanceKm }} km
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                      <span class="material-symbols-outlined text-[18px]">schedule</span> {{ formatDuration(routeResult.durationMinutes) }}
-                    </div>
+    <!-- Collapsible Info Panel with Tabs -->
+    <div 
+      class="info-panel mx-6 sm:mx-8 lg:mx-12 xl:mx-16 2xl:mx-24 mb-12"
+      :class="{ 'collapsed': !infoPanelExpanded }"
+    >
+      <!-- Tab Bar -->
+      <div class="tab-bar flex border-b border-gray-200 dark:border-white/10 bg-slate-50 dark:bg-surface-dark rounded-t-2xl overflow-hidden">
+        <button 
+          v-for="tab in infoTabs" 
+          :key="tab.id"
+          @click="activeTab = tab.id as 'routes' | 'tips' | 'phrases' | 'safety'"
+          class="tab-button flex-1 h-14 flex items-center justify-center gap-2 text-sm font-medium transition-all border-b-2"
+          :class="activeTab === tab.id 
+            ? 'bg-white dark:bg-background-dark text-teal-deep border-teal-deep' 
+            : 'text-text-muted border-transparent hover:text-teal-deep hover:bg-white/50 dark:hover:bg-white/5'"
+        >
+          <span class="material-symbols-outlined text-lg">{{ tab.icon }}</span>
+          <span class="hidden sm:inline">{{ tab.label }}</span>
+        </button>
+        
+        <!-- Collapse Toggle -->
+        <button 
+          @click="infoPanelExpanded = !infoPanelExpanded"
+          class="w-14 h-14 flex items-center justify-center border-l border-gray-200 dark:border-white/10 text-text-muted hover:text-teal-deep hover:bg-white/50 dark:hover:bg-white/5 transition-all"
+          :aria-label="infoPanelExpanded ? 'Collapse panel' : 'Expand panel'"
+        >
+          <span class="material-symbols-outlined transition-transform" :class="infoPanelExpanded ? 'rotate-180' : ''">expand_more</span>
+        </button>
+      </div>
+      
+      <!-- Tab Content -->
+      <div 
+        v-if="infoPanelExpanded"
+        class="tab-content bg-white dark:bg-surface-dark rounded-b-2xl shadow-card border border-t-0 border-gray-100 dark:border-white/5 p-6 md:p-8"
+      >
+        <transition name="slide-fade" mode="out-in">
+          <!-- Routes & Fares Tab -->
+          <div v-if="activeTab === 'routes'" class="space-y-6" key="routes">
+            <div v-if="routeResult" class="grid md:grid-cols-2 gap-6">
+              <!-- Fare Estimate Card -->
+              <div class="bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl p-6 text-white">
+                <div class="text-xs uppercase font-bold tracking-wider opacity-80 mb-1">Estimated Fare</div>
+                <div class="text-4xl font-bold mb-3">{{ calculatedFare.display }}</div>
+                <div class="flex gap-4 text-sm opacity-90">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-lg">straighten</span>
+                    {{ routeResult.distanceKm.toFixed(1) }} km
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-lg">schedule</span>
+                    {{ formatDuration(routeResult.durationMinutes) }}
                   </div>
                 </div>
-                <div class="size-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                  <span class="material-symbols-outlined">{{ modeIcons[selectedMode] }}</span>
-                </div>
-              </div>
-              <div class="relative z-10 flex items-center justify-between border-t border-white/20 pt-4">
-                <div class="flex gap-2">
-                  <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Save">
-                    <span class="material-symbols-outlined text-[18px]">bookmark_border</span>
-                  </button>
-                  <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Share">
-                    <span class="material-symbols-outlined text-[18px]">share</span>
-                  </button>
-                  <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Download">
-                    <span class="material-symbols-outlined text-[18px]">download</span>
-                  </button>
-                </div>
-                <div class="text-[9px] opacity-60 italic">*Estimates may vary</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Check Price Fairness Button -->
-          <button v-if="routeResult" @click="showFareGuard = true" class="w-full py-3 bg-light-cyan/50 hover:bg-light-cyan border border-teal-deep/10 text-teal-deep font-bold text-sm rounded-full flex items-center justify-center gap-2 transition-all">
-            <span class="material-symbols-outlined text-[18px]">verified_user</span>
-            Check Price Fairness
-          </button>
-
-          <!-- Recommended Options -->
-          <div v-if="routeResult" class="space-y-4 pt-4">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="material-symbols-outlined text-text-muted text-[16px]">verified</span>
-              <h3 class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Recommended Options</h3>
-            </div>
-            
-            <div 
-              v-for="option in recommendedOptions"
-              :key="option.label"
-              class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-gray-100 dark:border-white/5 hover:shadow-md transition-shadow flex items-center justify-between"
-            >
-              <div class="flex items-center gap-4">
-                <div :class="`size-10 rounded-full ${option.bgColor} flex items-center justify-center ${option.textColor}`">
-                  <span class="material-symbols-outlined">{{ option.icon }}</span>
-                </div>
-                <div>
-                  <div class="font-bold text-text-main dark:text-white text-sm">{{ option.label }}</div>
-                  <div class="text-[10px] text-text-muted">{{ option.subtitle }}</div>
-                </div>
-              </div>
-              <div class="font-bold text-teal-deep text-sm">{{ option.cost }}</div>
-            </div>
-            
-            <div class="text-center pt-2">
-              <button class="text-[10px] font-bold text-text-muted uppercase tracking-wider hover:text-teal-deep">Compare More Options</button>
-            </div>
-          </div>
-
-          <!-- Helpful Content (Shows when no route) -->
-          <div v-if="!routeResult" class="space-y-6">
-            
-            <!-- Negotiation Phrases -->
-            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card border border-gray-100 dark:border-white/5 p-6">
-              <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-teal-deep text-[18px]">record_voice_over</span>
-                <h3 class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Negotiation Phrases</h3>
               </div>
               
-              <div class="space-y-3">
-                <div class="bg-teal-50 dark:bg-teal-900/20 p-3 rounded-xl border border-teal-100 dark:border-teal-900/30">
-                  <div class="text-xs font-bold text-teal-700 dark:text-teal-400 mb-1">🇱🇰 Sinhala</div>
-                  <div class="text-sm font-medium text-text-main dark:text-white">"Mee-tara kee-yada?" (How much to here?)</div>
-                </div>
-                <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
-                  <div class="text-xs font-bold text-blue-700 dark:text-blue-400 mb-1">💰 Negotiate</div>
-                  <div class="text-sm font-medium text-text-main dark:text-white">"Mee-tara [price] hari-da?" (Is [price] okay for here?)</div>
-                </div>
-                <div class="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl border border-amber-100 dark:border-amber-900/30">
-                  <div class="text-xs font-bold text-amber-700 dark:text-amber-400 mb-1">📱 Show Meter</div>
-                  <div class="text-sm font-medium text-text-main dark:text-white">"Meter danna" (Turn on the meter)</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Quick Tips -->
-            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card border border-gray-100 dark:border-white/5 p-6">
-              <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-coral-orange text-[18px]">tips_and_updates</span>
-                <h3 class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Quick Tips</h3>
-              </div>
-              
-              <div class="space-y-3">
-                <div class="flex items-start gap-3">
-                  <span class="text-lg">✅</span>
-                  <div class="text-xs text-text-main dark:text-white">Always agree on price <strong>before</strong> getting in</div>
-                </div>
-                <div class="flex items-start gap-3">
-                  <span class="text-lg">📸</span>
-                  <div class="text-xs text-text-main dark:text-white">Take a photo of the license plate</div>
-                </div>
-                <div class="flex items-start gap-3">
-                  <span class="text-lg">🗺️</span>
-                  <div class="text-xs text-text-main dark:text-white">Use Google Maps to track your route</div>
-                </div>
-                <div class="flex items-start gap-3">
-                  <span class="text-lg">💵</span>
-                  <div class="text-xs text-text-main dark:text-white">Keep small bills - drivers often claim no change</div>
-                </div>
-                <div class="flex items-start gap-3">
-                  <span class="text-lg">🚫</span>
-                  <div class="text-xs text-text-main dark:text-white">Avoid tuk-tuks that approach you first at tourist spots</div>
+              <!-- Route Options -->
+              <div>
+                <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Compare Options</h3>
+                <div class="space-y-2">
+                  <div 
+                    v-for="option in recommendedOptions" 
+                    :key="option.label"
+                    class="flex items-center justify-between p-3 rounded-xl bg-surface-light dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:border-teal-deep/30 cursor-pointer transition-all"
+                  >
+                    <div class="flex items-center gap-3">
+                      <div :class="`size-10 rounded-full ${option.bgColor} flex items-center justify-center ${option.textColor}`">
+                        <span class="material-symbols-outlined">{{ option.icon }}</span>
+                      </div>
+                      <div>
+                        <div class="text-sm font-bold text-text-main dark:text-white">{{ option.label }}</div>
+                        <div class="text-[10px] text-text-muted">{{ option.subtitle }}</div>
+                      </div>
+                    </div>
+                    <div class="font-bold text-teal-deep">{{ option.cost }}</div>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <!-- Emergency Contacts -->
-            <div class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/40 rounded-2xl p-4">
-              <div class="flex items-center gap-2 mb-3">
-                <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-lg">emergency</span>
-                <h4 class="text-xs font-bold text-text-muted uppercase tracking-wider">Emergency Contacts</h4>
-              </div>
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-red-600 dark:text-red-400">119</span>
-                  <span class="text-text-main dark:text-white">Police</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-red-600 dark:text-red-400">1912</span>
-                  <span class="text-text-main dark:text-white">Tourist Police</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-red-600 dark:text-red-400">1990</span>
-                  <span class="text-text-main dark:text-white">Ambulance</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-red-600 dark:text-red-400">1969</span>
-                  <span class="text-text-main dark:text-white">Roadside Help</span>
-                </div>
-              </div>
+            
+            <!-- Empty State -->
+            <div v-else class="text-center py-12">
+              <span class="material-symbols-outlined text-5xl text-text-muted/40 mb-3 block">route</span>
+              <p class="text-sm text-text-muted">Enter origin and destination to see fare estimates</p>
             </div>
-
+            
             <!-- Standard Fare Reference -->
-            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card border border-gray-100 dark:border-white/5 p-4">
+            <div class="bg-surface-light dark:bg-white/5 rounded-xl p-4 border border-gray-100 dark:border-white/5">
               <div class="flex items-center gap-2 mb-3">
                 <span class="material-symbols-outlined text-teal-deep text-lg">payments</span>
                 <h4 class="text-xs font-bold text-text-muted uppercase tracking-wider">Standard Tuk-Tuk Fares</h4>
               </div>
-              <div class="space-y-2 text-xs">
-                <div class="flex justify-between items-center py-1.5 border-b border-gray-100 dark:border-white/5">
-                  <span class="text-text-muted">First kilometer</span>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                <div class="flex justify-between items-center">
+                  <span class="text-text-muted">First km</span>
                   <span class="font-bold text-text-main dark:text-white">Rs. 100</span>
                 </div>
-                <div class="flex justify-between items-center py-1.5 border-b border-gray-100 dark:border-white/5">
-                  <span class="text-text-muted">Each additional km</span>
+                <div class="flex justify-between items-center">
+                  <span class="text-text-muted">Per km</span>
                   <span class="font-bold text-text-main dark:text-white">Rs. 60</span>
                 </div>
-                <div class="flex justify-between items-center py-1.5 border-b border-gray-100 dark:border-white/5">
-                  <span class="text-text-muted">Waiting (per hour)</span>
+                <div class="flex justify-between items-center">
+                  <span class="text-text-muted">Waiting/hr</span>
                   <span class="font-bold text-text-main dark:text-white">Rs. 500</span>
                 </div>
-                <div class="flex justify-between items-center py-1.5">
-                  <span class="text-text-muted">Night surcharge</span>
+                <div class="flex justify-between items-center">
+                  <span class="text-text-muted">Night</span>
                   <span class="font-bold text-coral-orange">+50%</span>
                 </div>
               </div>
-              <p class="text-[10px] text-text-muted mt-3 italic">* Official metered rates as of 2024</p>
             </div>
           </div>
-
-          <!-- Scam Warning (Shows when route exists) -->
-          <div v-else class="mt-6 bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/40 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors" @click="showScams = true">
-            <div class="flex items-center gap-3">
-              <div class="size-8 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
-                <span class="material-symbols-outlined text-[18px]">warning</span>
-              </div>
+          
+          <!-- Travel Tips Tab -->
+          <div v-else-if="activeTab === 'tips'" class="space-y-6" key="tips">
+            <div class="grid md:grid-cols-2 gap-6">
+              <!-- Quick Tips -->
               <div>
-                <h4 class="text-xs font-bold text-text-main dark:text-white">Tourist Scams to Avoid</h4>
-                <p class="text-[10px] text-text-muted">Tap to see safety tips for this route</p>
+                <div class="flex items-center gap-2 mb-4">
+                  <span class="material-symbols-outlined text-coral-orange text-lg">tips_and_updates</span>
+                  <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider">Quick Tips</h3>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex items-start gap-3 p-3 bg-surface-light dark:bg-white/5 rounded-xl">
+                    <span class="text-lg">✅</span>
+                    <div class="text-sm text-text-main dark:text-white">Always agree on price <strong>before</strong> getting in</div>
+                  </div>
+                  <div class="flex items-start gap-3 p-3 bg-surface-light dark:bg-white/5 rounded-xl">
+                    <span class="text-lg">📸</span>
+                    <div class="text-sm text-text-main dark:text-white">Take a photo of the license plate</div>
+                  </div>
+                  <div class="flex items-start gap-3 p-3 bg-surface-light dark:bg-white/5 rounded-xl">
+                    <span class="text-lg">🗺️</span>
+                    <div class="text-sm text-text-main dark:text-white">Use Google Maps to track your route</div>
+                  </div>
+                  <div class="flex items-start gap-3 p-3 bg-surface-light dark:bg-white/5 rounded-xl">
+                    <span class="text-lg">💵</span>
+                    <div class="text-sm text-text-main dark:text-white">Keep small bills - drivers often claim no change</div>
+                  </div>
+                  <div class="flex items-start gap-3 p-3 bg-surface-light dark:bg-white/5 rounded-xl">
+                    <span class="text-lg">🚫</span>
+                    <div class="text-sm text-text-main dark:text-white">Avoid tuk-tuks that approach you first at tourist spots</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Scam Warning -->
+              <div>
+                <div class="flex items-center gap-2 mb-4">
+                  <span class="material-symbols-outlined text-orange-500 text-lg">warning</span>
+                  <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider">Common Scams</h3>
+                </div>
+                <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/40 rounded-xl p-4 cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors" @click="showScams = true">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <div class="size-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
+                        <span class="material-symbols-outlined text-lg">report</span>
+                      </div>
+                      <div>
+                        <h4 class="text-sm font-bold text-text-main dark:text-white">Tourist Scams to Avoid</h4>
+                        <p class="text-xs text-text-muted">Tap to see safety tips for traveling</p>
+                      </div>
+                    </div>
+                    <span class="material-symbols-outlined text-orange-400">chevron_right</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <span class="material-symbols-outlined text-orange-400 text-[18px]">chevron_right</span>
           </div>
-        </div>
+          
+          <!-- Phrases Tab -->
+          <div v-else-if="activeTab === 'phrases'" class="space-y-6" key="phrases">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="material-symbols-outlined text-teal-deep text-lg">record_voice_over</span>
+              <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider">Negotiation Phrases</h3>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-xl border border-teal-100 dark:border-teal-900/30">
+                <div class="text-xs font-bold text-teal-700 dark:text-teal-400 mb-2">🇱🇰 Ask Price</div>
+                <div class="text-base font-medium text-text-main dark:text-white mb-1">"Mee-tara kee-yada?"</div>
+                <div class="text-xs text-text-muted">How much to here?</div>
+              </div>
+              <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                <div class="text-xs font-bold text-blue-700 dark:text-blue-400 mb-2">💰 Negotiate</div>
+                <div class="text-base font-medium text-text-main dark:text-white mb-1">"Mee-tara [price] hari-da?"</div>
+                <div class="text-xs text-text-muted">Is [price] okay for here?</div>
+              </div>
+              <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-100 dark:border-amber-900/30">
+                <div class="text-xs font-bold text-amber-700 dark:text-amber-400 mb-2">📱 Use Meter</div>
+                <div class="text-base font-medium text-text-main dark:text-white mb-1">"Meter danna"</div>
+                <div class="text-xs text-text-muted">Turn on the meter</div>
+              </div>
+              <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-100 dark:border-green-900/30">
+                <div class="text-xs font-bold text-green-700 dark:text-green-400 mb-2">🙏 Thank You</div>
+                <div class="text-base font-medium text-text-main dark:text-white mb-1">"Istuti"</div>
+                <div class="text-xs text-text-muted">Thank you</div>
+              </div>
+              <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-xl border border-purple-100 dark:border-purple-900/30">
+                <div class="text-xs font-bold text-purple-700 dark:text-purple-400 mb-2">🛑 Stop Here</div>
+                <div class="text-base font-medium text-text-main dark:text-white mb-1">"Meh-he nawath-wanna"</div>
+                <div class="text-xs text-text-muted">Stop here please</div>
+              </div>
+              <div class="bg-rose-50 dark:bg-rose-900/20 p-4 rounded-xl border border-rose-100 dark:border-rose-900/30">
+                <div class="text-xs font-bold text-rose-700 dark:text-rose-400 mb-2">❌ Too Expensive</div>
+                <div class="text-base font-medium text-text-main dark:text-white mb-1">"Ganan wadi"</div>
+                <div class="text-xs text-text-muted">That's too expensive</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Safety Tab -->
+          <div v-else-if="activeTab === 'safety'" class="space-y-6" key="safety">
+            <div class="grid md:grid-cols-2 gap-6">
+              <!-- Emergency Contacts -->
+              <div class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/40 rounded-2xl p-6">
+                <div class="flex items-center gap-2 mb-4">
+                  <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-lg">emergency</span>
+                  <h4 class="text-xs font-bold text-text-muted uppercase tracking-wider">Emergency Contacts</h4>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="flex items-center gap-3 p-3 bg-white dark:bg-black/20 rounded-xl">
+                    <span class="text-2xl font-bold text-red-600 dark:text-red-400">119</span>
+                    <span class="text-sm text-text-main dark:text-white">Police</span>
+                  </div>
+                  <div class="flex items-center gap-3 p-3 bg-white dark:bg-black/20 rounded-xl">
+                    <span class="text-2xl font-bold text-red-600 dark:text-red-400">1912</span>
+                    <span class="text-sm text-text-main dark:text-white">Tourist Police</span>
+                  </div>
+                  <div class="flex items-center gap-3 p-3 bg-white dark:bg-black/20 rounded-xl">
+                    <span class="text-2xl font-bold text-red-600 dark:text-red-400">1990</span>
+                    <span class="text-sm text-text-main dark:text-white">Ambulance</span>
+                  </div>
+                  <div class="flex items-center gap-3 p-3 bg-white dark:bg-black/20 rounded-xl">
+                    <span class="text-2xl font-bold text-red-600 dark:text-red-400">1969</span>
+                    <span class="text-sm text-text-main dark:text-white">Roadside Help</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Safety Tips -->
+              <div>
+                <div class="flex items-center gap-2 mb-4">
+                  <span class="material-symbols-outlined text-teal-deep text-lg">verified_user</span>
+                  <h4 class="text-xs font-bold text-text-muted uppercase tracking-wider">Safety Tips</h4>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex items-start gap-3 p-3 bg-surface-light dark:bg-white/5 rounded-xl">
+                    <span class="material-symbols-outlined text-teal-deep text-lg">share_location</span>
+                    <div class="text-sm text-text-main dark:text-white">Share your live location with a trusted contact</div>
+                  </div>
+                  <div class="flex items-start gap-3 p-3 bg-surface-light dark:bg-white/5 rounded-xl">
+                    <span class="material-symbols-outlined text-teal-deep text-lg">night_shelter</span>
+                    <div class="text-sm text-text-main dark:text-white">Avoid traveling alone late at night</div>
+                  </div>
+                  <div class="flex items-start gap-3 p-3 bg-surface-light dark:bg-white/5 rounded-xl">
+                    <span class="material-symbols-outlined text-teal-deep text-lg">credit_card</span>
+                    <div class="text-sm text-text-main dark:text-white">Keep valuables hidden and secure</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
       </div>
     </div>
 
@@ -632,6 +700,17 @@ const showFareGuard = ref(false)
 const showScams = ref(false)
 const pickMode = ref<'from' | 'to' | null>(null)
 const selectedMode = ref('tuktuk')
+
+// Info Panel State
+const activeTab = ref<'routes' | 'tips' | 'phrases' | 'safety'>('tips')
+const infoPanelExpanded = ref(true)
+
+const infoTabs = [
+  { id: 'routes', label: 'Routes & Fares', icon: 'route' },
+  { id: 'tips', label: 'Travel Tips', icon: 'tips_and_updates' },
+  { id: 'phrases', label: 'Phrases', icon: 'record_voice_over' },
+  { id: 'safety', label: 'Safety', icon: 'shield' }
+]
 
 const travelModes = [
   { id: 'tuktuk', icon: 'local_taxi', label: 'Tuk-Tuk' },
@@ -892,6 +971,27 @@ const vClickOutside = {
 </script>
 
 <style scoped>
+/* ============================================
+   TRANSPORT PAGE - VISUAL CONSISTENCY FIXES
+   CSS-only fixes without template modifications
+   ============================================ */
+
+/* 1. SCROLLING FIX (CRITICAL)
+   ------------------------------------------ */
+/* Remove all viewport height constraints */
+.transport-container,
+.main-content,
+.content-wrapper {
+  height: auto !important;
+  min-height: calc(100vh - 73px);
+}
+
+/* Ensure no overflow hidden prevents scrolling */
+:deep(.overflow-hidden) {
+  overflow: visible !important;
+}
+
+/* Custom scrollbar styling */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -904,5 +1004,343 @@ const vClickOutside = {
 }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #4a3b36;
+}
+
+/* 2. BUTTON STANDARDIZATION
+   ------------------------------------------ */
+/* All primary action buttons */
+:deep(button),
+:deep(.btn) {
+  transition: all 0.2s ease !important;
+}
+
+/* Primary CTA button (Find Best Route) */
+:deep(button[class*="bg-teal"]),
+:deep(.bg-teal-deep) {
+  background: linear-gradient(135deg, #2E7D5F 0%, #236B50 100%) !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(46, 125, 95, 0.25) !important;
+}
+
+:deep(button[class*="bg-teal"]:hover),
+:deep(.bg-teal-deep:hover) {
+  background: linear-gradient(135deg, #236B50 0%, #1a5f47 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(46, 125, 95, 0.35) !important;
+}
+
+/* Transport mode selector buttons */
+:deep(button[class*="border-2"]) {
+  height: 80px !important;
+  transition: all 0.2s ease !important;
+}
+
+:deep(button[class*="border-teal"]) {
+  border-color: #2E7D5F !important;
+  background: rgba(46, 125, 95, 0.08) !important;
+}
+
+/* 3. FARE CARD VISUAL WEIGHT REDUCTION
+   ------------------------------------------ */
+/* Tone down the bright blue fare estimation card */
+:deep([class*="bg-gradient-to-br"][class*="from-blue"]),
+:deep(.bg-blue-500),
+:deep(.from-blue-500) {
+  background: linear-gradient(135deg, #2E7D5F 0%, #236B50 100%) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(46, 125, 95, 0.25) !important;
+}
+
+/* Fare amount styling */
+:deep(.text-4xl) {
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Fare card action buttons */
+:deep([class*="bg-white\\/10"]),
+:deep([class*="bg-white\\/20"]) {
+  backdrop-filter: blur(4px) !important;
+  border-radius: 8px !important;
+}
+
+:deep([class*="bg-white\\/10"]:hover),
+:deep([class*="bg-white\\/20"]:hover) {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* 4. CONSISTENT CARD STYLING
+   ------------------------------------------ */
+/* All cards should have same border radius and shadow */
+:deep(.rounded-2xl) {
+  border-radius: 16px !important;
+}
+
+:deep(.rounded-xl) {
+  border-radius: 12px !important;
+}
+
+:deep(.shadow-card) {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Card hover effects */
+:deep([class*="hover\\:shadow"]) {
+  transition: all 0.2s ease !important;
+}
+
+:deep([class*="hover\\:shadow"]:hover) {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Route option cards */
+:deep(.route-card),
+:deep([class*="flex items-center justify-between p-3"]) {
+  border-radius: 12px !important;
+  transition: all 0.2s ease !important;
+}
+
+:deep([class*="flex items-center justify-between p-3"]:hover) {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 5. SPACING SYSTEM (8px GRID)
+   ------------------------------------------ */
+/* Section spacing */
+:deep(.space-y-6 > * + *) {
+  margin-top: 24px !important;
+}
+
+:deep(.space-y-4 > * + *) {
+  margin-top: 16px !important;
+}
+
+:deep(.space-y-3 > * + *) {
+  margin-top: 12px !important;
+}
+
+:deep(.space-y-2 > * + *) {
+  margin-top: 8px !important;
+}
+
+/* Padding consistency */
+:deep(.p-6) {
+  padding: 24px !important;
+}
+
+:deep(.p-4) {
+  padding: 16px !important;
+}
+
+:deep(.p-3) {
+  padding: 12px !important;
+}
+
+/* Gap consistency */
+:deep(.gap-6) {
+  gap: 24px !important;
+}
+
+:deep(.gap-4) {
+  gap: 16px !important;
+}
+
+:deep(.gap-3) {
+  gap: 12px !important;
+}
+
+:deep(.gap-2) {
+  gap: 8px !important;
+}
+
+/* 6. FORM INPUT CONSISTENCY
+   ------------------------------------------ */
+/* All form inputs should match */
+:deep(input[type="text"]),
+:deep(input[type="search"]),
+:deep(input[type="number"]),
+:deep(select),
+:deep(.input-field) {
+  height: 48px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+:deep(input:focus),
+:deep(select:focus) {
+  outline: none !important;
+  border-color: #2E7D5F !important;
+  box-shadow: 0 0 0 3px rgba(46, 125, 95, 0.15) !important;
+}
+
+/* Placeholder styling */
+:deep(input::placeholder) {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+:deep(.dark input::placeholder) {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* 7. ICON CONSISTENCY
+   ------------------------------------------ */
+:deep(.material-symbols-outlined) {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24 !important;
+}
+
+/* Icon in buttons */
+:deep(button .material-symbols-outlined) {
+  font-size: 20px !important;
+}
+
+/* Large icons */
+:deep(.text-5xl.material-symbols-outlined),
+:deep(.material-symbols-outlined.text-5xl) {
+  font-size: 48px !important;
+}
+
+/* 8. TYPOGRAPHY REFINEMENTS
+   ------------------------------------------ */
+/* Headers */
+:deep(h1) {
+  letter-spacing: -0.02em !important;
+}
+
+:deep(h2),
+:deep(h3) {
+  letter-spacing: -0.01em !important;
+}
+
+/* Small text labels - using font-size selector instead */
+:deep([style*="font-size: 10px"]),
+:deep(.uppercase.tracking-wider) {
+  letter-spacing: 0.05em !important;
+}
+
+/* 9. ANIMATION SMOOTHNESS
+   ------------------------------------------ */
+:deep(.transition-all) {
+  transition-duration: 200ms !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+:deep(.animate-spin) {
+  animation: spin 1s linear infinite !important;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 10. MODAL BACKDROP
+   ------------------------------------------ */
+:deep(.backdrop-blur-sm) {
+  backdrop-filter: blur(8px) !important;
+}
+
+/* 11. POPULAR ROUTES CARD HOVER
+   ------------------------------------------ */
+:deep(button[class*="w-full text-left p-3"]) {
+  transition: all 0.2s ease !important;
+}
+
+:deep(button[class*="w-full text-left p-3"]:hover) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(46, 125, 95, 0.12) !important;
+  border-color: rgba(46, 125, 95, 0.3) !important;
+}
+
+/* 12. NEGOTIATION PHRASES CARDS
+   ------------------------------------------ */
+:deep(.bg-teal-50),
+:deep(.bg-blue-50),
+:deep(.bg-amber-50) {
+  border-radius: 12px !important;
+}
+
+/* 13. MAP CONTAINER
+   ------------------------------------------ */
+:deep(.leaflet-container) {
+  border-radius: 16px !important;
+}
+
+/* 14. DARK MODE REFINEMENTS
+   ------------------------------------------ */
+:deep(.dark .bg-surface-dark) {
+  background: #1F1612 !important;
+}
+
+/* 15. SELECTION STYLING
+   ------------------------------------------ */
+::selection {
+  background: rgba(46, 125, 95, 0.2);
+  color: inherit;
+}
+
+::-moz-selection {
+  background: rgba(46, 125, 95, 0.2);
+  color: inherit;
+}
+
+/* 16. INFO PANEL TRANSITIONS
+   ------------------------------------------ */
+.info-panel {
+  transition: all 0.3s ease;
+}
+
+.info-panel.collapsed .tab-content {
+  max-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Tab content slide animation */
+.slide-fade-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.15s ease-in;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Tab button active indicator animation */
+.tab-button {
+  position: relative;
+}
+
+.tab-button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: #2E7D5F;
+  transition: all 0.2s ease;
+  transform: translateX(-50%);
+}
+
+.tab-button:hover::after {
+  width: 30%;
+}
+
+/* Collapse toggle rotation */
+.rotate-180 {
+  transform: rotate(180deg);
 }
 </style>
