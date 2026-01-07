@@ -1,31 +1,15 @@
 <template>
-  <div class="sticky top-[73px] z-40 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm border-b border-[#e6dedb] dark:border-[#3a2d28] w-full">
-    <div class="px-6 md:px-20 lg:px-40 max-w-[1440px] mx-auto w-full">
-      <div class="flex overflow-x-auto scrollbar-hide gap-8 md:gap-12">
-        <a 
-          v-for="filter in filters" 
-          :key="filter.name"
-          href="#"
-          class="group flex flex-col items-center justify-center border-b-[3px] transition-all pb-3 pt-4 cursor-pointer min-w-fit"
-          :class="[
-            activeFilter === filter.name 
-              ? 'border-b-primary' 
-              : 'border-b-transparent hover:border-b-[#e6dedb] dark:hover:border-b-[#3a2d28]'
-          ]"
-          @click.prevent="setFilter(filter.name)"
-        >
-          <p 
-            class="text-sm font-bold leading-normal tracking-[0.015em] transition-colors"
-            :class="[
-              activeFilter === filter.name 
-                ? 'text-primary' 
-                : 'text-[#8a6b60] group-hover:text-[#181311] dark:group-hover:text-white'
-            ]"
-          >
-            {{ filter.label }}
-          </p>
-        </a>
-      </div>
+  <div class="container mx-auto px-6 -mt-8 relative z-20 mb-12">
+    <div
+      class="bg-white dark:bg-card-dark rounded-xl shadow-card p-4 flex overflow-x-auto gap-4 items-center justify-start md:justify-center no-scrollbar">
+      <button v-for="filter in filters" :key="filter.name"
+        class="px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors" :class="[
+          activeFilter === filter.name
+            ? 'bg-primary text-white shadow-sm'
+            : 'hover:bg-gray-100 dark:hover:bg-white/5 text-text-muted dark:text-gray-300 font-medium'
+        ]" @click="setFilter(filter.name)">
+        {{ filter.label }}
+      </button>
     </div>
   </div>
 </template>
@@ -62,11 +46,12 @@ function setFilter(value: string) {
 </script>
 
 <style scoped>
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 </style>

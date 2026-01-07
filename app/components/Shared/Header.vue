@@ -1,47 +1,25 @@
 <template>
   <!-- Fixed header with dropdown navigation -->
-  <nav
-    class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b"
-    :class="[
-      variant === 'transparent'
-        ? 'bg-white/10 backdrop-blur-md border-white/10'
-        : 'bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-gray-200 dark:border-white/10'
-    ]"
-  >
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+  <nav class="fixed top-0 w-full z-50 transition-all duration-300">
+    <div class="container mx-auto px-6 py-4 flex items-center justify-between">
       <!-- Logo and Brand -->
       <NuxtLink to="/" class="flex items-center gap-2">
-        <span
-          class="material-symbols-outlined text-3xl"
-          :class="variant === 'transparent' ? 'text-white' : 'text-primary dark:text-white'"
-        >travel_explore</span>
-        <h2
-          class="font-serif text-2xl font-bold tracking-tight"
-          :class="variant === 'transparent' ? 'text-white' : 'text-primary dark:text-white'"
-        >CeylonGuide</h2>
+        <span class="material-icons text-white text-3xl">travel_explore</span>
+        <span class="text-2xl font-bold font-display text-white">CeylonGuide</span>
       </NuxtLink>
 
       <!-- Desktop Navigation Links -->
-      <div class="hidden lg:flex items-center gap-6">
-        <!-- Destinations - Direct Link -->
+      <div
+        class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-black/50 backdrop-blur-md px-6 py-2.5 rounded-full shadow-sm">
         <!-- Explore Dropdown -->
-        <div
-          class="relative"
-          @mouseenter="activeDropdown = 'explore'"
-          @mouseleave="activeDropdown = null"
-        >
-          <button
-            class="transition-colors text-sm font-medium flex items-center gap-1"
-            :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-          >
+        <div class="relative" @mouseenter="activeDropdown = 'explore'" @mouseleave="activeDropdown = null">
+          <button class="hover:text-primary transition-colors flex items-center gap-1">
             Explore
-            <span class="material-symbols-outlined text-sm">expand_more</span>
+            <span class="material-icons text-sm">expand_more</span>
           </button>
           <Transition name="dropdown">
-            <div
-              v-if="activeDropdown === 'explore'"
-              class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2"
-            >
+            <div v-if="activeDropdown === 'explore'"
+              class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2">
               <NuxtLink to="/destinations" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">map</span>
                 Destinations
@@ -68,23 +46,14 @@
         </div>
 
         <!-- Travel Tools Dropdown -->
-        <div
-          class="relative"
-          @mouseenter="activeDropdown = 'tools'"
-          @mouseleave="activeDropdown = null"
-        >
-          <button
-            class="transition-colors text-sm font-medium flex items-center gap-1"
-            :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-          >
+        <div class="relative" @mouseenter="activeDropdown = 'tools'" @mouseleave="activeDropdown = null">
+          <button class="hover:text-primary transition-colors flex items-center gap-1">
             Travel Tools
-            <span class="material-symbols-outlined text-sm">expand_more</span>
+            <span class="material-icons text-sm">expand_more</span>
           </button>
           <Transition name="dropdown">
-            <div
-              v-if="activeDropdown === 'tools'"
-              class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2"
-            >
+            <div v-if="activeDropdown === 'tools'"
+              class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2">
               <NuxtLink to="/transport" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">directions_car</span>
                 Transport & Fares
@@ -123,23 +92,14 @@
         </div>
 
         <!-- Safety Dropdown -->
-        <div
-          class="relative"
-          @mouseenter="activeDropdown = 'safety'"
-          @mouseleave="activeDropdown = null"
-        >
-          <button
-            class="transition-colors text-sm font-medium flex items-center gap-1"
-            :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-          >
+        <div class="relative" @mouseenter="activeDropdown = 'safety'" @mouseleave="activeDropdown = null">
+          <button class="hover:text-primary transition-colors flex items-center gap-1">
             Safety
-            <span class="material-symbols-outlined text-sm">expand_more</span>
+            <span class="material-icons text-sm">expand_more</span>
           </button>
           <Transition name="dropdown">
-            <div
-              v-if="activeDropdown === 'safety'"
-              class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2"
-            >
+            <div v-if="activeDropdown === 'safety'"
+              class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2">
               <NuxtLink to="/scam-alerts" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">warning</span>
                 Scam Alerts
@@ -166,23 +126,14 @@
         </div>
 
         <!-- Info Dropdown -->
-        <div
-          class="relative"
-          @mouseenter="activeDropdown = 'info'"
-          @mouseleave="activeDropdown = null"
-        >
-          <button
-            class="transition-colors text-sm font-medium flex items-center gap-1"
-            :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-          >
+        <div class="relative" @mouseenter="activeDropdown = 'info'" @mouseleave="activeDropdown = null">
+          <button class="hover:text-primary transition-colors flex items-center gap-1">
             Info
-            <span class="material-symbols-outlined text-sm">expand_more</span>
+            <span class="material-icons text-sm">expand_more</span>
           </button>
           <Transition name="dropdown">
-            <div
-              v-if="activeDropdown === 'info'"
-              class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2"
-            >
+            <div v-if="activeDropdown === 'info'"
+              class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2">
               <NuxtLink to="/visa" class="dropdown-link">
                 <span class="material-symbols-outlined text-lg">badge</span>
                 Visa Information
@@ -209,71 +160,51 @@
         </div>
 
         <!-- Search Icon -->
-        <button
-          class="transition-colors"
-          :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-          aria-label="Search"
-        >
-          <span class="material-symbols-outlined">search</span>
+        <button class="hover:text-primary" aria-label="Search">
+          <span class="material-icons text-lg">search</span>
         </button>
+      </div>
 
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-4">
         <!-- Safety Mode Button -->
-        <NuxtLink 
-          to="/safety-mode"
-          class="hidden lg:flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full text-sm font-bold transition-all shadow-lg"
-        >
-          <span class="text-base">🚨</span>
+        <NuxtLink to="/safety-mode"
+          class="bg-accent-danger hover:bg-red-700 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-sm transition-all">
+          <span class="material-icons text-sm">warning</span>
           Safety Mode
         </NuxtLink>
 
         <!-- Auth Section -->
-        <div v-if="!isAuthenticated" class="flex items-center gap-3">
-          <NuxtLink 
-            to="/auth/login"
-            class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full text-sm font-bold transition-all shadow-lg"
-          >
+        <div v-if="!isAuthenticated">
+          <NuxtLink to="/auth/login"
+            class="bg-primary hover:bg-opacity-90 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-sm transition-all">
             Login
           </NuxtLink>
         </div>
-        
+
         <!-- User Dropdown (when authenticated) -->
-        <div 
-          v-else
-          class="relative"
-          @mouseenter="activeDropdown = 'user'"
-          @mouseleave="activeDropdown = null"
-        >
-          <button
-            class="flex items-center gap-2 transition-colors"
-            :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'"
-          >
+        <div v-else class="relative" @mouseenter="activeDropdown = 'user'" @mouseleave="activeDropdown = null">
+          <button class="flex items-center gap-2 transition-colors"
+            :class="variant === 'transparent' ? 'text-white/90 hover:text-accent' : 'text-charcoal/90 dark:text-white/90 hover:text-primary'">
             <!-- User Avatar -->
             <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
-              <img 
-                v-if="user?.avatar_url" 
-                :src="user.avatar_url" 
-                :alt="user.name || 'User'"
-                class="w-full h-full object-cover"
-              />
+              <img v-if="user?.avatar_url" :src="user.avatar_url" :alt="user.name || 'User'"
+                class="w-full h-full object-cover" />
               <span v-else class="material-symbols-outlined text-primary text-lg">person</span>
             </div>
             <span class="text-sm font-medium hidden sm:inline">{{ user?.name || user?.email?.split('@')[0] }}</span>
             <span class="material-symbols-outlined text-sm">expand_more</span>
           </button>
-          
+
           <Transition name="dropdown">
-            <div
-              v-if="activeDropdown === 'user'"
-              class="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2"
-            >
+            <div v-if="activeDropdown === 'user'"
+              class="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-background-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-2">
               <div class="px-4 py-2 border-b border-gray-200 dark:border-white/10">
                 <p class="text-sm font-medium text-charcoal dark:text-white truncate">{{ user?.name || 'User' }}</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ user?.email }}</p>
               </div>
-              <button 
-                @click="handleLogout"
-                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-              >
+              <button @click="handleLogout"
+                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                 <span class="material-symbols-outlined text-lg">logout</span>
                 Logout
               </button>
@@ -283,22 +214,16 @@
       </div>
 
       <!-- Mobile Menu Button -->
-      <button
-        @click="toggleMobileMenu"
-        class="lg:hidden"
-        :class="variant === 'transparent' ? 'text-white' : 'text-charcoal dark:text-white'"
-        aria-label="Toggle menu"
-      >
+      <button @click="toggleMobileMenu" class="lg:hidden"
+        :class="variant === 'transparent' ? 'text-white' : 'text-charcoal dark:text-white'" aria-label="Toggle menu">
         <span class="material-symbols-outlined">menu</span>
       </button>
     </div>
 
     <!-- Mobile Menu Overlay -->
     <Transition name="slide-fade">
-      <div
-        v-if="isMobileMenuOpen"
-        class="lg:hidden bg-white dark:bg-background-dark backdrop-blur-lg border-t border-gray-200 dark:border-white/20 max-h-[80vh] overflow-y-auto"
-      >
+      <div v-if="isMobileMenuOpen"
+        class="lg:hidden bg-white dark:bg-background-dark backdrop-blur-lg border-t border-gray-200 dark:border-white/20 max-h-[80vh] overflow-y-auto">
         <nav class="flex flex-col p-6">
           <!-- Search -->
           <div class="mb-4 pb-4 border-b border-gray-200 dark:border-white/10">
@@ -334,7 +259,8 @@
 
           <!-- Travel Tools Section -->
           <div class="mt-4 mb-2">
-            <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3">Travel Tools</h3>
+            <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3">Travel Tools
+            </h3>
           </div>
           <NuxtLink to="/transport" class="mobile-link" @click="closeMobileMenu">
             <span class="material-symbols-outlined">directions_car</span>
@@ -389,7 +315,9 @@
             <span class="material-symbols-outlined">temple_buddhist</span>
             Cultural Etiquette
           </NuxtLink>
-          <NuxtLink to="/safety-mode" class="mobile-link bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-semibold" @click="closeMobileMenu">
+          <NuxtLink to="/safety-mode"
+            class="mobile-link bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-semibold"
+            @click="closeMobileMenu">
             <span class="text-lg">🚨</span>
             Safety Mode
           </NuxtLink>
@@ -422,18 +350,14 @@
           <!-- Auth Section (Mobile) -->
           <div class="mt-6 pt-4 border-t border-gray-200 dark:border-white/10">
             <template v-if="!isAuthenticated">
-              <NuxtLink 
-                to="/auth/login"
+              <NuxtLink to="/auth/login"
                 class="block w-full text-center bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-full text-sm font-bold transition-all shadow-lg"
-                @click="closeMobileMenu"
-              >
+                @click="closeMobileMenu">
                 Login
               </NuxtLink>
-              <NuxtLink 
-                to="/auth/register"
+              <NuxtLink to="/auth/register"
                 class="block w-full text-center mt-3 border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 py-3 rounded-full text-sm font-semibold transition-all"
-                @click="closeMobileMenu"
-              >
+                @click="closeMobileMenu">
                 Create Account
               </NuxtLink>
             </template>
@@ -441,12 +365,8 @@
               <!-- User Info -->
               <div class="flex items-center gap-3 px-3 py-2 mb-3">
                 <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
-                  <img 
-                    v-if="user?.avatar_url" 
-                    :src="user.avatar_url" 
-                    :alt="user.name || 'User'"
-                    class="w-full h-full object-cover"
-                  />
+                  <img v-if="user?.avatar_url" :src="user.avatar_url" :alt="user.name || 'User'"
+                    class="w-full h-full object-cover" />
                   <span v-else class="material-symbols-outlined text-primary text-xl">person</span>
                 </div>
                 <div class="flex-1 min-w-0">
@@ -455,10 +375,8 @@
                 </div>
               </div>
               <!-- Logout Button -->
-              <button 
-                @click="handleLogout"
-                class="w-full flex items-center justify-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-6 py-3 rounded-full text-sm font-semibold transition-all hover:bg-red-100 dark:hover:bg-red-900/30"
-              >
+              <button @click="handleLogout"
+                class="w-full flex items-center justify-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-6 py-3 rounded-full text-sm font-semibold transition-all hover:bg-red-100 dark:hover:bg-red-900/30">
                 <span class="material-symbols-outlined text-lg">logout</span>
                 Logout
               </button>
@@ -542,4 +460,3 @@ const handleLogout = async () => {
   @apply flex items-center gap-3 px-3 py-2.5 text-sm text-charcoal dark:text-white/90 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-colors;
 }
 </style>
-
