@@ -3,8 +3,39 @@
     <!-- Header with solid variant -->
     <Header variant="solid" />
 
+    <!-- Hero Section -->
+    <section class="relative h-[60vh] min-h-[500px] w-full overflow-hidden">
+      <div 
+        class="absolute inset-0 bg-cover bg-center" 
+        style='background-image: linear-gradient(rgba(16, 32, 34, 0.5) 0%, rgba(16, 32, 34, 0.7) 100%), url("/scam_alert_hero_1767782820867.png");'>
+      </div>
+      <div class="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
+        <div class="max-w-4xl space-y-6">
+          <div class="flex items-center justify-center gap-3 mb-4">
+            <span class="material-symbols-outlined text-red-500 text-5xl md:text-6xl">shield_with_heart</span>
+          </div>
+          <h1 class="font-display text-5xl font-extrabold tracking-tight text-white md:text-6xl lg:text-7xl drop-shadow-md">
+            Scam Alert Database
+          </h1>
+          <p class="mx-auto max-w-2xl text-lg font-medium text-white/90 md:text-xl drop-shadow-sm">
+            Real-time community reports to keep you safe. Stay informed about common scams and report suspicious activities to protect fellow travelers.
+          </p>
+          <div class="flex items-center justify-center gap-4 pt-4">
+            <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+              <span class="material-symbols-outlined text-white text-[20px]">verified_user</span>
+              <span class="text-white text-sm font-semibold">Community Verified</span>
+            </div>
+            <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+              <span class="material-symbols-outlined text-white text-[20px]">update</span>
+              <span class="text-white text-sm font-semibold">Real-time Updates</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Proximity Alert Banner -->
-    <div class="flex-none mt-[72px] bg-red-50 dark:bg-red-900/20 border-b border-red-100 dark:border-red-900/50 px-6 py-2 flex items-center justify-center gap-3 text-red-700 dark:text-red-300 text-sm font-medium z-20">
+    <div class="flex-none bg-red-50 dark:bg-red-900/20 border-b border-red-100 dark:border-red-900/50 px-6 py-2 flex items-center justify-center gap-3 text-red-700 dark:text-red-300 text-sm font-medium z-20">
       <span class="material-symbols-outlined text-[20px]">fmd_bad</span>
       <p>Warning: You are viewing a high-activity area for reported scams (Pettah Market).</p>
       <button class="ml-4 text-red-700/60 hover:text-red-700 dark:text-red-300/60 dark:hover:text-red-300">
@@ -13,10 +44,11 @@
     </div>
 
     <!-- Main Layout -->
-    <main class="flex relative" style="height: calc(100vh - 116px);">
+    <main class="flex relative" style="min-height: 700px;">
       <!-- Sidebar (List View & Controls) -->
       <aside
-        class="w-full md:w-[420px] lg:w-[480px] bg-white dark:bg-surface-dark flex flex-col border-r border-gray-200 dark:border-white/10 z-10 shadow-xl md:shadow-none absolute inset-0 md:relative transform transition-transform duration-300 bg-background-light h-full"
+        class="w-full md:w-[420px] lg:w-[480px] bg-white dark:bg-surface-dark flex flex-col border-r border-gray-200 dark:border-white/10 z-10 shadow-xl md:shadow-none absolute inset-0 md:relative transform transition-transform duration-300 bg-background-light"
+        style="height: 700px;"
         :class="[
           viewMode === 'list' ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         ]"
@@ -286,7 +318,7 @@
       <div
         class="flex-1 relative bg-gray-200 dark:bg-[#1a1614] z-0"
         :class="[viewMode === 'map' ? 'block' : 'hidden md:block']"
-        style="height: 100%;"
+        style="height: 700px;"
       >
         <!-- Interactive Leaflet Map -->
         <ClientOnly>
