@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-screen overflow-hidden bg-background-light dark:bg-background-dark font-display text-charcoal dark:text-white">
+  <div class="flex flex-col bg-background-light dark:bg-background-dark font-display text-charcoal dark:text-white">
     <!-- Header with solid variant -->
     <Header variant="solid" />
 
@@ -13,10 +13,10 @@
     </div>
 
     <!-- Main Layout -->
-    <main class="flex-1 flex overflow-hidden relative">
+    <main class="flex relative" style="height: calc(100vh - 116px);">
       <!-- Sidebar (List View & Controls) -->
-      <aside 
-        class="w-full md:w-[420px] lg:w-[480px] bg-white dark:bg-surface-dark flex flex-col border-r border-gray-200 dark:border-white/10 z-10 shadow-xl md:shadow-none absolute inset-0 md:relative transform transition-transform duration-300 bg-background-light"
+      <aside
+        class="w-full md:w-[420px] lg:w-[480px] bg-white dark:bg-surface-dark flex flex-col border-r border-gray-200 dark:border-white/10 z-10 shadow-xl md:shadow-none absolute inset-0 md:relative transform transition-transform duration-300 bg-background-light h-full"
         :class="[
           viewMode === 'list' ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         ]"
@@ -258,8 +258,8 @@
               </div>
             </div>
           </div>
-          <div v-if="scamAlerts.length > 0" class="mt-6 text-center">
-            <button 
+          <div v-if="scamAlerts.length > 0" class="mt-6 text-center pb-6">
+            <button
               v-if="hasMore"
               @click="loadMore"
               :disabled="loadingMore"
@@ -270,8 +270,6 @@
             </button>
             <p v-else class="text-gray-400 text-sm">All reports loaded ({{ totalCount }} total)</p>
           </div>
-          <!-- Footer -->
-          <Footer />
         </div>
 
         <!-- Mobile Toggle Handle -->
@@ -285,17 +283,18 @@
       </aside>
 
       <!-- Map Area -->
-      <div 
-        class="flex-1 relative bg-gray-200 dark:bg-[#1a1614] overflow-hidden"
+      <div
+        class="flex-1 relative bg-gray-200 dark:bg-[#1a1614] z-0"
         :class="[viewMode === 'map' ? 'block' : 'hidden md:block']"
+        style="height: 100%;"
       >
         <!-- Interactive Leaflet Map -->
         <ClientOnly>
-          <ScamAlertsMap 
+          <ScamAlertsMap
             :scams="scamAlerts"
             @select-scam="openScamDetails"
             @report-at="handleMapReport"
-            class="absolute inset-0"
+            class="w-full h-full z-0"
           />
           <template #fallback>
             <div class="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-surface-dark">
@@ -308,14 +307,14 @@
         </ClientOnly>
 
         <!-- Floating Tip Banner -->
-        <div class="absolute top-4 left-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg px-3 py-2 z-[1000] max-w-[200px]">
+        <div class="absolute top-4 left-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg px-3 py-2 z-10 max-w-[200px]">
           <p class="text-xs text-blue-800 dark:text-blue-200">
             💡 <strong>Tip:</strong> Click anywhere on the map to report a scam at that location
           </p>
         </div>
 
         <!-- Floating Action Button (FAB) -->
-        <div class="absolute bottom-8 right-8 z-30">
+        <div class="absolute bottom-8 right-8 z-20">
           <button @click="showReportModal = true" class="group flex items-center gap-2 bg-accent hover:bg-accent/90 text-white rounded-full pl-5 pr-6 py-4 shadow-lg shadow-accent/30 transition-all active:scale-95">
             <span class="material-symbols-outlined text-[24px]">add_alert</span>
             <span class="text-base font-bold">Report a Scam</span>
@@ -323,6 +322,9 @@
         </div>
       </div>
     </main>
+
+    <!-- Footer -->
+    <Footer />
 
     <!-- Report Scam Modal -->
     <Teleport to="body">
