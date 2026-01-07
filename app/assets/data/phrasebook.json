@@ -1,0 +1,615 @@
+{
+  "categories": [
+    {
+      "id": "GREETINGS",
+      "name": "Greetings & Politeness",
+      "icon": "handshake",
+      "description": "Basic greetings and polite expressions to make a good first impression"
+    },
+    {
+      "id": "DIRECTIONS",
+      "name": "Asking for Directions",
+      "icon": "explore",
+      "description": "Navigate your way around with these essential direction phrases"
+    },
+    {
+      "id": "DINING",
+      "name": "Food & Dining",
+      "icon": "restaurant",
+      "description": "Order food and communicate dietary needs at restaurants"
+    },
+    {
+      "id": "SHOPPING",
+      "name": "Shopping & Bargaining",
+      "icon": "shopping_bag",
+      "description": "Negotiate prices and shop like a local in markets"
+    },
+    {
+      "id": "EMERGENCY",
+      "name": "Emergency & Safety",
+      "icon": "emergency",
+      "description": "Critical phrases for urgent situations and getting help"
+    },
+    {
+      "id": "TRANSPORT",
+      "name": "Transport",
+      "icon": "directions_bus",
+      "description": "Get around using buses, trains, taxis, and tuk-tuks"
+    }
+  ],
+  "phrases": [
+    {
+      "id": "greet-01",
+      "category": "GREETINGS",
+      "english": "Hello",
+      "sinhala": "ආයුබෝවන්",
+      "sinhalaLatin": "Ayubowan",
+      "tamil": "வணக்கம்",
+      "tamilLatin": "Vanakkam",
+      "pronunciation": "AH-yu-bo-wan / Va-nak-kam",
+      "difficulty": "easy",
+      "cultural_context": "'Ayubowan' and 'Vanakkam' mean 'may you live long.' Often accompanied by a slight bow and palms pressed together.",
+      "usage_tips": "Formal greeting suitable for any occasion. Shows respect and cultural awareness."
+    },
+    {
+      "id": "greet-02",
+      "category": "GREETINGS",
+      "english": "Good morning",
+      "sinhala": "සුභ උදෑසනක්",
+      "sinhalaLatin": "Subha udesanak",
+      "tamil": "காலை வணக்கம்",
+      "tamilLatin": "Kaalai vanakkam",
+      "pronunciation": "SUB-ha u-deh-sa-nak / KAA-lai va-nak-kam",
+      "difficulty": "easy",
+      "cultural_context": "Used from sunrise until around 10 AM.",
+      "usage_tips": "Perfect for greeting shop owners, hotel staff, or locals you meet in the morning."
+    },
+    {
+      "id": "greet-03",
+      "category": "GREETINGS",
+      "english": "Good evening",
+      "sinhala": "සුභ සන්ධ්‍යාවක්",
+      "sinhalaLatin": "Subha sandhyawak",
+      "tamil": "மாலை வணக்கம்",
+      "tamilLatin": "Maalai vanakkam",
+      "pronunciation": "SUB-ha san-dhya-wak / MAA-lai va-nak-kam",
+      "difficulty": "easy",
+      "cultural_context": "Used from around 4 PM onwards.",
+      "usage_tips": "Great for evening greetings at restaurants or when meeting people after work hours."
+    },
+    {
+      "id": "greet-04",
+      "category": "GREETINGS",
+      "english": "Good night",
+      "sinhala": "සුභ රාත්‍රියක්",
+      "sinhalaLatin": "Subha rathriyak",
+      "tamil": "இரவு வணக்கம்",
+      "tamilLatin": "Iravu vanakkam",
+      "pronunciation": "SUB-ha rath-ri-yak / I-ra-vu va-nak-kam",
+      "difficulty": "easy",
+      "cultural_context": "Used when parting in the evening or before sleep.",
+      "usage_tips": "Say this when leaving a restaurant at night or when checking into your hotel."
+    },
+    {
+      "id": "greet-05",
+      "category": "GREETINGS",
+      "english": "How are you?",
+      "sinhala": "කොහොමද?",
+      "sinhalaLatin": "Kohomada?",
+      "tamil": "எப்படி இருக்கிறீர்கள்?",
+      "tamilLatin": "Eppadi irukkirirgal?",
+      "pronunciation": "ko-HO-ma-da / ep-pa-di i-ruk-kir-ir-gal",
+      "difficulty": "easy",
+      "cultural_context": "Common casual greeting. Expect 'Hari hondai' (I'm fine) as a response.",
+      "usage_tips": "Use with people you've met before or in casual conversations."
+    },
+    {
+      "id": "greet-06",
+      "category": "GREETINGS",
+      "english": "I'm fine, thank you",
+      "sinhala": "හරි, බොහොම ස්තූතියි",
+      "sinhalaLatin": "Hari, bohoma sthuthi",
+      "tamil": "நான் நன்றாக இருக்கிறேன், நன்றி",
+      "tamilLatin": "Naan nandraaga irukkiren, nandri",
+      "pronunciation": "HA-ri, bo-HO-ma sthu-thi / naan nan-draa-ga i-ruk-ki-ren nan-dri",
+      "difficulty": "easy",
+      "cultural_context": "Standard polite response to 'How are you?'",
+      "usage_tips": "Always respond with this to show politeness and respect."
+    },
+    {
+      "id": "greet-07",
+      "category": "GREETINGS",
+      "english": "Thank you (very much)",
+      "sinhala": "බොහොම ස්තූතියි",
+      "sinhalaLatin": "Bohoma sthuthi",
+      "tamil": "நன்றி",
+      "tamilLatin": "Nandri",
+      "pronunciation": "bo-HO-ma sthu-thi / NAN-dri",
+      "difficulty": "easy",
+      "cultural_context": "One of the most important phrases. Locals appreciate gratitude.",
+      "usage_tips": "Use frequently! After receiving help, service, or gifts."
+    },
+    {
+      "id": "greet-08",
+      "category": "GREETINGS",
+      "english": "Please",
+      "sinhala": "කරුණාකරල",
+      "sinhalaLatin": "Karunakarala",
+      "tamil": "தயவு செய்து",
+      "tamilLatin": "Dayavu seithu",
+      "pronunciation": "ka-ru-naa-ka-ra-la / da-ya-vu sei-thu",
+      "difficulty": "easy",
+      "cultural_context": "In Sinhala, 'please' usually comes at the beginning of requests, not the end.",
+      "usage_tips": "Essential for polite requests. Shows respect and good manners."
+    },
+    {
+      "id": "greet-09",
+      "category": "GREETINGS",
+      "english": "Sorry / Excuse me",
+      "sinhala": "සමාවෙන්න",
+      "sinhalaLatin": "Samawenna",
+      "tamil": "மன்னிக்கவும்",
+      "tamilLatin": "Mannikkavum",
+      "pronunciation": "sa-maa-wen-na / man-nik-ka-vum",
+      "difficulty": "easy",
+      "cultural_context": "Use to apologize or get someone's attention politely.",
+      "usage_tips": "Essential before asking for directions or interrupting someone."
+    },
+    {
+      "id": "greet-10",
+      "category": "GREETINGS",
+      "english": "Do you speak English?",
+      "sinhala": "ඔයා ඉංග්‍රීසි කතා කරනවද?",
+      "sinhalaLatin": "Oyā Ingrisi kathā karanawada?",
+      "tamil": "நீங்கள் ஆங்கிலம் பேசுவீர்களா?",
+      "tamilLatin": "Neengal Angilam pesuveergala?",
+      "pronunciation": "o-yaa in-gri-si ka-thaa ka-ra-na-wa-da / neen-gal aan-gi-lam pe-su-veer-ga-la",
+      "difficulty": "medium",
+      "cultural_context": "Many Sri Lankans speak at least basic English, especially in tourist areas.",
+      "usage_tips": "Use this before launching into complex questions."
+    },
+    {
+      "id": "greet-11",
+      "category": "GREETINGS",
+      "english": "I don't understand",
+      "sinhala": "මට තේරුගන්නේ නෑ",
+      "sinhalaLatin": "Mata therungannē nææ",
+      "tamil": "எனக்கு புரியலை",
+      "tamilLatin": "Enakku puriyalai",
+      "pronunciation": "ma-ta the-run-gan-ne næ / e-nak-ku pu-ri-ya-lai",
+      "difficulty": "easy",
+      "cultural_context": "Honesty is appreciated. People will often find someone who speaks English to help.",
+      "usage_tips": "Don't be shy to use this. It helps avoid misunderstandings."
+    },
+    {
+      "id": "greet-12",
+      "category": "GREETINGS",
+      "english": "Speak slowly, please",
+      "sinhala": "සෑන්ත කතා කරන්න",
+      "sinhalaLatin": "Sænta kathā karanna",
+      "tamil": "மெது பேச வேண்டும்",
+      "tamilLatin": "Medhu pesa vendum",
+      "pronunciation": "sæn-ta ka-thaa ka-ran-na / me-dhu pe-sa ven-dum",
+      "difficulty": "medium",
+      "cultural_context": "People will happily slow down for you.",
+      "usage_tips": "Combine with 'I don't understand' when struggling with fast speech."
+    },
+    {
+      "id": "greet-13",
+      "category": "GREETINGS",
+      "english": "You're welcome",
+      "sinhala": "ඔයාව සාදරයෙන් පිළිගන්නුව",
+      "sinhalaLatin": "Oyaava sādareyen piligannuwa",
+      "tamil": "வரவேற்கிறேன்",
+      "tamilLatin": "Varaverkiren",
+      "pronunciation": "o-yaa-va saa-da-re-yen pi-li-gan-nu-wa / va-ra-ver-ki-ren",
+      "difficulty": "medium",
+      "cultural_context": "Response to 'thank you.' Often accompanied by a smile.",
+      "usage_tips": "Use after someone thanks you for help or service."
+    },
+    {
+      "id": "greet-14",
+      "category": "GREETINGS",
+      "english": "Goodbye (informal)",
+      "sinhala": "ගිහින් එන්නම්",
+      "sinhalaLatin": "Gihin ennam",
+      "tamil": "போய்ட்டு வரேன்",
+      "tamilLatin": "Poitu varen",
+      "pronunciation": "gi-hin en-nam / poi-tu va-ren",
+      "difficulty": "easy",
+      "cultural_context": "Casual way to say goodbye, literally 'going and coming.'",
+      "usage_tips": "Use with people you'll likely see again soon."
+    },
+    {
+      "id": "dir-01",
+      "category": "DIRECTIONS",
+      "english": "Excuse me, can you help me?",
+      "sinhala": "සමාවෙන්න, මට උදව් කරන්නද?",
+      "sinhalaLatin": "Samawenna, Mata udaw karannada?",
+      "tamil": "மன்னிக்கவும், எனக்கு உதவி செய்வீர்களா?",
+      "tamilLatin": "Mannikkavum, Enakku udhavi seiveergala?",
+      "pronunciation": "sa-maa-wen-na ma-ta u-daw ka-ran-na-da / man-nik-ka-vum e-nak-ku u-dha-vi sei-veer-ga-la",
+      "difficulty": "medium",
+      "cultural_context": "Always start by getting attention politely before asking for help.",
+      "usage_tips": "Use before asking for directions or assistance."
+    },
+    {
+      "id": "dir-02",
+      "category": "DIRECTIONS",
+      "english": "Where is the bathroom?",
+      "sinhala": "බාත් කාමරේ කොහෙද?",
+      "sinhalaLatin": "Bath kamarey koheda?",
+      "tamil": "கழிவறை எங்கே?",
+      "tamilLatin": "Kazhuvina arai engae?",
+      "pronunciation": "bath ka-ma-rey ko-he-da / ka-zhi-vi-na a-rai en-gae",
+      "difficulty": "easy",
+      "cultural_context": "Essential phrase. Don't be embarrassed to ask.",
+      "usage_tips": "Very useful in restaurants, shops, and public places."
+    },
+    {
+      "id": "dir-03",
+      "category": "DIRECTIONS",
+      "english": "Where is the hotel?",
+      "sinhala": "හෝටලේ කොහෙද?",
+      "sinhalaLatin": "Hoṭalē koheda?",
+      "tamil": "ஹோட்டல் எங்கே?",
+      "tamilLatin": "Hotel engae?",
+      "pronunciation": "ho-ta-le ko-he-da / ho-tel en-gae",
+      "difficulty": "easy",
+      "cultural_context": "Locals are very helpful with directions.",
+      "usage_tips": "Point to a map or show hotel name on phone for clarity."
+    },
+    {
+      "id": "dir-04",
+      "category": "DIRECTIONS",
+      "english": "Where is the police station?",
+      "sinhala": "පොලිස් ස්ථානය කොහෙද?",
+      "sinhalaLatin": "Police sthanaya koheda?",
+      "tamil": "காவல் நிலையம் எங்கே?",
+      "tamilLatin": "Police station engae?",
+      "pronunciation": "po-lis stha-na-ya ko-he-da / po-lis sta-tion en-gae",
+      "difficulty": "medium",
+      "cultural_context": "For emergencies, call 119 or 1912 (Tourist Police).",
+      "usage_tips": "Hopefully you won't need this, but good to know."
+    },
+    {
+      "id": "dining-01",
+      "category": "DINING",
+      "english": "Can I get the menu?",
+      "sinhala": "මෙනු එකක් ලබා ගන්න පුළුවන්ද?",
+      "sinhalaLatin": "Menu ekak laba ganna puluwanda?",
+      "tamil": "மெனு காட்டிடும் குடுங்க",
+      "tamilLatin": "Menu kattidam kudunga",
+      "pronunciation": "me-nu e-kak la-ba gan-na pu-lu-wan-da / me-nu kat-ti-dam ku-dun-ga",
+      "difficulty": "medium",
+      "cultural_context": "Many restaurants have picture menus for tourists.",
+      "usage_tips": "First step when dining out. Look for pictures if language is a barrier."
+    },
+    {
+      "id": "dining-02",
+      "category": "DINING",
+      "english": "Water, please",
+      "sinhala": "වතුර, කරුණාකරල",
+      "sinhalaLatin": "Wathura, karunakarala",
+      "tamil": "தண்ணி குடுங்க",
+      "tamilLatin": "Thanni kudunga",
+      "pronunciation": "wa-thu-ra ka-ru-naa-ka-ra-la / than-ni ku-dun-ga",
+      "difficulty": "easy",
+      "cultural_context": "Specify if you want bottled water. Tap water isn't always safe for tourists.",
+      "usage_tips": "Always ask for 'bottle water' if concerned about water quality."
+    },
+    {
+      "id": "dining-03",
+      "category": "DINING",
+      "english": "The bill, please",
+      "sinhala": "ගිණුමක්, කරුණාකරල",
+      "sinhalaLatin": "Ginumak, karunakarala",
+      "tamil": "கணக்கு குடுங்க",
+      "tamilLatin": "Kanakku kudunga",
+      "pronunciation": "gi-nu-mak ka-ru-naa-ka-ra-la / ka-nak-ku ku-dun-ga",
+      "difficulty": "easy",
+      "cultural_context": "Tipping is appreciated but not mandatory (5-10% is generous).",
+      "usage_tips": "Make the universal hand-writing gesture along with this phrase."
+    },
+    {
+      "id": "dining-04",
+      "category": "DINING",
+      "english": "I'm vegetarian",
+      "sinhala": "මම නිරාමාංශ වේමෝ",
+      "sinhalaLatin": "Mama niramansa vaemai",
+      "tamil": "நான் சைவம்",
+      "tamilLatin": "Naan saivam",
+      "pronunciation": "ma-ma ni-raa-man-sha vae-mai / naan sai-vam",
+      "difficulty": "medium",
+      "cultural_context": "Sri Lanka has many vegetarian options. Many restaurants cater to vegetarians.",
+      "usage_tips": "Use early in the conversation. Staff will guide you to suitable dishes."
+    },
+    {
+      "id": "dining-05",
+      "category": "DINING",
+      "english": "Not spicy, please",
+      "sinhala": "කෞළු බඩු තැවරා",
+      "sinhalaLatin": "Kauḷau baḍu tævarā",
+      "tamil": "காரமில்லை, தயவு செய்து",
+      "tamilLatin": "Kāramillai, dayavu seithu",
+      "pronunciation": "kau-lau ba-du tæ-va-raa / kaa-ra-mil-lai da-ya-vu sei-thu",
+      "difficulty": "medium",
+      "cultural_context": "Sri Lankan food can be very spicy. Don't hesitate to ask for mild versions.",
+      "usage_tips": "Say this when ordering. You can also gesture 'little' with fingers."
+    },
+    {
+      "id": "dining-06",
+      "category": "DINING",
+      "english": "It's delicious!",
+      "sinhala": "එය ඉතා රසයි!",
+      "sinhalaLatin": "Eya ithaa rasai!",
+      "tamil": "சுவையாக இருக்கிறது!",
+      "tamilLatin": "Suvaiyaga irukirathu!",
+      "pronunciation": "e-ya i-thaa ra-sai / su-vai-ya-ga i-ruk-ki-ra-thu",
+      "difficulty": "easy",
+      "cultural_context": "Compliments are always appreciated and will earn you smiles.",
+      "usage_tips": "Use with a smile to show genuine appreciation for the food."
+    },
+    {
+      "id": "shop-01",
+      "category": "SHOPPING",
+      "english": "How much is this?",
+      "sinhala": "මීක කීයද?",
+      "sinhalaLatin": "Meeka kiyeda?",
+      "tamil": "இது எவ்வளவு?",
+      "tamilLatin": "Idhu evvalavu?",
+      "pronunciation": "mee-ka kee-ye-da / i-dhu ev-va-la-vu",
+      "difficulty": "easy",
+      "cultural_context": "Essential for shopping. Always ask the price first.",
+      "usage_tips": "Point to item while asking. Expect prices in rupees (LKR)."
+    },
+    {
+      "id": "shop-02",
+      "category": "SHOPPING",
+      "english": "It's too expensive!",
+      "sinhala": "මිලවැදි!",
+      "sinhalaLatin": "Milavedi!",
+      "tamil": "மிக விலை உயர்ந்தது!",
+      "tamilLatin": "Mika vilai uyarndhadhu!",
+      "pronunciation": "mi-la-ve-di / mi-ka vi-lai u-yarn-dha-dhu",
+      "difficulty": "easy",
+      "cultural_context": "Bargaining is common and expected in markets.",
+      "usage_tips": "Say with a friendly smile to open negotiation, not confrontationally."
+    },
+    {
+      "id": "shop-03",
+      "category": "SHOPPING",
+      "english": "Can you lower the price?",
+      "sinhala": "ඔබ අඩු කරන්න පුළුවන්ද?",
+      "sinhalaLatin": "Oba adu karanna puluwanda?",
+      "tamil": "விலையை குறைக்க முடியுமா?",
+      "tamilLatin": "Vilaiyai kuraikka mudiyuma?",
+      "pronunciation": "o-ba a-du ka-ran-na pu-lu-wan-da / vi-lai-yai ku-raik-ka mu-di-yu-maa",
+      "difficulty": "medium",
+      "cultural_context": "Polite negotiation is part of shopping culture.",
+      "usage_tips": "Use after expressing that price is too high. Start at 50-70% of asking price."
+    },
+    {
+      "id": "shop-04",
+      "category": "SHOPPING",
+      "english": "I'd like to buy this",
+      "sinhala": "මම මේ ගන්න ඕනෑ",
+      "sinhalaLatin": "Mama me ganna oné",
+      "tamil": "இதை வாங்க விரும்புகிறேன்",
+      "tamilLatin": "Idhai vaanga virumbukiren",
+      "pronunciation": "ma-ma me gan-na o-ne / i-thai vaan-ga vi-rum-bu-ki-ren",
+      "difficulty": "medium",
+      "cultural_context": "Use after agreeing on price.",
+      "usage_tips": "Point to item clearly. Have money ready."
+    },
+    {
+      "id": "shop-05",
+      "category": "SHOPPING",
+      "english": "I'm just looking",
+      "sinhala": "මම බලන්න යනවා",
+      "sinhalaLatin": "Mama balanna yanava",
+      "tamil": "நான் சும்மா பார்க்கிறேன்",
+      "tamilLatin": "Naan summa paarkkiren",
+      "pronunciation": "ma-ma ba-lan-na ya-na-va / naan sum-ma paar-kki-ren",
+      "difficulty": "easy",
+      "cultural_context": "Vendors can be persistent. This politely declines without offense.",
+      "usage_tips": "Use with a smile when browsing without intent to buy."
+    },
+    {
+      "id": "emerg-01",
+      "category": "EMERGENCY",
+      "english": "Help! (urgent)",
+      "sinhala": "උදව් කරන්න!",
+      "sinhalaLatin": "Udaw karanna!",
+      "tamil": "உதவி!",
+      "tamilLatin": "Udhavi!",
+      "pronunciation": "u-daw ka-ran-na / u-dha-vi",
+      "difficulty": "easy",
+      "cultural_context": "Shout loudly in emergencies. People will respond immediately.",
+      "usage_tips": "Use only in genuine emergencies. Very effective."
+    },
+    {
+      "id": "emerg-02",
+      "category": "EMERGENCY",
+      "english": "Call the police!",
+      "sinhala": "පොලිසියාව කෝල් කරන්න!",
+      "sinhalaLatin": "Polisiyawa call karanna!",
+      "tamil": "காவல்துறைக்கு போன் செய்யுங்கள்!",
+      "tamilLatin": "Police-ku phone seiyungal!",
+      "pronunciation": "po-li-si-ya-wa call ka-ran-na / po-lis-ku phone sei-yun-gal",
+      "difficulty": "medium",
+      "cultural_context": "Emergency number is 119. Tourist Police is 1912 (English-speaking).",
+      "usage_tips": "Point to your phone while saying this. Someone will help call."
+    },
+    {
+      "id": "emerg-03",
+      "category": "EMERGENCY",
+      "english": "I need a doctor",
+      "sinhala": "මම ඩොස්තර බලන්න ඕනෑ",
+      "sinhalaLatin": "Mama dostara balanna oné",
+      "tamil": "எனக்கு டாக்டர் தேவை",
+      "tamilLatin": "Enakku Doctor thēvai",
+      "pronunciation": "ma-ma dos-ta-ra ba-lan-na o-ne / e-nak-ku doc-tor the-vai",
+      "difficulty": "medium",
+      "cultural_context": "Medical care is widely available. Locals will direct you to nearest hospital.",
+      "usage_tips": "Point to affected body part. Say 'hospital' if very urgent."
+    },
+    {
+      "id": "emerg-04",
+      "category": "EMERGENCY",
+      "english": "I'm lost",
+      "sinhala": "මම නිවනට යනවා",
+      "sinhalaLatin": "Mama nivanata yanawa",
+      "tamil": "நான் தொலைந்து போயிட்டேன்",
+      "tamilLatin": "Naan tholaindhu poitten",
+      "pronunciation": "ma-ma ni-va-na-ta ya-na-wa / naan tho-lain-dhu poi-tten",
+      "difficulty": "medium",
+      "cultural_context": "Sri Lankans are very helpful. They'll often escort you or call someone.",
+      "usage_tips": "Show hotel address or location on map. People will guide you."
+    },
+    {
+      "id": "trans-01",
+      "category": "TRANSPORT",
+      "english": "Where is the bus stop?",
+      "sinhala": "බස් ස්ටෑන්ඩ් එක කොහෙද?",
+      "sinhalaLatin": "Bus stand eka koheda?",
+      "tamil": "பேருந்து நிலையம் எங்கே?",
+      "tamilLatin": "Bus nilayam enga?",
+      "pronunciation": "bus stand e-ka ko-he-da / bus ni-la-yam en-ga",
+      "difficulty": "easy",
+      "cultural_context": "Buses are main public transport. Often crowded but very affordable.",
+      "usage_tips": "Ask locals or show bus number. They'll point you to the right place."
+    },
+    {
+      "id": "trans-02",
+      "category": "TRANSPORT",
+      "english": "Where is the train station?",
+      "sinhala": "දුම්රිය ස්ථානය කොහෙද?",
+      "sinhalaLatin": "Dumriya sthānaya koheda?",
+      "tamil": "ரயில் நிலையம் எங்கே?",
+      "tamilLatin": "Rayil nilaiyam engae?",
+      "pronunciation": "dum-ri-ya sthaa-na-ya ko-he-da / ra-yil ni-lai-yam en-gae",
+      "difficulty": "medium",
+      "cultural_context": "Train journeys are scenic and worth experiencing.",
+      "usage_tips": "Book 2nd or 3rd class for authentic local experience."
+    },
+    {
+      "id": "trans-03",
+      "category": "TRANSPORT",
+      "english": "How much to go to the airport?",
+      "sinhala": "එයාර්පෝට්ට කීයද?",
+      "sinhalaLatin": "Airport-ta kiyeda?",
+      "tamil": "விமான நிலையம் செல்ல எவ்வளவு?",
+      "tamilLatin": "Vimāna nilaiyam sella evvalavu?",
+      "pronunciation": "air-port-ta kee-ye-da / vi-maa-na ni-lai-yam sel-la ev-va-la-vu",
+      "difficulty": "easy",
+      "cultural_context": "Always agree on fare before starting journey. Use meter if available.",
+      "usage_tips": "Research typical fares beforehand. Negotiate firmly but politely."
+    },
+    {
+      "id": "trans-04",
+      "category": "TRANSPORT",
+      "english": "Stop here, please",
+      "sinhala": "මෙහෙ නවන්න, කරුණාකර",
+      "sinhalaLatin": "Mehe nawanna, karunākara",
+      "tamil": "இங்க நிறுத்துங்கோ, தயவு செய்து",
+      "tamilLatin": "Inga niruthungo, dayavu seithu",
+      "pronunciation": "me-he na-wan-na ka-ru-naa-ka-ra / in-ga ni-ru-thun-go da-ya-vu sei-thu",
+      "difficulty": "medium",
+      "cultural_context": "Say clearly when you reach destination. Have money ready.",
+      "usage_tips": "Point to location or landmark. Pay exact fare if possible."
+    }
+  ],
+  "etiquette_tips": [
+    {
+      "id": "etiq-01",
+      "category": "TEMPLE",
+      "title": "Remove Footwear",
+      "description": "Always remove shoes and hats before entering any Buddhist or Hindu temple. Leave them at the designated area.",
+      "do_list": ["Remove shoes at entrance", "Wear clean socks if desired", "Store belongings in provided racks"],
+      "dont_list": ["Wear shoes inside temple grounds", "Step on temple steps with footwear"]
+    },
+    {
+      "id": "etiq-02",
+      "category": "TEMPLE",
+      "title": "Dress Modestly",
+      "description": "Cover shoulders and knees. Avoid revealing or tight-fitting clothing when visiting religious sites.",
+      "do_list": ["Wear long pants or skirts", "Cover shoulders", "Bring a sarong if needed"],
+      "dont_list": ["Wear shorts or mini skirts", "Wear sleeveless tops", "Wear swimwear"]
+    },
+    {
+      "id": "etiq-03",
+      "category": "TEMPLE",
+      "title": "Respect Buddha Images",
+      "description": "Never turn your back to a Buddha statue for photos. Don't touch or climb on religious monuments.",
+      "do_list": ["Face Buddha statues respectfully", "Take photos from appropriate distance", "Ask permission before photographing"],
+      "dont_list": ["Pose with back to Buddha", "Climb on statues", "Touch sacred objects"]
+    },
+    {
+      "id": "etiq-04",
+      "category": "TEMPLE",
+      "title": "Observe Silence",
+      "description": "Maintain quiet and peaceful behavior. Lower your voice and avoid loud conversations.",
+      "do_list": ["Speak softly", "Turn off phone ringers", "Respect those praying"],
+      "dont_list": ["Talk loudly", "Play music", "Disturb worshippers"]
+    },
+    {
+      "id": "etiq-05",
+      "category": "GREETING",
+      "title": "Palms Together Greeting",
+      "description": "When saying 'Ayubowan', place your palms together at chest height in a prayer-like gesture. A slight bow of the head shows deeper respect.",
+      "do_list": ["Press palms together at chest", "Bow head slightly", "Make eye contact and smile"],
+      "dont_list": ["Wave instead", "Shake hands immediately", "Rush the greeting"]
+    },
+    {
+      "id": "etiq-06",
+      "category": "DINING",
+      "title": "Use Right Hand",
+      "description": "When eating with hands, use only your right hand. The left hand is considered unclean.",
+      "do_list": ["Eat with right hand only", "Wash hands before and after", "Follow local examples"],
+      "dont_list": ["Use left hand for food", "Mix food with both hands", "Touch communal dishes with left hand"]
+    },
+    {
+      "id": "etiq-07",
+      "category": "SOCIAL",
+      "title": "Point with Chin",
+      "description": "Pointing with fingers is considered rude. Use your chin or open palm to indicate direction.",
+      "do_list": ["Gesture with open palm", "Nod with chin to indicate", "Use whole hand for direction"],
+      "dont_list": ["Point with index finger", "Point at people", "Beckon with one finger"]
+    },
+    {
+      "id": "etiq-08",
+      "category": "SOCIAL",
+      "title": "Avoid Public Displays",
+      "description": "Public displays of affection are frowned upon in Sri Lankan culture. Be respectful in public spaces.",
+      "do_list": ["Maintain personal space", "Be discreet", "Follow local norms"],
+      "dont_list": ["Kiss in public", "Hug excessively", "Display intimate affection"]
+    }
+  ],
+  "cultural_notes": [
+    {
+      "title": "Greeting Customs",
+      "content": "'Ayubowan' (Sinhala) and 'Vanakkam' (Tamil) are formal greetings meaning 'may you live long,' often accompanied by a slight bow and palms pressed together. This shows respect and is appreciated more than a simple handshake."
+    },
+    {
+      "title": "Politeness Matters",
+      "content": "Sri Lankans value politeness. Always start requests with 'please' (karunakarala in Sinhala, dayavu seithu in Tamil). Even basic attempts to speak the local language will be warmly received."
+    },
+    {
+      "title": "Bargaining Culture",
+      "content": "Bargaining is expected in local markets and with tuk-tuk drivers. Start at 50-70% of the asking price and negotiate with a smile. Stay friendly – it's part of the cultural experience!"
+    },
+    {
+      "title": "Emergency Numbers",
+      "content": "Keep these numbers saved: 119 (Police Emergency), 110 or 1990 (Ambulance), 1912 (Tourist Police - English-speaking). The Tourist Police are especially helpful for travelers."
+    },
+    {
+      "title": "Temple Dress Code",
+      "content": "When visiting temples, cover shoulders and knees, remove footwear, and never turn your back to Buddha statues for photos. This shows respect for local religious customs."
+    },
+    {
+      "title": "Spice Levels",
+      "content": "Sri Lankan cuisine can be very spicy. Don't hesitate to ask for 'no spice' (Kauḷau baḍu tævarā in Sinhala or Kāramillai in Tamil) when ordering. Restaurants are happy to accommodate."
+    }
+  ]
+}

@@ -23,14 +23,17 @@
             </div>
             <input 
               v-model="searchQuery"
+              @input="handleSearch"
               class="w-full bg-transparent border-none text-charcoal placeholder:text-gray-500 focus:ring-0 h-12 px-3 text-base outline-none" 
               placeholder="Search phrases (e.g., 'How much?', 'Thank you')..."
             />
-            <button class="flex items-center justify-center h-10 w-10 rounded-lg text-gray-500 hover:text-primary hover:bg-background-light transition-colors" title="Voice Search">
-              <span class="material-symbols-outlined">mic</span>
-            </button>
-            <button class="hidden sm:flex h-10 px-6 ml-2 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg items-center justify-center transition-colors">
-              Search
+            <button 
+              v-if="searchQuery"
+              @click="clearSearch"
+              class="flex items-center justify-center h-10 w-10 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors" 
+              title="Clear search"
+            >
+              <span class="material-symbols-outlined">close</span>
             </button>
           </div>
         </div>
@@ -43,40 +46,45 @@
       <!-- Language Toggle & Controls -->
       <div class="flex flex-col md:flex-row w-full justify-between items-center gap-6 border-b border-gray-200 pb-8">
         <div>
-          <h2 class="text-2xl font-bold text-charcoal font-display">Categories</h2>
-          <p class="text-gray-500 mt-1">Select a topic to start learning</p>
+          <h2 class="text-2xl font-bold text-charcoal font-display">{{ activeCategory ? activeCategory.name : 'All Phrases' }}</h2>
+          <p class="text-gray-500 mt-1">
+            {{ filteredPhrases.length }} phrase{{ filteredPhrases.length !== 1 ? 's' : '' }} found
+            <span v-if="searchQuery"> for "{{ searchQuery }}"</span>
+          </p>
         </div>
-        <div class="flex items-center gap-3 bg-white p-1.5 rounded-xl border border-gray-200 shadow-sm">
-          <label 
-            v-for="lang in ['Sinhala', 'Tamil']" 
-            :key="lang"
-            class="cursor-pointer"
-          >
-            <input 
-              type="radio" 
-              name="lang" 
-              :value="lang.toLowerCase()" 
-              v-model="selectedLanguage"
-              class="peer sr-only"
-            />
-            <div class="px-5 py-2.5 rounded-lg text-sm font-bold text-gray-500 peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-sm transition-all flex items-center gap-2">
-              <span>{{ lang }}</span>
-            </div>
-          </label>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 bg-white p-1.5 rounded-xl border border-gray-200 shadow-sm">
+            <label 
+              v-for="lang in ['Sinhala', 'Tamil']" 
+              :key="lang"
+              class="cursor-pointer"
+            >
+              <input 
+                type="radio" 
+                name="lang" 
+                :value="lang.toLowerCase()" 
+                v-model="selectedLanguage"
+                class="peer sr-only"
+              />
+              <div class="px-5 py-2.5 rounded-lg text-sm font-bold text-gray-500 peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-sm transition-all flex items-center gap-2">
+                <span>{{ lang }}</span>
+              </div>
+            </label>
+          </div>
         </div>
       </div>
 
       <!-- Categories Grid -->
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full">
         <div 
-          v-for="category in categories" 
+          v-for="category in phrasebookData.categories" 
           :key="category.id"
           @click="selectCategory(category.id)"
           :class="[
             'group flex flex-col items-center gap-3 p-6 bg-white rounded-2xl shadow-sm border cursor-pointer transition-all',
             selectedCategory === category.id 
-              ? 'border-primary shadow-md bg-primary/5' 
-              : 'border-gray-200 hover:border-primary hover:shadow-md'
+              ? 'border-primary shadow-md bg-primary/5 scale-105' 
+              : 'border-gray-200 hover:border-primary hover:shadow-md hover:scale-105'
           ]"
         >
           <div :class="[
@@ -96,13 +104,6 @@
         
         <!-- Phrases List -->
         <div class="flex-1 flex flex-col gap-6">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="p-2 bg-primary/10 rounded-lg text-primary">
-              <span class="material-symbols-outlined">handshake</span>
-            </div>
-            <h3 class="text-xl font-bold text-charcoal font-display">Greetings & Politeness</h3>
-          </div>
-
           <!-- Emergency Phrase Set Banner -->
           <div v-if="savedPhrases.length > 0" class="p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
@@ -120,105 +121,184 @@
             </NuxtLink>
           </div>
 
-          <!-- Phrases Loops -->
-          <template v-for="(phrase, index) in phrases" :key="phrase.id || index">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow gap-4">
-              <div class="flex flex-col gap-1 flex-1">
-                <p class="sinhala-text text-2xl font-bold text-charcoal">{{ phrase.native }}</p>
-                <p class="text-sm font-bold text-primary uppercase tracking-wide">{{ phrase.phonetic }}</p>
-                <p class="text-gray-500 text-sm mt-1">{{ phrase.english }}</p>
+          <!-- Loading State -->
+          <div v-if="false" class="space-y-4">
+            <div v-for="i in 3" :key="i" class="animate-pulse">
+              <div class="h-24 bg-gray-200 rounded-2xl"></div>
+            </div>
+          </div>
+
+          <!-- No Results -->
+          <div v-else-if="filteredPhrases.length === 0" class="text-center py-12">
+            <div class="text-6xl mb-4">🔍</div>
+            <h3 class="text-xl font-bold text-charcoal mb-2">No phrases found</h3>
+            <p class="text-gray-600">Try adjusting your search or filter criteria</p>
+            <button
+              @click="clearSearch"
+              class="mt-4 px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
+            >
+              Clear Filters
+            </button>
+          </div>
+
+          <!-- Phrases -->
+          <template v-else>
+            <div
+              v-for="(phrase, index) in filteredPhrases"
+              :key="phrase.id"
+              class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all gap-4 group"
+            >
+              <div class="flex flex-col gap-2 flex-1 min-w-0">
+                <!-- Badge for practice level -->
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span
+                    v-if="getPhraseLevel(phrase.id) === 'mastered'"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-bold"
+                  >
+                    <span class="material-symbols-outlined text-xs">check_circle</span>
+                    Mastered
+                  </span>
+                  <span
+                    v-else-if="getPhraseLevel(phrase.id) === 'learning'"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs font-bold"
+                  >
+                    <span class="material-symbols-outlined text-xs">school</span>
+                    Learning
+                  </span>
+                  <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">{{ phrase.difficulty }}</span>
+                </div>
+
+                <p class="sinhala-text text-2xl font-bold text-charcoal truncate">
+                  {{ selectedLanguage === 'sinhala' ? phrase.sinhala : phrase.tamil }}
+                </p>
+                <p class="text-sm font-bold text-primary uppercase tracking-wide">{{ phrase.pronunciation }}</p>
+                <p class="text-gray-600 text-sm">{{ phrase.english }}</p>
               </div>
               
               <!-- Action Buttons -->
-              <div class="flex items-center gap-2">
-                <!-- Details Button -->
-                <button
-                  @click="openDetails(phrase.id)"
-                  class="shrink-0 h-12 w-12 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all flex items-center justify-center border border-gray-200"
-                  title="View details"
-                >
-                  <span class="material-symbols-outlined">info</span>
-                </button>
+              <div class="flex items-center gap-2 shrink-0">
                 <!-- Speak Button -->
                 <button 
-                  @click="speakPhrase(phrase.native)"
-                  class="shrink-0 h-12 w-12 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center border border-primary/20 group"
+                  @click="speakPhrase(phrase)"
+                  :disabled="!speech.isSupported"
+                  :class="[
+                    'h-12 w-12 rounded-full transition-all flex items-center justify-center border',
+                    speech.isSpeaking
+                      ? 'bg-primary text-white border-primary'
+                      : 'bg-primary/10 text-primary hover:bg-primary hover:text-white border-primary/20'
+                  ]"
                   title="Speak this phrase"
                 >
-                  <span class="material-symbols-outlined">volume_up</span>
+                  <span class="material-symbols-outlined">
+                    {{ speech.isSpeaking ? 'stop' : 'volume_up' }}
+                  </span>
                 </button>
                 
                 <!-- Save Button -->
                 <button 
                   @click="toggleSavePhrase(phrase.id)"
                   :class="[
-                    'shrink-0 h-12 w-12 rounded-full transition-all flex items-center justify-center border text-xl',
+                    'h-12 w-12 rounded-full transition-all flex items-center justify-center border text-xl',
                     isSaved(phrase.id) 
-                      ? 'bg-yellow-100 text-yellow-600 border-yellow-300' 
+                      ? 'bg-yellow-100 text-yellow-600 border-yellow-300 hover:bg-yellow-200' 
                       : 'bg-background-light text-gray-400 border-gray-200 hover:border-yellow-300 hover:text-yellow-500'
                   ]"
                   :title="isSaved(phrase.id) ? 'Remove from emergency set' : 'Save to emergency set'"
                 >
                   {{ isSaved(phrase.id) ? '★' : '☆' }}
                 </button>
-              </div>
-            </div>
 
-            <!-- Insert Etiquette Banner after 2nd item -->
-            <div v-if="index === 1" class="relative overflow-hidden rounded-2xl bg-[#10221f] p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center border border-primary/20 shadow-lg my-2">
-              <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-primary/10 blur-2xl"></div>
-              <div class="relative z-10 p-4 bg-white/10 backdrop-blur-md rounded-xl text-primary border border-white/10 shrink-0">
-                <span class="material-symbols-outlined text-4xl">dry_cleaning</span>
-              </div>
-              <div class="relative z-10 flex-1 text-center sm:text-left">
-                <h4 class="text-white font-bold text-lg mb-1 flex items-center justify-center sm:justify-start gap-2">
-                  <span class="material-symbols-outlined text-primary text-sm">info</span>
-                  Cultural Tip: Greeting
-                </h4>
-                <p class="text-gray-300 text-sm leading-relaxed">
-                  When saying "Ayubowan", place your palms together in a prayer-like gesture at chest height. A slight bow of the head shows deeper respect.
-                </p>
+                <!-- Details Button -->
+                <button
+                  @click="openDetails(phrase)"
+                  class="h-12 w-12 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all flex items-center justify-center border border-gray-200"
+                  title="View details"
+                >
+                  <span class="material-symbols-outlined">info</span>
+                </button>
               </div>
             </div>
           </template>
         </div>
 
         <!-- Sidebar -->
-        <div class="w-full lg:w-[320px] flex flex-col gap-6">
-          <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm h-fit sticky top-24">
-            <div class="flex items-center gap-2 mb-4 text-charcoal">
-              <span class="material-symbols-outlined text-primary">temple_buddhist</span>
-              <h3 class="font-bold text-lg">Temple Etiquette</h3>
-            </div>
-            <div class="flex flex-col gap-4">
-              <div v-for="(tip, idx) in templeTips" :key="idx" class="flex gap-4 items-start">
-                <div class="mt-1 h-2 w-2 rounded-full bg-primary shrink-0"></div>
-                <div class="flex flex-col gap-1">
-                  <span class="text-sm font-bold text-charcoal">{{ tip.title }}</span>
-                  <p class="text-xs text-text-muted leading-relaxed text-gray-500">{{ tip.desc }}</p>
-                </div>
-              </div>
-              <div class="mt-4 pt-4 border-t border-gray-100">
-                <button class="w-full py-2.5 rounded-lg border border-primary text-primary font-bold text-sm hover:bg-primary hover:text-white transition-colors">
-                  Read Full Guide
-                </button>
-              </div>
+        <div class="w-full lg:w-[380px] flex flex-col gap-6">
+          <!-- Progress Tracker -->
+          <PhraseProgress
+            ref="progressTracker"
+            :phrases="phrasebookData.phrases"
+            :categories="phrasebookData.categories"
+          />
+
+          <!-- Quiz Component -->
+          <PhraseQuiz
+            v-if="filteredPhrases.length >= 4"
+            :phrases="filteredPhrases"
+            :language="selectedLanguage"
+          />
+
+          <!-- Cultural Tips -->
+          <CulturalTips
+            v-if="culturalTipsForCategory.length > 0"
+            :tips="culturalTipsForCategory"
+            :category="selectedCategory || undefined"
+          />
+
+          <!-- Cultural Notes Carousel -->
+          <CulturalNotes
+            :notes="phrasebookData.cultural_notes"
+            :autoRotate="true"
+            :rotateInterval="12000"
+          />
+
+          <!-- Quick Actions Card -->
+          <div class="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 text-white shadow-lg">
+            <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+              <span class="material-symbols-outlined">bolt</span>
+              Quick Actions
+            </h3>
+            <div class="space-y-3">
+              <NuxtLink
+                to="/safety-mode"
+                class="block w-full p-3 bg-white/20 hover:bg-white/30 rounded-xl transition-colors text-center font-medium backdrop-blur-sm border border-white/20"
+              >
+                🚨 Emergency Mode
+              </NuxtLink>
+              <NuxtLink
+                to="/transport"
+                class="block w-full p-3 bg-white/20 hover:bg-white/30 rounded-xl transition-colors text-center font-medium backdrop-blur-sm border border-white/20"
+              >
+                🚖 Transport Helper
+              </NuxtLink>
+              <NuxtLink
+                to="/scam-alerts"
+                class="block w-full p-3 bg-white/20 hover:bg-white/30 rounded-xl transition-colors text-center font-medium backdrop-blur-sm border border-white/20"
+              >
+                ⚠️ Scam Alerts
+              </NuxtLink>
             </div>
           </div>
 
-          <!-- Ad Card -->
-          <div 
-            class="rounded-2xl bg-cover bg-center h-64 relative overflow-hidden group cursor-pointer" 
-            style='background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url("/images/downloaded_c08da80504a7.avif");'
-          >
-            <div class="absolute bottom-0 left-0 p-6 w-full">
-              <span class="inline-block px-3 py-1 bg-primary text-white text-xs font-bold rounded-full mb-2">Popular Tour</span>
-              <h3 class="text-white font-bold text-xl leading-tight mb-1">Ella Tea Plantations</h3>
-              <div class="flex items-center text-white/80 text-sm gap-1 group-hover:translate-x-1 transition-transform">
-                <span>Book a local guide</span>
-                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          <!-- Download Offline Card -->
+          <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+            <div class="flex items-start gap-4 mb-4">
+              <div class="p-3 bg-blue-100 rounded-xl text-blue-600">
+                <span class="material-symbols-outlined text-2xl">cloud_download</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-bold text-charcoal">Offline Access</h3>
+                <p class="text-sm text-gray-600 mt-1">Save phrases for offline use</p>
               </div>
             </div>
+            <button
+              @click="downloadOfflineData"
+              class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors"
+            >
+              Download All Phrases
+            </button>
+            <p class="text-xs text-gray-500 mt-2 text-center">
+              Access saved phrases without internet
+            </p>
           </div>
         </div>
       
@@ -226,102 +306,304 @@
     </div>
   </div>
 
+  <!-- Details Modal -->
   <Teleport to="body">
-    <div v-if="showDetailsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div class="absolute inset-0 bg-black/50" @click="closeDetails"></div>
-      <div class="relative bg-white dark:bg-[#2a1d18] rounded-2xl shadow-2xl w-full max-w-md">
-        <div class="border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
+    <div v-if="showDetailsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" @click.self="closeDetails">
+      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+      <div class="relative bg-white dark:bg-[#2a1d18] rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white dark:bg-[#2a1d18] border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between z-10">
           <h2 class="text-xl font-bold text-charcoal dark:text-white">Phrase Details</h2>
-          <button @click="closeDetails" class="text-gray-400 hover:text-gray-600">
+          <button @click="closeDetails" class="text-gray-400 hover:text-gray-600 transition-colors">
             <span class="material-symbols-outlined">close</span>
           </button>
         </div>
-        <div class="p-6 space-y-4">
-          <div v-if="detailsLoading" class="text-sm text-gray-500">Loading details...</div>
-          <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
-          <div v-else-if="selectedPhrase">
-            <p class="text-2xl font-bold text-charcoal">{{ selectedPhrase.english }}</p>
-            <p class="text-lg text-primary mt-2">{{ selectedPhrase.sinhala }}</p>
-            <p class="text-lg text-primary">{{ selectedPhrase.tamil }}</p>
-            <p v-if="selectedPhrase.pronunciation" class="text-sm text-gray-500 mt-1">{{ selectedPhrase.pronunciation }}</p>
-            <p v-if="selectedPhrase.cultural_context" class="text-sm text-gray-500 mt-3">{{ selectedPhrase.cultural_context }}</p>
+        <div v-if="selectedPhrase" class="p-6 space-y-6">
+          <!-- Main Phrase Info -->
+          <div class="space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-bold">
+              <span class="material-symbols-outlined text-sm">{{ getCategoryIcon(selectedPhrase.category) }}</span>
+              {{ getCategoryName(selectedPhrase.category) }}
+            </div>
+            
+            <h3 class="text-3xl font-bold text-charcoal dark:text-white">{{ selectedPhrase.english }}</h3>
+            
+            <div class="space-y-2">
+              <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+                <div class="flex-1">
+                  <p class="text-xs text-gray-500 font-medium mb-1">SINHALA</p>
+                  <p class="sinhala-text text-2xl font-bold text-charcoal dark:text-white">{{ selectedPhrase.sinhala }}</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ selectedPhrase.sinhalaLatin }}</p>
+                </div>
+                <button
+                  @click="() => selectedPhrase && speech.speak(selectedPhrase.sinhala, { lang: 'sinhala' })"
+                  class="shrink-0 h-10 w-10 bg-primary text-white rounded-full hover:bg-primary/90 transition-all flex items-center justify-center"
+                >
+                  <span class="material-symbols-outlined text-lg">volume_up</span>
+                </button>
+              </div>
+
+              <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+                <div class="flex-1">
+                  <p class="text-xs text-gray-500 font-medium mb-1">TAMIL</p>
+                  <p class="sinhala-text text-2xl font-bold text-charcoal dark:text-white">{{ selectedPhrase.tamil }}</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ selectedPhrase.tamilLatin }}</p>
+                </div>
+                <button
+                  @click="() => selectedPhrase && speech.speak(selectedPhrase.tamil, { lang: 'tamil' })"
+                  class="shrink-0 h-10 w-10 bg-primary text-white rounded-full hover:bg-primary/90 transition-all flex items-center justify-center"
+                >
+                  <span class="material-symbols-outlined text-lg">volume_up</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="p-4 bg-primary/5 rounded-xl border border-primary/20">
+              <p class="text-xs text-primary font-bold uppercase tracking-wide mb-1">Pronunciation</p>
+              <p class="text-lg font-medium text-charcoal dark:text-white">{{ selectedPhrase.pronunciation }}</p>
+            </div>
           </div>
-          <div v-else class="text-sm text-gray-500">No details available.</div>
+
+          <!-- Cultural Context -->
+          <div v-if="selectedPhrase.cultural_context" class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-700">
+            <div class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-blue-600 text-xl mt-0.5">info</span>
+              <div class="flex-1">
+                <p class="text-xs text-blue-700 dark:text-blue-400 font-bold uppercase tracking-wide mb-1">Cultural Context</p>
+                <p class="text-sm text-blue-900 dark:text-blue-200 leading-relaxed">{{ selectedPhrase.cultural_context }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Usage Tips -->
+          <div v-if="selectedPhrase.usage_tips" class="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-700">
+            <div class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-green-600 text-xl mt-0.5">lightbulb</span>
+              <div class="flex-1">
+                <p class="text-xs text-green-700 dark:text-green-400 font-bold uppercase tracking-wide mb-1">Usage Tips</p>
+                <p class="text-sm text-green-900 dark:text-green-200 leading-relaxed">{{ selectedPhrase.usage_tips }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex gap-3">
+            <button
+              @click="toggleSavePhrase(selectedPhrase.id)"
+              :class="[
+                'flex-1 py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2',
+                isSaved(selectedPhrase.id)
+                  ? 'bg-yellow-100 text-yellow-700 border-2 border-yellow-300 hover:bg-yellow-200'
+                  : 'bg-gray-100 text-gray-700 border-2 border-gray-200 hover:bg-gray-200'
+              ]"
+            >
+              <span class="text-xl">{{ isSaved(selectedPhrase.id) ? '★' : '☆' }}</span>
+              <span>{{ isSaved(selectedPhrase.id) ? 'Saved' : 'Save' }}</span>
+            </button>
+            <button
+              @click="markPhraseAsPracticed(selectedPhrase.id)"
+              class="flex-1 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+            >
+              <span class="material-symbols-outlined">check_circle</span>
+              <span>Mark Practiced</span>
+            </button>
+          </div>
+        </div>
+        <div v-else class="p-6 text-center text-gray-500">
+          <p>No details available.</p>
         </div>
       </div>
     </div>
   </Teleport>
 </template>
 
+
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
-import type { Phrase, EtiquetteTip } from '~/types/api'
+import { useSpeech } from '~/composables/useSpeech'
+import { useToast } from '~/composables/useToast'
+import phrasebookDataImport from '~/assets/data/phrasebook.json'
 
-const searchQuery = ref('')
-const debouncedQuery = ref('')
-const selectedLanguage = ref<'sinhala' | 'tamil'>('sinhala')
-const selectedCategory = ref<string | null>(null)
+// Import components
+import PhraseQuiz from '~/components/Shared/PhraseQuiz.vue'
+import PhraseProgress from '~/components/Shared/PhraseProgress.vue'
+import CulturalTips from '~/components/Shared/CulturalTips.vue'
+import CulturalNotes from '~/components/Shared/CulturalNotes.vue'
 
-// Debounce search input (300ms)
-let debounceTimer: ReturnType<typeof setTimeout>
-watch(searchQuery, (newVal) => {
-  clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => {
-    debouncedQuery.value = newVal
-  }, 300)
-})
+// Types
+interface Phrase {
+  id: string
+  category: string
+  english: string
+  sinhala: string
+  sinhalaLatin: string
+  tamil: string
+  tamilLatin: string
+  pronunciation: string
+  difficulty: string
+  cultural_context?: string
+  usage_tips?: string
+}
 
-// Get config
-const config = useRuntimeConfig()
-const apiBase = config.public.apiBase
-
-const { data: categoriesResponse } = await useFetch<{
-  success: boolean
-  data: Array<{ category: string; count: number }>
-}>(`${apiBase}/api/phrases/categories/list`)
-
-// Fetch phrases from API (watches debounced query, not raw input)
-const { data: phrasesResponse, pending: phrasesPending } = await useFetch<{ success: boolean; data: Phrase[]; count: number }>(
-  () => {
-    const params = new URLSearchParams()
-    if (selectedCategory.value) params.set('category', selectedCategory.value)
-    if (debouncedQuery.value) params.set('search', debouncedQuery.value)
-    const queryStr = params.toString()
-    return `${apiBase}/api/phrases${queryStr ? `?${queryStr}` : ''}`
-  },
-  { watch: [selectedCategory, debouncedQuery] }
-)
-
-// Fetch etiquette tips from API
-const { data: tipsResponse } = await useFetch<{ success: boolean; data: EtiquetteTip[]; count: number }>(
-  `${apiBase}/api/phrases/etiquette/tips?category=TEMPLE`
-)
-
-const phrases = computed(() => {
-  const data = phrasesResponse.value?.data || []
-  return data.map(p => ({
-    id: p.id,
-    native: selectedLanguage.value === 'sinhala' ? p.sinhala : p.tamil,
-    sinhala: p.sinhala,
-    tamil: p.tamil,
-    phonetic: p.pronunciation,
-    english: p.english,
-    category: p.category,
-    cultural_context: p.cultural_context,
-  }))
-})
-
-// Saved phrases state
-const savedPhrases = ref<string[]>([])
-
-const showDetailsModal = ref(false)
-const detailsLoading = ref(false)
-const detailsError = ref('')
-const selectedPhrase = ref<Phrase | null>(null)
-
-// Read route for query params
+// Composables
+const speech = useSpeech()
+const toast = useToast()
 const route = useRoute()
 
+// Data
+const phrasebookData = phrasebookDataImport as {
+  categories: Array<{ id: string; name: string; icon: string; description: string }>
+  phrases: Phrase[]
+  etiquette_tips: Array<{
+    id: string
+    category: string
+    title: string
+    description: string
+    do_list?: string[]
+    dont_list?: string[]
+  }>
+  cultural_notes: Array<{ title: string; content: string }>
+}
+
+// State
+const searchQuery = ref('')
+const selectedLanguage = ref<'sinhala' | 'tamil'>('sinhala')
+const selectedCategory = ref<string | null>(null)
+const savedPhrases = ref<string[]>([])
+const showDetailsModal = ref(false)
+const selectedPhrase = ref<Phrase | null>(null)
+const progressTracker = ref<InstanceType<typeof PhraseProgress> | null>(null)
+
+// Computed
+const activeCategory = computed(() => {
+  return phrasebookData.categories.find(c => c.id === selectedCategory.value)
+})
+
+const filteredPhrases = computed(() => {
+  let result = phrasebookData.phrases
+
+  // Filter by category
+  if (selectedCategory.value) {
+    result = result.filter(p => p.category === selectedCategory.value)
+  }
+
+  // Filter by search query
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(p =>
+      p.english.toLowerCase().includes(query) ||
+      p.sinhala.includes(query) ||
+      p.tamil.includes(query) ||
+      p.sinhalaLatin.toLowerCase().includes(query) ||
+      p.tamilLatin.toLowerCase().includes(query) ||
+      p.pronunciation.toLowerCase().includes(query)
+    )
+  }
+
+  return result
+})
+
+const culturalTipsForCategory = computed(() => {
+  if (!selectedCategory.value) {
+    return phrasebookData.etiquette_tips.slice(0, 5)
+  }
+  const categoryTips = phrasebookData.etiquette_tips.filter(
+    t => t.category.toUpperCase() === selectedCategory.value
+  )
+  return categoryTips.length > 0 ? categoryTips : phrasebookData.etiquette_tips.slice(0, 3)
+})
+
+// Methods
+function selectCategory(id: string | null) {
+  selectedCategory.value = selectedCategory.value === id ? null : id
+}
+
+function handleSearch() {
+  // Debouncing is handled by the user typing
+}
+
+function clearSearch() {
+  searchQuery.value = ''
+  selectedCategory.value = null
+}
+
+function speakPhrase(phrase: Phrase) {
+  const text = selectedLanguage.value === 'sinhala' ? phrase.sinhala : phrase.tamil
+  speech.speak(text, { lang: selectedLanguage.value, rate: 0.8 })
+  
+  // Mark as practiced
+  if (progressTracker.value) {
+    progressTracker.value.markPracticed(phrase.id)
+  }
+}
+
+function toggleSavePhrase(phraseId: string) {
+  const index = savedPhrases.value.indexOf(phraseId)
+  if (index > -1) {
+    savedPhrases.value.splice(index, 1)
+    toast.info('Removed from emergency set')
+  } else {
+    savedPhrases.value.push(phraseId)
+    toast.success('Added to emergency set')
+  }
+  localStorage.setItem('ceylon_saved_phrases', JSON.stringify(savedPhrases.value))
+}
+
+function isSaved(phraseId: string): boolean {
+  return savedPhrases.value.includes(phraseId)
+}
+
+function openDetails(phrase: Phrase) {
+  selectedPhrase.value = phrase
+  showDetailsModal.value = true
+}
+
+function closeDetails() {
+  showDetailsModal.value = false
+  selectedPhrase.value = null
+}
+
+function markPhraseAsPracticed(phraseId: string) {
+  if (progressTracker.value) {
+    progressTracker.value.markPracticed(phraseId)
+    toast.success('Marked as practiced!')
+    closeDetails()
+  }
+}
+
+function getPhraseLevel(phraseId: string): 'new' | 'learning' | 'mastered' {
+  return progressTracker.value?.getPhraseLevel(phraseId) || 'new'
+}
+
+function getCategoryIcon(categoryId: string): string {
+  const category = phrasebookData.categories.find(c => c.id === categoryId)
+  return category?.icon || 'translate'
+}
+
+function getCategoryName(categoryId: string): string {
+  const category = phrasebookData.categories.find(c => c.id === categoryId)
+  return category?.name || categoryId
+}
+
+function downloadOfflineData() {
+  try {
+    const dataStr = JSON.stringify(phrasebookData, null, 2)
+    const dataBlob = new Blob([dataStr], { type: 'application/json' })
+    const url = URL.createObjectURL(dataBlob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'ceylonguides-phrasebook.json'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+    toast.success('Phrasebook downloaded!')
+  } catch (error) {
+    console.error('Download failed:', error)
+    toast.error('Failed to download')
+  }
+}
+
+// Lifecycle
 onMounted(() => {
   // Load saved phrases from localStorage
   const saved = localStorage.getItem('ceylon_saved_phrases')
@@ -337,121 +619,23 @@ onMounted(() => {
   if (route.query.category) {
     selectedCategory.value = route.query.category as string
   }
-  
-  // Handle ?id= deep-link to auto-open phrase details
-  if (route.query.id) {
-    openDetails(route.query.id as string)
-  }
 })
 
-// Watch for route query changes (e.g., user navigates with different category)
+// Watch for route query changes
 watch(() => route.query.category, (newCategory) => {
   if (newCategory) {
     selectedCategory.value = newCategory as string
   }
 })
 
-// Text-to-Speech function
-function speakPhrase(text: string) {
-  if (!('speechSynthesis' in window)) {
-    alert('Text-to-speech not supported in this browser')
-    return
-  }
-  
-  speechSynthesis.cancel() // Stop any ongoing speech
-  const utterance = new SpeechSynthesisUtterance(text)
-  utterance.lang = selectedLanguage.value === 'sinhala' ? 'si-LK' : 'ta-LK'
-  utterance.rate = 0.8 // Slower for learning
-  speechSynthesis.speak(utterance)
-}
-
-// Toggle save phrase
-function toggleSavePhrase(phraseId: string) {
-  const index = savedPhrases.value.indexOf(phraseId)
-  if (index > -1) {
-    savedPhrases.value.splice(index, 1)
-  } else {
-    savedPhrases.value.push(phraseId)
-  }
-  localStorage.setItem('ceylon_saved_phrases', JSON.stringify(savedPhrases.value))
-}
-
-// Check if phrase is saved
-function isSaved(phraseId: string): boolean {
-  return savedPhrases.value.includes(phraseId)
-}
-
-const templeTips = computed(() => {
-  const data = tipsResponse.value?.data || []
-  return data.map(t => ({
-    title: t.title,
-    desc: t.description,
-    do_list: t.do_list,
-    dont_list: t.dont_list,
-  }))
-})
-
-const categoryIconMap: Record<string, string> = {
-  GREETINGS: 'handshake',
-  DIRECTIONS: 'explore',
-  DINING: 'restaurant',
-  SHOPPING: 'shopping_bag',
-  EMERGENCY: 'emergency',
-  TRANSPORT: 'directions_bus',
-}
-
-function formatCategoryLabel(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
-}
-
-const categories = computed(() => {
-  const apiList = categoriesResponse.value?.data || []
-  if (apiList.length) {
-    return apiList.map((item) => ({
-      name: formatCategoryLabel(item.category),
-      id: item.category,
-      icon: categoryIconMap[item.category] || 'translate'
-    }))
-  }
-  return [
-    { name: 'Greetings', id: 'GREETINGS', icon: 'handshake' },
-    { name: 'Directions', id: 'DIRECTIONS', icon: 'explore' },
-    { name: 'Dining', id: 'DINING', icon: 'restaurant' },
-    { name: 'Shopping', id: 'SHOPPING', icon: 'shopping_bag' },
-    { name: 'Emergency', id: 'EMERGENCY', icon: 'emergency' },
-    { name: 'Transport', id: 'TRANSPORT', icon: 'directions_bus' },
-  ]
-})
-
-function selectCategory(id: string | null) {
-  selectedCategory.value = selectedCategory.value === id ? null : id
-}
-
-async function openDetails(id: string) {
-  showDetailsModal.value = true
-  detailsLoading.value = true
-  detailsError.value = ''
-  try {
-    const response = await $fetch<{ success: boolean; data: Phrase }>(`${apiBase}/api/phrases/${id}`)
-    if (response.success) {
-      selectedPhrase.value = response.data
-    }
-  } catch (err: any) {
-    detailsError.value = err?.data?.error || 'Failed to load phrase details.'
-  } finally {
-    detailsLoading.value = false
-  }
-}
-
-function closeDetails() {
-  showDetailsModal.value = false
-  selectedPhrase.value = null
-}
-
-// Add custom font for Sinhala text
+// SEO
 useHead({
+  title: 'Phrasebook - Learn Sinhala & Tamil | CeylonGuides',
+  meta: [
+    { name: 'description', content: 'Master essential Sinhala and Tamil phrases for your Sri Lanka trip. Interactive audio, cultural tips, and emergency phrases.' }
+  ],
   link: [
-    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Noto+Serif+Sinhala:wght@400;700&display=swap' },
+    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Noto+Serif+Sinhala:wght@400;700&family=Noto+Sans+Tamil:wght@400;700&display=swap' },
     { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap' }
   ]
 })
@@ -459,6 +643,6 @@ useHead({
 
 <style scoped>
 .sinhala-text {
-  font-family: "Noto Serif Sinhala", serif;
+  font-family: "Noto Serif Sinhala", "Noto Sans Tamil", serif;
 }
 </style>
