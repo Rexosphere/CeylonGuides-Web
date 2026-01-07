@@ -1,102 +1,74 @@
 <template>
-  <section class="py-16 px-4 sm:px-10 layout-container">
-    <!-- Header -->
-    <div class="flex items-end justify-between mb-8 px-2">
-      <div>
-        <h2 class="text-text-main dark:text-white text-3xl font-bold leading-tight tracking-tight mb-2">Curated Itineraries</h2>
-        <p class="text-text-muted dark:text-neutral-400">Hand-picked routes by local experts</p>
+  <section class="py-16 md:py-24 bg-background-light dark:bg-background-dark">
+    <div class="container mx-auto px-6">
+      <div class="flex items-center justify-between mb-10">
+        <div>
+          <h2 class="text-3xl font-display font-bold text-primary dark:text-white mb-2">Curated Itineraries</h2>
+          <p class="text-text-muted dark:text-gray-400">Hand-picked routes by local experts</p>
+        </div>
+        <div class="flex gap-4">
+          <select v-model="selectedDuration"
+            class="bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 rounded-lg text-sm py-2 px-4 focus:ring-secondary focus:border-secondary">
+            <option value="">All Durations</option>
+            <option value="1-5">1-5 Days</option>
+            <option value="5-10">5-10 Days</option>
+            <option value="10+">10+ Days</option>
+          </select>
+          <select v-model="selectedStyle"
+            class="bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 rounded-lg text-sm py-2 px-4 focus:ring-secondary focus:border-secondary">
+            <option value="">All Styles</option>
+            <option v-for="style in allStyles" :key="style" :value="style">{{ capitalize(style) }}</option>
+          </select>
+          <select v-model="selectedBudget"
+            class="bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 rounded-lg text-sm py-2 px-4 focus:ring-secondary focus:border-secondary">
+            <option value="">Any Budget</option>
+            <option value="budget">Budget</option>
+            <option value="mid-range">Mid-Range</option>
+            <option value="luxury">Luxury</option>
+          </select>
+        </div>
       </div>
-    </div>
-
-    <!-- Filters -->
-    <div class="flex flex-wrap gap-3 mb-8 px-2">
-      <!-- Duration Filter -->
-      <select 
-        v-model="selectedDuration" 
-        class="px-4 py-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-surface-light dark:bg-surface-dark text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-      >
-        <option value="">All Durations</option>
-        <option value="1-3">1-3 Days</option>
-        <option value="4-7">4-7 Days</option>
-        <option value="8-14">8-14 Days</option>
-        <option value="15+">15+ Days</option>
-      </select>
-
-      <!-- Style Filter -->
-      <select 
-        v-model="selectedStyle" 
-        class="px-4 py-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-surface-light dark:bg-surface-dark text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-      >
-        <option value="">All Styles</option>
-        <option v-for="style in allStyles" :key="style" :value="style">{{ capitalize(style) }}</option>
-      </select>
-
-      <!-- Budget Filter -->
-      <select 
-        v-model="selectedBudget" 
-        class="px-4 py-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-surface-light dark:bg-surface-dark text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-      >
-        <option value="">Any Budget</option>
-        <option value="budget">Budget ($0-500)</option>
-        <option value="mid-range">Mid-Range ($500-1000)</option>
-        <option value="luxury">Luxury ($1000+)</option>
-      </select>
-
-      <!-- Sort -->
-      <select 
-        v-model="sortBy" 
-        class="px-4 py-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-surface-light dark:bg-surface-dark text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 ml-auto"
-      >
-        <option value="recommended">Recommended</option>
-        <option value="shortest">Shortest First</option>
-        <option value="longest">Longest First</option>
-        <option value="cheapest">Lowest Cost</option>
-      </select>
-    </div>
-
-    <!-- Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <NuxtLink 
-        v-for="itinerary in filteredItineraries" 
-        :key="itinerary.id"
-        :to="`/itineraries/${itinerary.slug}`"
-        class="group cursor-pointer flex flex-col gap-3 bg-surface-light dark:bg-surface-dark p-3 rounded-xl hover:shadow-lg transition-all duration-300 border border-transparent hover:border-primary/10"
-      >
-        <!-- Image -->
-        <div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden">
-          <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all z-10"></div>
-          <div 
-            class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-700" 
-            :style="`background-image: url('${getItineraryImage(itinerary.slug)}');`"
-          ></div>
-          <!-- Duration Badge -->
-          <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold z-20 shadow-sm flex items-center gap-1 text-text-main dark:text-white">
-            <span class="material-symbols-outlined text-xs">schedule</span> {{ itinerary.durationDays }} Days
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <NuxtLink v-for="itinerary in filteredItineraries" :key="itinerary.id" :to="`/itineraries/${itinerary.slug}`"
+          class="bg-white dark:bg-card-dark rounded-2xl overflow-hidden shadow-card border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-shadow group">
+          <div class="relative h-64 overflow-hidden">
+            <img :alt="itinerary.title"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              :src="getItineraryImage(itinerary.slug)" />
+            <div
+              class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary flex items-center gap-1">
+              <span class="material-icons text-xs">schedule</span> {{ itinerary.durationDays }} Days
+            </div>
           </div>
-        </div>
-
-        <!-- Content -->
-        <div class="px-1 pb-2">
-          <div class="flex justify-between items-start mb-1">
-            <p class="text-text-main dark:text-white text-lg font-bold leading-normal group-hover:text-primary transition-colors">{{ itinerary.title }}</p>
-            <span :class="getStyleBadgeClass(itinerary.style[0] || '')" class="text-xs font-semibold px-2 py-0.5 rounded">
-              {{ capitalize(itinerary.style[0] || '') }}
-            </span>
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-2">
+              <h3
+                class="font-display font-bold text-xl text-primary dark:text-white group-hover:text-secondary transition-colors">
+                {{ itinerary.title }}</h3>
+              <span :class="getStyleBadgeClass(itinerary.style[0] || '')"
+                class="text-[10px] uppercase font-bold px-2 py-1 rounded">
+                {{ getStyleLabel(itinerary.style[0] || '') }}
+              </span>
+            </div>
+            <p class="text-sm text-text-muted dark:text-gray-400 mb-4 line-clamp-2">{{ itinerary.whyYouWillLoveIt }}</p>
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+              <span class="text-sm font-semibold text-text-main dark:text-gray-300">Est. ${{
+                itinerary.estimatedCostPerPersonUSD }}/person</span>
+              <button
+                class="text-secondary hover:text-primary font-bold text-sm flex items-center gap-1 transition-colors">
+                Explore <span class="material-icons text-sm">arrow_forward</span>
+              </button>
+            </div>
           </div>
-          <p class="text-text-muted dark:text-neutral-400 text-sm font-normal leading-normal line-clamp-2">{{ truncate(itinerary.whyYouWillLoveIt, 100) }}</p>
-          <div class="mt-4 pt-3 border-t border-gray-100 dark:border-neutral-800 flex items-center justify-between">
-            <span class="text-xs font-medium text-text-muted">Est. ${{ itinerary.estimatedCostPerPersonUSD }}/person</span>
-            <span class="text-primary text-sm font-bold flex items-center">Explore <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span></span>
-          </div>
-        </div>
-      </NuxtLink>
-    </div>
+        </NuxtLink>
+      </div>
 
-    <!-- Empty State -->
-    <div v-if="filteredItineraries.length === 0" class="text-center py-16">
-      <span class="material-symbols-outlined text-6xl text-gray-300 dark:text-neutral-600 mb-4">travel_explore</span>
-      <p class="text-text-muted dark:text-neutral-400 text-lg">No itineraries match your filters.</p>
-      <button @click="resetFilters" class="mt-4 text-primary font-semibold hover:underline">Reset Filters</button>
+      <!-- Empty State -->
+      <div v-if="filteredItineraries.length === 0" class="text-center py-16">
+        <span class="material-icons text-6xl text-gray-300 dark:text-neutral-600 mb-4">travel_explore</span>
+        <p class="text-text-muted dark:text-neutral-400 text-lg">No itineraries match your filters.</p>
+        <button @click="resetFilters" class="mt-4 text-primary font-semibold hover:underline">Reset Filters</button>
+      </div>
     </div>
   </section>
 </template>
@@ -111,7 +83,6 @@ const itineraries = itinerariesData.itineraries
 const selectedDuration = ref('')
 const selectedStyle = ref('')
 const selectedBudget = ref('')
-const sortBy = ref('recommended')
 
 // Get all unique styles
 const allStyles = computed(() => {
@@ -127,10 +98,9 @@ const filteredItineraries = computed(() => {
   // Duration filter
   if (selectedDuration.value) {
     result = result.filter(i => {
-      if (selectedDuration.value === '1-3') return i.durationDays <= 3
-      if (selectedDuration.value === '4-7') return i.durationDays >= 4 && i.durationDays <= 7
-      if (selectedDuration.value === '8-14') return i.durationDays >= 8 && i.durationDays <= 14
-      if (selectedDuration.value === '15+') return i.durationDays >= 15
+      if (selectedDuration.value === '1-5') return i.durationDays <= 5
+      if (selectedDuration.value === '5-10') return i.durationDays >= 5 && i.durationDays <= 10
+      if (selectedDuration.value === '10+') return i.durationDays >= 10
       return true
     })
   }
@@ -145,56 +115,71 @@ const filteredItineraries = computed(() => {
     result = result.filter(i => i.budgetType === selectedBudget.value)
   }
 
-  // Sort
-  if (sortBy.value === 'shortest') {
-    result.sort((a, b) => a.durationDays - b.durationDays)
-  } else if (sortBy.value === 'longest') {
-    result.sort((a, b) => b.durationDays - a.durationDays)
-  } else if (sortBy.value === 'cheapest') {
-    result.sort((a, b) => (a.estimatedCostPerPersonUSD || 0) - (b.estimatedCostPerPersonUSD || 0))
-  }
-
   return result
 })
 
 // Helper functions
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
-const truncate = (str: string, len: number) => str.length > len ? str.slice(0, len) + '...' : str
+const getStyleLabel = (style: string) => {
+  const map: Record<string, string> = {
+    cultural: 'Cultural',
+    historic: 'Cultural',
+    heritage: 'Cultural',
+    beach: 'Beach',
+    nature: 'Nature',
+    wildlife: 'Nature',
+    adventure: 'Adventure',
+    luxury: 'Luxury',
+    wellness: 'Wellness',
+    budget: 'Budget',
+    backpacking: 'Budget',
+    'family-friendly': 'Standard',
+    express: 'Cultural',
+    historical: 'Cultural',
+    scenic: 'Standard',
+    culture: 'Cultural'
+  }
+  return map[style] || 'Standard'
+}
 
 const getStyleBadgeClass = (style: string) => {
   const map: Record<string, string> = {
-    cultural: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-    historic: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-    heritage: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-    beach: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
-    nature: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
-    wildlife: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
-    adventure: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300',
-    luxury: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
-    wellness: 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300',
-    budget: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300',
-    backpacking: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
+    cultural: 'bg-teal-50 text-teal-700',
+    historic: 'bg-teal-50 text-teal-700',
+    heritage: 'bg-teal-50 text-teal-700',
+    beach: 'bg-blue-50 text-blue-700',
+    nature: 'bg-green-50 text-green-700',
+    wildlife: 'bg-green-50 text-green-700',
+    adventure: 'bg-orange-50 text-orange-700',
+    luxury: 'bg-amber-50 text-amber-700',
+    wellness: 'bg-pink-50 text-pink-700',
+    budget: 'bg-green-50 text-green-700',
+    backpacking: 'bg-green-50 text-green-700',
+    'family-friendly': 'bg-purple-50 text-purple-700',
+    express: 'bg-teal-50 text-teal-700',
+    historical: 'bg-teal-50 text-teal-700',
+    scenic: 'bg-purple-50 text-purple-700',
+    culture: 'bg-teal-50 text-teal-700'
   }
-  return map[style] || 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
+  return map[style] || 'bg-purple-50 text-purple-700'
 }
 
 const getItineraryImage = (slug: string) => {
   const imageMap: Record<string, string> = {
-    'cultural-triangle-express': '/images/downloaded_42e12d701946.avif',
-    'southern-beaches-wildlife': '/images/downloaded_aac0d66ad44a.avif',
-    'cultural-heart-sri-lanka': '/images/downloaded_42e12d701946.avif',
-    'classic-sri-lanka-highlights': '/images/downloaded_5ff6b6bbf9ad.avif',
-    'luxury-wellness-tour': '/images/downloaded_0bded551fdfb.avif',
-    'backpackers-sri-lanka-adventure': '/images/downloaded_aac0d66ad44a.avif',
+    'cultural-triangle-express': 'https://lh3.googleusercontent.com/aida-public/AB6AXuA1YiC7YVXGt-xuGkViSLL7V1J6pGQ4HtWRQB80jgm6vCBH5nlpqcXbVdolhv_QkznZwBtRM6w0QdJmyi0ERRlSWtxDGEbASd9SxoYTENDXchan4g2yEoHbTuYa3G7YJ0qeTe69qqbuVXXnHl9hQjsMm4n4U5CQ38dFpRHqQZVaRyyDFQAnhJ73d4xTxlvcYiC961g5D-YxTxc0AFQzGXX2N5lhws0ZF1w5bLF-SGRi1HDKnwb0L28HL0Qdr4zstG9qBUJX__AffTg',
+    'southern-beaches-wildlife': 'https://lh3.googleusercontent.com/aida-public/AB6AXuABljJHQo3ZLy75WcVsx1ak6WycDfazTchJOZqeFGg0DBioDjdYIrJQrgCsBSRMPIcwDvEznlvBMsEqj12zK_LCUXRlmJMAaZEaoBfnB_bPVIOLS6Pjvq7TlvVmCz42hbm2jPVPMdMGc-05sxRRM1dHmHkFF13LbERAY6sqHR06Wzm8-gp46hK05pJLJ55gBU_IJvQkPg_fMyjcsAPFI9xaJTG04YhuXPrpt5e_13YVJX4Bf78ORM2U0kU4Jhbpn7CLeFyk7fd9rZo',
+    'cultural-heart-sri-lanka': 'https://lh3.googleusercontent.com/aida-public/AB6AXuAE8F1BoWIGRAGXifp-d0Jhi2N76iv-mVWsc4myi0P8ZnTyjuH-w5JXnHDCpDC-pfgmrwam5V1c-nPvQXelnMukA9Yu1DY7EczW1JtZ0-PlzrezMk0In951MD66d334NKvfvvfwBZOMu49PdkAzAM3J-cqEvjUSVFHNJ43q4Zr-i9lxBUPgEQsk4i5J2hNOvpWmu5EfI-Nqs6eLY9SN498ygVlNG8IXu0acHSZPOjEmGShDXr_3m6zAdlFYl6OqBu8D2suEh1cMcIQ',
+    'classic-sri-lanka-highlights': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCSqrhc-mhTYmxXlikA6_AuCz8oYGdE8Imf_B0eDz0UNY4626_ZTzkNr-ZrYBusptxAJ2MWi1mXPi0pX0M2sdz8Og6M3C9RGYgJLPXraKjoTLcPDWav6WYsgiAgVYWAz3hj4VGDm3TBrjrn_JCey6J0k442fnDNJfZ5zJBXDTAY9LSa3DFZTV0YMw265IHZgGyv4Zs1ISWpCYZvkc8vvLfFXYhSHIt71NPTM3OdcseUtLfDsPc5qjoSgTw9Az02nBR2Y4NLL3W6O0Q',
+    'luxury-wellness-tour': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBLxv9PTS_GLsYt-wg03sEPiGc24jDjbO1tk0EbOGArt-sA947jeAsIUj1EASeVuLYeDxY4z-3CffLMH1pGKWe6AfbRG9Dfo87O_Bt2jiBXADNsra-4nZ4FsBTEtRLavKGdpidzrcvPmDJsl-Ehi-8Gs2Tc-pnHf9xh0-yrHLvyMiUE6LN-cvSO2jjRzu9-Hg1KUYRKbFphjQ_ZU_NfRYhv5BxKo-BVplvSBLu85HA3P9QpZ698TyB1RE-gusYiRNaSqASX9_H6cmY',
+    'backpackers-sri-lanka-adventure': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCbz2Xd8JzRE5aU295qn3CVpinm8JbAuZtzbDnCnTh9MGCHc5QH704BFLVcz8TyMMwhVjYDdfNfixNsagELiKaRODsq7k0thHah1awPZJ7wSVVoJiIK8r1VWSHjUY2me4yle3OlKmx4UBH8UdORTe-KxdGToH6yranJE5i8YSYxxuY2CfT9__MJel-J396tnI0ZiDFApsGW_7zJ7b7XE_oA-ouRhtnGIgjk-d4cOySuMtpXwZo0JECyVZepU-klqu2aAN4xOYGyiVM',
   }
-  return imageMap[slug] || '/images/downloaded_42e12d701946.avif'
+  return imageMap[slug] || 'https://lh3.googleusercontent.com/aida-public/AB6AXuA1YiC7YVXGt-xuGkViSLL7V1J6pGQ4HtWRQB80jgm6vCBH5nlpqcXbVdolhv_QkznZwBtRM6w0QdJmyi0ERRlSWtxDGEbASd9SxoYTENDXchan4g2yEoHbTuYa3G7YJ0qeTe69qqbuVXXnHl9hQjsMm4n4U5CQ38dFpRHqQZVaRyyDFQAnhJ73d4xTxlvcYiC961g5D-YxTxc0AFQzGXX2N5lhws0ZF1w5bLF-SGRi1HDKnwb0L28HL0Qdr4zstG9qBUJX__AffTg'
 }
 
 const resetFilters = () => {
   selectedDuration.value = ''
   selectedStyle.value = ''
   selectedBudget.value = ''
-  sortBy.value = 'recommended'
 }
 </script>
