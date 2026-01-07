@@ -258,67 +258,52 @@
           </div>
         </div>
 
+
+        <!-- Popular Routes (Moved to Left) -->
+        <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card border border-gray-100 dark:border-white/5 p-6">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="material-symbols-outlined text-text-muted text-[16px]">trending_up</span>
+              <h3 class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Popular Routes</h3>
+            </div>
+            
+            <div class="space-y-3">
+              <div v-for="route in popularRoutes" :key="route.id" @click="setPopularRoute(route)" class="bg-background-light dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5 hover:border-teal-deep/30 cursor-pointer transition-all group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined" :class="route.color">{{ route.icon }}</span>
+                  <div>
+                    <div class="text-xs font-bold text-text-main dark:text-white">{{ route.title }}</div>
+                    <div class="text-[10px] text-text-muted">{{ route.from }} to {{ route.to }}</div>
+                  </div>
+                </div>
+                <span class="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded text-text-muted mt-2 inline-block">{{ route.distance }}</span>
+              </div>
+            </div>
+        </div>
+
+
         <!-- Right Column - Map & Results -->
         <div class="flex-1 w-full space-y-6">
           
           <!-- Map -->
-          <div class="relative w-full h-[400px] rounded-2xl overflow-hidden shadow-card border border-gray-100 dark:border-white/5 bg-[#e5e3df]">
-            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBye3UqYEOFRFviYlfu1qfGwERk4DvZ7viiSrjotNb6TgCxVxEkt39moOOpk_n8b1P6gQlpieBykVTDhXAIliOY347015xp638Tt93UMGfMa-ZotbaDyrpYqcnH3kfW4Wv2flmN7A5EChkvCBoIBKTDOx4Tz_wqz25eNjNPo6Xyi6J0JSjOytQeabJrkS-jnjg-fUL0x57ePxii6Dcgs2-fM6MVzOMUf3XQ0z1CZgjQRgvtfSwNVdD9dLyYQMkMizcyuTjFWq_PHmYE'); filter: grayscale(10%) contrast(95%);"></div>
-            
-            <!-- Map Controls -->
-            <div class="absolute top-4 left-4">
-              <button class="size-9 bg-white dark:bg-surface-dark rounded-lg shadow-sm flex items-center justify-center text-text-muted hover:text-teal-deep transition-colors">
-                <span class="material-symbols-outlined text-[20px]">fullscreen</span>
-              </button>
-            </div>
-            <div class="absolute top-4 right-4 flex flex-col gap-2">
-              <div class="flex flex-col bg-white dark:bg-surface-dark rounded-lg shadow-sm overflow-hidden">
-                <button class="size-8 flex items-center justify-center text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 border-b border-gray-100 dark:border-white/5">
-                  <span class="material-symbols-outlined text-[18px]">add</span>
-                </button>
-                <button class="size-8 flex items-center justify-center text-text-muted hover:bg-gray-50 dark:hover:bg-white/5">
-                  <span class="material-symbols-outlined text-[18px]">remove</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Legend -->
-            <div class="absolute bottom-4 left-4 bg-white/95 dark:bg-surface-dark/95 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-white/20">
-              <h4 class="text-[10px] font-bold text-text-muted uppercase mb-2">Route Style</h4>
-              <div class="space-y-1.5">
-                <div class="flex items-center gap-2 text-[10px] font-medium text-text-main dark:text-white">
-                  <div class="w-6 h-1 bg-coral-orange rounded-full"></div> Tuk-Tuk
-                </div>
-                <div class="flex items-center gap-2 text-[10px] font-medium text-text-main dark:text-white">
-                  <div class="w-6 h-1 bg-teal-deep rounded-full"></div> Taxi/Car
-                </div>
-                <div class="flex items-center gap-2 text-[10px] font-medium text-text-muted">
-                  <div class="w-6 h-1 border-t-2 border-dotted border-gray-400"></div> Bus (Highway)
-                </div>
-                <div class="flex items-center gap-2 text-[10px] font-medium text-text-muted">
-                  <div class="w-6 h-1 border-t-2 border-dashed border-teal-deep"></div> Train
-                </div>
-              </div>
-            </div>
-
-            <!-- Route Markers (Demo) -->
-            <div v-if="origin" class="absolute top-[30%] left-[55%] -translate-x-1/2 -translate-y-1/2">
-              <div class="relative group cursor-pointer">
-                <div class="bg-white px-2 py-1 rounded shadow text-[10px] font-bold whitespace-nowrap mb-1 absolute -top-6 left-1/2 -translate-x-1/2">{{ origin.name.substring(0, 20) }}...</div>
-                <div class="size-4 bg-green-500 rounded-full border-2 border-white shadow-md"></div>
-              </div>
-            </div>
-            <div v-if="destination" class="absolute top-[65%] left-[50%] -translate-x-1/2 -translate-y-1/2">
-              <div class="relative group cursor-pointer z-10">
-                <div class="bg-white px-2 py-1 rounded shadow text-[10px] font-bold whitespace-nowrap mb-1 absolute -top-6 left-1/2 -translate-x-1/2">{{ destination.name }}</div>
-                <div class="size-4 bg-red-500 rounded-full border-2 border-white shadow-md"></div>
-              </div>
-            </div>
-
-            <!-- Route Line (SVG demo) -->
-            <svg v-if="origin && destination" class="absolute inset-0 w-full h-full pointer-events-none">
-              <path d="M 450 150 Q 480 250 420 320" fill="none" stroke="#ff7f50" stroke-linecap="round" stroke-width="4"></path>
-            </svg>
+          <div class="relative w-full h-[450px] bg-slate-50 rounded-2xl overflow-hidden shadow-inner border border-slate-200 group">
+             <ClientOnly fallback-tag="div" fallback="Loading map...">
+                <TransportMap
+                    :origin="origin"
+                    :destination="destination"
+                    :polyline="routeResult?.polyline || []"
+                    :mode="selectedMode"
+                    :pick-mode="pickMode"
+                    @select-location="handleMapClick"
+                />
+             </ClientOnly>
+             
+             <!-- Overlay Pick Badge -->
+             <div v-if="pickMode" class="absolute top-4 left-1/2 -translate-x-1/2 z-[500]">
+               <div class="bg-teal-600 text-white px-4 py-2 rounded-full shadow-lg text-xs font-bold animate-bounce flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">touch_app</span>
+                  Pick {{ pickMode === 'from' ? 'Origin' : 'Destination' }}
+               </div>
+             </div>
           </div>
 
           <!-- Fare Result Card -->
@@ -394,29 +379,6 @@
             </div>
           </div>
 
-          <!-- Popular Routes -->
-          <div class="space-y-3 pt-6">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="material-symbols-outlined text-text-muted text-[16px]">trending_up</span>
-              <h3 class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Popular Routes</h3>
-            </div>
-            
-            <div 
-              v-for="route in popularRoutes"
-              :key="route.id"
-              @click="setPopularRoute(route)"
-              class="bg-white dark:bg-surface-dark rounded-xl p-3 flex items-center justify-between border border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
-            >
-              <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined" :class="route.color">{{ route.icon }}</span>
-                <div>
-                  <div class="text-xs font-bold text-text-main dark:text-white">{{ route.title }}</div>
-                  <div class="text-[10px] text-text-muted">{{ route.from }} to {{ route.to }}</div>
-                </div>
-              </div>
-              <span class="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded text-text-muted">{{ route.distance }}</span>
-            </div>
-          </div>
 
           <!-- Scam Warning -->
           <div class="mt-8 bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/40 rounded-full p-4 flex items-center justify-between cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors" @click="showScams = true">
@@ -672,6 +634,22 @@ function setPickMode(mode: 'from' | 'to') {
   pickMode.value = pickMode.value === mode ? null : mode
   showOriginDropdown.value = false
   showDestinationDropdown.value = false
+}
+
+
+function handleMapClick(loc: { lat: number; lon: number; name: string }) {
+  if (pickMode.value === 'from') {
+    origin.value = loc
+    originSearch.value = loc.name
+    pickMode.value = null
+    // If not searching, ensure dropdown is closed
+    showOriginDropdown.value = false
+  } else if (pickMode.value === 'to') {
+    destination.value = loc
+    destinationSearch.value = loc.name
+    pickMode.value = null
+    showDestinationDropdown.value = false
+  }
 }
 
 async function calculateRoute() {
