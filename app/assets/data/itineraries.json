@@ -374,7 +374,270 @@
             "budgetType": "mid-range",
             "estimatedCostPerPersonUSD": 700,
             "whyYouWillLoveIt": "Immerse yourself in Sri Lanka's rich history on this one-week journey. You'll explore the ancient cities of the Cultural Triangle and the sacred sites of Kandy, balanced with a taste of the hill country. It's a heritage-focused route featuring five UNESCO World Heritage Sites in 7 days.",
-            "days": [],
+            "days": [
+                {
+                    "dayNumber": 1,
+                    "title": "Colombo → Anuradhapura",
+                    "locations": [
+                        "Colombo",
+                        "Anuradhapura"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Drive to Anuradhapura",
+                            "description": "Travel ~5 hours north to the ancient capital of Anuradhapura.",
+                            "duration": "5 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Sri Maha Bodhi & Ruvanvelisaya",
+                            "description": "Visit the sacred Bodhi Tree and the massive white Ruvanvelisaya Dagoba, one of Sri Lanka's most revered stupas.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "unesco",
+                                "heritage",
+                                "spiritual"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 2,
+                    "title": "Anuradhapura → Sigiriya",
+                    "locations": [
+                        "Anuradhapura",
+                        "Sigiriya"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Explore Anuradhapura Ruins",
+                            "description": "Cycle through the ancient city ruins including Jetavanaramaya, Abhayagiri, and the Moonstone path.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "heritage",
+                                "unesco",
+                                "cycling"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "transfer",
+                            "title": "Drive to Sigiriya",
+                            "description": "Travel ~2 hours to Sigiriya and check into a jungle lodge.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 3,
+                    "title": "Sigiriya & Polonnaruwa",
+                    "locations": [
+                        "Sigiriya",
+                        "Polonnaruwa"
+                    ],
+                    "activities": [
+                        {
+                            "time": "sunrise",
+                            "type": "activity",
+                            "title": "Climb Sigiriya Rock Fortress",
+                            "description": "Ascend the iconic Lion Rock to explore ancient frescoes, mirror wall, and palace ruins at the summit.",
+                            "duration": "2.5 hours",
+                            "tags": [
+                                "unesco",
+                                "heritage",
+                                "hiking"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Polonnaruwa Ancient City",
+                            "description": "Explore the medieval capital by bicycle - see the Gal Vihara Buddha statues, Royal Palace, and Vatadage.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "unesco",
+                                "heritage",
+                                "cycling"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 4,
+                    "title": "Sigiriya → Kandy",
+                    "locations": [
+                        "Sigiriya",
+                        "Dambulla",
+                        "Kandy"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Dambulla Cave Temple",
+                            "description": "Climb to the Golden Temple complex with five caves filled with Buddha statues and ancient murals.",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "unesco",
+                                "heritage",
+                                "temple"
+                            ]
+                        },
+                        {
+                            "time": "midday",
+                            "type": "transfer",
+                            "title": "Transfer to Kandy",
+                            "description": "Scenic 3-hour drive through spice gardens and villages to Kandy.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        },
+                        {
+                            "time": "evening",
+                            "type": "activity",
+                            "title": "Temple of the Tooth",
+                            "description": "Attend the evening puja ceremony at the sacred Temple of the Tooth Relic.",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "unesco",
+                                "spiritual",
+                                "ceremony"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 5,
+                    "title": "Kandy Exploration",
+                    "locations": [
+                        "Kandy",
+                        "Peradeniya"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Royal Botanical Gardens",
+                            "description": "Wander through 150 acres of tropical gardens including the orchid house and spice garden.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "nature",
+                                "gardens"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Kandy Lake & Market",
+                            "description": "Stroll around Kandy Lake and explore the bustling local market for handicrafts and gems.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "leisure",
+                                "shopping"
+                            ]
+                        },
+                        {
+                            "time": "evening",
+                            "type": "activity",
+                            "title": "Cultural Dance Show",
+                            "description": "Watch a traditional Kandyan dance performance with fire walking finale.",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "culture",
+                                "entertainment"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 6,
+                    "title": "Kandy → Ella (Scenic Train)",
+                    "locations": [
+                        "Kandy",
+                        "Nuwara Eliya",
+                        "Ella"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Scenic Train to Ella",
+                            "description": "Board the iconic blue train for one of the world's most beautiful train journeys through tea country.",
+                            "duration": "6 hours",
+                            "tags": [
+                                "scenic",
+                                "train",
+                                "iconic"
+                            ]
+                        },
+                        {
+                            "time": "evening",
+                            "type": "leisure",
+                            "title": "Ella Town",
+                            "description": "Arrive in Ella and enjoy the laid-back mountain town atmosphere with cafes and stunning views.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "relaxation",
+                                "scenic"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 7,
+                    "title": "Ella → Colombo",
+                    "locations": [
+                        "Ella",
+                        "Colombo"
+                    ],
+                    "activities": [
+                        {
+                            "time": "sunrise",
+                            "type": "activity",
+                            "title": "Nine Arch Bridge",
+                            "description": "Walk to the famous colonial-era railway bridge for sunrise photos with passing trains.",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "photography",
+                                "iconic"
+                            ]
+                        },
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Little Adam's Peak",
+                            "description": "Short hike through tea plantations to panoramic views of Ella Gap.",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "hiking",
+                                "scenic"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "transfer",
+                            "title": "Return to Colombo",
+                            "description": "5-hour drive back to Colombo via the expressway.",
+                            "duration": "5 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        }
+                    ]
+                }
+            ],
             "sidebarHighlights": [
                 "Dambulla Cave Temple",
                 "Sigiriya Fortress",
@@ -401,7 +664,311 @@
             "budgetType": "mid-range",
             "estimatedCostPerPersonUSD": 900,
             "whyYouWillLoveIt": "This 10-day itinerary is a popular loop showcasing Sri Lanka's diverse beauty – from ancient cities and misty mountains to wildlife safaris and golden beaches. It's an ideal first-timer's tour.",
-            "days": [],
+            "days": [
+                {
+                    "dayNumber": 1,
+                    "title": "Arrival → Negombo",
+                    "locations": [
+                        "Colombo Airport",
+                        "Negombo"
+                    ],
+                    "activities": [
+                        {
+                            "time": "evening",
+                            "type": "arrival",
+                            "title": "Arrive at Bandaranaike Airport",
+                            "description": "Welcome to Sri Lanka! Transfer to nearby Negombo beach town.",
+                            "duration": "30 mins",
+                            "tags": [
+                                "arrival"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 2,
+                    "title": "Negombo → Sigiriya",
+                    "locations": [
+                        "Negombo",
+                        "Sigiriya"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Drive to Sigiriya",
+                            "description": "4-hour scenic drive to the Cultural Triangle.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Pidurangala Rock",
+                            "description": "Climb Pidurangala for stunning sunset views of Sigiriya Rock.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "hiking",
+                                "sunset"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 3,
+                    "title": "Sigiriya & Polonnaruwa",
+                    "locations": [
+                        "Sigiriya",
+                        "Polonnaruwa"
+                    ],
+                    "activities": [
+                        {
+                            "time": "sunrise",
+                            "type": "activity",
+                            "title": "Climb Sigiriya Rock",
+                            "description": "Ascend the iconic Lion Rock fortress at dawn before the crowds.",
+                            "duration": "2.5 hours",
+                            "tags": [
+                                "unesco",
+                                "heritage"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Polonnaruwa by Bicycle",
+                            "description": "Explore the medieval ruins including Gal Vihara's Buddha carvings.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "unesco",
+                                "cycling"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 4,
+                    "title": "Sigiriya → Kandy",
+                    "locations": [
+                        "Sigiriya",
+                        "Dambulla",
+                        "Kandy"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Dambulla Cave Temple",
+                            "description": "Golden Temple complex with ancient Buddha statues and murals.",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "unesco",
+                                "temple"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "transfer",
+                            "title": "Drive to Kandy",
+                            "description": "Scenic drive through spice gardens to hill country.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        },
+                        {
+                            "time": "evening",
+                            "type": "activity",
+                            "title": "Kandyan Dance Show",
+                            "description": "Traditional dance performance with fire walking.",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "culture"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 5,
+                    "title": "Kandy Exploration",
+                    "locations": [
+                        "Kandy"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Temple of the Tooth",
+                            "description": "Visit Sri Lanka's most sacred Buddhist temple.",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "unesco",
+                                "spiritual"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Royal Botanical Gardens",
+                            "description": "Stroll through 150 acres of tropical plants and orchids.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "nature",
+                                "gardens"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 6,
+                    "title": "Kandy → Ella (Train)",
+                    "locations": [
+                        "Kandy",
+                        "Ella"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Scenic Train to Ella",
+                            "description": "One of the world's most beautiful train journeys through tea country.",
+                            "duration": "6 hours",
+                            "tags": [
+                                "scenic",
+                                "train",
+                                "iconic"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 7,
+                    "title": "Ella Adventures",
+                    "locations": [
+                        "Ella"
+                    ],
+                    "activities": [
+                        {
+                            "time": "sunrise",
+                            "type": "activity",
+                            "title": "Little Adam's Peak",
+                            "description": "Easy sunrise hike with panoramic tea plantation views.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "hiking"
+                            ]
+                        },
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Nine Arch Bridge",
+                            "description": "Visit the iconic colonial railway bridge.",
+                            "duration": "1 hour",
+                            "tags": [
+                                "photography",
+                                "iconic"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 8,
+                    "title": "Ella → Yala",
+                    "locations": [
+                        "Ella",
+                        "Yala"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Drive to Yala",
+                            "description": "3-hour drive to Sri Lanka's premier wildlife park.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Safari Game Drive",
+                            "description": "Search for leopards, elephants, and crocodiles.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "safari",
+                                "wildlife"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 9,
+                    "title": "Yala → Mirissa",
+                    "locations": [
+                        "Yala",
+                        "Mirissa"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Drive to Mirissa",
+                            "description": "2.5-hour coastal drive to the south.",
+                            "duration": "2.5 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "leisure",
+                            "title": "Beach Time",
+                            "description": "Relax on Mirissa's palm-fringed beach.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "beach",
+                                "relaxation"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 10,
+                    "title": "Mirissa → Galle → Colombo",
+                    "locations": [
+                        "Mirissa",
+                        "Galle",
+                        "Colombo"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Galle Fort Walk",
+                            "description": "Explore the UNESCO Dutch colonial fortress.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "unesco",
+                                "heritage"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "transfer",
+                            "title": "Return to Colombo",
+                            "description": "2-hour expressway drive to the airport.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "transfer",
+                                "departure"
+                            ]
+                        }
+                    ]
+                }
+            ],
             "sidebarHighlights": [
                 "Sigiriya & Pidurangala",
                 "Kandy Cultural Show",
@@ -431,7 +998,433 @@
             "budgetType": "luxury",
             "estimatedCostPerPersonUSD": 2500,
             "whyYouWillLoveIt": "Two weeks of indulgence blending Sri Lanka's top sights with rejuvenating leisure. This upscale itinerary is designed for honeymooners or luxury travelers with boutique resorts, private drivers, and spa experiences.",
-            "days": [],
+            "days": [
+                {
+                    "dayNumber": 1,
+                    "title": "Arrival → Colombo",
+                    "locations": [
+                        "Colombo"
+                    ],
+                    "activities": [
+                        {
+                            "time": "evening",
+                            "type": "arrival",
+                            "title": "VIP Airport Transfer",
+                            "description": "Private chauffeur transfer to 5-star Shangri-La Colombo.",
+                            "duration": "1 hour",
+                            "tags": [
+                                "luxury",
+                                "arrival"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 2,
+                    "title": "Colombo Exploration",
+                    "locations": [
+                        "Colombo"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Private City Tour",
+                            "description": "Guided tour of old Colombo, Gangaramaya Temple, and Pettah markets.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "culture",
+                                "private"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Spa at Shangri-La",
+                            "description": "Ayurvedic massage and wellness treatment.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "spa",
+                                "wellness"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 3,
+                    "title": "Colombo → Sigiriya",
+                    "locations": [
+                        "Colombo",
+                        "Sigiriya"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Private Transfer to Sigiriya",
+                            "description": "Comfortable 4-hour drive in luxury vehicle.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        },
+                        {
+                            "time": "evening",
+                            "type": "leisure",
+                            "title": "Sunset at Aliya Resort",
+                            "description": "Infinity pool overlooking Sigiriya Rock.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "luxury",
+                                "scenic"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 4,
+                    "title": "Sigiriya & Polonnaruwa",
+                    "locations": [
+                        "Sigiriya",
+                        "Polonnaruwa"
+                    ],
+                    "activities": [
+                        {
+                            "time": "sunrise",
+                            "type": "activity",
+                            "title": "Private Sigiriya Climb",
+                            "description": "Beat the crowds with early VIP access to Lion Rock.",
+                            "duration": "2.5 hours",
+                            "tags": [
+                                "unesco",
+                                "private"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Polonnaruwa by Jeep",
+                            "description": "Private guided tour of ancient ruins.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "unesco",
+                                "heritage"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 5,
+                    "title": "Sigiriya → Kandy",
+                    "locations": [
+                        "Sigiriya",
+                        "Kandy"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Dambulla Cave Temple",
+                            "description": "Private tour of the Golden Temple.",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "unesco"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "transfer",
+                            "title": "Drive to Kandy",
+                            "description": "Stop at a spice garden for authentic lunch.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "transfer",
+                                "culinary"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 6,
+                    "title": "Kandy Full Day",
+                    "locations": [
+                        "Kandy"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Temple of the Tooth",
+                            "description": "VIP access during morning puja ceremony.",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "unesco",
+                                "spiritual"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Royal Botanical Gardens",
+                            "description": "Private guided botanical tour.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "nature"
+                            ]
+                        },
+                        {
+                            "time": "evening",
+                            "type": "activity",
+                            "title": "Private Kandyan Dance",
+                            "description": "Exclusive cultural performance.",
+                            "duration": "1 hour",
+                            "tags": [
+                                "culture",
+                                "entertainment"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 7,
+                    "title": "Kandy → Tea Country",
+                    "locations": [
+                        "Kandy",
+                        "Nuwara Eliya"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Scenic Drive to Hill Country",
+                            "description": "Winding mountain roads through tea estates.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "scenic"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Private Tea Tasting",
+                            "description": "VIP tasting at Pedro Tea Estate with factory tour.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "tea",
+                                "luxury"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 8,
+                    "title": "Nuwara Eliya & Spa",
+                    "locations": [
+                        "Nuwara Eliya"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Horton Plains Hike",
+                            "description": "Guided trek to World's End viewpoint.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "hiking",
+                                "nature"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Heritance Tea Factory Spa",
+                            "description": "Tea-infused treatments in converted tea factory.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "spa",
+                                "wellness"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 9,
+                    "title": "Nuwara Eliya → Yala",
+                    "locations": [
+                        "Nuwara Eliya",
+                        "Yala"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Transfer to Yala",
+                            "description": "5-hour scenic drive through hill country.",
+                            "duration": "5 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        },
+                        {
+                            "time": "evening",
+                            "type": "leisure",
+                            "title": "Wild Coast Tented Lodge",
+                            "description": "Check into luxury tented safari camp.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "luxury",
+                                "safari"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 10,
+                    "title": "Yala Safari",
+                    "locations": [
+                        "Yala"
+                    ],
+                    "activities": [
+                        {
+                            "time": "dawn",
+                            "type": "activity",
+                            "title": "Private Leopard Safari",
+                            "description": "Exclusive game drive with expert naturalist.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "safari",
+                                "wildlife"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "leisure",
+                            "title": "Pool & Spa",
+                            "description": "Relaxation at luxury camp.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "spa",
+                                "relaxation"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 11,
+                    "title": "Yala → Galle",
+                    "locations": [
+                        "Yala",
+                        "Galle"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Coastal Drive to Galle",
+                            "description": "3-hour drive along the southern coast.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Galle Fort Walk",
+                            "description": "Private tour of UNESCO colonial fortress.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "unesco",
+                                "heritage"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 12,
+                    "title": "Galle & Beach",
+                    "locations": [
+                        "Galle",
+                        "Unawatuna"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "leisure",
+                            "title": "Beach Day",
+                            "description": "Relax at Amanwella or Anantara private beach.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "beach",
+                                "luxury"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Sunset Catamaran Cruise",
+                            "description": "Private sailing with champagne.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "sailing",
+                                "sunset"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 13,
+                    "title": "Mirissa Whale Watching",
+                    "locations": [
+                        "Mirissa"
+                    ],
+                    "activities": [
+                        {
+                            "time": "early-morning",
+                            "type": "activity",
+                            "title": "Private Whale Watching",
+                            "description": "Small boat tour to spot blue whales and dolphins.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "wildlife",
+                                "ocean"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "leisure",
+                            "title": "Beach & Spa",
+                            "description": "Final spa treatment before departure.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "spa",
+                                "relaxation"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 14,
+                    "title": "Departure",
+                    "locations": [
+                        "Galle",
+                        "Colombo"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Airport Transfer",
+                            "description": "Luxury transfer to Colombo airport.",
+                            "duration": "2.5 hours",
+                            "tags": [
+                                "transfer",
+                                "departure"
+                            ]
+                        }
+                    ]
+                }
+            ],
             "sidebarHighlights": [
                 "Private Sigiriya Tour",
                 "Spa Ayurveda Massage",
@@ -461,7 +1454,663 @@
             "budgetType": "budget",
             "estimatedCostPerPersonUSD": 800,
             "whyYouWillLoveIt": "This three-week itinerary is the ultimate island explorer route, circling Sri Lanka's every corner on a budget. Ideal for backpackers, it uses public transport and cheap stays to hit all the highlights and hidden gems.",
-            "days": [],
+            "days": [
+                {
+                    "dayNumber": 1,
+                    "title": "Colombo Arrival",
+                    "locations": [
+                        "Colombo"
+                    ],
+                    "activities": [
+                        {
+                            "time": "afternoon",
+                            "type": "arrival",
+                            "title": "Arrive in Colombo",
+                            "description": "Budget hostel in Fort area. Evening walk at Galle Face Green.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "arrival"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 2,
+                    "title": "Colombo → Anuradhapura",
+                    "locations": [
+                        "Colombo",
+                        "Anuradhapura"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Bus to Anuradhapura",
+                            "description": "5-hour public bus ride north.",
+                            "duration": "5 hours",
+                            "tags": [
+                                "bus",
+                                "budget"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Explore Sacred City",
+                            "description": "Rent a bicycle and explore the ancient ruins.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "unesco",
+                                "cycling"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 3,
+                    "title": "Anuradhapura → Jaffna",
+                    "locations": [
+                        "Anuradhapura",
+                        "Jaffna"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Train to Jaffna",
+                            "description": "Scenic 4-hour train through northern plains.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "train",
+                                "budget"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Jaffna Fort & Market",
+                            "description": "Explore Dutch fort and vibrant local market.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "heritage",
+                                "local"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 4,
+                    "title": "Jaffna Exploration",
+                    "locations": [
+                        "Jaffna"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Nallur Kandaswamy Temple",
+                            "description": "One of the most significant Hindu temples in Sri Lanka.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "temple",
+                                "spiritual"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Nagadeepa Island",
+                            "description": "Boat trip to sacred Buddhist island.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "boat",
+                                "temple"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 5,
+                    "title": "Jaffna → Trincomalee",
+                    "locations": [
+                        "Jaffna",
+                        "Trincomalee"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Bus to Trincomalee",
+                            "description": "6-hour journey to the east coast.",
+                            "duration": "6 hours",
+                            "tags": [
+                                "bus"
+                            ]
+                        },
+                        {
+                            "time": "evening",
+                            "type": "leisure",
+                            "title": "Uppuveli Beach",
+                            "description": "Relax on quiet beach.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "beach"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 6,
+                    "title": "Trincomalee",
+                    "locations": [
+                        "Trincomalee",
+                        "Pigeon Island"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Pigeon Island Snorkeling",
+                            "description": "Boat trip to coral reef marine park.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "snorkeling",
+                                "nature"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Koneswaram Temple",
+                            "description": "Ancient cliff-top Hindu temple.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "temple"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 7,
+                    "title": "Trincomalee → Sigiriya",
+                    "locations": [
+                        "Trincomalee",
+                        "Sigiriya"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Bus to Sigiriya",
+                            "description": "4-hour bus journey inland.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "bus"
+                            ]
+                        },
+                        {
+                            "time": "evening",
+                            "type": "activity",
+                            "title": "Pidurangala Sunset",
+                            "description": "Free alternative to Sigiriya with stunning views.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "hiking",
+                                "sunset",
+                                "free"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 8,
+                    "title": "Sigiriya & Polonnaruwa",
+                    "locations": [
+                        "Sigiriya",
+                        "Polonnaruwa"
+                    ],
+                    "activities": [
+                        {
+                            "time": "sunrise",
+                            "type": "activity",
+                            "title": "Sigiriya Rock (Optional)",
+                            "description": "Climb the Lion Rock if budget allows ($30).",
+                            "duration": "2.5 hours",
+                            "tags": [
+                                "unesco"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Polonnaruwa by Bicycle",
+                            "description": "Rent a bike and explore ancient ruins.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "unesco",
+                                "cycling",
+                                "budget"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 9,
+                    "title": "Sigiriya → Kandy",
+                    "locations": [
+                        "Sigiriya",
+                        "Dambulla",
+                        "Kandy"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Dambulla Cave Temple",
+                            "description": "Golden Temple complex (free entry to grounds).",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "unesco"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "transfer",
+                            "title": "Bus to Kandy",
+                            "description": "3-hour scenic bus ride.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "bus"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 10,
+                    "title": "Kandy",
+                    "locations": [
+                        "Kandy"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Temple of the Tooth",
+                            "description": "Sri Lanka's most sacred Buddhist site.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "unesco",
+                                "spiritual"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Kandy Lake Walk",
+                            "description": "Free walk around the scenic lake.",
+                            "duration": "1.5 hours",
+                            "tags": [
+                                "free",
+                                "scenic"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 11,
+                    "title": "Kandy → Adam's Peak",
+                    "locations": [
+                        "Kandy",
+                        "Dalhousie"
+                    ],
+                    "activities": [
+                        {
+                            "time": "afternoon",
+                            "type": "transfer",
+                            "title": "Bus to Dalhousie",
+                            "description": "4-hour journey to base of Adam's Peak.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "bus"
+                            ]
+                        },
+                        {
+                            "time": "night",
+                            "type": "activity",
+                            "title": "Adam's Peak Night Climb",
+                            "description": "Begin the 5,500-step pilgrimage at 2am.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "hiking",
+                                "pilgrimage"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 12,
+                    "title": "Adam's Peak Summit → Ella",
+                    "locations": [
+                        "Adam's Peak",
+                        "Hatton",
+                        "Ella"
+                    ],
+                    "activities": [
+                        {
+                            "time": "sunrise",
+                            "type": "activity",
+                            "title": "Summit Sunrise",
+                            "description": "Witness the legendary shadow of Adam's Peak.",
+                            "duration": "1 hour",
+                            "tags": [
+                                "sunrise",
+                                "spiritual"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "transfer",
+                            "title": "Train to Ella",
+                            "description": "Catch the scenic train through tea country.",
+                            "duration": "5 hours",
+                            "tags": [
+                                "train",
+                                "scenic"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 13,
+                    "title": "Ella Day 1",
+                    "locations": [
+                        "Ella"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Nine Arch Bridge",
+                            "description": "Walk to iconic railway bridge at sunrise.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "photography",
+                                "free"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Little Adam's Peak",
+                            "description": "Easy hike through tea plantations.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "hiking",
+                                "free"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 14,
+                    "title": "Ella Day 2",
+                    "locations": [
+                        "Ella"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Ella Rock Hike",
+                            "description": "Challenging 4km hike with panoramic views.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "hiking"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "leisure",
+                            "title": "Ravana Falls",
+                            "description": "Visit the waterfall and chill in cafes.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "waterfall",
+                                "relaxation"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 15,
+                    "title": "Ella → Arugam Bay",
+                    "locations": [
+                        "Ella",
+                        "Arugam Bay"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Bus to Arugam Bay",
+                            "description": "5-hour journey to surf paradise.",
+                            "duration": "5 hours",
+                            "tags": [
+                                "bus"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "leisure",
+                            "title": "Beach & Surf Check",
+                            "description": "Settle in and catch sunset.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "beach",
+                                "surf"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 16,
+                    "title": "Arugam Bay Surfing",
+                    "locations": [
+                        "Arugam Bay"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Surf Lesson",
+                            "description": "Beginner lesson at main beach ($15).",
+                            "duration": "2 hours",
+                            "tags": [
+                                "surfing",
+                                "adventure"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "leisure",
+                            "title": "Beach Hangout",
+                            "description": "Backpacker vibes and seafood.",
+                            "duration": "5 hours",
+                            "tags": [
+                                "beach",
+                                "social"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 17,
+                    "title": "Arugam Bay → Yala",
+                    "locations": [
+                        "Arugam Bay",
+                        "Yala"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Tuk-tuk share to Yala",
+                            "description": "3-hour scenic coastal ride.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "transfer"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Budget Safari",
+                            "description": "Join a shared jeep safari.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "safari",
+                                "wildlife"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 18,
+                    "title": "Yala → Mirissa",
+                    "locations": [
+                        "Yala",
+                        "Mirissa"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "transfer",
+                            "title": "Bus to Mirissa",
+                            "description": "3-hour coastal bus ride.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "bus"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "activity",
+                            "title": "Coconut Tree Hill",
+                            "description": "Iconic Instagram spot and beach.",
+                            "duration": "3 hours",
+                            "tags": [
+                                "photography",
+                                "beach"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 19,
+                    "title": "Mirissa",
+                    "locations": [
+                        "Mirissa"
+                    ],
+                    "activities": [
+                        {
+                            "time": "early-morning",
+                            "type": "activity",
+                            "title": "Whale Watching",
+                            "description": "Budget boat tour to spot blue whales.",
+                            "duration": "5 hours",
+                            "tags": [
+                                "wildlife",
+                                "ocean"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "leisure",
+                            "title": "Beach Day",
+                            "description": "Relax and enjoy fresh seafood.",
+                            "duration": "5 hours",
+                            "tags": [
+                                "beach",
+                                "relaxation"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 20,
+                    "title": "Mirissa → Galle → Hikkaduwa",
+                    "locations": [
+                        "Mirissa",
+                        "Galle",
+                        "Hikkaduwa"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Galle Fort Walk",
+                            "description": "Explore the UNESCO Dutch fortress.",
+                            "duration": "2.5 hours",
+                            "tags": [
+                                "unesco",
+                                "heritage"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "transfer",
+                            "title": "Bus to Hikkaduwa",
+                            "description": "Party beach town.",
+                            "duration": "1 hour",
+                            "tags": [
+                                "bus"
+                            ]
+                        },
+                        {
+                            "time": "evening",
+                            "type": "leisure",
+                            "title": "Hikkaduwa Nightlife",
+                            "description": "Beach bars and backpacker scene.",
+                            "duration": "4 hours",
+                            "tags": [
+                                "nightlife",
+                                "social"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "dayNumber": 21,
+                    "title": "Hikkaduwa → Colombo",
+                    "locations": [
+                        "Hikkaduwa",
+                        "Colombo"
+                    ],
+                    "activities": [
+                        {
+                            "time": "morning",
+                            "type": "activity",
+                            "title": "Snorkeling at Coral Reef",
+                            "description": "Glass-bottom boat or snorkel the reef.",
+                            "duration": "2 hours",
+                            "tags": [
+                                "snorkeling"
+                            ]
+                        },
+                        {
+                            "time": "afternoon",
+                            "type": "transfer",
+                            "title": "Train to Colombo",
+                            "description": "2.5-hour scenic coastal train.",
+                            "duration": "2.5 hours",
+                            "tags": [
+                                "train",
+                                "departure"
+                            ]
+                        }
+                    ]
+                }
+            ],
             "sidebarHighlights": [
                 "Anuradhapura Ruins",
                 "Jaffna Nallur Temple",

@@ -15,48 +15,78 @@
             <p class="text-white/90 text-lg md:text-xl font-medium mb-8">
               Plan your perfect Sri Lankan adventure with our curated guides and custom tools.
             </p>
-            <div class="bg-surface-light dark:bg-surface-dark p-2 rounded-xl shadow-xl flex flex-col md:flex-row gap-2 max-w-2xl mx-auto">
-              <div class="flex-1 flex items-center px-2 border-b md:border-b-0 md:border-r border-gray-200 dark:border-neutral-700 py-3 md:py-0 relative">
-                <span class="material-symbols-outlined text-primary mr-2">calendar_month</span>
-                <input 
-                  ref="dateInputRef"
-                  v-model="startDate" 
-                  type="date"
-                  class="w-24 bg-transparent border-none focus:ring-0 text-sm dark:text-white focus:outline-none" 
-                  placeholder="Start"
-                  @focus="showDateHint = false"
-                />
-                <span class="text-text-muted mx-1">→</span>
-                <input 
-                  v-model="endDate" 
-                  type="date"
-                  class="w-24 bg-transparent border-none focus:ring-0 text-sm dark:text-white focus:outline-none" 
-                  placeholder="End"
-                />
-                <div v-if="showDateHint" class="absolute -bottom-6 left-0 text-xs text-red-500 font-medium">
-                  Please select your travel dates
+            <div class="bg-white/95 dark:bg-surface-dark/95 backdrop-blur-sm p-3 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-3 max-w-2xl mx-auto border border-white/20">
+              <!-- Dates Section -->
+              <div class="flex-1 flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-50 dark:bg-neutral-800/50 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer group"
+                   @click="dateInputRef?.showPicker?.()">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-primary">calendar_month</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-semibold text-text-muted dark:text-neutral-400 uppercase tracking-wide">When</p>
+                  <div class="flex items-center gap-2 text-sm font-medium">
+                    <template v-if="startDate && endDate">
+                      <span class="text-text-main dark:text-white">{{ formatDate(startDate) }}</span>
+                      <span class="text-text-muted">→</span>
+                      <span class="text-text-main dark:text-white">{{ formatDate(endDate) }}</span>
+                      <span class="text-primary text-xs font-bold ml-1">({{ tripDuration }} days)</span>
+                    </template>
+                    <span v-else class="text-text-muted dark:text-neutral-500 group-hover:text-text-main dark:group-hover:text-white transition-colors">
+                      Select travel dates
+                    </span>
+                  </div>
+                  <!-- Hidden date inputs -->
+                  <input 
+                    ref="dateInputRef"
+                    v-model="startDate" 
+                    type="date"
+                    class="sr-only"
+                    @change="handleStartDateChange"
+                  />
+                  <input 
+                    v-model="endDate" 
+                    type="date"
+                    class="sr-only"
+                    ref="endDateRef"
+                  />
+                </div>
+                <span class="material-symbols-outlined text-text-muted text-sm group-hover:text-primary transition-colors">edit_calendar</span>
+              </div>
+
+              <!-- Travel Style Section -->
+              <div class="flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-50 dark:bg-neutral-800/50 hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors min-w-[180px]">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-primary">travel_explore</span>
+                </div>
+                <div class="flex-1">
+                  <p class="text-xs font-semibold text-text-muted dark:text-neutral-400 uppercase tracking-wide">Style</p>
+                  <select v-model="travelStyle" class="w-full bg-transparent border-none focus:ring-0 text-sm font-medium dark:text-white cursor-pointer focus:outline-none text-text-main p-0 -ml-1">
+                    <option value="">Any style</option>
+                    <option value="relaxed">Relaxed</option>
+                    <option value="adventure">Adventure</option>
+                    <option value="culture">Culture</option>
+                    <option value="nature">Nature</option>
+                    <option value="budget">Budget</option>
+                    <option value="luxury">Luxury</option>
+                    <option value="family">Family</option>
+                  </select>
                 </div>
               </div>
-              <div class="flex-1 flex items-center px-4 py-3 md:py-0">
-                <span class="material-symbols-outlined text-primary mr-3">travel_explore</span>
-                <select v-model="travelStyle" class="w-full bg-transparent border-none focus:ring-0 text-sm dark:text-white dark:bg-surface-dark cursor-pointer focus:outline-none text-text-main">
-                  <option value="">Any Travel Style</option>
-                  <option value="relaxed">Relaxed</option>
-                  <option value="adventure">Adventure</option>
-                  <option value="culture">Culture</option>
-                  <option value="nature">Nature</option>
-                  <option value="budget">Budget</option>
-                  <option value="luxury">Luxury</option>
-                  <option value="family">Family</option>
-                </select>
-              </div>
+
+              <!-- CTA Button -->
               <button 
                 @click="startPlanning" 
-                class="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:bg-primary/90 transition-colors whitespace-nowrap"
+                class="bg-primary text-white px-6 py-3.5 rounded-xl font-bold hover:bg-primary/90 transition-all whitespace-nowrap flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
               >
+                <span class="material-symbols-outlined text-lg">arrow_forward</span>
                 Start Planning
               </button>
             </div>
+            
+            <!-- Date hint -->
+            <p v-if="showDateHint" class="text-center text-red-400 text-sm font-medium mt-3 animate-pulse">
+              ⚠️ Please select your travel dates to continue
+            </p>
           </div>
         </div>
       </section>
@@ -148,6 +178,39 @@ const showDateHint = ref(false)
 const dateInputRef = ref<HTMLInputElement | null>(null)
 
 const featuredItineraries = computed(() => itinerariesData.itineraries.slice(0, 3))
+
+// Format date for display (e.g. "Oct 15, 2023")
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return ''
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  })
+}
+
+// Calculate trip duration in days
+const tripDuration = computed(() => {
+  if (!startDate.value || !endDate.value) return 0
+  const start = new Date(startDate.value)
+  const end = new Date(endDate.value)
+  const diffTime = Math.abs(end.getTime() - start.getTime())
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1 
+})
+
+// Auto-set end date to +7 days when start date changes (if end date is empty or invalid)
+const handleStartDateChange = () => {
+  if (!startDate.value) return
+  
+  const start = new Date(startDate.value)
+  const end = new Date(endDate.value)
+  
+  if (!endDate.value || end <= start) {
+    const newEnd = new Date(start)
+    newEnd.setDate(start.getDate() + 7)
+    endDate.value = newEnd.toISOString().slice(0, 10)
+  }
+}
 
 const startPlanning = () => {
   // If no dates selected, show hint and focus
