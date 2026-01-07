@@ -58,22 +58,22 @@
             <div class="flex flex-col gap-1 border-r border-gray-100 dark:border-gray-700 last:border-0 pr-4">
               <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Travelers</span>
               <span class="text-sm font-semibold text-primary dark:text-white">{{ getTravelersType(itinerary.style)
-                }}</span>
+              }}</span>
             </div>
             <div class="flex flex-col gap-1 border-r border-gray-100 dark:border-gray-700 last:border-0 pr-4">
               <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Budget</span>
               <span class="text-sm font-semibold text-primary dark:text-white">{{ getBudgetLabel(itinerary.budgetType)
-                }}</span>
+              }}</span>
             </div>
             <div class="flex flex-col gap-1 border-r border-gray-100 dark:border-gray-700 last:border-0 pr-4">
               <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Difficulty</span>
               <span class="text-sm font-semibold text-primary dark:text-white">{{ getDifficulty(itinerary.style)
-                }}</span>
+              }}</span>
             </div>
             <div class="flex flex-col gap-1 border-r border-gray-100 dark:border-gray-700 last:border-0 pr-4">
               <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Pace</span>
               <span class="text-sm font-semibold text-primary dark:text-white">{{ getPace(itinerary.durationDays)
-                }}</span>
+              }}</span>
             </div>
             <div class="flex flex-col gap-1 pr-4">
               <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Best Time</span>
@@ -125,7 +125,7 @@
                           <p class="text-sm text-text-muted leading-relaxed">{{ activity.description }}</p>
                           <div class="mt-1 flex items-center gap-2 text-xs text-text-muted">
                             <span class="material-icons text-sm">{{ getActivityIcon(activity.type) }}</span> {{
-                            activity.duration }}
+                              activity.duration }}
                             <span
                               class="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
                               {{ capitalize(activity.type) }}
@@ -325,6 +325,7 @@ useHead({
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
+  font-feature-settings: 'liga';
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
 }
