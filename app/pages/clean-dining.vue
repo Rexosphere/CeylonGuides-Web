@@ -1,638 +1,317 @@
 <template>
-  <div class="bg-background-light dark:bg-dining-dark font-manrope text-[#111718] dark:text-white min-h-screen flex flex-col overflow-x-hidden">
-    <!-- Header handled by layout -->
-
-    <!-- Main Content -->
-    <main class="flex-grow w-full max-w-[1440px] mx-auto px-4 md:px-10 py-6">
-      <!-- Header & Filters Section -->
-      <div class="flex flex-col gap-6 mb-8">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-          <div class="max-w-2xl">
-            <h1 class="text-[#111718] dark:text-white text-3xl md:text-5xl font-black leading-tight tracking-tight mb-3">Clean Dining & Safe Food Guide</h1>
-            <p class="text-[#618689] dark:text-gray-400 text-lg">Discover hygienic and certified culinary experiences across Sri Lanka's most beautiful locales.</p>
-          </div>
-        </div>
-        
-        <!-- Filter Chips -->
-        <div class="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
-          <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-[#111718] dark:bg-white px-6 transition-transform hover:scale-105">
-            <span class="text-white dark:text-[#111718] text-sm font-bold">All</span>
-          </button>
-          <div class="flex h-10 shrink-0 items-center gap-x-2 rounded-full bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 px-5">
-            <span class="material-symbols-outlined text-[18px] text-dining-primary">category</span>
-            <select
-              v-model="selectedCategory"
-              class="bg-transparent text-sm font-medium text-[#111718] dark:text-gray-200 focus:outline-none"
-            >
-              <option value="">All Categories</option>
-              <option v-for="item in categories" :key="item.category" :value="item.category">
-                {{ formatCategory(item.category) }}
-              </option>
-            </select>
-          </div>
-          <button 
-            @click="selectDietary(selectedDietary === 'VEGETARIAN' ? null : 'VEGETARIAN')"
-            :class="[
-              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
-              selectedDietary === 'VEGETARIAN' 
-                ? 'bg-green-600 text-white border-green-600' 
-                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]" :class="selectedDietary === 'VEGETARIAN' ? 'text-white' : 'text-green-600'">eco</span>
-            <span class="text-sm font-medium" :class="selectedDietary === 'VEGETARIAN' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Vegetarian</span>
-          </button>
-          <button 
-            @click="selectDietary(selectedDietary === 'VEGAN' ? null : 'VEGAN')"
-            :class="[
-              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
-              selectedDietary === 'VEGAN' 
-                ? 'bg-green-500 text-white border-green-500' 
-                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]" :class="selectedDietary === 'VEGAN' ? 'text-white' : 'text-green-500'">nutrition</span>
-            <span class="text-sm font-medium" :class="selectedDietary === 'VEGAN' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Vegan</span>
-          </button>
-          <button 
-            @click="selectDietary(selectedDietary === 'HALAL' ? null : 'HALAL')"
-            :class="[
-              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
-              selectedDietary === 'HALAL' 
-                ? 'bg-purple-600 text-white border-purple-600' 
-                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]" :class="selectedDietary === 'HALAL' ? 'text-white' : 'text-purple-500'">restaurant</span>
-            <span class="text-sm font-medium" :class="selectedDietary === 'HALAL' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Halal</span>
-          </button>
-          <button 
-            @click="selectHygiene(selectedHygiene === 'GOOD' ? null : 'GOOD')"
-            :class="[
-              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
-              selectedHygiene === 'GOOD' 
-                ? 'bg-blue-600 text-white border-blue-600' 
-                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]" :class="selectedHygiene === 'GOOD' ? 'text-white' : 'text-blue-500'">verified_user</span>
-            <span class="text-sm font-medium" :class="selectedHygiene === 'GOOD' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Safe & Verified</span>
-          </button>
-          <button 
-            @click="selectHygiene(selectedHygiene === 'EXCELLENT' ? null : 'EXCELLENT')"
-            :class="[
-              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
-              selectedHygiene === 'EXCELLENT' 
-                ? 'bg-coral-orange text-white border-coral-orange' 
-                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]" :class="selectedHygiene === 'EXCELLENT' ? 'text-white' : 'text-coral-orange'">spa</span>
-            <span class="text-sm font-medium" :class="selectedHygiene === 'EXCELLENT' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">5-Lotus Hygiene</span>
-          </button>
-        </div>
-
-        <!-- Near Me & Sort Controls -->
-        <div class="flex items-center gap-3 flex-wrap">
-          <button
-            v-if="!userLocation"
-            @click="enableLocation"
-            :disabled="gettingLocation"
-            class="flex h-10 items-center gap-2 px-5 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 text-white rounded-full text-sm font-medium transition-colors"
-          >
-            <span v-if="gettingLocation" class="animate-spin">⏳</span>
-            <span v-else class="material-symbols-outlined text-[18px]">my_location</span>
-            {{ gettingLocation ? 'Getting location...' : 'Near Me' }}
-          </button>
-          
-          <div v-else class="flex gap-2">
-            <button
-              @click="sortBy = 'distance'"
-              :class="[
-                'flex h-10 items-center gap-2 px-4 rounded-full text-sm font-medium transition-colors',
-                sortBy === 'distance' 
-                  ? 'bg-dining-primary text-[#102022]' 
-                  : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 text-[#111718] dark:text-gray-200 hover:border-dining-primary'
-              ]"
-            >
-              <span class="material-symbols-outlined text-[18px]">near_me</span>
-              Nearest
-            </button>
-            <button
-              @click="sortBy = 'rating'"
-              :class="[
-                'flex h-10 items-center gap-2 px-4 rounded-full text-sm font-medium transition-colors',
-                sortBy === 'rating' 
-                  ? 'bg-dining-primary text-[#102022]' 
-                  : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 text-[#111718] dark:text-gray-200 hover:border-dining-primary'
-              ]"
-            >
-              <span class="material-symbols-outlined text-[18px]">star</span>
-              Top Rated
-            </button>
-            <button
-              @click="userLocation = null; sortBy = 'relevance'"
-              class="flex h-10 items-center px-3 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              title="Clear location"
-            >
-              <span class="material-symbols-outlined text-[18px]">close</span>
-            </button>
-          </div>
+  <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark text-dark-charcoal dark:text-white font-display antialiased">
+    
+    <!-- Hero Section -->
+    <section class="relative h-[60vh] min-h-[500px] w-full overflow-hidden">
+      <div 
+        class="absolute inset-0 bg-cover bg-center" 
+        style='background-image: linear-gradient(rgba(16, 32, 34, 0.4) 0%, rgba(16, 32, 34, 0.6) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuD2xNtC6Msj0wV0Tayt-tD_VIILj7f1Irigig_tna9kLLbT8-yAmzXL7uDX1mX-Mu8FyRfrnVPT8wtNLwicbBZYF3c83iuJZnwt8fQ8SpoWNfszslkw1kJg8Svwc3IO5FYie78bOYCpvDWUafqt0fDRZ844Z1_HSJKr-ZMRfyAgJ98kc6VDgrWi7qCG4Gj4kfQFV7vgIxMbsCNdjMjYfTT2sce-YdFHHUUeUm_BgKc6N_FpNZOpooDYXNTQN94wUkFRTxEiGsobQeA");'>
+      </div>
+      <div class="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
+        <div class="max-w-4xl space-y-6">
+          <h1 class="font-display text-5xl font-extrabold tracking-tight text-white md:text-6xl lg:text-7xl drop-shadow-md">
+            Clean Dining & Safe Food Guide
+          </h1>
+          <p class="mx-auto max-w-2xl text-lg font-medium text-white/90 md:text-xl drop-shadow-sm">
+            Discover hygienic and certified culinary experiences across Sri Lanka's most beautiful locales.
+          </p>
         </div>
       </div>
+    </section>
 
-      <!-- Split View Layout -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
-        <!-- List View (Left) -->
-        <div class="lg:col-span-7 flex flex-col gap-6">
-          <!-- Dynamic Restaurant Cards -->
-          <div v-if="pending" class="col-span-full flex justify-center py-12">
-            <div class="animate-spin size-8 border-2 border-dining-primary border-t-transparent rounded-full"></div>
-          </div>
-          
-          <div v-else-if="restaurants.length === 0" class="col-span-full text-center py-12 text-gray-500">
-            <span class="material-symbols-outlined text-4xl mb-2">restaurant</span>
-            <p>No restaurants found. Try adjusting your filters.</p>
-          </div>
-          
-          <div v-for="restaurant in restaurants" :key="restaurant.id" :id="`restaurant-${restaurant.id}`" class="group flex flex-col sm:flex-row bg-white dark:bg-[#1f2b2e] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-transparent hover:border-dining-primary/20">
-            <div class="sm:w-64 h-56 sm:h-auto shrink-0 bg-cover bg-center relative" :style="`background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400');`">
-              <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-deep-teal dark:text-dining-primary flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">location_on</span>
-                {{ restaurant.location?.name || restaurant.district || 'Sri Lanka' }}
-              </div>
-              <!-- Distance Badge (when Near Me active) -->
-              <div 
-                v-if="userLocation && restaurant.location?.latitude && restaurant.location?.longitude" 
-                class="absolute top-3 right-3 bg-blue-500 text-white px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1"
-              >
-                <span class="material-symbols-outlined text-sm">straighten</span>
-                {{ getDistance(userLocation.lat, userLocation.lng, restaurant.location.latitude, restaurant.location.longitude).toFixed(1) }} km
-              </div>
+    <!-- Filters Section -->
+    <section class="sticky top-[73px] z-40 w-full border-b border-[#f0f4f4] dark:border-gray-700 bg-white dark:bg-background-dark py-4 shadow-sm">
+      <div class="container mx-auto px-4 lg:px-8">
+        <div class="hide-scrollbar flex gap-3 overflow-x-auto pb-1">
+          <!-- Active Filter -->
+          <button 
+            @click="selectedFilter = selectedFilter === 'safe' ? null : 'safe'"
+            :class="[
+              'flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-transform hover:scale-105',
+              selectedFilter === 'safe' ? 'bg-primary text-dark-charcoal' : 'bg-[#f0f4f4] dark:bg-gray-800 text-dark-charcoal dark:text-white hover:bg-[#e0e8e9] dark:hover:bg-gray-700'
+            ]"
+          >
+            <span class="material-symbols-outlined text-[18px]">verified_user</span>
+            Safe & Secure
+          </button>
+          <!-- Inactive Filters -->
+          <button 
+            @click="selectedFilter = selectedFilter === 'vegetarian' ? null : 'vegetarian'"
+            :class="[
+              'flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors',
+              selectedFilter === 'vegetarian' ? 'bg-primary text-dark-charcoal' : 'bg-[#f0f4f4] dark:bg-gray-800 text-dark-charcoal dark:text-white hover:bg-[#e0e8e9] dark:hover:bg-gray-700'
+            ]"
+          >
+            <span class="material-symbols-outlined text-[18px]">spa</span>
+            Vegetarian
+          </button>
+          <button 
+            @click="selectedFilter = selectedFilter === 'vegan' ? null : 'vegan'"
+            :class="[
+              'flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors',
+              selectedFilter === 'vegan' ? 'bg-primary text-dark-charcoal' : 'bg-[#f0f4f4] dark:bg-gray-800 text-dark-charcoal dark:text-white hover:bg-[#e0e8e9] dark:hover:bg-gray-700'
+            ]"
+          >
+            <span class="material-symbols-outlined text-[18px]">nutrition</span>
+            Vegan
+          </button>
+          <button 
+            @click="selectedFilter = selectedFilter === 'halal' ? null : 'halal'"
+            :class="[
+              'flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors',
+              selectedFilter === 'halal' ? 'bg-primary text-dark-charcoal' : 'bg-[#f0f4f4] dark:bg-gray-800 text-dark-charcoal dark:text-white hover:bg-[#e0e8e9] dark:hover:bg-gray-700'
+            ]"
+          >
+            <span class="material-symbols-outlined text-[18px]">restaurant_menu</span>
+            Halal
+          </button>
+          <button 
+            @click="selectedFilter = selectedFilter === 'hygiene' ? null : 'hygiene'"
+            :class="[
+              'flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors',
+              selectedFilter === 'hygiene' ? 'bg-primary text-dark-charcoal' : 'bg-[#f0f4f4] dark:bg-gray-800 text-dark-charcoal dark:text-white hover:bg-[#e0e8e9] dark:hover:bg-gray-700'
+            ]"
+          >
+            <span class="material-symbols-outlined text-[18px]">water_drop</span>
+            High Hygiene
+          </button>
+          <button 
+            @click="selectedFilter = selectedFilter === 'finedining' ? null : 'finedining'"
+            :class="[
+              'flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors',
+              selectedFilter === 'finedining' ? 'bg-primary text-dark-charcoal' : 'bg-[#f0f4f4] dark:bg-gray-800 text-dark-charcoal dark:text-white hover:bg-[#e0e8e9] dark:hover:bg-gray-700'
+            ]"
+          >
+            <span class="material-symbols-outlined text-[18px]">local_fire_department</span>
+            Fine Dining
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hybrid Content: List & Map -->
+    <div class="container mx-auto flex flex-col-reverse px-4 py-8 lg:flex-row lg:gap-8 lg:px-8 lg:py-12">
+      <!-- Venue List (Left) -->
+      <div class="flex w-full flex-col gap-6 lg:w-[55%] xl:w-[60%]">
+        <!-- Card 1 -->
+        <div class="group flex flex-col gap-4 rounded-2xl bg-white dark:bg-gray-800 p-4 shadow-sm ring-1 ring-slate-100 dark:ring-gray-700 transition-all hover:shadow-md md:flex-row md:items-stretch">
+          <div class="h-56 w-full shrink-0 overflow-hidden rounded-xl md:h-auto md:w-64">
+            <div 
+              class="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
+              style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOyJB0PUaR1LeNhV5kSLLX-t9dLJkClvwTnhPl7x6gq38QU6xKQTBg7Ve4MMbDUhHJwzYP_OWA8R073ZfZgRDHgCxNVl2y981AAxlwcJAS7d8QTBjT_gl3zFW6lY2DMVVdaDlI7obiA4NaujRXmBNuwHPk40mS82gNYqCjv3zxGlX6ynGHdcW9VHmUromJ2sCvY86e_YiFZpQJeJ6L9dZ7BZsJG_QAvRZCkj7hR6caYyGII2AJwsdYB0N_aKQaFIS0nx-t4dsc-k4");'>
             </div>
-            <div class="flex flex-col flex-grow p-5 justify-between">
-              <div>
-                <div class="flex justify-between items-start mb-2">
-                  <h3 class="text-xl font-bold text-[#111718] dark:text-white group-hover:text-dining-primary transition-colors">{{ restaurant.name }}</h3>
-                  <div class="flex items-center gap-0.5 text-coral-orange" :title="`${restaurant.rating || 0}/5 Rating`">
-                    <span v-for="n in 5" :key="n" class="material-symbols-outlined text-lg" :class="n <= Math.round(restaurant.rating || 0) ? 'fill-current' : 'opacity-30'">spa</span>
-                  </div>
-                </div>
-                <p class="text-[#618689] dark:text-gray-400 text-sm mb-4 line-clamp-2">{{ restaurant.description || 'Delicious local cuisine' }}</p>
-              </div>
-              <div class="flex flex-wrap gap-2 mt-2">
-                <!-- Halal Badge -->
-                <span v-if="restaurant.is_verified_halal" class="px-3 py-1 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 text-xs font-medium border border-purple-100 dark:border-purple-800 flex items-center gap-1">
-                  <span>✓</span> Halal Certified
+          </div>
+          <div class="flex flex-1 flex-col justify-between py-2">
+            <div>
+              <div class="mb-2 flex items-start justify-between">
+                <h3 class="text-xl font-bold text-dark-charcoal dark:text-white">Ministry of Crab</h3>
+                <span class="flex items-center gap-1 rounded-lg bg-green-50 dark:bg-green-900/20 px-2 py-1 text-xs font-bold text-green-700 dark:text-green-300">
+                  <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                  Certified
                 </span>
-                <!-- Dietary Options -->
-                <span v-for="option in (restaurant.dietary_options || []).slice(0, 2)" :key="option" class="px-3 py-1 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 text-xs font-medium border border-green-100 dark:border-green-800">{{ option }}</span>
-                <!-- Trust Badges -->
-                <TrustBadge 
-                  v-if="restaurant.hygiene_rating" 
-                  type="hygiene" 
-                  :value="restaurant.hygiene_rating"
-                  label="Hygiene certification"
-                />
-                <TrustBadge 
-                  v-if="restaurant.review_count"
-                  type="confidence"
-                  :value="restaurant.review_count"
-                  label="Community reviews"
-                />
               </div>
-              <!-- Review Button -->
-              <button @click="openDetails(restaurant.id)" class="flex items-center gap-2 text-[#111718] dark:text-gray-200 text-sm font-medium hover:underline">
-                <span class="material-symbols-outlined text-lg">info</span>
+              <div class="mb-3 flex items-center gap-1">
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="ml-2 text-sm font-medium text-slate-500 dark:text-slate-400">(5/5 Hygiene)</span>
+              </div>
+              <p class="mb-4 line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                Situated in the Old Dutch Hospital, this venue offers a world-class seafood experience with stringent hygiene protocols and premium ingredient sourcing.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="rounded-md bg-[#f0f4f4] dark:bg-gray-700 px-2.5 py-1 text-xs font-semibold text-deep-teal dark:text-primary">Seafood</span>
+                <span class="rounded-md bg-[#f0f4f4] dark:bg-gray-700 px-2.5 py-1 text-xs font-semibold text-deep-teal dark:text-primary">Halal Options</span>
+                <span class="rounded-md bg-[#f0f4f4] dark:bg-gray-700 px-2.5 py-1 text-xs font-semibold text-deep-teal dark:text-primary">Premium</span>
+              </div>
+            </div>
+            <div class="mt-4 flex justify-end">
+              <button class="group/btn flex items-center gap-1 text-sm font-bold text-deep-teal dark:text-primary hover:text-primary transition-colors">
                 View Details
-              </button>
-              <button @click="openReviewModal(restaurant)" class="mt-4 flex items-center gap-2 text-dining-primary text-sm font-medium hover:underline">
-                <span class="material-symbols-outlined text-lg">rate_review</span>
-                Leave a Review
+                <span class="material-symbols-outlined text-[18px] transition-transform group-hover/btn:translate-x-1">arrow_forward</span>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Map View (Right - Sticky) -->
-        <div class="lg:col-span-5 hidden lg:block">
-          <div class="sticky top-28 h-[calc(100vh-140px)] w-full rounded-2xl overflow-hidden shadow-sm border border-[#f0f4f4] dark:border-gray-800 bg-[#e5e7eb] relative group/map">
-            <!-- Map Image Placeholder -->
-            <div class="absolute inset-0 bg-cover bg-center opacity-80 dark:opacity-60" style='background-image: url("/images/downloaded_a5ef9569c1a1.avif"); filter: grayscale(20%);'></div>
-            <!-- Map UI Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10 pointer-events-none"></div>
-            
-            <!-- Map Pins -->
-            <div class="absolute top-1/3 left-1/4 group cursor-pointer">
-              <div class="relative">
-                <div class="w-10 h-10 bg-dining-primary rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white transform transition hover:scale-110 hover:-translate-y-1">
-                  <span class="material-symbols-outlined text-sm">restaurant</span>
-                </div>
-                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white dark:bg-[#1f2b2e] px-3 py-1.5 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
-                  <p class="text-xs font-bold text-[#111718] dark:text-white">The Coconut Tree</p>
-                  <div class="flex text-coral-orange text-[10px]">★★★★★</div>
-                </div>
+        <!-- Card 2 -->
+        <div class="group flex flex-col gap-4 rounded-2xl bg-white dark:bg-gray-800 p-4 shadow-sm ring-1 ring-slate-100 dark:ring-gray-700 transition-all hover:shadow-md md:flex-row md:items-stretch">
+          <div class="h-56 w-full shrink-0 overflow-hidden rounded-xl md:h-auto md:w-64">
+            <div 
+              class="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
+              style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDYFjLkWSPHb9yQj3GwN7D4xWEV_LYQs7Eql27oGcdnkVOcHmC3QUG4Bd8w9NtLt_Jft6uNOONmddhd28jSkZbOWWLJlauMJlcBoiQaW8p3CSBcNh20VKy4U9wuqemdi5KQErAjo6uX3NJuBGt54KzXZmLKOhczV8Lvv5dGQk3_zMI25YxWxDwC0cVxcaokNMEzAUSR8EK5bKDmg0Ci_dWKn0riuArya9COCAs60vufTXZnHlhjo26mZp3vLupxIJ_jCnyCkCrm5nc");'>
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col justify-between py-2">
+            <div>
+              <div class="mb-2 flex items-start justify-between">
+                <h3 class="text-xl font-bold text-dark-charcoal dark:text-white">Nuga Gama</h3>
+                <span class="flex items-center gap-1 rounded-lg bg-green-50 dark:bg-green-900/20 px-2 py-1 text-xs font-bold text-green-700 dark:text-green-300">
+                  <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                  Certified
+                </span>
+              </div>
+              <div class="mb-3 flex items-center gap-1">
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 text-[20px]">local_florist</span>
+                <span class="ml-2 text-sm font-medium text-slate-500 dark:text-slate-400">(4/5 Hygiene)</span>
+              </div>
+              <p class="mb-4 line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                A rustic village experience in the heart of the city. Traditional clay pot cooking using organic vegetables directly from the garden.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="rounded-md bg-[#f0f4f4] dark:bg-gray-700 px-2.5 py-1 text-xs font-semibold text-deep-teal dark:text-primary">Organic</span>
+                <span class="rounded-md bg-[#f0f4f4] dark:bg-gray-700 px-2.5 py-1 text-xs font-semibold text-deep-teal dark:text-primary">Vegetarian Friendly</span>
+                <span class="rounded-md bg-[#f0f4f4] dark:bg-gray-700 px-2.5 py-1 text-xs font-semibold text-deep-teal dark:text-primary">Outdoor</span>
               </div>
             </div>
-            
-            <div class="absolute top-1/2 right-1/3 group cursor-pointer">
-              <div class="relative">
-                <div class="w-10 h-10 bg-white dark:bg-[#1f2b2e] rounded-full border-4 border-white dark:border-gray-700 shadow-lg flex items-center justify-center text-dining-primary transform transition hover:scale-110 hover:-translate-y-1">
-                  <span class="material-symbols-outlined text-sm">restaurant</span>
-                </div>
-                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white dark:bg-[#1f2b2e] px-3 py-1.5 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
-                  <p class="text-xs font-bold text-[#111718] dark:text-white">Ministry of Crab</p>
-                </div>
+            <div class="mt-4 flex justify-end">
+              <button class="group/btn flex items-center gap-1 text-sm font-bold text-deep-teal dark:text-primary hover:text-primary transition-colors">
+                View Details
+                <span class="material-symbols-outlined text-[18px] transition-transform group-hover/btn:translate-x-1">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="group flex flex-col gap-4 rounded-2xl bg-white dark:bg-gray-800 p-4 shadow-sm ring-1 ring-slate-100 dark:ring-gray-700 transition-all hover:shadow-md md:flex-row md:items-stretch">
+          <div class="h-56 w-full shrink-0 overflow-hidden rounded-xl md:h-auto md:w-64">
+            <div 
+              class="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
+              style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBOHd0eHrPpfadjBcE2EH8HccXm4ufhtFweYXeVchLHS2mrKvqoX1X7-V5vQGZsqv6KNBrH7MDkaT7UUoUXrC0GJ_eemg0CYsW5Hz1ApSnK-rFXmxCWR7Ji3_wWl6QcYPhHAdTMOePYSJ29YqN9bOCKS9igfKrPwT9QBADkFDL334DsSntQPTzROeLktRgIPVd9fzl6r09IbjLIMMdqn8rZFtQNZrQEfB_uXkO5DoDcfqsFsm5p9wnmjCK2WdMJIGBPlQWbn2XTwJE");'>
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col justify-between py-2">
+            <div>
+              <div class="mb-2 flex items-start justify-between">
+                <h3 class="text-xl font-bold text-dark-charcoal dark:text-white">The Vegan Kitchen</h3>
+              </div>
+              <div class="mb-3 flex items-center gap-1">
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="material-symbols-outlined text-coral-orange text-[20px] fill-current">local_florist</span>
+                <span class="ml-2 text-sm font-medium text-slate-500 dark:text-slate-400">(5/5 Hygiene)</span>
+              </div>
+              <p class="mb-4 line-clamp-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                Fully plant-based menu featuring local flavors reimagined. Certified clean kitchen with an open layout for transparency.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="rounded-md bg-[#f0f4f4] dark:bg-gray-700 px-2.5 py-1 text-xs font-semibold text-deep-teal dark:text-primary">Vegan</span>
+                <span class="rounded-md bg-[#f0f4f4] dark:bg-gray-700 px-2.5 py-1 text-xs font-semibold text-deep-teal dark:text-primary">Gluten Free</span>
+                <span class="rounded-md bg-[#f0f4f4] dark:bg-gray-700 px-2.5 py-1 text-xs font-semibold text-deep-teal dark:text-primary">Cafe</span>
               </div>
             </div>
-            
-            <div class="absolute bottom-1/4 left-1/3 group cursor-pointer">
-              <div class="relative">
-                <div class="w-10 h-10 bg-white dark:bg-[#1f2b2e] rounded-full border-4 border-white dark:border-gray-700 shadow-lg flex items-center justify-center text-dining-primary transform transition hover:scale-110 hover:-translate-y-1">
-                  <span class="material-symbols-outlined text-sm">restaurant</span>
-                </div>
-              </div>
+            <div class="mt-4 flex justify-end">
+              <button class="group/btn flex items-center gap-1 text-sm font-bold text-deep-teal dark:text-primary hover:text-primary transition-colors">
+                View Details
+                <span class="material-symbols-outlined text-[18px] transition-transform group-hover/btn:translate-x-1">arrow_forward</span>
+              </button>
             </div>
-            
-            <button class="absolute bottom-4 right-4 bg-white dark:bg-[#1f2b2e] p-2 rounded-lg shadow-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition text-[#111718] dark:text-white">
-              <span class="material-symbols-outlined block">my_location</span>
-            </button>
           </div>
         </div>
       </div>
-    </main>
+
+      <!-- Sticky Map (Right) -->
+      <div class="mb-8 w-full lg:mb-0 lg:h-[calc(100vh-200px)] lg:w-[45%] xl:w-[40%] sticky lg:top-36">
+        <div class="h-[400px] w-full overflow-hidden rounded-2xl bg-slate-200 dark:bg-gray-800 shadow-md lg:h-full">
+          <!-- Abstract Map Representation -->
+          <div class="relative h-full w-full bg-[#f0f4f4] dark:bg-gray-800">
+            <div 
+              class="absolute inset-0 opacity-40 bg-[url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/World_map_blank_without_borders.svg/2000px-World_map_blank_without_borders.svg.png')] bg-cover bg-no-repeat bg-[center_top_300px]"
+            >
+            </div>
+            <!-- Map Pins -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform">
+              <div class="group relative flex cursor-pointer flex-col items-center">
+                <div class="rounded-lg bg-white dark:bg-gray-900 p-2 shadow-lg opacity-0 transition-opacity group-hover:opacity-100 absolute bottom-10 w-32 text-center">
+                  <p class="text-xs font-bold text-dark-charcoal dark:text-white">Ministry of Crab</p>
+                  <p class="text-[10px] text-coral-orange">5/5 Hygiene</p>
+                </div>
+                <span class="material-symbols-outlined text-4xl text-primary drop-shadow-md">location_on</span>
+              </div>
+            </div>
+            <div class="absolute top-1/3 left-1/3 transform">
+              <div class="group relative flex cursor-pointer flex-col items-center">
+                <div class="rounded-lg bg-white dark:bg-gray-900 p-2 shadow-lg opacity-0 transition-opacity group-hover:opacity-100 absolute bottom-10 w-32 text-center">
+                  <p class="text-xs font-bold text-dark-charcoal dark:text-white">Nuga Gama</p>
+                  <p class="text-[10px] text-coral-orange">4/5 Hygiene</p>
+                </div>
+                <span class="material-symbols-outlined text-4xl text-deep-teal/80 dark:text-primary/80 drop-shadow-md">location_on</span>
+              </div>
+            </div>
+            <div class="absolute bottom-1/3 right-1/3 transform">
+              <div class="group relative flex cursor-pointer flex-col items-center">
+                <div class="rounded-lg bg-white dark:bg-gray-900 p-2 shadow-lg opacity-0 transition-opacity group-hover:opacity-100 absolute bottom-10 w-32 text-center">
+                  <p class="text-xs font-bold text-dark-charcoal dark:text-white">The Vegan Kitchen</p>
+                  <p class="text-[10px] text-coral-orange">5/5 Hygiene</p>
+                </div>
+                <span class="material-symbols-outlined text-4xl text-deep-teal/80 dark:text-primary/80 drop-shadow-md">location_on</span>
+              </div>
+            </div>
+            <!-- Map Controls -->
+            <div class="absolute bottom-4 right-4 flex flex-col gap-2">
+              <button class="rounded-lg bg-white dark:bg-gray-700 p-2 shadow-md hover:bg-gray-50 dark:hover:bg-gray-600 text-dark-charcoal dark:text-white">
+                <span class="material-symbols-outlined">add</span>
+              </button>
+              <button class="rounded-lg bg-white dark:bg-gray-700 p-2 shadow-md hover:bg-gray-50 dark:hover:bg-gray-600 text-dark-charcoal dark:text-white">
+                <span class="material-symbols-outlined">remove</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Floating Action Button -->
-    <div class="fixed bottom-6 right-6 z-40">
-      <button class="flex items-center gap-2 bg-dining-primary hover:bg-cyan-400 text-[#102022] px-6 py-4 rounded-full shadow-[0_4px_14px_0_rgba(19,218,236,0.39)] transition-all hover:-translate-y-1 font-bold group">
-        <span class="material-symbols-outlined group-hover:rotate-90 transition-transform">add_circle</span>
-        Submit Rating
-      </button>
-    </div>
+    <button class="fixed bottom-8 right-8 z-50 flex items-center gap-2 rounded-full bg-primary px-6 py-4 text-base font-bold text-dark-charcoal shadow-xl transition-transform hover:scale-105 hover:bg-primary/90">
+      <span class="material-symbols-outlined">rate_review</span>
+      Submit Rating
+    </button>
   </div>
-
-  <!-- Review Modal -->
-  <Teleport to="body">
-    <div v-if="showReviewModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div class="absolute inset-0 bg-black/50" @click="showReviewModal = false"></div>
-      <div class="relative bg-white dark:bg-dining-dark rounded-2xl shadow-2xl w-full max-w-md">
-        <div class="border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
-          <h2 class="text-xl font-bold text-[#111718] dark:text-white">Leave a Review</h2>
-          <button @click="showReviewModal = false" class="text-gray-400 hover:text-gray-600">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-        
-        <form @submit.prevent="submitReview" class="p-6 space-y-5">
-          <div v-if="selectedRestaurant">
-            <p class="text-sm text-gray-500 dark:text-gray-400">Reviewing:</p>
-            <p class="font-bold text-[#111718] dark:text-white">{{ selectedRestaurant.name }}</p>
-          </div>
-          
-          <!-- Star Rating -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rating *</label>
-            <div class="flex gap-2">
-              <button v-for="star in 5" :key="star" type="button" @click="reviewForm.rating = star"
-                class="text-3xl transition-transform hover:scale-110"
-                :class="star <= reviewForm.rating ? 'text-yellow-400' : 'text-gray-300'">
-                ★
-              </button>
-            </div>
-          </div>
-          
-          <!-- Comment -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Comment</label>
-            <textarea v-model="reviewForm.comment" rows="3" maxlength="1000"
-              class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-[#1f2b2e] text-[#111718] dark:text-white focus:ring-2 focus:ring-dining-primary focus:border-transparent resize-none"
-              placeholder="Share your experience..."></textarea>
-          </div>
-          
-          <button type="submit" :disabled="reviewSubmitting || reviewForm.rating === 0"
-            class="w-full py-3 bg-dining-primary hover:bg-dining-primary/90 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all">
-            {{ reviewSubmitting ? 'Submitting...' : 'Submit Review' }}
-          </button>
-          
-          <p v-if="reviewError" class="text-red-500 text-sm text-center">{{ reviewError }}</p>
-          <p v-if="reviewSuccess" class="text-green-500 text-sm text-center">Review submitted!</p>
-        </form>
-      </div>
-    </div>
-  </Teleport>
-
-  <!-- Details Modal -->
-  <Teleport to="body">
-    <div v-if="showDetailsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div class="absolute inset-0 bg-black/50" @click="closeDetails"></div>
-      <div class="relative bg-white dark:bg-dining-dark rounded-2xl shadow-2xl w-full max-w-md">
-        <div class="border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
-          <h2 class="text-xl font-bold text-[#111718] dark:text-white">Restaurant Details</h2>
-          <button @click="closeDetails" class="text-gray-400 hover:text-gray-600">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-
-        <div class="p-6 space-y-4">
-          <div v-if="detailsLoading" class="text-sm text-gray-500">Loading details...</div>
-          <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
-          <div v-else-if="restaurantDetails">
-            <h3 class="font-bold text-[#111718] dark:text-white">{{ restaurantDetails.name }}</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ restaurantDetails.description || 'No description available.' }}</p>
-            <div class="flex flex-wrap gap-2 text-xs">
-              <span class="px-2 py-1 rounded bg-primary/10 text-primary">{{ restaurantDetails.category }}</span>
-              <span v-if="restaurantDetails.price_range" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ restaurantDetails.price_range }} range</span>
-              <span v-if="restaurantDetails.hygiene_rating" class="px-2 py-1 rounded bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
-                Hygiene: {{ restaurantDetails.hygiene_rating }}
-              </span>
-              <span v-if="restaurantDetails.is_verified_halal" class="px-2 py-1 rounded bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
-                Halal Certified
-              </span>
-            </div>
-            <div v-if="restaurantDetails.cuisine_types?.length" class="text-xs text-gray-500 dark:text-gray-400">
-              Cuisine: {{ restaurantDetails.cuisine_types.join(', ') }}
-            </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">
-              Location: {{ restaurantDetails.location?.name || restaurantDetails.district || 'Sri Lanka' }}
-            </div>
-            <div v-if="restaurantDetails.reviews?.length" class="pt-3 border-t border-gray-100 dark:border-white/10">
-              <h4 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Recent reviews</h4>
-              <div class="space-y-2">
-                <div v-for="review in restaurantDetails.reviews.slice(0, 3)" :key="review.id" class="text-xs text-gray-600 dark:text-gray-300">
-                  <div class="flex items-center justify-between">
-                    <span class="font-semibold">{{ review.user_name || 'Traveler' }}</span>
-                    <span class="text-amber-600">{{ review.rating.toFixed(1) }}★</span>
-                  </div>
-                  <p v-if="review.comment" class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">{{ review.comment }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-else class="text-sm text-gray-500">No details available.</div>
-        </div>
-      </div>
-    </div>
-  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import type { Restaurant } from '~/types/api'
+import { ref } from 'vue'
 
-// Default layout enabled
-// definePageMeta({
-//   layout: 'default'
-// })
-
-// Get config
-const config = useRuntimeConfig()
-const apiBase = config.public.apiBase
-
-// Filters
-const selectedCategory = ref<string | null>(null)
-const selectedDietary = ref<string | null>(null)
-const selectedHygiene = ref<string | null>(null)
-const searchQuery = ref('')
-const debouncedQuery = ref('')
-
-// Debounce search input (300ms)
-let debounceTimer: ReturnType<typeof setTimeout>
-watch(searchQuery, (newVal) => {
-  clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => {
-    debouncedQuery.value = newVal
-  }, 300)
+// SEO Meta
+definePageMeta({
+  layout: 'default'
 })
 
-const { data: categoriesResponse } = await useFetch<{
-  success: boolean
-  data: Array<{ category: string; count: number }>
-}>(`${apiBase}/api/dining/categories/list`)
-
-const categories = computed(() => categoriesResponse.value?.data || [])
-
-function formatCategory(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
-}
-
-// Review Modal State
-const showReviewModal = ref(false)
-const selectedRestaurant = ref<Restaurant | null>(null)
-const reviewSubmitting = ref(false)
-const reviewError = ref('')
-const reviewSuccess = ref(false)
-const reviewForm = ref({ rating: 0, comment: '' })
-const showDetailsModal = ref(false)
-const detailsLoading = ref(false)
-const detailsError = ref('')
-const restaurantDetails = ref<Restaurant | null>(null)
-
-const { data: restaurantsResponse, pending, refresh } = await useFetch<{ 
-  success: boolean
-  data: Restaurant[]
-  count: number 
-}>(
-  () => {
-    const params = new URLSearchParams()
-    if (selectedCategory.value) params.set('category', selectedCategory.value)
-    if (selectedDietary.value) params.set('dietary', selectedDietary.value)
-    if (selectedHygiene.value) params.set('hygiene', selectedHygiene.value)
-    if (debouncedQuery.value) params.set('search', debouncedQuery.value)
-    const queryStr = params.toString()
-    return `${apiBase}/api/dining${queryStr ? `?${queryStr}` : ''}`
-  },
-  { watch: [selectedCategory, selectedDietary, selectedHygiene, debouncedQuery] }
-)
-
-// Handle deep-links for specific restaurant
-const route = useRoute()
-
-function scrollToRestaurant(id: string) {
-  nextTick(() => {
-    const el = document.getElementById(`restaurant-${id}`)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      el.classList.add('ring-2', 'ring-dining-primary', 'ring-offset-2')
-      setTimeout(() => {
-        el.classList.remove('ring-2', 'ring-dining-primary', 'ring-offset-2')
-      }, 3000)
-    }
-  })
-}
-
-onMounted(async () => {
-  if (route.query.id) {
-    const restaurantId = route.query.id as string
-    await nextTick()
-    await openDetails(restaurantId)
-    scrollToRestaurant(restaurantId)
-  }
+useHead({
+  title: 'Clean Dining & Food Guide - CeylonGuide',
+  meta: [
+    { name: 'description', content: 'Discover hygienic and certified culinary experiences across Sri Lanka\'s most beautiful locales.' }
+  ]
 })
 
-// Near Me mode state
-const userLocation = ref<{ lat: number; lng: number } | null>(null)
-const sortBy = ref<'relevance' | 'distance' | 'rating'>('relevance')
-const gettingLocation = ref(false)
-
-// Enable location
-async function enableLocation() {
-  if (!navigator.geolocation) {
-    alert('Geolocation not supported')
-    return
-  }
-  
-  gettingLocation.value = true
-  
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      userLocation.value = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      }
-      sortBy.value = 'distance'
-      gettingLocation.value = false
-    },
-    (error) => {
-      console.error('Location error:', error)
-      alert('Could not get location')
-      gettingLocation.value = false
-    },
-    { timeout: 10000 }
-  )
-}
-
-// Calculate distance (Haversine formula)
-function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371 // Earth radius in km
-  const dLat = (lat2 - lat1) * Math.PI / 180
-  const dLng = (lng2 - lng1) * Math.PI / 180
-  const a = 
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLng / 2) * Math.sin(dLng / 2)
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  return R * c
-}
-
-// Sorted restaurants based on sortBy and location
-const sortedRestaurants = computed(() => {
-  const list = [...(restaurantsResponse.value?.data || [])]
-  
-  if (sortBy.value === 'distance' && userLocation.value) {
-    list.sort((a, b) => {
-      const distA = getDistance(
-        userLocation.value!.lat,
-        userLocation.value!.lng,
-        a.location?.latitude || 0,
-        a.location?.longitude || 0
-      )
-      const distB = getDistance(
-        userLocation.value!.lat,
-        userLocation.value!.lng,
-        b.location?.latitude || 0,
-        b.location?.longitude || 0
-      )
-      return distA - distB
-    })
-  } else if (sortBy.value === 'rating') {
-    list.sort((a, b) => (b.rating || 0) - (a.rating || 0))
-  }
-  
-  return list
-})
-
-const restaurants = computed(() => sortedRestaurants.value)
-
-// Dietary filters
-const dietaryFilters = [
-  { id: null, label: 'All', icon: 'restaurant' },
-  { id: 'VEGETARIAN', label: 'Vegetarian', icon: 'eco' },
-  { id: 'VEGAN', label: 'Vegan', icon: 'psychiatry' },
-  { id: 'HALAL', label: 'Halal', icon: 'mosque' },
-]
-
-// Hygiene rating helper
-function getHygieneStars(rating: string): number {
-  switch (rating) {
-    case 'EXCELLENT': return 5
-    case 'GOOD': return 4
-    case 'FAIR': return 3
-    case 'POOR': return 2
-    default: return 0
-  }
-}
-
-function selectDietary(id: string | null) {
-  selectedDietary.value = selectedDietary.value === id ? null : id
-}
-
-function selectHygiene(id: string | null) {
-  selectedHygiene.value = selectedHygiene.value === id ? null : id
-}
-
-function openReviewModal(restaurant: Restaurant) {
-  selectedRestaurant.value = restaurant
-  reviewForm.value = { rating: 0, comment: '' }
-  reviewError.value = ''
-  reviewSuccess.value = false
-  showReviewModal.value = true
-}
-
-async function openDetails(restaurantId: string) {
-  showDetailsModal.value = true
-  detailsLoading.value = true
-  detailsError.value = ''
-  try {
-    const response = await $fetch<{ success: boolean; data: Restaurant }>(`${apiBase}/api/dining/${restaurantId}`)
-    if (response.success) {
-      restaurantDetails.value = response.data
-    }
-  } catch (err: any) {
-    detailsError.value = err?.data?.error || 'Failed to load restaurant details.'
-  } finally {
-    detailsLoading.value = false
-  }
-}
-
-function closeDetails() {
-  showDetailsModal.value = false
-  restaurantDetails.value = null
-}
-
-async function submitReview() {
-  if (!selectedRestaurant.value || reviewForm.value.rating === 0) return
-  
-  reviewSubmitting.value = true
-  reviewError.value = ''
-  
-  try {
-    await $fetch(`${apiBase}/api/dining/${selectedRestaurant.value.id}/reviews`, {
-      method: 'POST',
-      body: {
-        rating: reviewForm.value.rating,
-        comment: reviewForm.value.comment || undefined
-      }
-    })
-    
-    reviewSuccess.value = true
-    setTimeout(() => {
-      showReviewModal.value = false
-      refresh()
-    }, 1500)
-  } catch (err: any) {
-    reviewError.value = err?.data?.error || 'Failed to submit review'
-  } finally {
-    reviewSubmitting.value = false
-  }
-}
+// Filter state
+const selectedFilter = ref<string | null>('safe')
 </script>
 
 <style scoped>
+/* Custom scrollbar for horizontal lists */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 </style>
