@@ -3,10 +3,12 @@
     <NuxtPage />
   </NuxtLayout>
   <AIChatWidget />
+  <NotificationContainer />
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import NotificationContainer from '~/components/UI/NotificationContainer.vue'
 
 const config = useRuntimeConfig()
 const authPinged = useState<boolean>('auth_pinged', () => false)

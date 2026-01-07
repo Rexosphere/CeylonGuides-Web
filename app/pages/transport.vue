@@ -46,27 +46,37 @@
               <!-- Origin -->
               <div>
                 <label class="block text-[10px] font-bold text-text-muted uppercase tracking-wider mb-1.5">Origin</label>
-                <div class="relative flex items-center">
+                <div class="relative flex items-center transition-all duration-200" :class="{ 'scale-[1.02]': inputFocused === 'origin' }">
                   <input 
-                    v-model="originSearch"
-                    @input="handleOriginInput"
-                    @focus="showOriginDropdown = true"
-                    class="w-full pl-4 pr-10 py-3 rounded-lg bg-background-light dark:bg-[#2d1f1a] border-none text-sm text-text-main dark:text-white placeholder:text-text-muted/60 focus:ring-1 focus:ring-teal-deep" 
+                    v-model="journeyState.origin"
+                    @focus="() => { showOriginDropdown = true; inputFocused = 'origin' }"
+                    @blur="inputFocused = null"
+                    class="w-full pl-4 pr-10 py-3 rounded-lg bg-background-light dark:bg-[#2d1f1a] border-none text-sm text-text-main dark:text-white placeholder:text-text-muted/60 transition-all border border-transparent focus:border-teal-deep focus:ring-4 focus:ring-teal-deep/10"
+                    :class="{ 'border-teal-deep/50': journeyState.origin }" 
                     type="text" 
                     placeholder="Enter origin..."
                   />
-                  <button 
-                    v-if="originSearch"
-                    @click="clearOrigin"
-                    class="absolute right-2 p-1.5 text-text-muted hover:text-teal-deep rounded hover:bg-black/5 dark:hover:bg-white/5"
-                  >
-                    <span class="material-symbols-outlined text-[18px]">close</span>
-                  </button>
+                  
+                  <div class="absolute right-2 flex items-center gap-1">
+                    <transition name="scale-in">
+                        <span v-if="origin" class="material-symbols-outlined text-teal-500 text-[18px]">check_circle</span>
+                    </transition>
+                    
+                    <button 
+                        v-if="journeyState.origin"
+                        @click="() => { journeyState.origin = ''; originGeo.clearSearch(); }"
+                        class="p-1 text-text-muted hover:text-teal-deep rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                    >
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                  </div>
+
                   <button 
                     @click="setPickMode('from')"
-                    class="absolute right-10 p-1.5 text-text-muted hover:text-teal-deep rounded hover:bg-black/5 dark:hover:bg-white/5"
+                    class="p-2 text-text-muted hover:text-teal-deep rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group shrink-0"
+                    title="Pick on map"
                   >
-                    <span class="material-symbols-outlined text-[18px]">map</span>
+                    <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">map</span>
                   </button>
                   
                   <!-- Dropdown -->
@@ -75,11 +85,11 @@
                       <span class="inline-block w-4 h-4 border-2 border-teal-500 border-t-transparent rounded-full animate-spin mr-2"></span>
                       Locating...
                     </div>
-                    <template v-else-if="originSearch.length >= 2">
+                    <template v-else-if="journeyState.origin.length >= 2">
                       <button
                         v-for="place in originGeo.searchResults.value"
                         :key="place.id"
-                        @click="selectGeocodedOrigin(place)"
+                        @click="handleOriginSelect(place)"
                         class="w-full px-4 py-3 text-left text-sm hover:bg-slate-50 dark:hover:bg-white/5 flex items-start gap-3 border-b border-slate-50 dark:border-white/5 last:border-0 transition-colors"
                       >
                         <span class="mt-0.5 text-text-muted material-symbols-outlined text-lg">location_on</span>
@@ -112,37 +122,47 @@
               <!-- Destination -->
               <div>
                 <label class="block text-[10px] font-bold text-text-muted uppercase tracking-wider mb-1.5">Destination</label>
-                <div class="relative flex items-center">
+                <div class="relative flex items-center transition-all duration-200" :class="{ 'scale-[1.02]': inputFocused === 'destination' }">
                   <input 
-                    v-model="destinationSearch"
-                    @input="handleDestinationInput"
-                    @focus="showDestinationDropdown = true"
-                    class="w-full pl-4 pr-10 py-3 rounded-lg bg-background-light dark:bg-[#2d1f1a] border-none text-sm text-text-main dark:text-white placeholder:text-text-muted/60 focus:ring-1 focus:ring-teal-deep" 
+                    v-model="journeyState.destination"
+                    @focus="() => { showDestinationDropdown = true; inputFocused = 'destination' }"
+                    @blur="inputFocused = null"
+                    class="w-full pl-4 pr-10 py-3 rounded-lg bg-background-light dark:bg-[#2d1f1a] border-none text-sm text-text-main dark:text-white placeholder:text-text-muted/60 transition-all border border-transparent focus:border-teal-deep focus:ring-4 focus:ring-teal-deep/10"
+                    :class="{ 'border-teal-deep/50': journeyState.destination }"
                     type="text" 
                     placeholder="Enter destination..."
                   />
-                  <button 
-                    v-if="destinationSearch"
-                    @click="clearDestination"
-                    class="absolute right-2 p-1.5 text-text-muted hover:text-teal-deep rounded hover:bg-black/5 dark:hover:bg-white/5"
-                  >
-                    <span class="material-symbols-outlined text-[18px]">close</span>
-                  </button>
+                  
+                  <div class="absolute right-2 flex items-center gap-1">
+                    <transition name="scale-in">
+                        <span v-if="destination" class="material-symbols-outlined text-teal-500 text-[18px]">check_circle</span>
+                    </transition>
+
+                    <button 
+                        v-if="journeyState.destination"
+                        @click="() => { journeyState.destination = ''; destGeo.clearSearch(); }"
+                        class="p-1 text-text-muted hover:text-teal-deep rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                    >
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                  </div>
+
                   <button 
                     @click="setPickMode('to')"
-                    class="absolute right-10 p-1.5 text-text-muted hover:text-teal-deep rounded hover:bg-black/5 dark:hover:bg-white/5"
+                    class="p-2 text-text-muted hover:text-teal-deep rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group shrink-0"
+                    title="Pick on map"
                   >
-                    <span class="material-symbols-outlined text-[18px]">flag</span>
+                    <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">flag</span>
                   </button>
                   
                   <!-- Dropdown -->
                   <div v-if="showDestinationDropdown" v-click-outside="() => showDestinationDropdown = false" class="absolute z-50 w-full mt-2 top-full bg-white dark:bg-surface-dark rounded-xl shadow-xl ring-1 ring-slate-900/5 max-h-64 overflow-auto">
                     <div v-if="destGeo.isSearching.value" class="p-4 text-center text-sm text-text-muted">Loading...</div>
-                    <template v-else-if="destinationSearch.length >= 2">
+                    <template v-else-if="journeyState.destination.length >= 2">
                       <button
                         v-for="place in destGeo.searchResults.value"
                         :key="place.id"
-                        @click="selectGeocodedDest(place)"
+                        @click="handleDestSelect(place)"
                         class="w-full px-4 py-3 text-left text-sm hover:bg-slate-50 dark:hover:bg-white/5 flex items-start gap-3 border-b border-slate-50 dark:border-white/5 last:border-0 transition-colors"
                       >
                         <span class="mt-0.5 text-text-muted material-symbols-outlined text-lg">location_on</span>
@@ -246,16 +266,30 @@
             </div>
 
             <!-- Find Route Button -->
+            <!-- Find Route Button -->
             <button 
-              @click="calculateRoute"
+              @click="handleSearch"
               :disabled="!origin || !destination || isRouteLoading"
-              class="w-full py-3.5 bg-teal-light hover:bg-teal-deep text-white font-bold text-sm rounded-full shadow-lg shadow-teal-deep/20 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+              class="w-full py-3.5 bg-teal-light hover:bg-teal-deep text-white font-bold text-sm rounded-full shadow-lg shadow-teal-deep/20 flex items-center justify-center gap-2 transition-all disabled:opacity-50 relative overflow-hidden group"
             >
-              <span v-if="isRouteLoading" class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
-              <span v-else class="material-symbols-outlined text-[20px]">directions</span>
-              {{ isRouteLoading ? 'Calculating...' : 'Find Best Route' }}
+              <div v-if="isSearching" class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
+                <span>Calculating...</span>
+              </div>
+              <div v-else class="flex items-center gap-2 group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-[20px]">directions</span>
+                <span>Find Best Route</span>
+              </div>
             </button>
           </div>
+          
+          <!-- Search Error Message -->
+          <transition name="slide-down">
+             <div v-if="searchError" class="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg text-xs font-bold flex items-center gap-2 mb-4 border border-red-100 dark:border-red-900/30">
+                <span class="material-symbols-outlined text-sm">error</span>
+                {{ searchError }}
+             </div>
+          </transition>
 
           <!-- Popular Routes -->
           <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card border border-gray-100 dark:border-white/5 p-6">
@@ -284,17 +318,31 @@
         <div class="flex-1 w-full space-y-6">
           
           <!-- Map -->
-          <div class="relative w-full h-full min-h-[500px] bg-slate-50 rounded-2xl overflow-hidden shadow-inner border border-slate-200 group">
+          <div 
+            class="map-container relative w-full h-full min-h-[500px] bg-slate-50 rounded-2xl overflow-hidden shadow-inner border border-slate-200 group transition-all duration-300"
+            @touchstart.passive="mapTouchStart"
+            @touchend="mapTouchEnd"
+          >
              <ClientOnly fallback-tag="div" fallback="Loading map...">
                 <TransportMap
-                    :origin="origin"
-                    :destination="destination"
-                    :polyline="routeResult?.polyline || []"
-                    :mode="selectedMode"
+                    :origin="mapOrigin"
+                    :destination="mapDestination"
+                    :polyline="resultsState.routes?.polyline || []"
+                    :mode="undefined"
                     :pick-mode="pickMode"
                     @select-location="handleMapClick"
                 />
              </ClientOnly>
+             
+             <!-- Mobile Map Interaction Overlay Button -->
+             <button 
+                v-if="!uiState.showMap"
+                @click.stop="uiState.showMap = true"
+                class="map-overlay-button md:hidden flex items-center gap-2 px-4 py-2 bg-white text-teal-deep rounded-full border border-teal-deep/20 font-medium text-sm shadow-lg backdrop-blur-sm"
+             >
+                <span class="material-symbols-outlined text-[18px]">touch_app</span>
+                Tap to interact
+             </button>
              
              <!-- Overlay Pick Badge -->
              <div v-if="pickMode" class="absolute top-4 left-1/2 -translate-x-1/2 z-[500]">
@@ -318,9 +366,9 @@
         <button 
           v-for="tab in infoTabs" 
           :key="tab.id"
-          @click="activeTab = tab.id as 'routes' | 'tips' | 'phrases' | 'safety'"
+          @click="uiState.activeTab = tab.id as any"
           class="tab-button flex-1 h-14 flex items-center justify-center gap-2 text-sm font-medium transition-all border-b-2"
-          :class="activeTab === tab.id 
+          :class="uiState.activeTab === tab.id 
             ? 'bg-white dark:bg-background-dark text-teal-deep border-teal-deep' 
             : 'text-text-muted border-transparent hover:text-teal-deep hover:bg-white/50 dark:hover:bg-white/5'"
         >
@@ -330,27 +378,35 @@
         
         <!-- Collapse Toggle -->
         <button 
-          @click="infoPanelExpanded = !infoPanelExpanded"
+          @click="uiState.infoPanelExpanded = !uiState.infoPanelExpanded"
           class="w-14 h-14 flex items-center justify-center border-l border-gray-200 dark:border-white/10 text-text-muted hover:text-teal-deep hover:bg-white/50 dark:hover:bg-white/5 transition-all"
-          :aria-label="infoPanelExpanded ? 'Collapse panel' : 'Expand panel'"
+          :aria-label="uiState.infoPanelExpanded ? 'Collapse panel' : 'Expand panel'"
         >
-          <span class="material-symbols-outlined transition-transform" :class="infoPanelExpanded ? 'rotate-180' : ''">expand_more</span>
+          <span class="material-symbols-outlined transition-transform" :class="uiState.infoPanelExpanded ? 'rotate-180' : ''">expand_more</span>
         </button>
       </div>
       
       <!-- Tab Content -->
       <div 
-        v-if="infoPanelExpanded"
+        v-if="uiState.infoPanelExpanded"
         class="tab-content bg-white dark:bg-surface-dark rounded-b-2xl shadow-card border border-t-0 border-gray-100 dark:border-white/5 p-6 md:p-8"
       >
         <transition name="slide-fade" mode="out-in">
           <!-- Routes & Fares Tab -->
-          <div v-if="activeTab === 'routes'" class="space-y-6" key="routes">
-            <div v-if="routeResult" class="grid md:grid-cols-2 gap-6">
+          <div v-if="uiState.activeTab === 'routes'" class="space-y-6" key="routes">
+            <!-- Loading State -->
+            <div v-if="isRouteLoading">
+              <RouteSkeleton />
+              <RouteSkeleton />
+            </div>
+
+            <div v-else-if="routeResult" class="grid md:grid-cols-2 gap-6">
               <!-- Fare Estimate Card -->
               <div class="bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl p-6 text-white">
                 <div class="text-xs uppercase font-bold tracking-wider opacity-80 mb-1">Estimated Fare</div>
-                <div class="text-4xl font-bold mb-3">{{ calculatedFare.display }}</div>
+                <div class="text-4xl font-bold mb-3 flex items-baseline gap-1">
+                   Rs. <AnimatedNumber :value="calculatedFare.total" :duration="1500" />
+                </div>
                 <div class="flex gap-4 text-sm opacity-90">
                   <div class="flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-lg">straighten</span>
@@ -361,6 +417,14 @@
                     {{ formatDuration(routeResult.durationMinutes) }}
                   </div>
                 </div>
+                
+                <button 
+                  @click="showFareGuard = true"
+                  class="mt-4 w-full py-2 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-colors border border-white/20"
+                >
+                  <span class="material-symbols-outlined text-sm">shield_person</span>
+                  Fair Estimate Check
+                </button>
               </div>
               
               <!-- Route Options -->
@@ -388,9 +452,22 @@
             </div>
             
             <!-- Empty State -->
-            <div v-else class="text-center py-12">
-              <span class="material-symbols-outlined text-5xl text-text-muted/40 mb-3 block">route</span>
-              <p class="text-sm text-text-muted">Enter origin and destination to see fare estimates</p>
+            <!-- Empty State -->
+            <div v-else class="text-center py-12 px-4">
+              <div v-if="!journeyState.origin && !journeyState.destination" class="flex flex-col items-center">
+                 <div class="w-16 h-16 bg-teal-50 dark:bg-teal-900/20 rounded-full flex items-center justify-center text-teal-600 dark:text-teal-400 mb-4">
+                    <span class="material-symbols-outlined text-3xl">map</span>
+                 </div>
+                 <h3 class="text-lg font-bold text-text-main dark:text-white mb-2">Ready to plan your journey?</h3>
+                 <p class="text-sm text-text-muted max-w-xs mx-auto">Enter your origin and destination above to see the best routes and fare estimates.</p>
+              </div>
+              <div v-else class="flex flex-col items-center">
+                 <div class="w-16 h-16 bg-slate-50 dark:bg-white/5 rounded-full flex items-center justify-center text-text-muted mb-4">
+                    <span class="material-symbols-outlined text-3xl">wrong_location</span>
+                 </div>
+                 <h3 class="text-lg font-bold text-text-main dark:text-white mb-2">No routes found</h3>
+                 <p class="text-sm text-text-muted max-w-xs mx-auto">We couldn't find a route between these locations. Try selecting a different destination.</p>
+              </div>
             </div>
             
             <!-- Standard Fare Reference -->
@@ -421,7 +498,7 @@
           </div>
           
           <!-- Travel Tips Tab -->
-          <div v-else-if="activeTab === 'tips'" class="space-y-6" key="tips">
+          <div v-else-if="uiState.activeTab === 'tips'" class="space-y-6" key="tips">
             <div class="grid md:grid-cols-2 gap-6">
               <!-- Quick Tips -->
               <div>
@@ -459,18 +536,69 @@
                   <span class="material-symbols-outlined text-orange-500 text-lg">warning</span>
                   <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider">Common Scams</h3>
                 </div>
-                <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/40 rounded-xl p-4 cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors" @click="showScams = true">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                      <div class="size-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
-                        <span class="material-symbols-outlined text-lg">report</span>
-                      </div>
-                      <div>
-                        <h4 class="text-sm font-bold text-text-main dark:text-white">Tourist Scams to Avoid</h4>
-                        <p class="text-xs text-text-muted">Tap to see safety tips for traveling</p>
+                <div class="space-y-3">
+                  <!-- Meter Scam -->
+                  <div class="flex gap-4 p-4 rounded-xl bg-surface-light dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                    <div class="shrink-0 size-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 text-lg">
+                      📟
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-text-main dark:text-white text-xs mb-1">"Meter Broken" or "No Meter"</h4>
+                      <p class="text-[10px] text-text-muted leading-relaxed mb-1.5">
+                        Driver claims meter is broken or missing, then quotes a high fixed price.
+                      </p>
+                      <div class="text-[10px] font-bold text-teal-600 dark:text-teal-400">
+                        Solution: Insist on a metered tuk-tuk.
                       </div>
                     </div>
-                    <span class="material-symbols-outlined text-orange-400">chevron_right</span>
+                  </div>
+
+                  <!-- Closed Hotel Scam -->
+                  <div class="flex gap-4 p-4 rounded-xl bg-surface-light dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                    <div class="shrink-0 size-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 text-lg">
+                      🏨
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-text-main dark:text-white text-xs mb-1">"Hotel Closed" / "Road Closed"</h4>
+                      <p class="text-[10px] text-text-muted leading-relaxed mb-1.5">
+                        Driver claims your destination is closed to take you elsewhere for commission.
+                      </p>
+                      <div class="text-[10px] font-bold text-teal-600 dark:text-teal-400">
+                        Solution: Check Google Maps, insist on original drop-off.
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Festival Scam -->
+                  <div class="flex gap-4 p-4 rounded-xl bg-surface-light dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                    <div class="shrink-0 size-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-lg">
+                      🎉
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-text-main dark:text-white text-xs mb-1">"Special Festival Today"</h4>
+                      <p class="text-[10px] text-text-muted leading-relaxed mb-1.5">
+                        Tells you about a fake "one-day only" festival to detour you to shops.
+                      </p>
+                      <div class="text-[10px] font-bold text-teal-600 dark:text-teal-400">
+                        Solution: Politely decline and stick to the plan.
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Change Scam -->
+                  <div class="flex gap-4 p-4 rounded-xl bg-surface-light dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                    <div class="shrink-0 size-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 text-lg">
+                      🪙
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-text-main dark:text-white text-xs mb-1">"No Change"</h4>
+                      <p class="text-[10px] text-text-muted leading-relaxed mb-1.5">
+                        Driver claims no change for big notes to keep the difference.
+                      </p>
+                      <div class="text-[10px] font-bold text-teal-600 dark:text-teal-400">
+                        Solution: Carry small notes (Rs. 100, 50).
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -478,7 +606,7 @@
           </div>
           
           <!-- Phrases Tab -->
-          <div v-else-if="activeTab === 'phrases'" class="space-y-6" key="phrases">
+          <div v-else-if="uiState.activeTab === 'phrases'" class="space-y-6" key="phrases">
             <div class="flex items-center gap-2 mb-4">
               <span class="material-symbols-outlined text-teal-deep text-lg">record_voice_over</span>
               <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider">Negotiation Phrases</h3>
@@ -495,10 +623,19 @@
                 <div class="text-base font-medium text-text-main dark:text-white mb-1">"Mee-tara [price] hari-da?"</div>
                 <div class="text-xs text-text-muted">Is [price] okay for here?</div>
               </div>
-              <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-100 dark:border-amber-900/30">
-                <div class="text-xs font-bold text-amber-700 dark:text-amber-400 mb-2">📱 Use Meter</div>
-                <div class="text-base font-medium text-text-main dark:text-white mb-1">"Meter danna"</div>
-                <div class="text-xs text-text-muted">Turn on the meter</div>
+              <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-100 dark:border-amber-900/30 flex flex-col justify-between">
+                <div>
+                  <div class="text-xs font-bold text-amber-700 dark:text-amber-400 mb-2">📱 Use Meter</div>
+                  <div class="text-base font-medium text-text-main dark:text-white mb-1">"Meter danna"</div>
+                  <div class="text-xs text-text-muted">Turn on the meter</div>
+                </div>
+                <button 
+                  @click="showFareGuard = true"
+                  class="mt-3 w-full py-1.5 bg-white/50 hover:bg-white/80 dark:bg-black/10 dark:hover:bg-black/20 rounded-lg text-[10px] font-bold text-amber-800 dark:text-amber-200 transition-colors flex items-center justify-center gap-1.5"
+                >
+                  <span class="material-symbols-outlined text-[14px]">shield_person</span>
+                  Tips
+                </button>
               </div>
               <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-100 dark:border-green-900/30">
                 <div class="text-xs font-bold text-green-700 dark:text-green-400 mb-2">🙏 Thank You</div>
@@ -519,7 +656,7 @@
           </div>
           
           <!-- Safety Tab -->
-          <div v-else-if="activeTab === 'safety'" class="space-y-6" key="safety">
+          <div v-else-if="uiState.activeTab === 'safety'" class="space-y-6" key="safety">
             <div class="grid md:grid-cols-2 gap-6">
               <!-- Emergency Contacts -->
               <div class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/40 rounded-2xl p-6">
@@ -665,8 +802,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { useTransportRoutes, popularDestinations } from '~/composables/useTransportRoutes'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick, reactive } from 'vue'
+import RouteSkeleton from '~/components/Transport/RouteSkeleton.vue'
+import { useNotifications } from '~/composables/useNotifications'
+
+import { useTransportSearch } from '~/composables/useTransportSearch'
+import { popularDestinations } from '~/composables/useTransportRoutes'
 import { useGeocode, type GeocodedPlace } from '~/composables/useGeocode'
 
 // SEO
@@ -677,34 +818,166 @@ useHead({
   ]
 })
 
+// Centralized State
 const {
-  origin,
-  destination,
-  routeResult,
-  isLoading: isRouteLoading,
-  calculateRoute: doCalculate,
-  setOrigin,
-  setDestination,
-  swapLocations: doSwap
-} = useTransportRoutes()
+  journeyState,
+  searchState,
+  resultsState,
+  uiState,
+  validationState,
+  canSearch,
+  hasResults,
+  sortedOptions,
+  cheapestRoute,
+  fastestRoute,
+  performSearch: originalPerformSearch,
+  selectRoute,
+  resetForm,
+  addToSearchHistory,
+  mapOrigin,
+  mapDestination
+} = useTransportSearch()
 
+// const { isRouteLoading, routeResult } = useTransportRoutes() // Removed to avoid duplicates with existing computed props
+const { show: showNotification } = useNotifications()
+
+// --- Performance Monitoring ---
+const performanceMetrics = reactive({
+  searchTime: 0
+})
+
+const performSearch = async () => {
+  const start = performance.now()
+  try {
+    await originalPerformSearch()
+  } catch (err) {
+    showNotification('Search failed. Please try again.', 'error')
+  } finally {
+    const end = performance.now()
+    performanceMetrics.searchTime = end - start
+    if (performanceMetrics.searchTime > 2000) {
+      console.warn('Long search detected:', performanceMetrics.searchTime, 'ms')
+    }
+  }
+}
+
+// Monitor long tasks
+let longTaskObserver: PerformanceObserver | null = null
+
+onMounted(() => {
+  if (typeof window !== 'undefined' && 'PerformanceObserver' in window) {
+    try {
+      longTaskObserver = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          if (entry.duration > 50) {
+            // Log silently
+          }
+        }
+      })
+      longTaskObserver.observe({ entryTypes: ['longtask'] })
+    } catch (e) {
+      // Observer not supported
+    }
+  }
+})
+
+onUnmounted(() => {
+  longTaskObserver?.disconnect()
+})
+
+// Geocoding (kept separate as it drives the autocomplete UI)
 const originGeo = useGeocode()
 const destGeo = useGeocode()
 
-const originSearch = ref('')
-const destinationSearch = ref('')
+// Local UI state (specific to dropdown interactions, etc.)
 const showOriginDropdown = ref(false)
 const showDestinationDropdown = ref(false)
 const showAdvanced = ref(false)
 const showFareGuard = ref(false)
 const showScams = ref(false)
 const pickMode = ref<'from' | 'to' | null>(null)
-const selectedMode = ref('tuktuk')
 
-// Info Panel State
-const activeTab = ref<'routes' | 'tips' | 'phrases' | 'safety'>('tips')
-const infoPanelExpanded = ref(true)
+// UI Interaction State (Restored)
+const inputFocused = ref<'origin' | 'destination' | null>(null)
+const hoveredOption = ref<string | null>(null)
+const selectedMode = computed({
+  get: () => journeyState.transportMode.toLowerCase(),
+  set: (val: any) => journeyState.transportMode = val.toUpperCase()
+})
+const origin = computed(() => journeyState.origin) // Proxy for template check
+const destination = computed(() => journeyState.destination) // Proxy for template check
+const routeResult = computed(() => resultsState.routes) // Proxy for legacy template parts
 
+
+// Watchers for Autocomplete
+watch(() => journeyState.origin, (val) => {
+  if (val && !validationState.originError) {
+      // If manually typed, we might want to trigger search
+      originGeo.searchPlaces(val)
+  }
+})
+
+watch(() => journeyState.destination, (val) => {
+  if (val && !validationState.destinationError) {
+      destGeo.searchPlaces(val)
+  }
+})
+
+// Map Selection Handler
+const handleMapClick = (location: { lat: number; lon: number; name?: string }) => {
+  if (pickMode.value === 'from') {
+    journeyState.origin = location.name || `${location.lat.toFixed(4)}, ${location.lon.toFixed(4)}`
+    mapOrigin.value = { 
+        name: location.name || 'Selected Location',
+        lat: location.lat,
+        lon: location.lon
+    }
+    showOriginDropdown.value = false
+    pickMode.value = null
+  } else if (pickMode.value === 'to') {
+    journeyState.destination = location.name || `${location.lat.toFixed(4)}, ${location.lon.toFixed(4)}`
+    mapDestination.value = { 
+        name: location.name || 'Selected Location',
+        lat: location.lat,
+        lon: location.lon
+    }
+    showDestinationDropdown.value = false
+    pickMode.value = null
+  }
+}
+
+// Input Handlers
+const handleOriginSelect = (place: GeocodedPlace) => {
+    journeyState.origin = place.displayName
+    showOriginDropdown.value = false
+}
+
+const handleDestSelect = (place: GeocodedPlace) => {
+    journeyState.destination = place.displayName
+    showDestinationDropdown.value = false
+}
+
+const setPickMode = (mode: 'from' | 'to') => {
+    pickMode.value = mode
+    uiState.showMap = true
+    // Scroll to map on mobile?
+}
+
+const handleSearch = async () => {
+    if (!canSearch.value) return;
+    await performSearch()
+    // Auto scroll to results check is in the composable's watcher or here
+}
+
+const swapLocations = () => {
+    const temp = journeyState.origin
+    journeyState.origin = journeyState.destination
+    journeyState.destination = temp
+}
+
+import AnimatedNumber from '~/components/Shared/AnimatedNumber.vue'
+
+// UI Constants
 const infoTabs = [
   { id: 'routes', label: 'Routes & Fares', icon: 'route' },
   { id: 'tips', label: 'Travel Tips', icon: 'tips_and_updates' },
@@ -726,13 +999,6 @@ const modeIcons: Record<string, string> = {
   train: 'train'
 }
 
-const fareSettings = ref({
-  firstKmRate: 100,
-  perKmRate: 60,
-  minFare: 150,
-  nightMode: false
-})
-
 const modeMultipliers: Record<string, number> = {
   tuktuk: 1.0,
   taxi: 1.4,
@@ -740,121 +1006,31 @@ const modeMultipliers: Record<string, number> = {
   train: 0.12
 }
 
-// Auto-calculate route when both points are set
-watch([origin, destination], async ([newOrigin, newDest]) => {
-  if (newOrigin && newDest) {
-    await doCalculate()
-  }
+const fareSettings = ref({
+  firstKmRate: 100,
+  perKmRate: 60,
+  minFare: 150,
+  nightMode: false
 })
 
-function handleOriginInput() {
-  showOriginDropdown.value = true
-  pickMode.value = null
-  originGeo.searchPlaces(originSearch.value)
-}
+const popularRoutes = [
+  { id: '1', from: 'Bandaranaike International Airport', to: 'Colombo', icon: 'flight_takeoff', title: 'Airport Transfer 45m', distance: '32 km', color: 'text-teal-deep' },
+  { id: '2', from: 'Colombo', to: 'Ella', icon: 'landscape', title: 'Scenic Train 9h', distance: '200 km', color: 'text-coral-orange' },
+  { id: '3', from: 'Colombo', to: 'Kandy', icon: 'directions_bus', title: 'Express Bus 3h', distance: '115 km', color: 'text-blue-600' },
+  { id: '4', from: 'Colombo', to: 'Galle', icon: 'directions_car', title: 'Highway 1.5h', distance: '120 km', color: 'text-green-600' },
+  { id: '5', from: 'Kandy', to: 'Sigiriya', icon: 'sunny', title: 'Day Trip 2.5h', distance: '90 km', color: 'text-yellow-600' }
+]
 
-function handleDestinationInput() {
-  showDestinationDropdown.value = true
-  pickMode.value = null
-  destGeo.searchPlaces(destinationSearch.value)
-}
-
-function clearOrigin() {
-  originSearch.value = ''
-  origin.value = null
-  originGeo.clearSearch()
-  routeResult.value = null
-}
-
-function clearDestination() {
-  destinationSearch.value = ''
-  destination.value = null
-  destGeo.clearSearch()
-  routeResult.value = null
-}
-
-function selectGeocodedOrigin(place: GeocodedPlace) {
-  origin.value = {
-    name: place.name,
-    lat: place.lat,
-    lon: place.lon
-  }
-  originSearch.value = place.name
-  showOriginDropdown.value = false
-  originGeo.clearSearch()
-}
-
-function selectGeocodedDest(place: GeocodedPlace) {
-  destination.value = {
-    name: place.name,
-    lat: place.lat,
-    lon: place.lon
-  }
-  destinationSearch.value = place.name
-  showDestinationDropdown.value = false
-  destGeo.clearSearch()
-}
-
-function selectOrigin(dest: typeof popularDestinations[0]) {
-  setOrigin(dest)
-  originSearch.value = dest.name
-  showOriginDropdown.value = false
-  pickMode.value = null
-  originGeo.clearSearch()
-}
-
-function selectDestination(dest: typeof popularDestinations[0]) {
-  setDestination(dest)
-  destinationSearch.value = dest.name
-  showDestinationDropdown.value = false
-  pickMode.value = null
-  destGeo.clearSearch()
-}
-
-function swapLocations() {
-  const tempSearch = originSearch.value
-  originSearch.value = destinationSearch.value
-  destinationSearch.value = tempSearch
-  doSwap()
-}
-
-function setPickMode(mode: 'from' | 'to') {
-  pickMode.value = pickMode.value === mode ? null : mode
-  showOriginDropdown.value = false
-  showDestinationDropdown.value = false
-}
-
-
-function handleMapClick(loc: { lat: number; lon: number; name: string }) {
-  if (pickMode.value === 'from') {
-    origin.value = loc
-    originSearch.value = loc.name
-    pickMode.value = null
-    // If not searching, ensure dropdown is closed
-    showOriginDropdown.value = false
-  } else if (pickMode.value === 'to') {
-    destination.value = loc
-    destinationSearch.value = loc.name
-    pickMode.value = null
-    showDestinationDropdown.value = false
-  }
-}
-
-async function calculateRoute() {
-  if (origin.value && destination.value) {
-    await doCalculate()
-  }
-}
-
+// Adapted Computed Properties
 const calculatedFare = computed(() => {
-  if (!routeResult.value) return {
+  if (!resultsState.routes) return {
     total: 0,
     breakdown: { first: 0, remaining: 0, distance: 0 },
     ranges: { typical: 0, high: 0, tourist: 0 },
     display: 'Rs. 0'
   }
 
-  const distance = routeResult.value.distanceKm
+  const distance = resultsState.routes.distanceKm
   const firstKmCost = fareSettings.value.firstKmRate
   const remainingKm = Math.max(0, distance - 1)
   const remainingCost = remainingKm * fareSettings.value.perKmRate
@@ -863,8 +1039,9 @@ const calculatedFare = computed(() => {
 
   if (fareSettings.value.nightMode) totalRaw *= 1.5
 
-  if (selectedMode.value !== 'tuktuk') {
-    totalRaw *= (modeMultipliers[selectedMode.value] || 1)
+  const mode = resultsState.selectedRoute?.mode || 'tuktuk'
+  if (mode !== 'tuktuk') {
+    totalRaw *= (modeMultipliers[mode] || 1)
   }
 
   const total = Math.round(totalRaw / 10) * 10
@@ -885,63 +1062,33 @@ const calculatedFare = computed(() => {
   }
 })
 
-const recommendedOptions = computed(() => {
-  if (!routeResult.value) return []
-  
-  const distance = routeResult.value.distanceKm
-  
-  return [
-    {
-      label: 'Train',
-      subtitle: 'Most scenic option • 54m',
-      cost: 'Rs. 157',
-      icon: 'train',
-      bgColor: 'bg-teal-deep/5',
-      textColor: 'text-teal-deep'
-    },
-    {
-      label: 'Express Bus',
-      subtitle: 'Fast A/C coaches • 38m',
-      cost: 'Rs. 251',
-      icon: 'directions_bus',
-      bgColor: 'bg-blue-50 dark:bg-blue-900/20',
-      textColor: 'text-blue-600 dark:text-blue-400'
-    },
-    {
-      label: 'Private Car',
-      subtitle: 'Door-to-door comfort • 34m',
-      cost: 'Rs. 2826',
-      icon: 'directions_car',
-      bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
-      textColor: 'text-yellow-600 dark:text-yellow-400'
-    }
-  ]
-})
-
-const popularRoutes = [
-  { id: '1', from: 'Bandaranaike International Airport', to: 'Colombo', icon: 'flight_takeoff', title: 'Airport Transfer 45m', distance: '32 km', color: 'text-teal-deep' },
-  { id: '2', from: 'Colombo', to: 'Ella', icon: 'landscape', title: 'Scenic Train 9h', distance: '200 km', color: 'text-coral-orange' },
-  { id: '3', from: 'Colombo', to: 'Kandy', icon: 'directions_bus', title: 'Express Bus 3h', distance: '115 km', color: 'text-blue-600' },
-  { id: '4', from: 'Colombo', to: 'Galle', icon: 'directions_car', title: 'Highway 1.5h', distance: '120 km', color: 'text-green-600' },
-  { id: '5', from: 'Kandy', to: 'Sigiriya', icon: 'sunny', title: 'Day Trip 2.5h', distance: '90 km', color: 'text-yellow-600' }
-]
-
 function setPopularRoute(route: typeof popularRoutes[0]) {
   pickMode.value = null
   showFareGuard.value = false
   showScams.value = false
-
+  
+  // Set in centralized state
+  // We need to resolve Name to Lat/Lon if possible, or just set name for geocoding
+  // Based on old logic, popularDestinations has the data
+  
   const from = popularDestinations.find(d => d.name === route.from)
   const to = popularDestinations.find(d => d.name === route.to)
 
   if (from) {
-    origin.value = { name: from.name, lat: from.lat, lon: from.lon }
-    originSearch.value = from.name
+      journeyState.origin = from.name
+      // If we need lat/lon in pure state, we should add it:
+      // But journeyState only has string origin/dest. 
+      // The composable watchers will trigger logic if needed.
   }
-
+  
   if (to) {
-    destination.value = { name: to.name, lat: to.lat, lon: to.lon }
-    destinationSearch.value = to.name
+      journeyState.destination = to.name
+  }
+  
+  // Trigger search if both valid? 
+  // Let user click search or trigger it manually
+  if (from && to) {
+      performSearch()
   }
 }
 
@@ -968,6 +1115,168 @@ const vClickOutside = {
     document.removeEventListener('click', el.clickOutsideEvent)
   }
 }
+
+
+
+// UI State & Helpers (Restored for template compatibility)
+const infoPanelExpanded = computed({
+  get: () => uiState.infoPanelExpanded,
+  set: (val) => uiState.infoPanelExpanded = val
+})
+
+const isSearching = computed(() => searchState.isSearching)
+const searchError = computed(() => searchState.error)
+
+// Re-implement recommendedOptions using resultsState or fallback
+const recommendedOptions = computed(() => {
+  if (!resultsState.routes) return []
+  
+  // Start with all options
+  let options = [...resultsState.routes.options]
+  
+  // Format them for the UI card if needed, or if the template expects specific fields
+  // The template expects: id, label, subtitle, cost, icon, bgColor, textColor
+  // Our RouteOptions have similar fields but we might need to map them to visual styles
+  
+  return options.map(opt => {
+     let bgColor = 'bg-gray-50 dark:bg-white/5'
+     let textColor = 'text-gray-600'
+     
+     if (opt.mode === 'train') {
+         bgColor = 'bg-teal-deep/5'
+         textColor = 'text-teal-deep'
+     } else if (opt.mode === 'bus') {
+         bgColor = 'bg-blue-50 dark:bg-blue-900/20'
+         textColor = 'text-blue-600 dark:text-blue-400'
+     } else if (opt.mode === 'taxi') {
+         bgColor = 'bg-yellow-50 dark:bg-yellow-900/20'
+         textColor = 'text-yellow-600 dark:text-yellow-400'
+     }
+     
+     return {
+         ...opt,
+         id: opt.mode, // template uses :key="option.id"
+         subtitle: opt.description, // template uses option.subtitle
+         bgColor,
+         textColor
+     }
+  })
+})
+
+function selectOrigin(dest: typeof popularDestinations[0]) {
+  journeyState.origin = dest.name
+  performSearch() // Optional: trigger search immediately or just set value
+}
+
+function selectDestination(dest: typeof popularDestinations[0]) {
+  journeyState.destination = dest.name
+  performSearch()
+}
+
+// Alias for template compatibility
+const isRouteLoading = computed(() => searchState.isSearching)
+
+
+// Map & Touch Interaction State
+const isMapActive = ref(false)
+const touchStartY = ref(0)
+const touchCurrentY = ref(0)
+const isDragging = ref(false)
+let touchTimer: any
+
+// Map Interaction Handlers
+function handleMapInteraction(active: boolean) {
+  isMapActive.value = active
+  if (active) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
+  }
+}
+
+function mapTouchStart() {
+  touchTimer = setTimeout(() => {
+    handleMapInteraction(true)
+  }, 200)
+}
+
+function mapTouchEnd() {
+  clearTimeout(touchTimer)
+  handleMapInteraction(false)
+}
+
+// Info Panel Touch Handlers
+function handleTouchStart(e: TouchEvent) {
+  // Only handle drag on mobile
+  if (window.innerWidth >= 768) return
+  
+  const target = e.target as HTMLElement
+  // Allow scrolling in content if expanded
+  if (infoPanelExpanded.value && target.closest('.tab-content')) {
+     const content = target.closest('.tab-content')
+     if (content && content.scrollTop > 0) return
+  }
+  
+  const touch = e.touches[0]
+  if (touch) {
+    touchStartY.value = touch.clientY
+    isDragging.value = true
+  }
+}
+
+function handleTouchMove(e: TouchEvent) {
+  if (!isDragging.value || e.touches.length === 0) return
+  
+  const touch = e.touches[0]
+  if (!touch) return
+  
+  touchCurrentY.value = touch.clientY
+  const diff = touchCurrentY.value - touchStartY.value
+  
+  // Swipe down to collapse
+  if (diff > 50 && infoPanelExpanded.value) {
+    infoPanelExpanded.value = false
+    isDragging.value = false
+  }
+  // Swipe up to expand
+  else if (diff < -50 && !infoPanelExpanded.value) {
+    infoPanelExpanded.value = true
+    isDragging.value = false
+  }
+}
+
+function handleTouchEnd() {
+  isDragging.value = false
+}
+
+// Global click/touch listener to deactivate map when touching elsewhere
+function handleGlobalTouch(e: Event) {
+  if (isMapActive.value) {
+    const target = e.target as HTMLElement
+    if (!target.closest('.map-container')) {
+      handleMapInteraction(false)
+    }
+  }
+}
+
+onMounted(() => {
+  // Add listeners for info panel
+  const panel = document.querySelector('.info-panel')
+  panel?.addEventListener('touchstart', handleTouchStart as any, { passive: true })
+  panel?.addEventListener('touchmove', handleTouchMove as any, { passive: true })
+  panel?.addEventListener('touchend', handleTouchEnd as any)
+  
+  document.addEventListener('touchstart', handleGlobalTouch as any, { passive: true })
+})
+
+onUnmounted(() => {
+  const panel = document.querySelector('.info-panel')
+  panel?.removeEventListener('touchstart', handleTouchStart as any)
+  panel?.removeEventListener('touchmove', handleTouchMove as any)
+  panel?.removeEventListener('touchend', handleTouchEnd as any)
+  
+  document.removeEventListener('touchstart', handleGlobalTouch as any)
+})
 </script>
 
 <style scoped>
@@ -1342,5 +1651,141 @@ const vClickOutside = {
 /* Collapse toggle rotation */
 .rotate-180 {
   transform: rotate(180deg);
+}
+
+/* =========================================
+   RESPONSIVE LAYOUT & MOBILE OPTIMIZATION
+   ========================================= */
+
+/* MOBILE LAYOUT (< 768px) */
+@media (max-width: 767px) {
+  /* Info panel becomes bottom sheet */
+  .info-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin: 0 !important; /* Override standard margin */
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    max-height: 85vh;
+  }
+
+  .info-panel.collapsed {
+    max-height: 60px; /* Only show tab bar */
+  }
+
+  /* Make panel visually draggable */
+  .tab-bar::before {
+    content: '';
+    width: 40px;
+    height: 4px;
+    background: #E2E8F0;
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+  }
+  
+  /* Larger tap targets for mobile */
+  .tab-button {
+    min-height: 56px;
+  }
+
+  /* Hide tab label text on mobile to save space */
+  .tab-button span:not(.material-symbols-outlined) {
+    display: none;
+  }
+  
+  /* Map container fixed height on mobile */
+  .map-container {
+    height: 400px;
+  }
+  
+  /* Ensure content is scrollable within sheet */
+  .tab-content {
+    max-height: calc(85vh - 60px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 40px; /* Safety padding */
+  }
+}
+
+/* TABLET LAYOUT (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Info panel grid placement */
+  .info-panel {
+    margin-top: 24px;
+    border-radius: 16px;
+    position: relative;
+    z-index: 90;
+  }
+  
+  /* Show tab labels */
+  .tab-button span:not(.material-symbols-outlined) {
+    display: inline;
+    font-size: 13px;
+  }
+  
+  .map-container {
+     height: 500px;
+  }
+}
+
+/* DESKTOP LAYOUT (1024px+) */
+@media (min-width: 1024px) {
+  /* Sticky sidebar behavior handled by parent flex/grid */
+  
+  /* Info panel style */
+  .info-panel {
+    margin-top: 32px;
+    border-radius: 16px;
+    overflow: visible; /* Allow popups/tooltips */
+  }
+  
+  /* Full tab labels */
+  .tab-button span:not(.material-symbols-outlined) {
+    display: inline;
+    font-size: 14px;
+  }
+  
+  /* Map height handled by utility classes, but min-height enforced */
+  .map-container {
+    min-height: 600px;
+  }
+}
+
+/* Map Interaction Overlay Button */
+.map-overlay-button {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 400; /* Above Leaflet controls */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Landscape Mobile Fixes */
+@media (max-width: 767px) and (orientation: landscape) {
+  .info-panel {
+    max-height: 60vh;
+  }
+  
+  .tab-content {
+    max-height: calc(60vh - 60px);
+  }
+  
+  .map-container {
+    height: 100vh; /* Full screen map preference in landscape */
+  }
 }
 </style>
