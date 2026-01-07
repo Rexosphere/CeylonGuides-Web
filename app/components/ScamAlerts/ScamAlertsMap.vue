@@ -165,10 +165,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="relative">
-    <div 
-      ref="mapContainer" 
-      class="w-full h-[500px] rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-white/10"
+  <div class="relative w-full h-full">
+    <div
+      ref="mapContainer"
+      class="w-full h-full"
     />
     
     <!-- Map Legend -->
