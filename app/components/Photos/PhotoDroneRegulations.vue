@@ -1,57 +1,55 @@
 <template>
-  <div class="bg-[#181311] dark:bg-surface-dark rounded-2xl p-8 md:p-12 mb-16 relative overflow-hidden">
-    <!-- Background Decoration -->
-    <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-    
-    <div class="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center">
-      <div class="flex-1">
-        <div class="inline-flex items-center gap-2 text-primary font-bold mb-2">
-          <span class="material-symbols-outlined">gavel</span>
-          <span>Drone Safety & Regulations</span>
-        </div>
-        
-        <h2 class="text-3xl font-bold text-white mb-4">Fly Responsibly in Paradise</h2>
-        
-        <p class="text-[#d0c9c6] mb-6 leading-relaxed">
-          Sri Lanka has strict drone laws to protect its heritage sites and wildlife. All drones must be registered with the Civil Aviation Authority (CAA) before arrival.
-        </p>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="flex items-start gap-3">
-            <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-red-400 text-sm">block</span>
-            </div>
-            <div>
-              <h4 class="text-white font-bold text-sm">No Fly Zones</h4>
-              <p class="text-[#d0c9c6] text-xs mt-1">Airports, military bases, and most national parks.</p>
-            </div>
-          </div>
-          
-          <div class="flex items-start gap-3">
-            <div class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-yellow-400 text-sm">straighten</span>
-            </div>
-            <div>
-              <h4 class="text-white font-bold text-sm">Height Limit</h4>
-              <p class="text-[#d0c9c6] text-xs mt-1">Maximum flight altitude is 120m (400ft) AGL.</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="mt-8">
-          <a class="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-primary hover:bg-primary/90 text-white font-bold transition-colors" href="#">
-            Get Permit Guide
-          </a>
-        </div>
-      </div>
-      
-      <div 
-        class="w-full md:w-1/3 aspect-video md:aspect-square bg-gray-800 rounded-xl bg-cover bg-center border border-white/10 shadow-2xl" 
-        style="background-image: url('/images/downloaded_bf035e5d1aaa.avif');"
-      ></div>
+  <section class="bg-black/95 relative overflow-hidden py-16 md:py-24">
+    <div class="absolute inset-0 z-0 opacity-40">
+      <img alt="Winding road tea country" class="w-full h-full object-cover grayscale"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOR5YxA3cS9ZWn9ykUUc77dEs4YeAKXIyGs1fQWvnAqgPNnRAWtx2G3RAz_bVoNzJdcmMXXu6Tb_kjgfQGq9N8y2MuNlGgHD9MrT5_DP0nhVmGmgvmRSSrPvh_2jgVKLmsLUP-aVaLcc4JINVlWjOdA5t1ysodoVwh5ik98n4_-ZOcUhrqGjm54BE4qyyIgmP-vdMJdSHZfnK-D9oo3wb34oAa3CRfriDOnHxdmGLFNsz7CtfXuDBPh71UCbS7DeSq44Oe2iUl9UI" />
     </div>
-  </div>
+    <div class="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent z-10"></div>
+    <div class="container mx-auto px-6 relative z-20 flex flex-col md:flex-row items-center justify-between gap-12">
+      <div class="max-w-2xl">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="material-icons text-accent-danger text-xl">flight_takeoff</span>
+          <span class="text-accent-danger font-bold uppercase tracking-widest text-xs">Drone Safety & Regulations</span>
+        </div>
+        <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-6">Fly Responsibly in Paradise</h2>
+        <p class="text-gray-400 text-lg leading-relaxed mb-8 font-light">
+          Sri Lanka has strict drone laws to protect its heritage sites and wildlife. All drones must be registered with
+          the Civil Aviation Authority (CAA) before arrival. Respect privacy and sacred airspace.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+          <div class="flex gap-4">
+            <div class="w-10 h-10 rounded-full bg-accent-danger/20 flex items-center justify-center shrink-0">
+              <span class="material-icons text-accent-danger text-lg">block</span>
+            </div>
+            <div>
+              <h4 class="text-white font-bold text-sm mb-1">No Fly Zones</h4>
+              <p class="text-gray-500 text-xs">Airports, military bases, and most national parks.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="w-10 h-10 rounded-full bg-yellow-600/20 flex items-center justify-center shrink-0">
+              <span class="material-icons text-yellow-600 text-lg">vertical_align_top</span>
+            </div>
+            <div>
+              <h4 class="text-white font-bold text-sm mb-1">Height Limit</h4>
+              <p class="text-gray-500 text-xs">Maximum flight altitude is 120m (400ft) AGL.</p>
+            </div>
+          </div>
+        </div>
+        <button
+          class="bg-secondary hover:bg-white hover:text-primary text-white px-8 py-3 rounded-full font-bold transition-all shadow-lg flex items-center gap-2">
+          Learn More
+        </button>
+      </div>
+      <div
+        class="relative w-full max-w-md aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-white/10 hidden lg:block">
+        <img alt="Scenic Road" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOR5YxA3cS9ZWn9ykUUc77dEs4YeAKXIyGs1fQWvnAqgPNnRAWtx2G3RAz_bVoNzJdcmMXXu6Tb_kjgfQGq9N8y2MuNlGgHD9MrT5_DP0nhVmGmgvmRSSrPvh_2jgVKLmsLUP-aVaLcc4JINVlWjOdA5t1ysodoVwh5ik98n4_-ZOcUhrqGjm54BE4qyyIgmP-vdMJdSHZfnK-D9oo3wb34oAa3CRfriDOnHxdmGLFNsz7CtfXuDBPh71UCbS7DeSq44Oe2iUl9UI" />
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup lang="ts">
+// No script needed for this static component
 </script>

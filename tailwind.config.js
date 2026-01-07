@@ -12,25 +12,27 @@ export default {
     theme: {
         extend: {
             colors: {
-                // Safety Mode Colors (matching the exact reference HTML naming)
-                "primary": "#ee5f2b", // Updated Coral Orange
-                "secondary": "#006D77", // Deep Teal
-                "background-light": "#f8f6f6", // Updated Off-white
-                "background-dark": "#221510", // Updated Dark background
-                "card-light": "#FFFBF5", // Slightly lighter warm sand
-                "card-dark": "#374146", // Slightly lighter charcoal
-                "accent-sand": "#E6DCCA", // Warm Sand
-                "accent-cyan": "#E0FBFC", // Light Cyan
-                "text-main-light": "#2C3539", // Dark Charcoal
-                "text-main-dark": "#E0FBFC", // Light Cyan
-
+                // New Design Theme Colors
+                "primary": "#264653", // Deep Teal/Ocean Slate
+                "secondary": "#457B9D", // Muted Blue-Gray
+                "background-light": "#F8F9FA", // Cool Off-White
+                "background-dark": "#121212", // Dark Background
+                "surface-light": "#FFFFFF",
+                "surface-dark": "#1E1E1E",
+                "card-dark": "#2A2A2A",
+                "text-main": "#333333", // Charcoal
+                "text-muted": "#6B7280", // Muted Cool Gray
+                "accent-danger": "#B91C1C", // Muted Crimson
+                "accent-info": "#475569", // Desaturated Blue-Gray
+                
                 // Legacy colors (keeping for backward compatibility)
                 "accent": "#F47C3C", // Coral Orange
                 "accent-light": "#A3E4D7", // Light Cyan
-                "surface-light": "var(--color-surface-light)",
-                "surface-dark": "var(--color-surface-dark)",
-                "text-main": "var(--color-text-main)",
-                "text-muted": "var(--color-text-muted)",
+                "card-light": "#FFFFFF",
+                "text-main-light": "#333333",
+                "text-main-dark": "#E0FBFC",
+                "accent-sand": "#E6DCCA",
+                "accent-cyan": "#E0FBFC",
                 "charcoal": "#2D3436",
                 "teal-deep": "#004d40",
                 "teal-light": "#00695c",
@@ -51,33 +53,36 @@ export default {
                 "weather-surface-dark": "#2a1d18",
                 "weather-text-main": "#181311",
                 "weather-text-muted": "#8a6b60",
-                // Original safety mode color aliases (for backward compatibility)
-                "safety-primary": "#D94E3B", // Coral Orange
-                "safety-secondary": "#006D77", // Deep Teal
-                "safety-bg-light": "#F9F7F2", // Off-white/Warm Sand light
-                "safety-bg-dark": "#2C3539", // Dark Charcoal
-                "safety-card-light": "#FFFBF5", // Slightly lighter warm sand
-                "safety-card-dark": "#374146", // Slightly lighter charcoal
-                "safety-accent-sand": "#E6DCCA", // Warm Sand
-                "safety-accent-cyan": "#E0FBFC", // Light Cyan
-                "safety-text-light": "#2C3539", // Dark Charcoal
-                "safety-text-dark": "#E0FBFC", // Light Cyan
+                // Safety mode color aliases
+                "safety-primary": "#D94E3B",
+                "safety-secondary": "#006D77",
+                "safety-bg-light": "#F9F7F2",
+                "safety-bg-dark": "#2C3539",
+                "safety-card-light": "#FFFBF5",
+                "safety-card-dark": "#374146",
+                "safety-accent-sand": "#E6DCCA",
+                "safety-accent-cyan": "#E0FBFC",
+                "safety-text-light": "#2C3539",
+                "safety-text-dark": "#E0FBFC",
             },
             fontFamily: {
-                "display": ["Plus Jakarta Sans", "sans-serif"],
+                "display": ["Inter", "sans-serif"],
+                "body": ["Inter", "sans-serif"],
                 "serif": ["Playfair Display", "serif"],
                 "manrope": ["Manrope", "sans-serif"],
                 "lato": ["Lato", "sans-serif"],
             },
             borderRadius: {
-                "DEFAULT": "1rem",
-                "lg": "2rem",
-                "xl": "3rem",
+                "DEFAULT": "0.5rem",
+                "lg": "1rem",
+                "xl": "1.5rem",
+                "2xl": "1.5rem",
                 "full": "9999px"
             },
             boxShadow: {
-                "soft": "0 4px 20px -2px rgba(0, 77, 64, 0.08)",
-                "glow": "0 0 15px rgba(217, 78, 59, 0.3)", // Safety mode glow
+                "soft": "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)",
+                "card": "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)",
+                "glow": "0 0 15px rgba(217, 78, 59, 0.3)",
             },
             keyframes: {
                 'pulse-orange': {
