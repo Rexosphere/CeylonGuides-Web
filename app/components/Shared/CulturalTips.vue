@@ -17,7 +17,7 @@
     <div class="divide-y divide-gray-200">
       <div
         v-for="(tip, index) in tips"
-        :key="tip.id"
+        :key="index"
         class="p-6 hover:bg-gray-50 transition-colors cursor-pointer"
         @click="toggleTip(index)"
       >
@@ -37,7 +37,6 @@
                 <span class="material-symbols-outlined">expand_more</span>
               </button>
             </div>
-            <p class="text-sm text-gray-600 mt-1 leading-relaxed">{{ tip.description }}</p>
 
             <!-- Expanded Details -->
             <div
@@ -45,14 +44,14 @@
               class="mt-4 space-y-4 animate-fade-in"
             >
               <!-- Do's -->
-              <div v-if="tip.do_list && tip.do_list.length > 0" class="space-y-2">
+              <div v-if="tip.do && tip.do.length > 0" class="space-y-2">
                 <div class="flex items-center gap-2 text-sm font-bold text-green-700">
                   <span class="material-symbols-outlined text-lg">check_circle</span>
                   <span>Do:</span>
                 </div>
                 <ul class="space-y-1 pl-7">
                   <li
-                    v-for="(item, idx) in tip.do_list"
+                    v-for="(item, idx) in tip.do"
                     :key="idx"
                     class="text-sm text-gray-700 flex items-start gap-2"
                   >
@@ -63,14 +62,14 @@
               </div>
 
               <!-- Don'ts -->
-              <div v-if="tip.dont_list && tip.dont_list.length > 0" class="space-y-2">
+              <div v-if="tip.dont && tip.dont.length > 0" class="space-y-2">
                 <div class="flex items-center gap-2 text-sm font-bold text-red-700">
                   <span class="material-symbols-outlined text-lg">cancel</span>
                   <span>Don't:</span>
                 </div>
                 <ul class="space-y-1 pl-7">
                   <li
-                    v-for="(item, idx) in tip.dont_list"
+                    v-for="(item, idx) in tip.dont"
                     :key="idx"
                     class="text-sm text-gray-700 flex items-start gap-2"
                   >
@@ -107,12 +106,10 @@
 import { ref, computed } from 'vue'
 
 interface EtiquetteTip {
-  id: string
-  category: string
   title: string
-  description: string
-  do_list?: string[]
-  dont_list?: string[]
+  do: string[]
+  dont: string[]
+  icon: string
 }
 
 const props = defineProps<{
@@ -123,21 +120,11 @@ const props = defineProps<{
 const expandedTips = ref<number[]>([])
 
 const categoryIcon = computed(() => {
-  const category = props.category?.toUpperCase() || props.tips[0]?.category?.toUpperCase() || ''
-  const iconMap: Record<string, string> = {
-    'TEMPLE': 'temple_buddhist',
-    'GREETING': 'handshake',
-    'DINING': 'restaurant',
-    'SOCIAL': 'groups',
-    'TRANSPORT': 'directions_bus',
-    'SHOPPING': 'shopping_bag'
-  }
-  return iconMap[category] || 'info'
+  return props.tips[0]?.icon || 'info'
 })
 
 const categoryTitle = computed(() => {
-  const category = props.category || props.tips[0]?.category || 'Cultural'
-  return `${category.charAt(0).toUpperCase()}${category.slice(1).toLowerCase()} Etiquette`
+  return 'Cultural Etiquette'
 })
 
 function toggleTip(index: number) {

@@ -145,34 +145,47 @@
           <template v-else>
             <div
               v-for="(phrase, index) in filteredPhrases"
-              :key="phrase.id"
+              :key="phrase.phraseId"
               class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all gap-4 group"
             >
               <div class="flex flex-col gap-2 flex-1 min-w-0">
                 <!-- Badge for practice level -->
                 <div class="flex items-center gap-2 flex-wrap">
                   <span
-                    v-if="getPhraseLevel(phrase.id) === 'mastered'"
+                    v-if="getPhraseLevel(phrase.phraseId) === 'mastered'"
                     class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-bold"
                   >
                     <span class="material-symbols-outlined text-xs">check_circle</span>
                     Mastered
                   </span>
                   <span
-                    v-else-if="getPhraseLevel(phrase.id) === 'learning'"
+                    v-else-if="getPhraseLevel(phrase.phraseId) === 'learning'"
                     class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs font-bold"
                   >
                     <span class="material-symbols-outlined text-xs">school</span>
                     Learning
                   </span>
-                  <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">{{ phrase.difficulty }}</span>
+                  <span v-if="phrase.emergency_flag" class="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold">
+                    <span class="material-symbols-outlined text-xs">emergency</span>
+                    Emergency
+                  </span>
                 </div>
 
-                <p class="sinhala-text text-2xl font-bold text-charcoal truncate">
-                  {{ selectedLanguage === 'sinhala' ? phrase.sinhala : phrase.tamil }}
-                </p>
-                <p class="text-sm font-bold text-primary uppercase tracking-wide">{{ phrase.pronunciation }}</p>
-                <p class="text-gray-600 text-sm">{{ phrase.english }}</p>
+                <p 
+                  class="sinhala-text text-2xl font-bold text-charcoal truncate"
+                  v-html="highlightText(
+                    selectedLanguage === 'sinhala' ? phrase.sinhala_native : phrase.tamil_native,
+                    searchQuery
+                  )"
+                ></p>
+                <p 
+                  class="text-sm font-bold text-primary uppercase tracking-wide"
+                  v-html="highlightText(phrase.pronunciation, searchQuery)"
+                ></p>
+                <p 
+                  class="text-gray-600 text-sm"
+                  v-html="highlightText(phrase.english, searchQuery)"
+                ></p>
               </div>
               
               <!-- Action Buttons -->
@@ -196,16 +209,16 @@
                 
                 <!-- Save Button -->
                 <button 
-                  @click="toggleSavePhrase(phrase.id)"
+                  @click="toggleSavePhrase(phrase.phraseId)"
                   :class="[
                     'h-12 w-12 rounded-full transition-all flex items-center justify-center border text-xl',
-                    isSaved(phrase.id) 
+                    isSaved(phrase.phraseId) 
                       ? 'bg-yellow-100 text-yellow-600 border-yellow-300 hover:bg-yellow-200' 
                       : 'bg-background-light text-gray-400 border-gray-200 hover:border-yellow-300 hover:text-yellow-500'
                   ]"
-                  :title="isSaved(phrase.id) ? 'Remove from emergency set' : 'Save to emergency set'"
+                  :title="isSaved(phrase.phraseId) ? 'Remove from emergency set' : 'Save to emergency set'"
                 >
-                  {{ isSaved(phrase.id) ? '★' : '☆' }}
+                  {{ isSaved(phrase.phraseId) ? '★' : '☆' }}
                 </button>
 
                 <!-- Details Button -->
@@ -331,11 +344,11 @@
               <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
                 <div class="flex-1">
                   <p class="text-xs text-gray-500 font-medium mb-1">SINHALA</p>
-                  <p class="sinhala-text text-2xl font-bold text-charcoal dark:text-white">{{ selectedPhrase.sinhala }}</p>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ selectedPhrase.sinhalaLatin }}</p>
+                  <p class="sinhala-text text-2xl font-bold text-charcoal dark:text-white">{{ selectedPhrase.sinhala_native }}</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ selectedPhrase.sinhala_latin }}</p>
                 </div>
                 <button
-                  @click="() => selectedPhrase && speech.speak(selectedPhrase.sinhala, { lang: 'sinhala' })"
+                  @click="() => selectedPhrase && speech.speak(selectedPhrase.sinhala_native, { lang: 'sinhala' })"
                   class="shrink-0 h-10 w-10 bg-primary text-white rounded-full hover:bg-primary/90 transition-all flex items-center justify-center"
                 >
                   <span class="material-symbols-outlined text-lg">volume_up</span>
@@ -345,11 +358,11 @@
               <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
                 <div class="flex-1">
                   <p class="text-xs text-gray-500 font-medium mb-1">TAMIL</p>
-                  <p class="sinhala-text text-2xl font-bold text-charcoal dark:text-white">{{ selectedPhrase.tamil }}</p>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ selectedPhrase.tamilLatin }}</p>
+                  <p class="sinhala-text text-2xl font-bold text-charcoal dark:text-white">{{ selectedPhrase.tamil_native }}</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ selectedPhrase.tamil_latin }}</p>
                 </div>
                 <button
-                  @click="() => selectedPhrase && speech.speak(selectedPhrase.tamil, { lang: 'tamil' })"
+                  @click="() => selectedPhrase && speech.speak(selectedPhrase.tamil_native, { lang: 'tamil' })"
                   class="shrink-0 h-10 w-10 bg-primary text-white rounded-full hover:bg-primary/90 transition-all flex items-center justify-center"
                 >
                   <span class="material-symbols-outlined text-lg">volume_up</span>
@@ -364,12 +377,12 @@
           </div>
 
           <!-- Cultural Context -->
-          <div v-if="selectedPhrase.cultural_context" class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-700">
+          <div v-if="selectedPhrase.cultural_note" class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-700">
             <div class="flex items-start gap-3">
               <span class="material-symbols-outlined text-blue-600 text-xl mt-0.5">info</span>
               <div class="flex-1">
-                <p class="text-xs text-blue-700 dark:text-blue-400 font-bold uppercase tracking-wide mb-1">Cultural Context</p>
-                <p class="text-sm text-blue-900 dark:text-blue-200 leading-relaxed">{{ selectedPhrase.cultural_context }}</p>
+                <p class="text-xs text-blue-700 dark:text-blue-400 font-bold uppercase tracking-wide mb-1">Cultural Note</p>
+                <p class="text-sm text-blue-900 dark:text-blue-200 leading-relaxed">{{ selectedPhrase.cultural_note }}</p>
               </div>
             </div>
           </div>
@@ -388,19 +401,19 @@
           <!-- Actions -->
           <div class="flex gap-3">
             <button
-              @click="toggleSavePhrase(selectedPhrase.id)"
+              @click="toggleSavePhrase(selectedPhrase.phraseId)"
               :class="[
                 'flex-1 py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2',
-                isSaved(selectedPhrase.id)
+                isSaved(selectedPhrase.phraseId)
                   ? 'bg-yellow-100 text-yellow-700 border-2 border-yellow-300 hover:bg-yellow-200'
                   : 'bg-gray-100 text-gray-700 border-2 border-gray-200 hover:bg-gray-200'
               ]"
             >
-              <span class="text-xl">{{ isSaved(selectedPhrase.id) ? '★' : '☆' }}</span>
-              <span>{{ isSaved(selectedPhrase.id) ? 'Saved' : 'Save' }}</span>
+              <span class="text-xl">{{ isSaved(selectedPhrase.phraseId) ? '★' : '☆' }}</span>
+              <span>{{ isSaved(selectedPhrase.phraseId) ? 'Saved' : 'Save' }}</span>
             </button>
             <button
-              @click="markPhraseAsPracticed(selectedPhrase.id)"
+              @click="markPhraseAsPracticed(selectedPhrase.phraseId)"
               class="flex-1 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
             >
               <span class="material-symbols-outlined">check_circle</span>
@@ -431,17 +444,18 @@ import CulturalNotes from '~/components/Shared/CulturalNotes.vue'
 
 // Types
 interface Phrase {
-  id: string
+  phraseId: string
   category: string
   english: string
-  sinhala: string
-  sinhalaLatin: string
-  tamil: string
-  tamilLatin: string
+  sinhala_native: string
+  sinhala_latin: string
+  tamil_native: string
+  tamil_latin: string
   pronunciation: string
-  difficulty: string
-  cultural_context?: string
+  cultural_note?: string
   usage_tips?: string
+  priority: number
+  emergency_flag: boolean
 }
 
 // Composables
@@ -454,14 +468,12 @@ const phrasebookData = phrasebookDataImport as {
   categories: Array<{ id: string; name: string; icon: string; description: string }>
   phrases: Phrase[]
   etiquette_tips: Array<{
-    id: string
-    category: string
     title: string
-    description: string
-    do_list?: string[]
-    dont_list?: string[]
+    do: string[]
+    dont: string[]
+    icon: string
   }>
-  cultural_notes: Array<{ title: string; content: string }>
+  cultural_notes: Array<{ title: string; description: string; icon: string }>
 }
 
 // State
@@ -491,10 +503,10 @@ const filteredPhrases = computed(() => {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(p =>
       p.english.toLowerCase().includes(query) ||
-      p.sinhala.includes(query) ||
-      p.tamil.includes(query) ||
-      p.sinhalaLatin.toLowerCase().includes(query) ||
-      p.tamilLatin.toLowerCase().includes(query) ||
+      p.sinhala_native.includes(query) ||
+      p.tamil_native.includes(query) ||
+      p.sinhala_latin.toLowerCase().includes(query) ||
+      p.tamil_latin.toLowerCase().includes(query) ||
       p.pronunciation.toLowerCase().includes(query)
     )
   }
@@ -503,13 +515,8 @@ const filteredPhrases = computed(() => {
 })
 
 const culturalTipsForCategory = computed(() => {
-  if (!selectedCategory.value) {
-    return phrasebookData.etiquette_tips.slice(0, 5)
-  }
-  const categoryTips = phrasebookData.etiquette_tips.filter(
-    t => t.category.toUpperCase() === selectedCategory.value
-  )
-  return categoryTips.length > 0 ? categoryTips : phrasebookData.etiquette_tips.slice(0, 3)
+  // Since etiquette_tips don't have categories, just return all tips
+  return phrasebookData.etiquette_tips
 })
 
 // Methods
@@ -527,12 +534,12 @@ function clearSearch() {
 }
 
 function speakPhrase(phrase: Phrase) {
-  const text = selectedLanguage.value === 'sinhala' ? phrase.sinhala : phrase.tamil
+  const text = selectedLanguage.value === 'sinhala' ? phrase.sinhala_native : phrase.tamil_native
   speech.speak(text, { lang: selectedLanguage.value, rate: 0.8 })
   
   // Mark as practiced
   if (progressTracker.value) {
-    progressTracker.value.markPracticed(phrase.id)
+    progressTracker.value.markPracticed(phrase.phraseId)
   }
 }
 
@@ -582,6 +589,13 @@ function getCategoryIcon(categoryId: string): string {
 function getCategoryName(categoryId: string): string {
   const category = phrasebookData.categories.find(c => c.id === categoryId)
   return category?.name || categoryId
+}
+
+function highlightText(text: string, query: string): string {
+  if (!query.trim()) return text
+  
+  const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
+  return text.replace(regex, '<mark class="bg-yellow-200 text-charcoal font-bold">$1</mark>')
 }
 
 function downloadOfflineData() {

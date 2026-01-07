@@ -152,11 +152,11 @@ interface Activity {
 
 const props = defineProps<{
   phrases: Array<{
-    id: string
+    phraseId: string
     category: string
     english: string
-    sinhala: string
-    tamil: string
+    sinhala_native: string
+    tamil_native: string
   }>
   categories: Array<{
     id: string
@@ -213,7 +213,7 @@ const overallProgress = computed(() => {
 const categoryProgress = computed(() => {
   return props.categories.map(cat => {
     const categoryPhrases = props.phrases.filter(p => p.category === cat.id)
-    const practiced = categoryPhrases.filter(p => progress.value[p.id]).length
+    const practiced = categoryPhrases.filter(p => progress.value[p.phraseId]).length
     
     return {
       category: cat.id,
@@ -237,7 +237,7 @@ const motivationMessage = computed(() => {
 
 // Methods
 function markPracticed(phraseId: string) {
-  const phrase = props.phrases.find(p => p.id === phraseId)
+  const phrase = props.phrases.find(p => p.phraseId === phraseId)
   if (!phrase) return
 
   if (!progress.value[phraseId]) {

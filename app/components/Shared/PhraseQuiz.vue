@@ -69,7 +69,7 @@
         <div class="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20">
           <p class="text-sm text-primary font-bold uppercase tracking-wide mb-2">Translate this phrase:</p>
           <div class="flex items-center gap-4">
-            <p class="text-2xl font-bold text-charcoal flex-1">{{ currentQuestion.phrase[displayLang] }}</p>
+            <p class="text-2xl font-bold text-charcoal flex-1">{{ props.language === 'sinhala' ? currentQuestion.phrase.sinhala_native : currentQuestion.phrase.tamil_native }}</p>
             <button
               @click="playAudio(currentQuestion.phrase)"
               class="shrink-0 h-12 w-12 bg-primary text-white rounded-full hover:bg-primary/90 transition-all flex items-center justify-center shadow-md"
@@ -151,8 +151,8 @@
                   = <strong>{{ currentQuestion.correctAnswer }}</strong>
                 </span>
               </p>
-              <p v-if="currentQuestion.phrase.cultural_context" class="text-xs text-gray-600 mt-2 italic">
-                💡 {{ currentQuestion.phrase.cultural_context }}
+              <p v-if="currentQuestion.phrase.cultural_note" class="text-xs text-gray-600 mt-2 italic">
+                💡 {{ currentQuestion.phrase.cultural_note }}
               </p>
             </div>
           </div>
@@ -221,17 +221,18 @@ import { ref, computed } from 'vue'
 import { useSpeech } from '~/composables/useSpeech'
 
 interface Phrase {
-  id: string
+  phraseId: string
   category: string
   english: string
-  sinhala: string
-  sinhalaLatin: string
-  tamil: string
-  tamilLatin: string
+  sinhala_native: string
+  sinhala_latin: string
+  tamil_native: string
+  tamil_latin: string
   pronunciation: string
-  difficulty: string
-  cultural_context?: string
+  cultural_note?: string
   usage_tips?: string
+  priority: number
+  emergency_flag: boolean
 }
 
 interface QuizQuestion {
@@ -302,7 +303,7 @@ function startQuiz() {
 
     // Get wrong answers from other phrases
     const wrongAnswers = props.phrases
-      .filter(p => p.id !== phrase.id && p.english !== phrase.english)
+      .filter(p => p.phraseId !== phrase.phraseId && p.english !== phrase.english)
       .sort(() => Math.random() - 0.5)
       .slice(0, 3)
       .map(p => p.english)
@@ -361,7 +362,7 @@ function closeQuiz() {
 }
 
 function playAudio(phrase: Phrase) {
-  const text = props.language === 'sinhala' ? phrase.sinhala : phrase.tamil
+  const text = props.language === 'sinhala' ? phrase.sinhala_native : phrase.tamil_native
   speak(text, { lang: props.language, rate: 0.8 })
 }
 </script>

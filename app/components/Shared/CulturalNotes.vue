@@ -15,7 +15,7 @@
           <span class="material-symbols-outlined text-lg">auto_awesome</span>
           {{ currentNote.title }}
         </h4>
-        <p class="text-sm text-gray-700 leading-relaxed">{{ currentNote.content }}</p>
+        <p class="text-sm text-gray-700 leading-relaxed">{{ currentNote.description }}</p>
       </div>
 
       <!-- Navigation -->
@@ -66,7 +66,8 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 interface CulturalNote {
   title: string
-  content: string
+  description: string
+  icon: string
 }
 
 const props = defineProps<{
