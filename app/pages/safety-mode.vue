@@ -1,569 +1,252 @@
 <template>
-  <div class="bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center p-4 font-lato transition-colors duration-300 bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark relative overflow-hidden">
-    <!-- Unsplash Background -->
-    <div class="absolute inset-0 z-0 opacity-10 pointer-events-none bg-[url('https://images.unsplash.com/photo-1586618428271-9b63897b7b13?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center mix-blend-overlay"></div>
-    
-    <!-- Ambient Glows -->
-    <div class="absolute top-0 right-0 w-96 h-96 bg-secondary/10 dark:bg-secondary/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-    <div class="absolute bottom-0 left-0 w-96 h-96 bg-primary/10 dark:bg-primary/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-
-    <main class="relative z-10 w-full max-w-lg bg-white/90 dark:bg-card-dark/95 glass-effect rounded-3xl shadow-soft dark:shadow-glow border border-accent-sand/50 dark:border-secondary/30 overflow-hidden flex flex-col max-h-[90vh]">
-      <!-- Header -->
-      <header class="bg-red-600 text-white p-5 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
-            <span class="material-icons-round text-2xl">emergency_share</span>
-          </div>
-          <div>
-            <h1 class="font-display font-bold text-lg leading-tight">Safety Mode</h1>
-            <p class="text-xs text-white/80 font-light">Emergency assistance ready</p>
-          </div>
+  <div>
+    <!-- Hero Section -->
+    <header class="relative w-full h-[400px] md:h-[500px] flex items-center justify-center overflow-hidden">
+      <div class="absolute inset-0 z-0">
+        <img 
+          alt="Lighthouse shining a beam of light at dusk symbolizing safety and guidance" 
+          class="w-full h-full object-cover" 
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNACZRUkSeqw9-j5qpJeD26Qy2F8tYsEbErr_-WoGICHh8l7OQmKFCOZjA2gXhtn9L1QObvzVjzIC6hetZ0-vaSVLKRKOEtl8LBw9PRbVcg2UQZ8WCqwav7zmHaiG-LSxUxc_OZtEe0gUDI7fZuerLt1ciqmkAZ_je-A4-WCWnbARDHo1l1pS0tNWzK2R3AWnNOAxubSF2a6kXNsF2dk6_-LbHNhAWHQPoN7yi_X7ygvh4aZb7UwMZanG_4w71k8LDsUYdFm9AIDY"
+        />
+        <div class="absolute inset-0 bg-gradient-to-b from-teal-950/70 via-teal-900/50 to-background-light dark:to-background-dark"></div>
+      </div>
+      <div class="relative z-10 text-center max-w-3xl px-6 mt-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/90 text-white mb-6 animate-pulse-slow shadow-lg border-4 border-white/20">
+          <span class="material-icons text-3xl">local_police</span>
         </div>
-        <NuxtLink to="/" class="flex items-center gap-1 bg-black/20 hover:bg-black/30 transition px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm group">
-          <span class="material-icons-round text-sm group-hover:rotate-90 transition-transform">close</span>
-          Exit
-        </NuxtLink>
-      </header>
+        <h1 class="text-5xl md:text-6xl font-display font-bold text-white mb-4 drop-shadow-md">Safety Mode</h1>
+        <p class="text-xl text-white/90 font-light tracking-wide">Emergency assistance ready. You are protected.</p>
+      </div>
+    </header>
 
-      <!-- Scrollable Content -->
-      <div class="overflow-y-auto p-5 space-y-6">
-        
-        <!-- PROMINENT SHARE MY LOCATION SECTION -->
-        <section class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-5 text-white shadow-lg">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-              <span class="material-icons-round text-2xl">location_on</span>
-            </div>
-            <div>
-              <h2 class="font-bold text-lg">Share My Location</h2>
-              <p class="text-blue-100 text-sm">Send your coordinates to someone you trust</p>
-            </div>
-          </div>
-          
-          <div v-if="userLocation" class="mb-4 bg-white/10 rounded-lg px-3 py-2 text-sm font-mono">
-            📍 {{ userLocation.lat.toFixed(5) }}, {{ userLocation.lng.toFixed(5) }}
-          </div>
-          <div v-else class="mb-4 text-blue-200 text-sm flex items-center gap-2">
-            <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-            Getting your location...
-          </div>
-          
-          <div class="grid grid-cols-3 gap-2">
-            <button 
-              @click="shareViaWhatsApp"
-              :disabled="!userLocation"
-              class="flex flex-col items-center gap-1 bg-green-500 hover:bg-green-600 disabled:opacity-50 py-3 rounded-xl transition-colors"
-            >
-              <span class="text-xl">📱</span>
-              <span class="text-xs font-semibold">WhatsApp</span>
-            </button>
-            <button 
-              @click="shareViaSMS"
-              :disabled="!userLocation"
-              class="flex flex-col items-center gap-1 bg-blue-500 hover:bg-blue-400 disabled:opacity-50 py-3 rounded-xl transition-colors"
-            >
-              <span class="text-xl">💬</span>
-              <span class="text-xs font-semibold">SMS</span>
-            </button>
-            <button 
-              @click="copyLocationToClipboard"
-              :disabled="!userLocation"
-              class="flex flex-col items-center gap-1 bg-white/20 hover:bg-white/30 disabled:opacity-50 py-3 rounded-xl transition-colors"
-            >
-              <span class="text-xl">📋</span>
-              <span class="text-xs font-semibold">Copy</span>
-            </button>
-          </div>
-        </section>
-
-        <!-- Offline Ready Banner -->
-        <div 
-          v-if="savedForOffline"
-          class="bg-green-800 border border-green-500 rounded-xl p-4 flex items-center gap-3"
-        >
-          <span class="text-2xl">✓</span>
-          <div class="flex-1">
-            <div class="font-semibold text-white">Offline Mode Ready</div>
-            <div class="text-sm text-green-200">
-              Emergency info saved to your device. Works without internet.
-            </div>
-          </div>
-          <button
-            @click="printPage"
-            class="px-3 py-1.5 bg-green-700 hover:bg-green-600 rounded-lg text-sm font-medium text-white whitespace-nowrap"
-          >
-            🖨️ Print
-          </button>
-        </div>
-        
-        <!-- Location Status / High Risk Banner -->
-        <div v-if="briefing">
-          <!-- High-Risk Alert Banner -->
-          <div 
-            v-if="briefing.nearbyThreats?.highRiskCount > 0"
-            class="bg-red-900 border-2 border-red-500 rounded-xl p-5 mb-4 animate-pulse"
-          >
-            <div class="flex items-start gap-4">
-              <div class="text-3xl">🚨</div>
-              <div class="flex-1">
-                <h2 class="text-xl font-bold text-white mb-1">
-                  {{ briefing.nearbyThreats.highRiskCount }} High-Risk Alert{{ briefing.nearbyThreats.highRiskCount > 1 ? 's' : '' }} Near You
-                </h2>
-                <p class="text-red-200 text-sm mb-3">
-                  {{ briefing.nearbyThreats.count }} total scam alert{{ briefing.nearbyThreats.count > 1 ? 's' : '' }} 
-                  within {{ briefing.location?.radius || 10 }}km
-                </p>
-                <div class="flex gap-2">
-                  <NuxtLink 
-                    to="/scam-alerts"
-                    class="px-3 py-1.5 bg-white text-red-600 rounded-lg text-sm font-semibold hover:bg-red-50"
-                  >
-                    View Alerts
-                  </NuxtLink>
-                  <button
-                    @click="shareLocation"
-                    class="px-3 py-1.5 bg-red-800 hover:bg-red-700 text-white rounded-lg text-sm font-semibold"
-                  >
-                    📤 Share Location
-                  </button>
-                </div>
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 md:px-8 -mt-20 relative z-10 pb-20">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left Column: Share Location & AI Assistant -->
+        <div class="lg:col-span-5 space-y-6">
+          <!-- Share My Location Card -->
+          <div class="bg-gradient-to-br from-[#2b6cb0] to-[#2c5282] dark:from-[#1e3a8a] dark:to-[#172554] rounded-2xl p-8 text-white shadow-soft relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+            <div class="flex items-start space-x-4 mb-6">
+              <div class="bg-white/20 p-3 rounded-full backdrop-blur-sm flex-shrink-0">
+                <span class="material-icons text-2xl">my_location</span>
               </div>
-            </div>
-          </div>
-          
-          <!-- Safe Area Message -->
-          <div 
-            v-else-if="briefing.nearbyThreats?.count === 0"
-            class="bg-green-800 border border-green-500 rounded-xl p-4 mb-4"
-          >
-            <div class="flex items-center gap-3 text-white">
-              <span class="text-2xl">✅</span>
               <div>
-                <h3 class="font-bold">Area Status: Clear</h3>
-                <p class="text-green-200 text-sm">
-                  No high-risk alerts within {{ briefing.location?.radius || 10 }}km
-                </p>
+                <h2 class="text-2xl font-display font-bold">Share My Location</h2>
+                <p class="text-blue-100 text-sm mt-1">Send your coordinates to someone you trust instantly.</p>
               </div>
             </div>
-          </div>
-        </div>
-        
-        <!-- Location Loading -->
-        <div v-else-if="loadingBriefing" class="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 mb-4 flex items-center gap-3">
-          <div class="animate-spin w-5 h-5 border-2 border-primary border-t-transparent rounded-full"></div>
-          <span class="text-sm text-gray-600 dark:text-gray-400">Checking area safety...</span>
-        </div>
-
-        <section class="bg-red-50 dark:bg-red-900/10 rounded-2xl p-5 border border-red-100 dark:border-red-900/20">
-          <div class="flex items-center gap-2 mb-4 text-primary">
-            <span class="material-icons-round">contact_phone</span>
-            <h2 class="font-display font-bold text-lg">Emergency Contacts</h2>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <a
-              v-for="contact in emergencyContacts"
-              :key="contact.id"
-              :href="`tel:${contact.phone}`"
-              class="group bg-white dark:bg-card-dark border border-gray-100 dark:border-gray-700 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-primary transition-all duration-200 flex items-center gap-3"
-            >
-              <div :class="['w-10 h-10 rounded-full flex items-center justify-center shrink-0', contact.iconWrapClass]">
-                <span class="material-icons-round text-xl">{{ contact.icon }}</span>
-              </div>
-              <div class="min-w-0">
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wide truncate">{{ contact.name }}</p>
-                <p class="text-2xl font-bold text-primary group-hover:scale-105 origin-left transition-transform">{{ contact.phone }}</p>
-                <p v-if="contact.description" class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{{ contact.description }}</p>
-              </div>
-            </a>
-          </div>
-        </section>
-
-        <!-- Your Saved Emergency Phrases -->
-        <section v-if="savedPhrasesList.length > 0" class="bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-5 border-2 border-yellow-400 dark:border-yellow-600">
-          <div class="flex items-center gap-2 mb-4 text-yellow-700 dark:text-yellow-400">
-            <span class="text-xl">⭐</span>
-            <h2 class="font-display font-bold text-lg">Your Emergency Phrases</h2>
-          </div>
-          <div class="space-y-3">
-            <div 
-              v-for="phrase in savedPhrasesList" 
-              :key="phrase.id"
-              class="bg-yellow-100 dark:bg-yellow-900/30 p-4 rounded-xl border border-yellow-200 dark:border-yellow-700 relative overflow-hidden group"
-            >
-              <div class="flex items-start justify-between gap-3">
-                <div class="flex-1">
-                  <p class="text-xs font-bold text-yellow-700 dark:text-yellow-400 uppercase mb-1">{{ phrase.english }}</p>
-                  <p class="text-xl font-serif text-gray-800 dark:text-gray-100 mb-1">{{ phrase.sinhala }}</p>
-                  <p class="text-sm text-gray-500 dark:text-gray-400 italic">{{ phrase.pronunciation }}</p>
-                </div>
-                <button 
-                  @click="speakPhrase(phrase.sinhala)"
-                  class="shrink-0 w-12 h-12 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl flex items-center justify-center transition-colors"
-                  title="Speak this phrase"
-                >
-                  <span class="material-icons-round">volume_up</span>
-                </button>
-              </div>
+            <div class="flex items-center space-x-3 mb-8 bg-black/20 p-3 rounded-lg border border-white/10">
+              <span v-if="!userLocation" class="material-icons animate-spin-slow text-blue-200">refresh</span>
+              <span v-if="!userLocation" class="text-sm font-mono tracking-wide">Getting your location...</span>
+              <span v-else class="text-sm font-mono tracking-wide">📍 {{ userLocation.lat.toFixed(5) }}, {{ userLocation.lng.toFixed(5) }}</span>
             </div>
-          </div>
-          <NuxtLink 
-            to="/phrasebook"
-            class="mt-4 block text-center text-sm text-yellow-700 dark:text-yellow-400 hover:underline"
-          >
-            + Add more phrases
-          </NuxtLink>
-        </section>
-
-        <!-- Emergency Phrases Section -->
-        <section class="space-y-4">
-          <div class="flex items-center gap-2 mb-2 text-secondary dark:text-accent-cyan">
-            <span class="material-icons-round">translate</span>
-            <h2 class="font-display font-bold text-lg">Say This (Emergency Phrases)</h2>
-          </div>
-
-          <div
-            v-for="(phrase, index) in emergencyPhrases"
-            :key="phrase.id || index"
-            class="bg-accent-sand/20 dark:bg-gray-800/30 p-4 rounded-xl border border-accent-sand/30 dark:border-gray-700 relative overflow-hidden group"
-          >
-            <div class="absolute right-0 top-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-              <span class="material-icons-round text-6xl">{{ getPhraseIcon(index as number) }}</span>
-            </div>
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex-1">
-                <p class="text-xs font-bold text-secondary dark:text-accent-cyan uppercase mb-1">{{ phrase.english }}</p>
-                <p class="text-xl font-serif text-gray-800 dark:text-gray-100 mb-1">{{ phrase.sinhala }}</p>
-                <p v-if="phrase.tamil" class="text-sm text-gray-600 dark:text-gray-300">{{ phrase.tamil }}</p>
-                <p v-if="phrase.pronunciation" class="text-sm text-gray-500 dark:text-gray-400 italic">{{ phrase.pronunciation }}</p>
-              </div>
+            <div class="grid grid-cols-3 gap-4">
               <button 
-                @click="speakPhrase(phrase.sinhala)"
-                class="shrink-0 w-12 h-12 bg-secondary hover:bg-secondary/80 text-white rounded-xl flex items-center justify-center transition-colors"
-                title="Speak this phrase"
+                @click="shareViaWhatsApp"
+                :disabled="!userLocation"
+                class="flex flex-col items-center justify-center bg-white/10 hover:bg-white/20 transition-colors p-4 rounded-xl backdrop-blur-sm group disabled:opacity-50"
               >
-                <span class="material-icons-round">volume_up</span>
+                <img 
+                  alt="WhatsApp" 
+                  class="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" 
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3sJ3qnij7URcy2lVuTolNQsfPYvZT1DkZz-r1ZPpVg06Okys8c5sxt0vqDxDWK94RLvj8VVqREWbtSwd8daMNd7u8ndLHxG_hMfd3J7jXrIGL5jV62uFx5zHa2esXFXoJoSR9TNeFwXv9gLkieTPPaGHaCZwhKz-VFTQ8SsjP5SjtssXb2zENixAL2VD7n8vBxETBKXDbVAa1oYrCBpRG23PIU0SMW41qH67RhVXdh0KtLFESK4FtQUVHwdiXpNPMjw1sH6QAUks"
+                />
+                <span class="text-xs font-semibold">WhatsApp</span>
+              </button>
+              <button 
+                @click="shareViaSMS"
+                :disabled="!userLocation"
+                class="flex flex-col items-center justify-center bg-white/10 hover:bg-white/20 transition-colors p-4 rounded-xl backdrop-blur-sm group disabled:opacity-50"
+              >
+                <span class="material-icons text-3xl mb-1 text-blue-200 group-hover:scale-110 transition-transform">sms</span>
+                <span class="text-xs font-semibold">SMS</span>
+              </button>
+              <button 
+                @click="copyLocationToClipboard"
+                :disabled="!userLocation"
+                class="flex flex-col items-center justify-center bg-white/10 hover:bg-white/20 transition-colors p-4 rounded-xl backdrop-blur-sm group disabled:opacity-50"
+              >
+                <span class="material-icons text-3xl mb-1 text-blue-200 group-hover:scale-110 transition-transform">content_copy</span>
+                <span class="text-xs font-semibold">Copy</span>
               </button>
             </div>
           </div>
-        </section>
-        
-        <!-- Offline Tip -->
-        <section class="bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded-xl p-4">
-          <h3 class="font-semibold text-yellow-800 dark:text-yellow-300 mb-2 flex items-center gap-2">
-            📱 Offline Access Tip
-          </h3>
-          <p class="text-yellow-700 dark:text-yellow-200 text-sm mb-3">
-            Screenshot this page before traveling to remote areas. Emergency numbers work without internet.
-          </p>
-          <button
-            @click="printPage"
-            class="px-3 py-1.5 bg-yellow-600 hover:bg-yellow-500 text-white rounded-lg text-sm font-medium"
-          >
-            🖨️ Print This Page
-          </button>
-        </section>
-      </div>
 
-      <!-- Footer / AI Assistant -->
-      <div class="p-5 bg-gradient-to-r from-secondary to-[#004d55] dark:from-gray-800 dark:to-gray-900 text-white shrink-0 relative overflow-hidden">
-        <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-        <div class="relative z-10">
-          <div class="flex items-start gap-3 mb-4">
-            <div class="mt-1 bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
-              <span class="material-icons-round text-xl">smart_toy</span>
-            </div>
-            <div>
-              <h3 class="font-display font-bold text-lg">Not sure what to do?</h3>
-              <p class="text-sm text-gray-200 dark:text-gray-400 leading-relaxed max-w-xs">Our AI assistant can help guide you through any situation safely.</p>
+          <!-- AI Assistant Card -->
+          <div class="bg-secondary dark:bg-[#153e4d] rounded-2xl p-8 text-white shadow-soft relative overflow-hidden group">
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+            <div class="relative z-10">
+              <div class="flex items-center space-x-3 mb-4">
+                <div class="bg-white/20 p-2 rounded-lg">
+                  <span class="material-icons">smart_toy</span>
+                </div>
+                <h3 class="font-display font-bold text-xl">Not sure what to do?</h3>
+              </div>
+              <p class="text-cyan-100 mb-6 text-sm leading-relaxed">Our AI assistant can help guide you through any situation safely with local knowledge.</p>
+              <button 
+                @click="openAIChat"
+                class="w-full bg-white text-secondary hover:bg-cyan-50 font-bold py-4 rounded-xl flex items-center justify-center shadow-lg transition-all transform group-hover:translate-y-[-2px]"
+              >
+                <span class="material-icons mr-2">chat_bubble_outline</span>
+                Ask AI Travel Assistant
+              </button>
             </div>
           </div>
-          <button @click="openAIChat" class="w-full bg-white text-secondary font-bold py-3.5 px-6 rounded-xl hover:bg-accent-cyan transition-colors shadow-lg flex items-center justify-center gap-2 group">
-            <span class="material-icons-round text-lg group-hover:animate-bounce">chat</span>
-            Ask AI Travel Assistant
-          </button>
         </div>
-        <button aria-label="Quick Chat" class="absolute -top-6 right-6 bg-primary text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-20 border-2 border-white dark:border-gray-800">
-          <span class="material-icons-round">android</span>
-        </button>
+
+        <!-- Right Column: Emergency Contacts -->
+        <div class="lg:col-span-7">
+          <div class="bg-card-light dark:bg-card-dark rounded-2xl shadow-soft p-6 md:p-8 border border-gray-100 dark:border-gray-700 h-full">
+            <div class="flex items-center space-x-3 mb-8">
+              <span class="material-icons text-secondary dark:text-gray-300 text-3xl">contact_phone</span>
+              <h2 class="text-2xl md:text-3xl font-display font-bold text-gray-900 dark:text-white">Emergency Contacts</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Police Emergency -->
+              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 hover:shadow-md transition-shadow border border-transparent hover:border-red-200 dark:hover:border-red-900 flex flex-col justify-between">
+                <div class="flex justify-between items-start mb-4">
+                  <div>
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Police Emergency</p>
+                    <p class="text-4xl font-display font-bold text-gray-900 dark:text-white">119</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400">
+                    <span class="material-icons">local_police</span>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">National police emergency hotline for immediate assistance.</p>
+                  <a class="block w-full text-center bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-white font-bold py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" href="tel:119">Call Now</a>
+                </div>
+              </div>
+
+              <!-- Ambulance / Fire -->
+              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 hover:shadow-md transition-shadow border border-transparent hover:border-red-200 dark:hover:border-red-900 flex flex-col justify-between">
+                <div class="flex justify-between items-start mb-4">
+                  <div>
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Ambulance / Fire</p>
+                    <p class="text-4xl font-display font-bold text-gray-900 dark:text-white">110</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400">
+                    <span class="material-icons">medical_services</span>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Immediate ambulance and fire services dispatch.</p>
+                  <a class="block w-full text-center bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-white font-bold py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" href="tel:110">Call Now</a>
+                </div>
+              </div>
+
+              <!-- Tourist Police -->
+              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 hover:shadow-md transition-shadow border border-transparent hover:border-orange-200 dark:hover:border-orange-900 flex flex-col justify-between">
+                <div class="flex justify-between items-start mb-4">
+                  <div>
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Tourist Police</p>
+                    <p class="text-4xl font-display font-bold text-gray-900 dark:text-white">1912</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
+                    <span class="material-icons">support_agent</span>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Dedicated English-speaking tourist assistance division.</p>
+                  <a class="block w-full text-center bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-white font-bold py-2 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors" href="tel:1912">Call Now</a>
+                </div>
+              </div>
+
+              <!-- National Hospital -->
+              <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 hover:shadow-md transition-shadow border border-transparent hover:border-teal-200 dark:hover:border-teal-900 flex flex-col justify-between">
+                <div class="flex justify-between items-start mb-4">
+                  <div>
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">National Hospital</p>
+                    <p class="text-2xl font-display font-bold text-gray-900 dark:text-white break-all">011-2421052</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                    <span class="material-icons">local_hospital</span>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Accident & emergency service center in Colombo.</p>
+                  <a class="block w-full text-center bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-white font-bold py-2 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors" href="tel:0112421052">Call Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emergency Phrases Section -->
+      <div class="mt-8 bg-sand/30 dark:bg-gray-800/50 rounded-2xl p-8 border border-sand dark:border-gray-700">
+        <div class="flex items-center space-x-3 mb-6">
+          <span class="material-icons text-secondary dark:text-gray-300 text-2xl">translate</span>
+          <h2 class="text-2xl font-display font-bold text-gray-900 dark:text-white">Say This (Emergency Phrases)</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white dark:bg-gray-700 p-4 rounded-xl shadow-sm border-l-4 border-primary">
+            <p class="text-xs text-gray-500 dark:text-gray-400 uppercase">English</p>
+            <p class="font-bold text-lg text-gray-900 dark:text-white">I need help.</p>
+            <div class="my-2 border-t border-gray-100 dark:border-gray-600"></div>
+            <p class="text-xs text-gray-500 dark:text-gray-400 uppercase">Sinhala</p>
+            <p class="font-display text-lg text-secondary dark:text-cyan-100">Mata udaw ona.</p>
+          </div>
+          <div class="bg-white dark:bg-gray-700 p-4 rounded-xl shadow-sm border-l-4 border-primary">
+            <p class="text-xs text-gray-500 dark:text-gray-400 uppercase">English</p>
+            <p class="font-bold text-lg text-gray-900 dark:text-white">Call the police.</p>
+            <div class="my-2 border-t border-gray-100 dark:border-gray-600"></div>
+            <p class="text-xs text-gray-500 dark:text-gray-400 uppercase">Sinhala</p>
+            <p class="font-display text-lg text-secondary dark:text-cyan-100">Police-iyata katha karanna.</p>
+          </div>
+          <div class="bg-white dark:bg-gray-700 p-4 rounded-xl shadow-sm border-l-4 border-primary">
+            <p class="text-xs text-gray-500 dark:text-gray-400 uppercase">English</p>
+            <p class="font-bold text-lg text-gray-900 dark:text-white">Where is the hospital?</p>
+            <div class="my-2 border-t border-gray-100 dark:border-gray-600"></div>
+            <p class="text-xs text-gray-500 dark:text-gray-400 uppercase">Sinhala</p>
+            <p class="font-display text-lg text-secondary dark:text-cyan-100">Rohala koheda?</p>
+          </div>
+        </div>
       </div>
     </main>
-
-    <!-- Safety Alert Details Modal -->
-    <Teleport to="body">
-      <div v-if="showAlertModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/50" @click="closeAlertDetails"></div>
-        <div class="relative bg-white dark:bg-background-dark rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <div class="sticky top-0 bg-white dark:bg-background-dark border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-charcoal dark:text-white">Safety Alert</h2>
-            <button @click="closeAlertDetails" class="text-gray-400 hover:text-gray-600">
-              <span class="material-icons-round">close</span>
-            </button>
-          </div>
-
-          <div class="p-6">
-            <div v-if="alertLoading" class="flex items-center justify-center py-10">
-              <div class="animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full"></div>
-            </div>
-
-            <div v-else-if="alertError" class="text-center py-8 text-red-500">
-              <span class="material-icons-round text-4xl mb-2">error</span>
-              <p>{{ alertError }}</p>
-              <button @click="fetchAlertDetails(route.query.alertId as string)" class="mt-4 px-4 py-2 bg-primary text-white rounded-lg">Retry</button>
-            </div>
-
-            <div v-else-if="alertDetails" class="space-y-5">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h3 class="text-xl font-bold text-charcoal dark:text-white">{{ alertDetails.title }}</h3>
-                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    {{ formatAlertType(alertDetails.alert_type) }}
-                  </p>
-                </div>
-                <span :class="['text-xs font-bold px-2.5 py-1 rounded-full uppercase', alertDetails.severity === 'CRITICAL' || alertDetails.severity === 'HIGH' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-700']">
-                  {{ alertDetails.severity }}
-                </span>
-              </div>
-
-              <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                {{ alertDetails.description }}
-              </p>
-
-              <div v-if="alertDetails.action_required" class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-lg p-3 text-sm text-red-700 dark:text-red-300">
-                <strong>Action required:</strong> {{ alertDetails.action_required }}
-              </div>
-
-              <div>
-                <h4 class="text-sm font-bold text-charcoal dark:text-white mb-2">Affected areas</h4>
-                <ul v-if="alertDetails.affected_areas?.length" class="list-disc pl-5 text-sm text-gray-600 dark:text-gray-300 space-y-1">
-                  <li v-for="area in alertDetails.affected_areas" :key="area">{{ area }}</li>
-                </ul>
-                <p v-else class="text-sm text-gray-500">No areas specified.</p>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
-                  <div class="text-gray-500">Issued</div>
-                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(alertDetails.issued_at) }}</div>
-                </div>
-                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
-                  <div class="text-gray-500">Expires</div>
-                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ formatDate(alertDetails.expires_at) }}</div>
-                </div>
-                <div v-if="alertDetails.source || alertDetails.source_url" class="bg-gray-50 dark:bg-white/5 rounded-lg p-3 sm:col-span-2">
-                  <div class="text-gray-500">Source</div>
-                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ alertDetails.source || 'Official advisory' }}</div>
-                  <a
-                    v-if="alertDetails.source_url"
-                    :href="alertDetails.source_url"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="mt-1 inline-flex items-center gap-1 text-xs text-primary hover:underline"
-                  >
-                    View advisory
-                    <span class="material-icons-round text-[14px]">open_in_new</span>
-                  </a>
-                </div>
-              </div>
-
-              <div class="flex justify-end">
-                <button
-                  class="px-4 py-2 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-semibold hover:bg-gray-50 dark:hover:bg-white/5"
-                  @click="closeAlertDetails"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import type { SafetyAlert } from '~/types/api'
+import { ref, onMounted } from 'vue'
 
-definePageMeta({
-  layout: false
+// Meta configuration
+useHead({
+  title: 'Safety Mode - CeylonGuide',
+  meta: [
+    { name: 'description', content: 'Emergency assistance and safety information for travelers in Sri Lanka' },
+    { name: 'theme-color', content: '#E2583E' }
+  ],
+  link: [
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&family=Material+Icons&display=swap'
+    }
+  ]
 })
 
-// Get config
-const config = useRuntimeConfig()
-const apiBase = config.public.apiBase
-const route = useRoute()
+// State for user location
+const userLocation = ref<{ lat: number; lng: number } | null>(null)
 
-// Saved phrases state
-const savedPhraseIds = ref<string[]>([])
-const savedPhrasesList = ref<Array<{
-  id: string
-  english: string
-  sinhala: string
-  tamil: string
-  pronunciation: string
-}>>([])
-
-// Offline pack state
-const savedForOffline = ref(false)
-const offlinePackDate = ref<string | null>(null)
-
-// Save emergency data for offline access
-function saveForOffline() {
-  try {
-    const pack = {
-      savedAt: new Date().toISOString(),
-      contacts: [
-        { name: 'Police Emergency', number: '119' },
-        { name: 'Ambulance', number: '110' },
-        { name: 'National Hospital', number: '011-2421052' },
-        { name: 'Tourist Police', number: '1912' }
-      ],
-      phrases: [
-        { english: 'Help!', sinhala: 'උදව් කරන්න!', pronunciation: 'Udaw karanna!' },
-        { english: 'Call the police', sinhala: 'පොලීසියට කතා කරන්න', pronunciation: 'Polisiyata katha karanna' },
-        { english: 'I need a doctor', sinhala: 'මට වෛද්‍යවරයෙක් අවශ්‍යයි', pronunciation: 'Mata vaidyavarayek awashyai' }
-      ],
-      savedPhrases: savedPhrasesList.value,
-      briefing: briefing.value
-    }
-    localStorage.setItem('offlineEmergencyPack', JSON.stringify(pack))
-    savedForOffline.value = true
-    offlinePackDate.value = pack.savedAt
-  } catch (error) {
-    console.error('Failed to save offline pack:', error)
-  }
-}
-
-// Load offline pack if available
-function loadOfflinePack() {
-  try {
-    const saved = localStorage.getItem('offlineEmergencyPack')
-    if (saved) {
-      const pack = JSON.parse(saved)
-      savedForOffline.value = true
-      offlinePackDate.value = pack.savedAt
-      // Restore saved phrases if API fails
-      if (pack.savedPhrases?.length > 0 && savedPhrasesList.value.length === 0) {
-        savedPhrasesList.value = pack.savedPhrases
-      }
-      return pack
-    }
-  } catch (error) {
-    console.error('Failed to load offline pack:', error)
-  }
-  return null
-}
-
-onMounted(async () => {
-  // First load any existing offline pack
-  loadOfflinePack()
-
-  if (route.query.alertId) {
-    fetchAlertDetails(route.query.alertId as string)
-  }
-  
-  // Load saved phrase IDs from localStorage
-  const saved = localStorage.getItem('ceylon_saved_phrases')
-  if (saved) {
-    try {
-      savedPhraseIds.value = JSON.parse(saved)
-      
-      // Fetch full phrase details if we have saved phrases
-      if (savedPhraseIds.value.length > 0) {
-        try {
-          const response = await $fetch<{ success: boolean; data: any[] }>(`${apiBase}/api/phrases`)
-          if (response.success && response.data) {
-            savedPhrasesList.value = response.data
-              .filter((p: any) => savedPhraseIds.value.includes(p.id))
-              .map((p: any) => ({
-                id: p.id,
-                english: p.english,
-                sinhala: p.sinhala,
-                tamil: p.tamil,
-                pronunciation: p.pronunciation || ''
-              }))
-          }
-        } catch (e) {
-          console.warn('Failed to fetch phrases, using offline cache:', e)
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load saved phrases:', e)
-    }
-  }
-  
-  // Get user location and fetch safety briefing
+// Get user location on mount
+onMounted(() => {
   if ('geolocation' in navigator) {
-    loadingBriefing.value = true
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
+      (position) => {
         userLocation.value = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         }
-        
-        try {
-          const response = await $fetch<any>(`${apiBase}/api/safety/briefing/nearby`, {
-            params: {
-              lat: userLocation.value.lat,
-              lng: userLocation.value.lng,
-              radius: 10
-            }
-          })
-          if (response.success) {
-            briefing.value = response
-            // Auto-save for offline after successful load
-            saveForOffline()
-          }
-        } catch (e) {
-          console.error('Failed to load safety briefing:', e)
-        } finally {
-          loadingBriefing.value = false
-        }
       },
       (error) => {
         console.warn('Location access denied:', error)
-        loadingBriefing.value = false
       },
       { timeout: 10000 }
     )
   }
 })
-
-// Text-to-Speech function
-function speakPhrase(text: string) {
-  if (!('speechSynthesis' in window)) {
-    return
-  }
-  speechSynthesis.cancel()
-  const utterance = new SpeechSynthesisUtterance(text)
-  utterance.lang = 'si-LK'
-  utterance.rate = 0.8
-  speechSynthesis.speak(utterance)
-}
-
-useHead({
-  title: 'Emergency Assistance Pop-up - CeylonGuide',
-  meta: [
-    { name: 'theme-color', content: '#D94E3B' }
-  ],
-  link: [
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap'
-    },
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/icon?family=Material+Icons+Round'
-    }
-  ]
-})
-
-function openAIChat() {
-  const router = useRouter()
-  router.push('/')
-}
 
 // Share location via WhatsApp
 function shareViaWhatsApp() {
@@ -591,222 +274,31 @@ function copyLocationToClipboard() {
   alert('📋 Location copied! Paste in any app to share.')
 }
 
-// Share location feature (fallback)
-async function shareLocation() {
-  if (!userLocation.value) return
-  
-  const text = `I'm at coordinates: ${userLocation.value.lat.toFixed(4)}, ${userLocation.value.lng.toFixed(4)}. Using CeylonGuides Safety Mode.`
-  
-  if ('share' in navigator) {
-    try {
-      await navigator.share({ text })
-    } catch (err) {
-      copyLocationToClipboard()
-    }
-  } else {
-    copyLocationToClipboard()
-  }
-}
-
-function copyToClipboard(text: string) {
-  navigator.clipboard.writeText(text)
-  alert('Location copied to clipboard!')
-}
-
-function printPage() {
-  window.print()
-}
-
-// State for location-based safety briefing
-const userLocation = ref<{ lat: number; lng: number } | null>(null)
-const briefing = ref<any>(null)
-const loadingBriefing = ref(false)
-
-const fallbackEmergencyContacts = [
-  { id: 'police', name: 'Police Emergency', phone: '119', category: 'POLICE', description: 'National police emergency hotline' },
-  { id: 'ambulance', name: 'Ambulance / Fire', phone: '110', category: 'MEDICAL', description: 'Ambulance and fire services' },
-  { id: 'hospital', name: 'National Hospital', phone: '011-2421052', category: 'MEDICAL', description: 'Accident & emergency service' },
-  { id: 'tourist-police', name: 'Tourist Police', phone: '1912', category: 'TOURIST_POLICE', description: 'English-speaking tourist assistance' }
-]
-
-const contactStyles: Record<string, { icon: string; iconWrapClass: string }> = {
-  POLICE: {
-    icon: 'local_police',
-    iconWrapClass: 'bg-red-100 dark:bg-red-900/40 text-primary'
-  },
-  MEDICAL: {
-    icon: 'medical_services',
-    iconWrapClass: 'bg-red-100 dark:bg-red-900/40 text-primary'
-  },
-  TOURIST_POLICE: {
-    icon: 'support_agent',
-    iconWrapClass: 'bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300'
-  },
-  FIRE: {
-    icon: 'local_fire_department',
-    iconWrapClass: 'bg-red-100 dark:bg-red-900/40 text-primary'
-  },
-  EMBASSY: {
-    icon: 'flag',
-    iconWrapClass: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-  },
-  GENERAL: {
-    icon: 'phone_in_talk',
-    iconWrapClass: 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
-  }
-}
-
-const emergencyContacts = computed(() => {
-  const contacts = briefing.value?.emergency?.contacts?.length
-    ? briefing.value.emergency.contacts
-    : fallbackEmergencyContacts
-
-  return contacts
-    .map((contact: any, index: number) => {
-      const category = contact.category || 'GENERAL'
-      const style = contactStyles[category] || contactStyles.GENERAL || { icon: 'phone', iconWrapClass: 'bg-gray-500' }
-      return {
-        id: contact.id || `${category}-${index}`,
-        name: contact.name || 'Emergency Contact',
-        phone: contact.phone || contact.phone_number || '',
-        description: contact.description || contact.address || '',
-        icon: style.icon,
-        iconWrapClass: style.iconWrapClass
-      }
-    })
-    .filter((contact: any) => contact.phone)
-})
-
-const fallbackEmergencyPhrases = [
-  { id: 'help', english: 'Help!', sinhala: 'උදව් කරන්න!', tamil: 'உதவி!', pronunciation: 'Udaw karanna!' },
-  { id: 'police', english: 'Call the police', sinhala: 'පොලීසියට කතා කරන්න', tamil: 'காவல்துறையை அழைக்கவும்', pronunciation: 'Polisiyata katha karanna' },
-  { id: 'doctor', english: 'I need a doctor', sinhala: 'මට වෛද්‍යවරයෙක් අවශ්‍යයි', tamil: 'எனக்கு மருத்துவர் தேவை', pronunciation: 'Mata vaidyavarayek awashyai' }
-]
-
-const emergencyPhrases = computed(() => {
-  const phrases = briefing.value?.emergency?.phrases?.length
-    ? briefing.value.emergency.phrases
-    : fallbackEmergencyPhrases
-
-  return phrases.slice(0, 5).map((phrase: any, index: number) => ({
-    id: phrase.id || `phrase-${index}`,
-    english: phrase.english,
-    sinhala: phrase.sinhala,
-    tamil: phrase.tamil || '',
-    pronunciation: phrase.pronunciation || ''
-  }))
-})
-
-const phraseIcons: string[] = ['campaign', 'local_police', 'medical_information', 'health_and_safety']
-
-function getPhraseIcon(index: number): string {
-  return phraseIcons[index % phraseIcons.length] || 'campaign'
-}
-
-const showAlertModal = ref(false)
-const alertLoading = ref(false)
-const alertError = ref('')
-const alertDetails = ref<SafetyAlert | null>(null)
-
-function formatAlertType(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
-}
-
-function formatDate(value: string) {
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-  return date.toLocaleString()
-}
-
-async function fetchAlertDetails(id: string) {
-  if (!id) {
-    alertError.value = 'Missing alert ID.'
-    showAlertModal.value = true
-    return
-  }
-  showAlertModal.value = true
-  alertLoading.value = true
-  alertError.value = ''
-  alertDetails.value = null
-  try {
-    const response = await $fetch<{ success: boolean; data: SafetyAlert; error?: string }>(`${apiBase}/api/safety/${id}`)
-    if (response.success) {
-      alertDetails.value = response.data
-    } else {
-      alertError.value = response.error || 'Failed to load alert.'
-    }
-  } catch (error: any) {
-    alertError.value = error?.data?.error || 'Failed to load alert.'
-  } finally {
-    alertLoading.value = false
-  }
-}
-
-function closeAlertDetails() {
-  showAlertModal.value = false
-  alertError.value = ''
+// Open AI chat
+function openAIChat() {
+  const router = useRouter()
+  router.push('/')
 }
 </script>
 
 <style scoped>
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-track {
-    background: transparent; 
-}
-::-webkit-scrollbar-thumb {
-    background: #D94E3B; 
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #b93c2b; 
-}
-.glass-effect {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Print styles for emergency info */
-@media print {
-    /* Hide non-essential elements */
-    header, .no-print, button, footer {
-        display: none !important;
-    }
-    
-    /* Make content printable */
-    body, main {
-        background: white !important;
-        color: black !important;
-    }
-    
-    .max-w-lg {
-        max-width: 100% !important;
-        box-shadow: none !important;
-        border: none !important;
-    }
-    
-    section {
-        page-break-inside: avoid;
-        border: 1px solid #ccc !important;
-        background: #f9f9f9 !important;
-    }
-    
-    /* Keep emergency numbers visible */
-    a[href^="tel:"] {
-        color: black !important;
-        text-decoration: none;
-    }
-    
-    /* Add print header */
-    main::before {
-        content: "CeylonGuides Emergency Info - Print this page for offline access";
-        display: block;
-        text-align: center;
-        font-weight: bold;
-        margin-bottom: 20px;
-        padding: 10px;
-        border-bottom: 2px solid #D94E3B;
-    }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin 2s linear infinite;
+}
+
+.bg-sand\/30 {
+  background-color: rgb(230 220 202 / 0.3);
+}
+
+.border-sand {
+  border-color: #E6DCCA;
 }
 </style>
