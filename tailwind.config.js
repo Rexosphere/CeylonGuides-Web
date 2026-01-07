@@ -24,7 +24,7 @@ export default {
                 "text-muted": "#6B7280", // Muted Cool Gray
                 "accent-danger": "#B91C1C", // Muted Crimson
                 "accent-info": "#475569", // Desaturated Blue-Gray
-                
+
                 // Legacy colors (keeping for backward compatibility)
                 "accent": "#F47C3C", // Coral Orange
                 "accent-light": "#A3E4D7", // Light Cyan
@@ -64,6 +64,7 @@ export default {
                 "safety-accent-cyan": "#E0FBFC",
                 "safety-text-light": "#2C3539",
                 "safety-text-dark": "#E0FBFC",
+                "sand": "#F0EBD8", // Warm Sand for safety mode
             },
             fontFamily: {
                 "display": ["Inter", "sans-serif"],
