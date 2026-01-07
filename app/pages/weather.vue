@@ -8,6 +8,7 @@
         <div class="max-w-[1080px] w-full flex flex-col gap-20">
           <WeatherClimate />
           <WeatherForecasts />
+          <Weather7DaySnapshot />
           <WeatherSeasonalGuide />
           <WeatherPacking />
         </div>
@@ -21,6 +22,7 @@
 import WeatherHero from '~/components/Weather/WeatherHero.vue'
 import WeatherClimate from '~/components/Weather/WeatherClimate.vue'
 import WeatherForecasts from '~/components/Weather/WeatherForecasts.vue'
+import Weather7DaySnapshot from '~/components/Weather/Weather7DaySnapshot.vue'
 import WeatherSeasonalGuide from '~/components/Weather/WeatherSeasonalGuide.vue'
 import WeatherPacking from '~/components/Weather/WeatherPacking.vue'
 

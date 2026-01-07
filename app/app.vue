@@ -11,6 +11,10 @@ import { onMounted } from 'vue'
 const config = useRuntimeConfig()
 const authPinged = useState<boolean>('auth_pinged', () => false)
 
+// Debug: Enable click logging if ?debugClicks=1
+import { useClickDebug } from '~/composables/useClickDebug'
+useClickDebug()
+
 onMounted(async () => {
   if (authPinged.value) return
   authPinged.value = true
