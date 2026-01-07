@@ -1,493 +1,961 @@
 <template>
-  <div class="flex flex-col h-screen overflow-hidden bg-background-light dark:bg-background-dark font-body text-text-main dark:text-white">
-    <Header variant="solid" />
-
-    <!-- Main Layout -->
-    <main class="flex-1 flex overflow-hidden relative mt-[80px]">
-      <!-- Sidebar -->
-      <aside class="w-full md:w-[460px] lg:w-[500px] bg-surface-light dark:bg-surface-dark flex flex-col border-r border-warm-sand dark:border-white/10 z-20 shadow-xl md:shadow-soft absolute inset-0 md:relative overflow-hidden">
-        <div class="flex flex-col h-full overflow-y-auto custom-scrollbar">
-          <div class="p-6 pb-2">
-            <h1 class="font-display text-3xl text-teal-deep dark:text-white mb-1">Transport Assistant</h1>
-            <p class="text-text-muted text-sm mb-6">Plan your journey across Sri Lanka with fair prices.</p>
-            
-            <!-- Route Inputs -->
-            <div class="bg-light-cyan/30 dark:bg-[#3a2e29]/50 p-4 rounded-2xl border border-warm-sand dark:border-white/10 relative">
-              <div class="flex flex-col gap-3 relative z-10">
-                <div class="relative group">
-                  <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-teal-deep text-[20px]">trip_origin</span>
-                  <input v-model="origin" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#221510] border-none ring-1 ring-black/5 dark:ring-white/10 focus:ring-2 focus:ring-teal-deep text-sm font-medium text-text-main placeholder:text-text-muted/60 shadow-sm outline-none" placeholder="Starting point" type="text"/>
-                </div>
-                <div class="absolute left-[19px] top-[40px] h-[36px] border-l-2 border-dotted border-teal-deep/30 z-0"></div>
-                <div class="relative group">
-                  <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-coral-orange text-[20px]">location_on</span>
-                  <input v-model="destination" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#221510] border-none ring-1 ring-black/5 dark:ring-white/10 focus:ring-2 focus:ring-teal-deep text-sm font-medium text-text-main placeholder:text-text-muted/60 shadow-sm outline-none" placeholder="Destination" type="text"/>
-                </div>
-              </div>
-              <button @click="swapLocations" class="absolute right-6 top-1/2 -translate-y-1/2 size-8 bg-white dark:bg-[#4a3b36] rounded-full shadow border border-warm-sand dark:border-transparent flex items-center justify-center text-teal-deep hover:rotate-180 transition-transform duration-300 z-20">
-                <span class="material-symbols-outlined text-[18px]">swap_vert</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Fair Fare Calculator -->
-          <div class="px-6 py-4">
-            <div class="flex items-center gap-2 mb-3">
-              <span class="material-symbols-outlined text-teal-deep">price_check</span>
-              <h3 class="font-display text-lg text-text-main dark:text-white">Fair Fare Calculator</h3>
-            </div>
-            <div class="bg-teal-deep text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
-              <div class="absolute top-0 right-0 p-3 opacity-10">
-                <span class="material-symbols-outlined text-[100px]">local_taxi</span>
-              </div>
-              <div class="relative z-10">
-                <div class="text-teal-100 text-xs font-medium uppercase tracking-wider mb-1">Estimated {{ selectedTransportLabel }} Fare</div>
-                <div class="flex items-baseline gap-1 mb-4">
-                  <span class="text-3xl font-bold font-display">LKR {{ calculatedFare.min.toLocaleString() }}</span>
-                  <span class="text-lg opacity-80">-</span>
-                  <span class="text-2xl font-bold font-display opacity-80">{{ calculatedFare.max.toLocaleString() }}</span>
-                </div>
-                <div class="mb-2">
-                  <div class="h-2 w-full rounded-full price-meter relative">
-                    <div class="absolute top-1/2 -translate-y-1/2 left-[25%] size-4 bg-white border-2 border-teal-deep rounded-full shadow transform -translate-x-1/2"></div>
-                  </div>
-                  <div class="flex justify-between mt-1.5 text-[10px] font-medium text-teal-100">
-                    <span>Typical</span>
-                    <span>High</span>
-                    <span class="text-coral-orange">Tourist Price</span>
-                  </div>
-                </div>
-                
-                <!-- Fare Guard Button -->
-                <button 
-                  @click="openFareGuard"
-                  :disabled="fareLoading"
-                  class="w-full mt-4 bg-white/20 hover:bg-white/30 disabled:opacity-70 backdrop-blur-sm text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors"
-                >
-                  <span class="text-lg">🛡️</span>
-                  <span v-if="fareLoading">Calculating...</span>
-                  <span v-else>Show Fare Guard Card</span>
-                </button>
-                <p v-if="fareError" class="text-xs text-red-200 mt-2">{{ fareError }}</p>
-                
-                <p class="text-xs text-teal-100/80 italic mt-3">*Always negotiate before getting in if not using a meter.</p>
-                
-                <!-- Trust Signal -->
-                <div class="mt-4 pt-3 border-t border-white/20 text-center">
-                  <p class="text-xs text-teal-100/80">✓ Based on official transport authority rates</p>
-                  <p class="text-[10px] text-teal-100/60">Updated January 2026</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Common Routes Quick Access -->
-          <div class="px-6 pb-4">
-            <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Popular Routes</h3>
-            <div class="space-y-2">
-              <button
-                v-for="route in popularRoutes"
-                :key="route.name"
-                @click="fillRoute(route)"
-                class="w-full p-3 rounded-xl border border-warm-sand dark:border-white/10 bg-white dark:bg-[#221510] hover:border-teal-deep hover:bg-light-cyan/20 dark:hover:bg-teal-deep/10 text-left transition-all group"
-              >
-                <div class="flex items-center justify-between">
-                  <div>
-                    <div class="font-semibold text-sm text-text-main dark:text-white group-hover:text-teal-deep">{{ route.name }}</div>
-                    <div class="text-xs text-text-muted mt-0.5">{{ route.from }} → {{ route.to }}</div>
-                  </div>
-                  <div class="text-right">
-                    <div class="text-xs text-text-muted">~{{ route.distance }}km</div>
-                    <div class="text-sm font-bold text-teal-deep">LKR {{ route.estimatedMin.toLocaleString() }}-{{ route.estimatedMax.toLocaleString() }}</div>
-                  </div>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          <!-- Ride Hailing Apps -->
-          <div class="px-6 pb-4">
-            <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Ride Hailing Apps</h3>
-            <div class="grid grid-cols-2 gap-3">
-              <a class="flex items-center gap-3 p-3 rounded-xl border border-warm-sand dark:border-white/10 bg-white dark:bg-[#221510] hover:border-teal-deep transition-colors group" href="#">
-                <div class="size-8 rounded-full bg-yellow-400 flex items-center justify-center text-black font-bold text-xs">PM</div>
-                <div>
-                  <div class="text-xs text-text-muted">PickMe</div>
-                  <div class="text-sm font-bold group-hover:text-teal-deep">~480 LKR</div>
-                </div>
-                <span class="material-symbols-outlined ml-auto text-text-muted text-[18px]">open_in_new</span>
-              </a>
-              <a class="flex items-center gap-3 p-3 rounded-xl border border-warm-sand dark:border-white/10 bg-white dark:bg-[#221510] hover:border-teal-deep transition-colors group" href="#">
-                <div class="size-8 rounded-full bg-black flex items-center justify-center text-white font-bold text-xs">U</div>
-                <div>
-                  <div class="text-xs text-text-muted">Uber</div>
-                  <div class="text-sm font-bold group-hover:text-teal-deep">~520 LKR</div>
-                </div>
-                <span class="material-symbols-outlined ml-auto text-text-muted text-[18px]">open_in_new</span>
-              </a>
-            </div>
-          </div>
-
-          <!-- Public Transport -->
-          <div class="px-6 pb-20">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider">Public Transport</h3>
-              <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">Available</span>
-            </div>
-            <div class="flex flex-col gap-3">
-              <!-- Train Card -->
-              <div class="group bg-white dark:bg-[#221510] rounded-xl p-4 border border-warm-sand dark:border-white/10 shadow-sm hover:shadow-md transition-all cursor-pointer">
-                <div class="flex items-start justify-between">
-                  <div class="flex items-center gap-3">
-                    <div class="size-10 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center">
-                      <span class="material-symbols-outlined">train</span>
-                    </div>
-                    <div>
-                      <h4 class="font-bold text-text-main dark:text-white">Udarata Menike</h4>
-                      <div class="text-xs text-text-muted">Express Train • 2nd Class</div>
-                    </div>
-                  </div>
-                  <div class="text-right">
-                    <div class="font-display font-bold text-lg text-teal-deep">600 LKR</div>
-                    <div class="text-xs text-text-muted">Reserved</div>
-                  </div>
-                </div>
-                <div class="mt-4 flex items-center justify-between text-sm border-t border-dashed border-gray-200 dark:border-gray-700 pt-3">
-                  <div class="flex flex-col">
-                    <span class="text-text-muted text-xs">Departs</span>
-                    <span class="font-bold">05:55 AM</span>
-                  </div>
-                  <div class="flex items-center gap-1 text-xs text-text-muted">
-                    <span class="material-symbols-outlined text-[14px]">schedule</span>
-                    9h 30m
-                  </div>
-                  <div class="flex flex-col text-right">
-                    <span class="text-text-muted text-xs">Arrives</span>
-                    <span class="font-bold">03:25 PM</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Bus Card -->
-              <div class="group bg-white dark:bg-[#221510] rounded-xl p-4 border border-warm-sand dark:border-white/10 shadow-sm hover:shadow-md transition-all cursor-pointer">
-                <div class="flex items-start justify-between">
-                  <div class="flex items-center gap-3">
-                    <div class="size-10 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600 flex items-center justify-center">
-                      <span class="material-symbols-outlined">directions_bus</span>
-                    </div>
-                    <div>
-                      <h4 class="font-bold text-text-main dark:text-white">CTB Super Luxury</h4>
-                      <div class="text-xs text-text-muted">Highway Bus • A/C</div>
-                    </div>
-                  </div>
-                  <div class="text-right">
-                    <div class="font-display font-bold text-lg text-teal-deep">950 LKR</div>
-                    <div class="text-xs text-text-muted">Ticket</div>
-                  </div>
-                </div>
-                <div class="mt-4 flex items-center justify-between text-sm border-t border-dashed border-gray-200 dark:border-gray-700 pt-3">
-                  <div class="flex flex-col">
-                    <span class="text-text-muted text-xs">Next Bus</span>
-                    <span class="font-bold text-green-600">in 15 mins</span>
-                  </div>
-                  <div class="flex items-center gap-1 text-xs text-text-muted">
-                    <span class="material-symbols-outlined text-[14px]">schedule</span>
-                    6h 45m
-                  </div>
-                  <div class="flex flex-col text-right">
-                    <span class="text-text-muted text-xs">Frequency</span>
-                    <span class="font-bold">Every 30m</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Footer -->
-          <Footer />
-        </div>
-      </aside>
-
-      <!-- Map Area -->
-      <div class="hidden md:block flex-1 relative bg-[#e5e3df] dark:bg-[#1a1614] overflow-hidden map-texture">
-        <div class="absolute inset-0 bg-cover bg-center opacity-70 dark:opacity-30 mix-blend-multiply" style="background-image: url('/images/downloaded_874f0a21b149.avif'); filter: grayscale(100%) sepia(20%) hue-rotate(150deg) contrast(90%);"></div>
+  <div class="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-teal-100 selection:text-teal-800 pb-20">
+    
+    <!-- Page Header (Compact) -->
+    <div class="bg-gradient-to-b from-slate-50 to-white pt-10 pb-6 border-b border-slate-100">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center justify-center">
         
-        <!-- SVG Route Animation -->
-        <div class="absolute inset-0 pointer-events-none">
-          <svg class="absolute inset-0 w-full h-full" style="z-index: 10;">
-            <path class="animate-dash" d="M 300 450 Q 500 500 650 350" fill="none" stroke="#004d40" stroke-dasharray="10,5" stroke-width="4"></path>
-            <circle cx="300" cy="450" fill="#004d40" r="6"></circle>
-            <circle cx="650" cy="350" fill="#ff7f50" r="6"></circle>
-          </svg>
-        </div>
+        <!-- Pill Badge -->
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-700 border border-teal-100 mb-4 shadow-sm">
+          Transport & Routes
+        </span>
+        
+        <!-- Title -->
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900 mb-2">
+          Transport Assistant
+        </h1>
+        
+        <!-- Subtitle -->
+        <p class="text-slate-500 font-medium text-sm flex items-center gap-2">
+          Plan smart <span class="w-1 h-1 rounded-full bg-slate-300"></span> Avoid scams <span class="w-1 h-1 rounded-full bg-slate-300"></span> Fair fares
+        </p>
 
-        <!-- Map Controls -->
-        <div class="absolute top-4 right-4 flex flex-col gap-2 z-20">
-          <button class="size-10 bg-white dark:bg-[#221510] rounded-xl shadow-md flex items-center justify-center text-text-main dark:text-white hover:bg-gray-50 transition-colors" title="My Location">
-            <span class="material-symbols-outlined">my_location</span>
-          </button>
-          <button class="size-10 bg-white dark:bg-[#221510] rounded-xl shadow-md flex items-center justify-center text-text-main dark:text-white hover:bg-gray-50 transition-colors" title="Zoom In">
-            <span class="material-symbols-outlined">add</span>
-          </button>
-          <button class="size-10 bg-white dark:bg-[#221510] rounded-xl shadow-md flex items-center justify-center text-text-main dark:text-white hover:bg-gray-50 transition-colors" title="Zoom Out">
-            <span class="material-symbols-outlined">remove</span>
-          </button>
-        </div>
-
-        <!-- Pins -->
-        <div class="absolute top-[65%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer z-30">
-          <div class="relative flex items-center justify-center">
-            <div class="absolute size-4 bg-teal-deep rounded-full animate-ping opacity-20"></div>
-            <div class="relative px-3 py-1.5 bg-white dark:bg-[#221510] rounded-lg border border-teal-deep shadow-lg flex items-center gap-2 transform transition-transform group-hover:scale-105">
-              <span class="material-symbols-outlined text-[16px] text-teal-deep">trip_origin</span>
-              <span class="text-xs font-bold whitespace-nowrap">Colombo Fort</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="absolute top-[45%] left-[60%] transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer z-30">
-          <div class="relative flex items-center justify-center">
-            <div class="relative px-3 py-1.5 bg-teal-deep text-white rounded-lg shadow-xl flex items-center gap-2 transform transition-transform group-hover:scale-105">
-              <span class="material-symbols-outlined text-[16px]">location_on</span>
-              <span class="text-xs font-bold whitespace-nowrap">Ella</span>
-            </div>
-            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 w-32 bg-white dark:bg-[#221510] rounded-lg shadow-xl p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none mb-2 text-center">
-              <div class="text-xs text-text-muted">Tourist Hotspot</div>
-              <div class="text-[10px] font-bold text-coral-orange">High Demand</div>
-              <div class="absolute bottom-[-6px] left-1/2 -translate-x-1/2 size-3 bg-white dark:bg-[#221510] transform rotate-45 shadow-sm"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="absolute bottom-8 left-8 z-20 bg-white/90 dark:bg-[#221510]/90 backdrop-blur-sm p-3 rounded-xl border border-warm-sand dark:border-[#3a2e29] shadow-lg max-w-xs">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-2">Transport Legend</h4>
-          <div class="space-y-2">
-            <div class="flex items-center gap-2">
-              <div class="size-2 rounded-full bg-teal-deep"></div>
-              <span class="text-xs">Train Route (Scenic)</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <div class="size-2 rounded-full bg-coral-orange"></div>
-              <span class="text-xs">Express Bus Route</span>
-            </div>
-          </div>
-        </div>
       </div>
-    </main>
+    </div>
 
-    <!-- Fare Guard Modal -->
-    <TransportFareCard
-      v-if="showFareCard"
-      :origin="origin"
-      :destination="destination"
-      :distance="distanceKm"
-      :fare-range="{ min: calculatedFare.min, max: calculatedFare.max, currency: 'LKR' }"
-      :transport-type="selectedTransportType"
-      @close="showFareCard = false"
-    />
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      
+      <!-- Layout Grid (2 Columns on Desktop) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- LEFT COLUMN - ROUTE FORM (Consolidated Card) -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition-shadow space-y-8 sticky top-8">
+            
+            <!-- Header -->
+            <div class="flex items-center gap-3 pb-6 border-b border-slate-100">
+               <div class="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-600">
+                  <span class="material-symbols-outlined text-xl">alt_route</span>
+               </div>
+               <div>
+                  <h2 class="font-bold text-lg text-slate-900">Plan Your Journey</h2>
+                  <p class="text-sm text-slate-500">Calculate fair rates for any trip</p>
+               </div>
+            </div>
+
+            <!-- SECTION: FROM/TO INPUTS -->
+            <div class="space-y-4">
+               <!-- From -->
+               <div class="relative z-20">
+                  <label class="text-xs font-medium text-slate-700 uppercase tracking-wide mb-2 block">Origin</label>
+                  <div class="flex gap-2">
+                    <div class="flex-1 relative">
+                       <input
+                          v-model="originSearch"
+                          @input="handleOriginInput"
+                          @focus="showOriginDropdown = true"
+                          placeholder="Where are you starting?"
+                          class="w-full px-4 py-3 text-sm font-medium border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition-all placeholder:text-slate-400 text-slate-900"
+                        />
+                       <button 
+                          v-if="originSearch"
+                          @click="clearOrigin"
+                          class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 p-1 rounded-full hover:bg-slate-100 transition-colors"
+                        >
+                          <span class="material-symbols-outlined text-sm font-bold">close</span>
+                        </button>
+                        
+                        <!-- Dropdown -->
+                        <div v-if="showOriginDropdown" class="absolute z-50 w-full mt-2 bg-white rounded-xl shadow-xl ring-1 ring-slate-900/5 max-h-64 overflow-auto scrollbar-thin">
+                           <div v-if="originGeo.isSearching.value" class="p-4 text-center text-sm text-slate-500">
+                              <span class="inline-block w-4 h-4 border-2 border-teal-500 border-t-transparent rounded-full animate-spin mr-2"></span>
+                              Locating...
+                           </div>
+                           <template v-else-if="originSearch.length >= 2">
+                              <button
+                                v-for="place in originGeo.searchResults.value"
+                                :key="place.id"
+                                @click="selectGeocodedOrigin(place)"
+                                class="w-full px-4 py-3 text-left text-sm hover:bg-slate-50 flex items-start gap-3 border-b border-slate-50 last:border-0 transition-colors"
+                              >
+                                <span class="mt-0.5 text-slate-400 material-symbols-outlined text-lg">location_on</span>
+                                <div>
+                                  <div class="font-semibold text-slate-900">{{ place.name }}</div>
+                                  <div class="text-xs text-slate-500">{{ place.area }}</div>
+                                </div>
+                              </button>
+                              <div v-if="originGeo.searchResults.value.length === 0" class="p-4 text-center text-sm text-slate-500">
+                                No locations found
+                              </div>
+                           </template>
+                           <template v-else>
+                              <div class="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wide bg-slate-50/50">Popular</div>
+                              <button v-for="dest in popularDestinations.slice(0,5)" :key="dest.id" @click="selectOrigin(dest)" class="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2">
+                                 <span>{{ dest.name }}</span>
+                              </button>
+                           </template>
+                        </div>
+                    </div>
+                    <button @click="setPickMode('from')" :class="pickMode === 'from' ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'" class="p-3 rounded-xl transition-colors">
+                       <span class="material-symbols-outlined">map</span>
+                    </button>
+                  </div>
+               </div>
+
+               <!-- Swap -->
+               <div class="flex justify-center -my-3 relative z-10">
+                  <button @click="swapLocations" class="bg-white border border-slate-200 p-2 rounded-full text-slate-400 hover:text-teal-600 hover:border-teal-200 shadow-sm transition-all hover:rotate-180">
+                     <span class="material-symbols-outlined">swap_vert</span>
+                  </button>
+               </div>
+
+               <!-- To -->
+               <div class="relative z-10">
+                  <label class="text-xs font-medium text-slate-700 uppercase tracking-wide mb-2 block">Destination</label>
+                  <div class="flex gap-2">
+                    <div class="flex-1 relative">
+                       <input
+                          v-model="destinationSearch"
+                          @input="handleDestinationInput"
+                          @focus="showDestinationDropdown = true"
+                          placeholder="Where are you going?"
+                          class="w-full px-4 py-3 text-sm font-medium border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition-all placeholder:text-slate-400 text-slate-900"
+                        />
+                       <button 
+                          v-if="destinationSearch"
+                          @click="clearDestination"
+                          class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 p-1 rounded-full hover:bg-slate-100 transition-colors"
+                        >
+                          <span class="material-symbols-outlined text-sm font-bold">close</span>
+                        </button>
+                        
+                        <!-- Dropdown -->
+                        <div v-if="showDestinationDropdown" class="absolute z-50 w-full mt-2 bg-white rounded-xl shadow-xl ring-1 ring-slate-900/5 max-h-64 overflow-auto scrollbar-thin">
+                           <div v-if="destGeo.isSearching.value" class="p-4 text-center text-sm text-slate-500">Loading...</div>
+                           <template v-else-if="destinationSearch.length >= 2">
+                              <button
+                                v-for="place in destGeo.searchResults.value"
+                                :key="place.id"
+                                @click="selectGeocodedDest(place)"
+                                class="w-full px-4 py-3 text-left text-sm hover:bg-slate-50 flex items-start gap-3 border-b border-slate-50 last:border-0 transition-colors"
+                              >
+                                <span class="mt-0.5 text-slate-400 material-symbols-outlined text-lg">location_on</span>
+                                <div>
+                                  <div class="font-semibold text-slate-900">{{ place.name }}</div>
+                                  <div class="text-xs text-slate-500">{{ place.area }}</div>
+                                </div>
+                              </button>
+                           </template>
+                           <template v-else>
+                              <div class="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wide bg-slate-50/50">Popular</div>
+                              <button v-for="dest in popularDestinations.slice(0,5)" :key="dest.id" @click="selectDestination(dest)" class="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2">
+                                 <span>{{ dest.name }}</span>
+                              </button>
+                           </template>
+                        </div>
+                    </div>
+                    <button @click="setPickMode('to')" :class="pickMode === 'to' ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'" class="p-3 rounded-xl transition-colors">
+                       <span class="material-symbols-outlined">flag</span>
+                    </button>
+                  </div>
+               </div>
+            </div>
+            
+            <hr class="border-slate-100" />
+            
+            <!-- SECTION: TRANSPORT MODE -->
+            <div>
+               <label class="text-xs font-medium text-slate-700 uppercase tracking-wide mb-3 block">Transport Mode</label>
+               <div class="grid grid-cols-4 gap-3">
+                  <button
+                    v-for="mode in travelModes"
+                    :key="mode.id"
+                    @click="selectedMode = mode.id"
+                    class="flex flex-col items-center p-3 rounded-xl transition-all text-center border-2"
+                    :class="selectedMode === mode.id 
+                      ? 'bg-teal-50 border-teal-600 text-teal-700 bg-teal-600/5' 
+                      : 'bg-white border-slate-200 hover:border-teal-200 text-slate-500 hover:text-slate-700'"
+                  >
+                    <span class="text-2xl mb-1 filter drop-shadow-sm">{{ mode.icon }}</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wide">{{ mode.label }}</span>
+                  </button>
+               </div>
+            </div>
+            
+            <hr class="border-slate-100" />
+
+            <!-- SECTION: RATE CARD inputs -->
+            <div>
+               <div class="flex items-center justify-between mb-3">
+                 <label class="text-xs font-medium text-slate-700 uppercase tracking-wide">Rate Structure</label>
+                 <button @click="showAdvanced = !showAdvanced" class="text-xs font-semibold text-teal-600 hover:underline">
+                   {{ showAdvanced ? 'Simple' : 'Customize' }}
+                 </button>
+               </div>
+               
+               <div class="grid grid-cols-2 gap-4">
+                  <div>
+                     <div class="text-[10px] font-medium text-slate-400 mb-1">Base (1st km)</div>
+                     <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">Rs.</span>
+                        <input v-model.number="fareSettings.firstKmRate" type="number" class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:border-teal-600 focus:ring-1 focus:ring-teal-600 text-sm font-bold text-slate-900 transition-all" />
+                     </div>
+                  </div>
+                  <div>
+                     <div class="text-[10px] font-medium text-slate-400 mb-1">Per km</div>
+                     <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">Rs.</span>
+                         <input v-model.number="fareSettings.perKmRate" type="number" class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:border-teal-600 focus:ring-1 focus:ring-teal-600 text-sm font-bold text-slate-900 transition-all" />
+                     </div>
+                  </div>
+               </div>
+               
+               <div v-show="showAdvanced" class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-100 animate-[fadeIn_0.2s_ease-out]">
+                  <div>
+                    <div class="text-[10px] font-medium text-slate-400 mb-1">Min Fare</div>
+                    <input v-model.number="fareSettings.minFare" type="number" class="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-sm" />
+                  </div>
+                  <div class="flex items-end">
+                     <label class="flex items-center gap-2 p-2 w-full bg-slate-50 rounded-lg border border-slate-100 cursor-pointer">
+                        <input type="checkbox" v-model="fareSettings.nightMode" class="rounded text-teal-600 focus:ring-teal-500 border-slate-300" />
+                        <span class="text-xs font-bold text-slate-700">Night (1.5x)</span>
+                     </label>
+                  </div>
+               </div>
+            </div>
+
+            <!-- ACTION BUTTON -->
+            <div class="pt-2">
+               <button 
+                  @click="calculateRoute()"
+                  :disabled="!origin || !destination || isRouteLoading"
+                  class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 rounded-full shadow-md hover:shadow-lg transform active:scale-[0.98] transition-all disabled:opacity-70 disabled:grayscale flex items-center justify-center gap-3 text-sm tracking-wide"
+                >
+                  <span v-if="isRouteLoading" class="animate-spin material-symbols-outlined text-xl">progress_activity</span>
+                  <span v-else class="material-symbols-outlined text-xl">directions</span>
+                  {{ isRouteLoading ? 'Calculating...' : 'Find Best Route' }}
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- RIGHT COLUMN - MAP & RESULTS -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <div class="space-y-6">
+            
+            <!-- MAP CARD -->
+            <div class="bg-slate-50 rounded-2xl overflow-hidden shadow-inner border border-slate-200 relative group">
+                <div class="w-full h-[450px] relative">
+                    <ClientOnly fallback-tag="div" fallback="Loading map...">
+                        <TransportMap
+                            :origin="origin"
+                            :destination="destination"
+                            :polyline="routeResult?.polyline || []"
+                            :mode="selectedMode"
+                            :pick-mode="pickMode"
+                            @select-location="handleMapClick"
+                        />
+                    </ClientOnly>
+                    
+                    <!-- Overlay Pick Badge -->
+                    <div v-if="pickMode" class="absolute top-4 left-1/2 -translate-x-1/2 z-[500]">
+                      <div class="bg-teal-600 text-white px-4 py-2 rounded-full shadow-lg text-xs font-bold animate-bounce flex items-center gap-2">
+                         <span class="material-symbols-outlined text-sm">touch_app</span>
+                         Pick {{ pickMode === 'from' ? 'Origin' : 'Destination' }}
+                      </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- RESULTS CARD -->
+            <!-- RESULTS CARD (Redesigned) -->
+            <div v-if="routeResult" class="animate-[slideUp_0.4s_ease-out] space-y-4">
+                
+                <!-- Main Gradient Card -->
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden transform hover:scale-[1.01] transition-all">
+                    <!-- Background Gloss -->
+                    <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-2">
+                           <div>
+                              <p class="text-[10px] font-bold text-blue-100 uppercase tracking-widest mb-1">Estimated Fare</p>
+                              <h3 class="text-4xl font-bold tracking-tight">{{ calculatedFare.display }}</h3>
+                           </div>
+                           <div class="text-right">
+                              <!-- Mode Icon Badge -->
+                              <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/20 shadow-inner">
+                                 <span class="text-xl">{{ travelModes.find(m => m.id === selectedMode)?.icon || '🚗' }}</span>
+                              </div>
+                           </div>
+                        </div>
+                        
+                        <!-- Route Stats -->
+                        <div class="flex items-center gap-4 mt-4 text-blue-50">
+                           <div class="flex items-center gap-2">
+                              <span class="material-symbols-outlined text-lg">straighten</span>
+                              <span class="text-sm font-medium">{{ routeResult.distanceKm }} km</span>
+                           </div>
+                           <div class="w-px h-4 bg-white/20"></div>
+                           <div class="flex items-center gap-2">
+                              <span class="material-symbols-outlined text-lg">schedule</span>
+                              <span class="text-sm font-medium">{{ formatDuration(routeResult.durationMinutes) }}</span>
+                           </div>
+                        </div>
+
+                        <!-- Action Bar (Integrated) -->
+                        <div class="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
+                           <div class="flex gap-1">
+                              <button @click="copyQuote" class="p-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors flex flex-col items-center gap-1 group" title="Copy Details">
+                                 <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">content_copy</span>
+                              </button>
+                              <button @click="shareLink" class="p-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors flex flex-col items-center gap-1 group" title="Share Link">
+                                 <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">share</span>
+                              </button>
+                              <button @click="exportItinerary" class="p-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors flex flex-col items-center gap-1 group" title="Save File">
+                                 <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">save_alt</span>
+                              </button>
+                           </div>
+                           <div class="text-[10px] font-medium text-blue-200">
+                             *Estimates may vary
+                           </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fare Guard Button (Detached) -->
+                <button @click="showFareGuard = true" class="w-full py-3 rounded-xl border border-teal-200 bg-teal-50 text-teal-700 text-sm font-bold hover:bg-teal-100 transition-colors flex items-center justify-center gap-2 group shadow-sm">
+                   <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">shield_lock</span>
+                   Check Price Fairness
+                </button>
+                
+            </div>
+
+            <!-- RECOMMENDATIONS / POPULAR -->
+            <!-- RECOMMENDATIONS -->
+            <div v-if="routeResult" class="space-y-4 animate-[fadeIn_0.3s_ease-out]">
+               <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wide flex items-center gap-2 px-1">
+                   <span class="material-symbols-outlined text-base">explore</span>
+                   Recommended Options
+               </h3>
+               
+               <div class="space-y-3">
+                  <div v-for="option in recommendedOptions.visible" :key="option.mode" class="p-4 rounded-xl bg-white border border-slate-100 hover:border-teal-200 hover:shadow-md transition-all cursor-pointer group">
+                      <div class="flex justify-between items-start mb-2">
+                         <div class="flex items-center gap-3">
+                             <span class="text-2xl p-2 bg-slate-50 rounded-lg group-hover:bg-teal-50 group-hover:text-teal-600 transition-colors">{{ option.icon }}</span>
+                             <div>
+                                 <div class="font-bold text-slate-900">{{ option.label }}</div>
+                                 <div class="text-xs text-slate-500 flex items-center gap-1">
+                                     <span v-if="option.subtitle">{{ option.subtitle }} •</span>
+                                     <span>{{ option.duration }}</span>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="text-right">
+                             <div class="font-bold text-teal-600 text-lg">{{ option.cost }}</div>
+                             <span v-if="option.recommended" class="text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">BEST</span>
+                         </div>
+                      </div>
+                  </div>
+                  
+                  <button @click="showMoreOptions = !showMoreOptions" class="w-full py-2 text-xs font-bold text-slate-400 hover:text-teal-600 transition-colors text-center uppercase tracking-wide">
+                      {{ showMoreOptions ? 'Show Less' : 'Compare More Options' }}
+                  </button>
+               </div>
+            </div>
+
+            <!-- POPULAR ROUTES (Always Visible) -->
+            <div class="space-y-4 pt-2">
+               <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wide flex items-center gap-2 px-1">
+                   <span class="material-symbols-outlined text-base">trending_up</span>
+                   Popular Routes
+               </h3>
+               
+               <div class="space-y-3">
+                  <button v-for="route in popularRoutes" :key="route.id" @click="setPopularRoute(route)" class="w-full text-left p-4 rounded-xl bg-white border border-slate-100 hover:border-teal-200 hover:shadow-md transition-all flex items-center gap-4 group">
+                     <span class="text-2xl bg-slate-50 p-2 rounded-lg group-hover:scale-110 transition-transform">{{ route.icon }}</span>
+                     <div class="flex-1">
+                        <div class="font-bold text-slate-900 group-hover:text-teal-600 transition-colors">{{ route.tag }}</div>
+                        <div class="text-xs text-slate-500 font-medium">{{ route.from }} to {{ route.to }}</div>
+                     </div>
+                     <span class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-full border border-slate-100">{{ route.distance }}</span>
+                  </button>
+               </div>
+            </div>
+               
+               <!-- Disclaimer / Scams (Info Box) -->
+               <div class="pt-2">
+                  <button @click="showScams = true" class="w-full bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-4 hover:bg-amber-100/80 transition-all text-left group">
+                    <div class="bg-amber-100 text-amber-600 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                       <span class="material-symbols-outlined text-xl">warning</span>
+                    </div>
+                    <div>
+                       <div class="font-bold text-amber-900 text-sm">Tourist Scams to Avoid</div>
+                       <div class="text-xs font-medium text-slate-700">Tap to see safety tips for this route</div>
+                    </div>
+                    <span class="material-symbols-outlined text-amber-400 ml-auto">chevron_right</span>
+                  </button>
+               </div>
+
+
+        </div>
+
+      </div>
+    </div>
+    
+     <!-- ═══════════════════════════════════════════════════════════════════ -->
+     <!-- D) MODALS (Fare Guard) -->
+     <!-- ═══════════════════════════════════════════════════════════════════ -->
+     
+     <div v-if="showFareGuard" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" @click.self="showFareGuard = false">
+       <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-slate-200 animate-[scale-in_0.2s_ease-out]">
+         <!-- Header -->
+         <div class="bg-slate-900 p-5 text-white flex justify-between items-start relative overflow-hidden">
+           <div class="absolute inset-0 bg-gradient-to-br from-teal-600 to-slate-900 opacity-50"></div>
+           <div class="relative z-10">
+             <h3 class="text-xl font-bold flex items-center gap-2">
+               <span class="material-symbols-outlined text-teal-400">shield_person</span>
+               Fare Guard
+             </h3>
+             <p class="text-slate-300 text-sm mt-1">Don't overpay for this ride.</p>
+           </div>
+           <button @click="showFareGuard = false" class="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors relative z-10">
+             <span class="material-symbols-outlined text-sm">close</span>
+           </button>
+         </div>
+         
+         <div class="p-6">
+           <div class="space-y-6">
+            <div class="flex justify-between items-end pb-4 border-b border-slate-100">
+              <div>
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Fair Estimate</div>
+                <div class="text-3xl font-bold text-slate-900 tracking-tight">
+                  {{ calculatedFare.display }}
+                </div>
+              </div>
+              <div class="inline-flex px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-bold border border-teal-100">
+                Metered Rate
+              </div>
+            </div>
+              
+              <!-- Ranges -->
+              <div class="space-y-3">
+                <div class="flex items-center justify-between p-4 bg-teal-50/50 rounded-xl border border-teal-100">
+                  <div class="flex items-center gap-3">
+                    <span class="text-xl">✅</span>
+                    <div>
+                      <div class="font-bold text-sm text-slate-900">Good Price</div>
+                      <div class="text-xs text-slate-500">Typical range</div>
+                    </div>
+                  </div>
+                  <div class="font-bold text-teal-700">Rs. {{ calculatedFare.ranges.typical }} - {{ calculatedFare.ranges.high }}</div>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 bg-rose-50/50 rounded-xl border border-rose-100">
+                  <div class="flex items-center gap-3">
+                    <span class="text-xl">🚨</span>
+                    <div>
+                      <div class="font-bold text-sm text-slate-900">Tourist Trap</div>
+                      <div class="text-xs text-slate-500">Likely overcharge</div>
+                    </div>
+                  </div>
+                  <div class="font-bold text-rose-700">> Rs. {{ calculatedFare.ranges.tourist }}</div>
+                </div>
+              </div>
+              
+              <!-- Tips -->
+              <div class="space-y-3">
+                 <div class="text-xs font-bold text-slate-400 uppercase tracking-wide">Negotiation 101</div>
+                 <ul class="text-sm text-slate-600 space-y-3">
+                   <li class="flex gap-3 items-start">
+                     <span class="text-teal-600 material-symbols-outlined text-lg shrink-0">check_circle</span>
+                     <span>Show this screen to the driver <strong>before</strong> getting in.</span>
+                   </li>
+                   <li class="flex gap-3 items-start">
+                     <span class="text-teal-600 material-symbols-outlined text-lg shrink-0">check_circle</span>
+                     <span>"Meter only" is the magic phrase in Colombo.</span>
+                   </li>
+                   <li class="flex gap-3 items-start">
+                     <span class="text-teal-600 material-symbols-outlined text-lg shrink-0">check_circle</span>
+                     <span>If they refuse, walk away. There's always another tuk.</span>
+                   </li>
+                 </ul>
+              </div>
+           </div>
+           
+           <div class="pt-6 mt-6 border-t border-slate-100">
+             <button @click="showFareGuard = false" class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/10">
+               Got it, thanks
+             </button>
+           </div>
+         </div>
+       </div>
+     </div>
+     
+     <div v-if="showScams" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" @click.self="showScams = false">
+       <TouristOverchargeWarning @close="showScams = false" />
+     </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import type { FareEstimate } from '~/types/api'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useTransportRoutes, popularDestinations } from '~/composables/useTransportRoutes'
+import { useGeocode, type GeocodedPlace } from '~/composables/useGeocode'
+import TransportMap from '~/components/Transport/TransportMap.vue'
 
-definePageMeta({
-  layout: false
+const {
+  origin,
+  destination,
+  routeResult, 
+  isLoading: isRouteLoading, 
+  error: routeError,
+  isStale,
+  calculateRoute: doCalculate,
+  setOrigin,
+  setDestination,
+  swapLocations: doSwap,
+  getRouteRecommendations
+} = useTransportRoutes()
+
+// Geocoding instances
+const originGeo = useGeocode()
+const destGeo = useGeocode()
+
+// Auto-calculate route when both points are set
+watch([origin, destination], async ([newOrigin, newDest]) => {
+  if (newOrigin && newDest) {
+    await doCalculate()
+  }
 })
 
-// Get config
-const config = useRuntimeConfig()
-const apiBase = config.public.apiBase
+// UI State
+const originSearch = ref('')
+const destinationSearch = ref('')
+const showOriginDropdown = ref(false)
+const showDestinationDropdown = ref(false)
+const showAdvanced = ref(false)
+const showFareGuard = ref(false)
+const showScams = ref(false)
+const showMoreOptions = ref(false)
+const pickMode = ref<'from' | 'to' | null>(null)
+const selectedMode = ref('tuktuk')
 
-// Route inputs
-const origin = ref('Colombo Fort')
-const destination = ref('Ella Railway Station')
-const distanceKm = ref(200) // Default distance estimate
-const selectedTransportType = ref<'TUK_TUK' | 'TAXI' | 'BUS' | 'TRAIN' | 'RIDESHARE'>('TUK_TUK')
+// Travel Modes
+const travelModes = [
+  { id: 'tuktuk', icon: '🛺', label: 'Tuk-Tuk' },
+  { id: 'taxi', icon: '🚕', label: 'Taxi' },
+  { id: 'bus', icon: '🚌', label: 'Bus' },
+  { id: 'train', icon: '🚂', label: 'Train' }
+]
 
-// Fare Guard modal state
-const showFareCard = ref(false)
-const fareLoading = ref(false)
-const fareError = ref('')
-const fareEstimate = ref<FareEstimate | null>(null)
+// Fare Settings
+const fareSettings = ref({
+  firstKmRate: 100,
+  perKmRate: 60,
+  minFare: 150,
+  waitingPerMin: 5,
+  nightMode: false
+})
 
-// Fetch fare rates from API
-const { data: ratesResponse } = await useFetch<{
-  success: boolean
-  data: Record<string, { base: number; perKm: number; minFare: number }>
-}>(`${apiBase}/api/transport/rates`)
+// Mode-specific fare multipliers
+const modeMultipliers: Record<string, number> = {
+  tuktuk: 1.0,
+  taxi: 1.4,
+  bus: 0.15,
+  train: 0.12
+}
 
-// Fetch routes from API
-const { data: routesResponse } = await useFetch<{ success: boolean; data: any[] }>(
-  `${apiBase}/api/transport/routes`
-)
+// Search Handlers
+function handleOriginInput() {
+  showOriginDropdown.value = true
+  pickMode.value = null
+  originGeo.searchPlaces(originSearch.value)
+}
 
-const rates = computed(() => ratesResponse.value?.data || {})
-const routes = computed(() => routesResponse.value?.data || [])
+function handleDestinationInput() {
+  showDestinationDropdown.value = true
+  pickMode.value = null
+  destGeo.searchPlaces(destinationSearch.value)
+}
 
-// Calculate fare based on inputs (fallback if API not available)
+function clearOrigin() {
+  originSearch.value = ''
+  origin.value = null
+  originGeo.clearSearch()
+  routeResult.value = null
+}
+
+function clearDestination() {
+  destinationSearch.value = ''
+  destination.value = null
+  destGeo.clearSearch()
+  routeResult.value = null
+}
+
+// Selection Handlers
+function selectGeocodedOrigin(place: GeocodedPlace) {
+  origin.value = {
+    name: place.name,
+    lat: place.lat,
+    lon: place.lon
+  }
+  originSearch.value = place.name
+  showOriginDropdown.value = false
+  originGeo.clearSearch()
+}
+
+function selectGeocodedDest(place: GeocodedPlace) {
+  destination.value = {
+    name: place.name,
+    lat: place.lat,
+    lon: place.lon
+  }
+  destinationSearch.value = place.name
+  showDestinationDropdown.value = false
+  destGeo.clearSearch()
+}
+
+function selectOrigin(dest: typeof popularDestinations[0]) {
+  setOrigin(dest)
+  originSearch.value = dest.name
+  showOriginDropdown.value = false
+  pickMode.value = null
+  originGeo.clearSearch()
+}
+
+function selectDestination(dest: typeof popularDestinations[0]) {
+  setDestination(dest)
+  destinationSearch.value = dest.name
+  showDestinationDropdown.value = false
+  pickMode.value = null
+  destGeo.clearSearch()
+}
+
+// Calculate fare based on distance and mode
 const calculatedFare = computed(() => {
-  const estimate = fareEstimate.value
-  if (estimate && estimate.transport_type === selectedTransportType.value) {
-    return {
-      min: estimate.fair_range_min,
-      max: estimate.fair_range_max,
-      type: estimate.transport_type
-    }
+  if (!routeResult.value) return { 
+    total: 0, 
+    breakdown: { first: 0, remaining: 0, distance: 0 }, 
+    ranges: { typical: 0, high: 0, tourist: 0 },
+    display: 'Rs. 0' 
   }
-
-  const rate = rates.value[selectedTransportType.value]
-  if (!rate) return { min: 0, max: 0, type: selectedTransportType.value }
-
-  const baseFare = rate.base + (distanceKm.value * rate.perKm)
+  
+  const distance = routeResult.value.distanceKm
+  
+  // Specific Tuk-tuk Formula
+  // Fare = firstKmRate + max(0, distance - 1) * perKmRate
+  const firstKmCost = fareSettings.value.firstKmRate
+  const remainingKm = Math.max(0, distance - 1)
+  const remainingCost = remainingKm * fareSettings.value.perKmRate
+  
+  let totalRaw = firstKmCost + remainingCost
+  
+  // Add waiting/night charges if applicable (keeping existing logic optional but applied to raw)
+  if (fareSettings.value.nightMode) totalRaw *= 1.5
+  
+  // Apply mode multiplier if NOT tuktuk (since inputs are designed for tuktuk)
+  if (selectedMode.value !== 'tuktuk') {
+    totalRaw *= (modeMultipliers[selectedMode.value] || 1)
+  }
+  
+  // Round to nearest 10
+  const total = Math.round(totalRaw / 10) * 10
+  
   return {
-    min: Math.max(rate.minFare, Math.round(baseFare * 0.9)),
-    max: Math.round(baseFare * 1.2),
-    type: selectedTransportType.value
+    total,
+    breakdown: {
+      first: firstKmCost,
+      remaining: Math.round(remainingCost),
+      distance: distance
+    },
+    ranges: {
+      typical: total,
+      high: Math.round((total * 1.25) / 10) * 10,
+      tourist: Math.round((total * 1.6) / 10) * 10
+    },
+    display: `Rs. ${total.toLocaleString()}`
   }
 })
 
-async function fetchFareEstimate() {
-  fareLoading.value = true
-  fareError.value = ''
-  try {
-    const response = await $fetch<{ success: boolean; data: FareEstimate }>(`${apiBase}/api/transport/fare`, {
-      method: 'POST',
-      body: {
-        origin: origin.value,
-        destination: destination.value,
-        distance_km: distanceKm.value,
-        transport_type: selectedTransportType.value
+// Recommended options based on route
+const recommendedOptions = computed(() => {
+  let recType = 'generic'
+  // Try to get smart recommendations from knowledge base first
+  const smartRecs = getRouteRecommendations() // Using the new helper
+  
+  let options: any[] = []
+
+  if (smartRecs && smartRecs.length > 0) {
+    recType = 'smart'
+    // Map smart recs to UI format (adding icons based on mode)
+    options = smartRecs.map((rec: any) => ({
+      ...rec,
+      modeId: rec.mode,
+      icon: travelModes.find(m => m.id === rec.mode)?.icon || '🚗'
+    }))
+  } else {
+      // Fallback: Generic Logic
+      const distance = routeResult.value?.distanceKm || 50
+      
+      if (distance > 30) {
+        options.push({
+          mode: 'train',
+          modeId: 'train',
+          icon: '🚂',
+          label: 'Train',
+          subtitle: 'Most scenic option',
+          duration: formatDuration(Math.round(distance / 35 * 60)),
+          cost: `Rs. ${Math.round(distance * 5)}`,
+          tag: 'Scenic',
+          tagClass: 'bg-green-100 text-green-700'
+        })
       }
-    })
+      
+      options.push({
+        mode: 'bus',
+        modeId: 'bus',
+        icon: '🚌',
+        label: 'Express Bus',
+        subtitle: 'Fast A/C coaches',
+        duration: formatDuration(Math.round(distance / 50 * 60)),
+        cost: `Rs. ${Math.round(distance * 8)}`,
+        tag: 'Budget',
+        tagClass: 'bg-blue-100 text-blue-700'
+      })
+      
+      options.push({
+        mode: 'taxi',
+        modeId: 'taxi',
+        icon: '🚕',
+        label: 'Private Car',
+        subtitle: 'Door-to-door comfort',
+        duration: formatDuration(Math.round(distance / 55 * 60)),
+        cost: `Rs. ${Math.round(distance * 90)}`,
+        tag: 'Comfort',
+        tagClass: 'bg-purple-100 text-purple-700'
+      })
+      
+      if (distance < 30) {
+        options.push({
+          mode: 'tuktuk',
+          modeId: 'tuktuk',
+          icon: '🛺',
+          label: 'Tuk-Tuk',
+          subtitle: 'Local experience',
+          duration: formatDuration(Math.round(distance / 25 * 60)),
+          cost: `Rs. ${Math.round(100 + distance * 60)}`,
+          tag: 'Fun',
+          tagClass: 'bg-orange-100 text-orange-700'
+        })
+      }
+  }
+  
+  return {
+      type: recType,
+      data: options,
+      visible: showMoreOptions.value ? options : options.slice(0, 3)
+  }
+})
 
-    if (response.success) {
-      fareEstimate.value = response.data
-    }
-  } catch (error: any) {
-    fareError.value = error?.data?.error || 'Failed to calculate fare'
-  } finally {
-    fareLoading.value = false
+// Popular routes
+const popularRoutes = [
+  { id: '1', from: 'Bandaranaike International Airport', to: 'Colombo', icon: '✈️', tag: 'Airport Transfer 45m', distance: '32 km' },
+  { id: '2', from: 'Colombo', to: 'Ella', icon: '🚂', tag: 'Scenic Train 9h', distance: '200 km' },
+  { id: '3', from: 'Colombo', to: 'Kandy', icon: '🚌', tag: 'Express Bus 3h', distance: '115 km' },
+  { id: '4', from: 'Colombo', to: 'Galle', icon: '🚌', tag: 'Highway 1.5h', distance: '120 km' },
+  { id: '5', from: 'Kandy', to: 'Sigiriya', icon: '🚕', tag: 'Day Trip 2.5h', distance: '90 km' }
+]
+
+function setPopularRoute(route: typeof popularRoutes[0]) {
+  // Reset state
+  pickMode.value = null
+  showFareGuard.value = false
+  showScams.value = false
+  
+  // Find locations
+  const from = popularDestinations.find(d => d.name === route.from)
+  const to = popularDestinations.find(d => d.name === route.to)
+  
+  if (from) {
+    origin.value = { name: from.name, lat: from.lat, lon: from.lon }
+    originSearch.value = from.name
+    // Update geocode search result to avoid "Searching..." trap
+    originGeo.searchResults.value = [{ 
+      id: from.id, 
+      name: from.name, 
+      lat: from.lat, 
+      lon: from.lon, 
+      displayName: from.name, 
+      type: 'place',
+      area: from.region || 'Region'
+    }]
+  }
+  
+  if (to) {
+    destination.value = { name: to.name, lat: to.lat, lon: to.lon }
+    destinationSearch.value = to.name
+    destGeo.searchResults.value = [{ 
+      id: to.id, 
+      name: to.name, 
+      lat: to.lat, 
+      lon: to.lon, 
+      displayName: to.name, 
+      type: 'place',
+      area: to.region || 'Region'
+    }]
   }
 }
 
-async function openFareGuard() {
-  await fetchFareEstimate()
-  showFareCard.value = true
+function setPickMode(mode: 'from' | 'to') {
+  pickMode.value = pickMode.value === mode ? null : mode
 }
 
-// Swap origin and destination
 function swapLocations() {
-  const temp = origin.value
-  origin.value = destination.value
-  destination.value = temp
+  const tempSearch = originSearch.value
+  originSearch.value = destinationSearch.value
+  destinationSearch.value = tempSearch
+
+  const tempGeo = originGeo.searchResults.value
+  originGeo.searchResults.value = destGeo.searchResults.value 
+  destGeo.searchResults.value = tempGeo
+  
+  doSwap()
 }
 
-// Transport types for display
-const transportTypes = [
-  { id: 'TUK_TUK' as const, name: 'Tuk-Tuk', icon: 'local_taxi' },
-  { id: 'TAXI' as const, name: 'Taxi', icon: 'directions_car' },
-  { id: 'BUS' as const, name: 'Bus', icon: 'directions_bus' },
-  { id: 'TRAIN' as const, name: 'Train', icon: 'train' },
-]
-
-const selectedTransportLabel = computed(() => {
-  return transportTypes.find((type) => type.id === selectedTransportType.value)?.name || selectedTransportType.value
-})
-
-interface RouteOption {
-  name: string
-  from: string
-  to: string
-  distance: number
-  estimatedMin: number
-  estimatedMax: number
-  transport_type?: 'TUK_TUK' | 'TAXI' | 'BUS' | 'TRAIN' | 'RIDESHARE'
+async function calculateRoute() {
+  await doCalculate()
 }
 
-// Common tourist routes for quick access (fallback)
-const commonRoutes: RouteOption[] = [
-  {
-    name: 'Airport → Colombo',
-    from: 'Bandaranaike Airport',
-    to: 'Colombo Fort',
-    distance: 35,
-    estimatedMin: 1750,
-    estimatedMax: 2450
-  },
-  {
-    name: 'Colombo → Galle',
-    from: 'Colombo Fort',
-    to: 'Galle Fort',
-    distance: 116,
-    estimatedMin: 5800,
-    estimatedMax: 8120
-  },
-  {
-    name: 'Kandy → Sigiriya',
-    from: 'Kandy',
-    to: 'Sigiriya',
-    distance: 88,
-    estimatedMin: 4400,
-    estimatedMax: 6160
+function handleMapClick(location: { lat: number; lon: number; name: string }) {
+  if (pickMode.value === 'from') {
+    origin.value = location
+    originSearch.value = location.name
+  } else if (pickMode.value === 'to') {
+    destination.value = location
+    destinationSearch.value = location.name
   }
-]
+  pickMode.value = null
+}
 
-const popularRoutes = computed<RouteOption[]>(() => {
-  const apiRoutes = routes.value || []
-  if (!apiRoutes.length) return commonRoutes
+function formatDuration(minutes: number): string {
+  if (minutes < 60) return `${minutes}m`
+  const hours = Math.floor(minutes / 60)
+  const mins = minutes % 60
+  return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`
+}
 
-  return apiRoutes.map((route: any) => {
-    const distance = Number(route.distance_km || route.distanceKm || 0)
-    const averageFare = Number(route.average_fare_lkr || 0)
-    const rate = route.transport_type ? rates.value[route.transport_type] : undefined
-    const estimatedBase = averageFare || (distance && rate ? rate.base + distance * rate.perKm : 0)
-    const estimatedMin = estimatedBase ? Math.round(estimatedBase * 0.85) : 0
-    const estimatedMax = estimatedBase ? Math.round(estimatedBase * 1.15) : 0
-
-    return {
-      name: route.name || `${route.origin} → ${route.destination}`,
-      from: route.origin || route.from || 'Sri Lanka',
-      to: route.destination || route.to || 'Sri Lanka',
-      distance: distance || 0,
-      estimatedMin,
-      estimatedMax,
-      transport_type: route.transport_type,
+// Close dropdowns
+onMounted(() => {
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement
+    if (!target.closest('.relative')) {
+      showOriginDropdown.value = false
+      showDestinationDropdown.value = false
     }
-  }).filter((route: RouteOption) => route.name && route.from && route.to)
+  })
 })
 
-// Fill route inputs with preset values
-function fillRoute(route: RouteOption) {
-  origin.value = route.from
-  destination.value = route.to
-  distanceKm.value = route.distance
-  if (route.transport_type) {
-    selectedTransportType.value = route.transport_type
-  }
-}
-</script>
+useHead({
+  title: 'Transport Assistant - CeylonGuide',
+  meta: [{ name: 'description', content: 'Calculate fares, find routes, and avoid scams in Sri Lanka' }]
+})
 
-<style scoped>
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+function copyQuote() {
+  if (!routeResult.value) return
+  
+  const text = `🇱🇰 *Transport Quote - CeylonGuides*
+  
+📍 *From:* ${routeResult.value.origin.name}
+🏁 *To:* ${routeResult.value.destination.name}
+📏 *Distance:* ${routeResult.value.distanceKm} km
+⏱️ *Duration:* ${routeResult.value.durationMinutes} min
+
+💰 *Estimated Fare:* ${calculatedFare.value.display}
+⚠️ *Tourist Warning:* Always use a meter or agree on price upfront.
+
+_Generated by CeylonGuides Transport Assistant_`
+  
+  navigator.clipboard.writeText(text)
+  alert('Quote copied to clipboard!')
 }
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+
+function shareLink() {
+  if (!routeResult.value) return
+  
+  const params = new URLSearchParams()
+  params.set('from', `${routeResult.value.origin.lat},${routeResult.value.origin.lon}`)
+  params.set('to', `${routeResult.value.destination.lat},${routeResult.value.destination.lon}`)
+  params.set('mode', selectedMode.value)
+  
+  const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`
+  navigator.clipboard.writeText(url)
+  alert('Link copied to clipboard!')
 }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #d1c4be;
-  border-radius: 20px;
+
+function exportItinerary() {
+  if (!routeResult.value) return
+
+  const text = `TRANSPORT PLAN
+--------------------------------
+Route: ${routeResult.value.origin.name} to ${routeResult.value.destination.name}
+Distance: ${routeResult.value.distanceKm} km
+Est. Time: ${formatDuration(routeResult.value.durationMinutes)}
+
+RECOMMENDED OPTIONS
+--------------------------------
+${routeResult.value.options.map(opt => `- ${opt.label}: ${opt.cost} (${opt.duration})`).join('\n')}
+
+TIPS
+--------------------------------
+- Negotiate fare before starting trip if no meter.
+- Use PickMe or Uber for fixed rates in cities.
+- Avoid "tuk-tuk mafia" stands near tourist spots.
+
+Safe Travels!
+`
+  
+  const blob = new Blob([text], { type: 'text/plain' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'transport-itinerary.txt'
+  a.click()
+  URL.revokeObjectURL(url)
 }
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #4a3b36;
-}
-.map-texture {
-  background-image: url(/images/downloaded_fad3b481c225.avif);
-}
-.price-meter {
-  background: linear-gradient(90deg, #10b981 0%, #10b981 40%, #f59e0b 40%, #f59e0b 70%, #ef4444 70%, #ef4444 100%);
-}
-</style>
+
+onMounted(async () => {
+  const route = useRoute()
+  const { from, to, mode } = route.query
+  
+  if (mode && typeof mode === 'string') {
+    selectedMode.value = mode
+  }
+  
+  if (from && typeof from === 'string' && to && typeof to === 'string') {
+    const fromParts = from.split(',').map(Number)
+    const toParts = to.split(',').map(Number)
+    
+    if (fromParts.length === 2 && toParts.length === 2) {
+      const [fromLat, fromLon] = fromParts
+      const [toLat, toLon] = toParts
+      
+      if (typeof fromLat === 'number' && !isNaN(fromLat) && 
+          typeof fromLon === 'number' && !isNaN(fromLon) && 
+          typeof toLat === 'number' && !isNaN(toLat) && 
+          typeof toLon === 'number' && !isNaN(toLon)) {
+            
+         origin.value = { name: `${fromLat.toFixed(4)},${fromLon.toFixed(4)}`, lat: fromLat, lon: fromLon }
+         destination.value = { name: `${toLat.toFixed(4)},${toLon.toFixed(4)}`, lat: toLat, lon: toLon }
+         
+         await doCalculate()
+      }
+    }
+  }
+})
+</script>
