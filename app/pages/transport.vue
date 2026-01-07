@@ -256,28 +256,27 @@
               {{ isRouteLoading ? 'Calculating...' : 'Find Best Route' }}
             </button>
           </div>
-        </div>
 
-
-        <!-- Popular Routes (Moved to Left) -->
-        <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card border border-gray-100 dark:border-white/5 p-6">
-            <div class="flex items-center gap-2 mb-4">
-              <span class="material-symbols-outlined text-text-muted text-[16px]">trending_up</span>
-              <h3 class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Popular Routes</h3>
-            </div>
-            
-            <div class="space-y-3">
-              <div v-for="route in popularRoutes" :key="route.id" @click="setPopularRoute(route)" class="bg-background-light dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5 hover:border-teal-deep/30 cursor-pointer transition-all group">
-                <div class="flex items-center gap-3">
-                  <span class="material-symbols-outlined" :class="route.color">{{ route.icon }}</span>
-                  <div>
-                    <div class="text-xs font-bold text-text-main dark:text-white">{{ route.title }}</div>
-                    <div class="text-[10px] text-text-muted">{{ route.from }} to {{ route.to }}</div>
-                  </div>
-                </div>
-                <span class="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded text-text-muted mt-2 inline-block">{{ route.distance }}</span>
+          <!-- Popular Routes -->
+          <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card border border-gray-100 dark:border-white/5 p-6">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-text-muted text-[16px]">trending_up</span>
+                <h3 class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Popular Routes</h3>
               </div>
-            </div>
+              
+              <div class="space-y-3">
+                <div v-for="route in popularRoutes" :key="route.id" @click="setPopularRoute(route)" class="bg-background-light dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5 hover:border-teal-deep/30 cursor-pointer transition-all group">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined" :class="route.color">{{ route.icon }}</span>
+                    <div>
+                      <div class="text-xs font-bold text-text-main dark:text-white">{{ route.title }}</div>
+                      <div class="text-[10px] text-text-muted">{{ route.from }} to {{ route.to }}</div>
+                    </div>
+                  </div>
+                  <span class="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded text-text-muted mt-2 inline-block">{{ route.distance }}</span>
+                </div>
+              </div>
+          </div>
         </div>
 
 
@@ -379,9 +378,119 @@
             </div>
           </div>
 
+          <!-- Helpful Content (Shows when no route) -->
+          <div v-if="!routeResult" class="space-y-6">
+            
+            <!-- Negotiation Phrases -->
+            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card border border-gray-100 dark:border-white/5 p-6">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-teal-deep text-[18px]">record_voice_over</span>
+                <h3 class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Negotiation Phrases</h3>
+              </div>
+              
+              <div class="space-y-3">
+                <div class="bg-teal-50 dark:bg-teal-900/20 p-3 rounded-xl border border-teal-100 dark:border-teal-900/30">
+                  <div class="text-xs font-bold text-teal-700 dark:text-teal-400 mb-1">🇱🇰 Sinhala</div>
+                  <div class="text-sm font-medium text-text-main dark:text-white">"Mee-tara kee-yada?" (How much to here?)</div>
+                </div>
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                  <div class="text-xs font-bold text-blue-700 dark:text-blue-400 mb-1">💰 Negotiate</div>
+                  <div class="text-sm font-medium text-text-main dark:text-white">"Mee-tara [price] hari-da?" (Is [price] okay for here?)</div>
+                </div>
+                <div class="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl border border-amber-100 dark:border-amber-900/30">
+                  <div class="text-xs font-bold text-amber-700 dark:text-amber-400 mb-1">📱 Show Meter</div>
+                  <div class="text-sm font-medium text-text-main dark:text-white">"Meter danna" (Turn on the meter)</div>
+                </div>
+              </div>
+            </div>
 
-          <!-- Scam Warning -->
-          <div class="mt-8 bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/40 rounded-full p-4 flex items-center justify-between cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors" @click="showScams = true">
+            <!-- Quick Tips -->
+            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card border border-gray-100 dark:border-white/5 p-6">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-coral-orange text-[18px]">tips_and_updates</span>
+                <h3 class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Quick Tips</h3>
+              </div>
+              
+              <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                  <span class="text-lg">✅</span>
+                  <div class="text-xs text-text-main dark:text-white">Always agree on price <strong>before</strong> getting in</div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="text-lg">📸</span>
+                  <div class="text-xs text-text-main dark:text-white">Take a photo of the license plate</div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="text-lg">🗺️</span>
+                  <div class="text-xs text-text-main dark:text-white">Use Google Maps to track your route</div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="text-lg">💵</span>
+                  <div class="text-xs text-text-main dark:text-white">Keep small bills - drivers often claim no change</div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="text-lg">🚫</span>
+                  <div class="text-xs text-text-main dark:text-white">Avoid tuk-tuks that approach you first at tourist spots</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Emergency Contacts -->
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/40 rounded-2xl p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-lg">emergency</span>
+                <h4 class="text-xs font-bold text-text-muted uppercase tracking-wider">Emergency Contacts</h4>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-red-600 dark:text-red-400">119</span>
+                  <span class="text-text-main dark:text-white">Police</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-red-600 dark:text-red-400">1912</span>
+                  <span class="text-text-main dark:text-white">Tourist Police</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-red-600 dark:text-red-400">1990</span>
+                  <span class="text-text-main dark:text-white">Ambulance</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-red-600 dark:text-red-400">1969</span>
+                  <span class="text-text-main dark:text-white">Roadside Help</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Standard Fare Reference -->
+            <div class="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card border border-gray-100 dark:border-white/5 p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="material-symbols-outlined text-teal-deep text-lg">payments</span>
+                <h4 class="text-xs font-bold text-text-muted uppercase tracking-wider">Standard Tuk-Tuk Fares</h4>
+              </div>
+              <div class="space-y-2 text-xs">
+                <div class="flex justify-between items-center py-1.5 border-b border-gray-100 dark:border-white/5">
+                  <span class="text-text-muted">First kilometer</span>
+                  <span class="font-bold text-text-main dark:text-white">Rs. 100</span>
+                </div>
+                <div class="flex justify-between items-center py-1.5 border-b border-gray-100 dark:border-white/5">
+                  <span class="text-text-muted">Each additional km</span>
+                  <span class="font-bold text-text-main dark:text-white">Rs. 60</span>
+                </div>
+                <div class="flex justify-between items-center py-1.5 border-b border-gray-100 dark:border-white/5">
+                  <span class="text-text-muted">Waiting (per hour)</span>
+                  <span class="font-bold text-text-main dark:text-white">Rs. 500</span>
+                </div>
+                <div class="flex justify-between items-center py-1.5">
+                  <span class="text-text-muted">Night surcharge</span>
+                  <span class="font-bold text-coral-orange">+50%</span>
+                </div>
+              </div>
+              <p class="text-[10px] text-text-muted mt-3 italic">* Official metered rates as of 2024</p>
+            </div>
+          </div>
+
+          <!-- Scam Warning (Shows when route exists) -->
+          <div v-else class="mt-6 bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/40 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors" @click="showScams = true">
             <div class="flex items-center gap-3">
               <div class="size-8 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
                 <span class="material-symbols-outlined text-[18px]">warning</span>
@@ -391,7 +500,7 @@
                 <p class="text-[10px] text-text-muted">Tap to see safety tips for this route</p>
               </div>
             </div>
-            <span class="material-symbols-outlined text-orange-400 text-[18px] mr-2">chevron_right</span>
+            <span class="material-symbols-outlined text-orange-400 text-[18px]">chevron_right</span>
           </div>
         </div>
       </div>

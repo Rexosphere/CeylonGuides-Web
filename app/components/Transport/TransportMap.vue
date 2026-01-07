@@ -3,7 +3,7 @@
     <div ref="mapContainer" class="w-full h-full min-h-[400px] z-0"></div>
     
     <!-- Legend Box -->
-    <div class="absolute bottom-6 left-4 z-[400] bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 text-xs">
+    <div class="absolute bottom-6 left-4 z-10 bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 text-xs">
       <div class="font-medium mb-2 text-gray-700 dark:text-gray-200">Route Style</div>
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
@@ -26,7 +26,7 @@
     </div>
 
     <!-- Controls -->
-    <div class="absolute top-4 left-4 z-[400] flex flex-col gap-2">
+    <div class="absolute top-4 left-4 z-10 flex flex-col gap-2">
       <button 
         @click="fitBounds"
         class="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
