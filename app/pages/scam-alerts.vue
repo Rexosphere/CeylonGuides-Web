@@ -34,6 +34,13 @@
       </div>
     </section>
 
+    <!-- Safety Assistant Section -->
+    <section class="py-10 px-4 bg-gradient-to-b from-gray-50 to-background-light dark:from-surface-dark dark:to-background-dark">
+      <div class="max-w-xl mx-auto">
+        <SafetyAssistant :scams="scamAlerts" />
+      </div>
+    </section>
+
     <!-- Dynamic Proximity Alert Banner -->
     <Transition name="slide-down">
       <div 
@@ -348,7 +355,7 @@
               <p>Great news! No scam alerts have been reported in this area.</p>
               <p class="mt-2">Stay vigilant and help others by reporting any suspicious activities.</p>
               <button 
-                @click="showReportModal = true"
+                @click="openReportModal"
                 class="mt-4 px-4 py-2 bg-accent text-white rounded-lg font-medium text-sm hover:bg-accent/90 inline-flex items-center gap-2"
               >
                 <span class="material-symbols-outlined text-[18px]">add_alert</span>
@@ -357,67 +364,219 @@
             </div>
           </div>
 
-          <!-- Alert Cards -->
+          <!-- Alert Cards (Accordion Style) -->
           <div v-else class="flex flex-col gap-4">
             <div 
               v-for="alert in scamAlerts" 
               :key="alert.id"
               :id="`scam-${alert.id}`"
-              @click="handleSidebarClick(alert)"
               :class="[
-                'group relative bg-white dark:bg-background-dark rounded-xl border p-4 shadow-sm hover:shadow-md transition-all cursor-pointer',
+                'group relative bg-white dark:bg-background-dark rounded-xl border shadow-sm transition-all overflow-hidden',
                 getSeverityClass(alert.severity),
-                highlightedScamId === alert.id ? 'ring-2 ring-primary ring-offset-2' : ''
+                highlightedScamId === alert.id ? 'ring-2 ring-primary ring-offset-2' : '',
+                expandedCardId === alert.id ? 'shadow-lg' : 'hover:shadow-md'
               ]"
             >
-              <div class="absolute top-4 right-4 text-xs font-medium text-gray-400">
-                {{ getTimeAgo(alert.last_reported) }}
-              </div>
-              <div class="flex items-start gap-3">
-                <div :class="['size-10 rounded-full flex items-center justify-center shrink-0', getSeverityColor(alert.severity, alert.category)]">
-                  <span class="material-symbols-outlined">{{ getSeverityIcon(alert.category) }}</span>
-                </div>
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 mb-1">
-                    <h3 class="font-bold text-charcoal dark:text-white text-base">{{ alert.title }}</h3>
+              <!-- Collapsed Header (always visible) -->
+              <div 
+                @click="toggleCardExpansion(alert)"
+                class="p-4 cursor-pointer"
+              >
+                <div class="flex items-start gap-3">
+                  <div :class="['size-10 rounded-full flex items-center justify-center shrink-0', getSeverityColor(alert.severity, alert.category)]">
+                    <span class="material-symbols-outlined">{{ getSeverityIcon(alert.category) }}</span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 pr-8">
+                      <h3 class="font-bold text-charcoal dark:text-white text-base truncate">{{ alert.title }}</h3>
+                      <!-- Severity Badge -->
+                      <span 
+                        :class="[
+                          'shrink-0 text-[10px] px-2 py-0.5 rounded-full uppercase font-bold tracking-wider',
+                          alert.severity === 'CRITICAL' ? 'bg-red-500 text-white' :
+                          alert.severity === 'HIGH' ? 'bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-300' :
+                          alert.severity === 'MEDIUM' ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300' :
+                          'bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300'
+                        ]"
+                      >
+                        {{ alert.severity }}
+                      </span>
+                    </div>
+                    <!-- 1-line summary (truncated) -->
+                    <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">
+                      {{ alert.description }}
+                    </p>
+                    <!-- Affected locations -->
+                    <div class="flex items-center gap-1.5 text-xs font-medium text-gray-500 mt-2">
+                      <span class="material-symbols-outlined text-[16px]">location_on</span>
+                      <span>{{ alert.location?.name || 'Unknown location' }}</span>
+                      <span v-if="alert.location?.district" class="text-gray-400">· {{ alert.location.district }}</span>
+                    </div>
+                  </div>
+                  <!-- Expand/Collapse indicator -->
+                  <div class="absolute top-4 right-4 flex items-center gap-2">
+                    <span class="text-xs text-gray-400">{{ getTimeAgo(alert.last_reported) }}</span>
                     <span 
-                      v-if="alert.severity === 'HIGH' || alert.severity === 'CRITICAL'"
-                      class="bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-300 text-[10px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider"
+                      class="material-symbols-outlined text-gray-400 transition-transform duration-200"
+                      :class="{ 'rotate-180': expandedCardId === alert.id }"
                     >
-                      High Risk
+                      expand_more
                     </span>
                   </div>
-                  <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-3">
-                    {{ alert.description }}
-                  </p>
-                  <div class="flex items-center justify-between border-t border-gray-100 dark:border-white/10 pt-3 mt-1">
-                    <div class="flex items-center gap-1.5 text-xs font-medium text-gray-500">
-                      <span class="material-symbols-outlined text-[16px]">location_on</span>
-                      {{ alert.location?.name || 'Unknown location' }}
+                </div>
+              </div>
+
+              <!-- Expanded Content (drawer/accordion) -->
+              <Transition
+                enter-active-class="transition-all duration-300 ease-out"
+                leave-active-class="transition-all duration-200 ease-in"
+                enter-from-class="max-h-0 opacity-0"
+                enter-to-class="max-h-[1000px] opacity-100"
+                leave-from-class="max-h-[1000px] opacity-100"
+                leave-to-class="max-h-0 opacity-0"
+              >
+                <div 
+                  v-if="expandedCardId === alert.id"
+                  class="border-t border-gray-100 dark:border-white/10 overflow-hidden"
+                >
+                  <div class="p-4 pt-4 space-y-5 bg-gray-50/50 dark:bg-black/20">
+                    
+                    <!-- How the scam works -->
+                    <div>
+                      <h4 class="flex items-center gap-2 text-sm font-bold text-charcoal dark:text-white mb-2">
+                        <span class="material-symbols-outlined text-[18px] text-amber-500">search</span>
+                        How This Scam Works
+                      </h4>
+                      <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        {{ alert.description }}
+                      </p>
                     </div>
-                    <div class="flex items-center gap-2">
-                      <!-- Trust Badges -->
-                      <TrustBadge 
-                        type="severity" 
-                        :value="alert.severity" 
-                      />
-                      <TrustBadge 
-                        type="confidence" 
-                        :value="alert.report_count" 
-                        label="Number of confirmations"
-                      />
-                      <button
-                        class="text-xs font-semibold text-accent hover:text-accent/80"
-                        @click.stop="openScamDetails(alert.id)"
-                      >
-                        View details
-                      </button>
+
+                    <!-- Real Example -->
+                    <div>
+                      <h4 class="flex items-center gap-2 text-sm font-bold text-charcoal dark:text-white mb-2">
+                        <span class="material-symbols-outlined text-[18px] text-blue-500">auto_stories</span>
+                        Real Example
+                      </h4>
+                      <div class="bg-white dark:bg-surface-dark rounded-lg p-3 border border-gray-200 dark:border-white/10">
+                        <p class="text-sm text-gray-600 dark:text-gray-300 italic">
+                          "{{ getExampleFromDescription(alert.description) }}"
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- Prevention Checklist -->
+                    <div>
+                      <h4 class="flex items-center gap-2 text-sm font-bold text-charcoal dark:text-white mb-2">
+                        <span class="material-symbols-outlined text-[18px] text-green-500">checklist</span>
+                        Prevention Checklist
+                      </h4>
+                      <ul v-if="alert.prevention_tips?.length" class="space-y-2">
+                        <li 
+                          v-for="(tip, index) in alert.prevention_tips" 
+                          :key="index"
+                          class="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300"
+                        >
+                          <span class="material-symbols-outlined text-[18px] text-green-500 shrink-0 mt-0.5">check_circle</span>
+                          <span>{{ tip }}</span>
+                        </li>
+                      </ul>
+                      <p v-else class="text-sm text-gray-500 italic">No prevention tips available yet.</p>
+                    </div>
+
+                    <!-- Where this happens most -->
+                    <div>
+                      <h4 class="flex items-center gap-2 text-sm font-bold text-charcoal dark:text-white mb-2">
+                        <span class="material-symbols-outlined text-[18px] text-red-500">fmd_bad</span>
+                        Where This Happens Most
+                      </h4>
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full text-xs font-medium">
+                          <span class="material-symbols-outlined text-[14px]">location_on</span>
+                          {{ alert.location?.name || 'Unknown' }}
+                        </span>
+                        <span v-if="alert.location?.district" class="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium">
+                          {{ alert.location.district }} District
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Related Scams (by tag/category) -->
+                    <div>
+                      <h4 class="flex items-center gap-2 text-sm font-bold text-charcoal dark:text-white mb-2">
+                        <span class="material-symbols-outlined text-[18px] text-purple-500">label</span>
+                        Related Scams
+                      </h4>
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <button 
+                          @click.stop="filterByCategory(alert.category)"
+                          :class="[
+                            'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
+                            selectedCategory === alert.category 
+                              ? 'bg-accent text-white' 
+                              : 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-900/50'
+                          ]"
+                        >
+                          {{ formatCategoryLabel(alert.category) }}
+                        </button>
+                        <button 
+                          v-if="alert.location?.name"
+                          @click.stop="filterByLocation(alert.location.name)"
+                          :class="[
+                            'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
+                            'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50'
+                          ]"
+                        >
+                          {{ alert.location.name }}
+                        </button>
+                        <button 
+                          @click.stop="filterBySeverity(alert.severity)"
+                          :class="[
+                            'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
+                            alert.severity === 'HIGH' || alert.severity === 'CRITICAL'
+                              ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200'
+                              : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-200'
+                          ]"
+                        >
+                          {{ alert.severity }} Risk
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-between gap-3 pt-3 border-t border-gray-200 dark:border-white/10">
+                      <div class="flex items-center gap-2">
+                        <TrustBadge 
+                          type="severity" 
+                          :value="alert.severity" 
+                        />
+                        <TrustBadge 
+                          type="confidence" 
+                          :value="alert.report_count" 
+                          label="Number of confirmations"
+                        />
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <button
+                          @click.stop="confirmAlert(alert.id)"
+                          class="px-4 py-2 bg-accent text-white rounded-lg text-xs font-semibold hover:bg-accent/90 transition-colors"
+                        >
+                          👍 Confirm Report
+                        </button>
+                        <button
+                          @click.stop="toggleCardExpansion(alert)"
+                          class="px-3 py-2 border border-gray-200 dark:border-white/20 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                        >
+                          Close
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </Transition>
             </div>
           </div>
+
           <div v-if="scamAlerts.length > 0" class="mt-6 text-center pb-6">
             <button
               v-if="hasMore"
@@ -454,9 +613,12 @@
             ref="scamMapRef"
             :scams="scamAlerts"
             :highlighted-id="highlightedScamId"
+            :report-mode="reportMode"
             @select-scam="handleMarkerClick"
             @report-at="handleMapReport"
             @map-center="handleMapCenter"
+            @pin-drag="handlePinDrag"
+            @context-report="handleContextReport"
             class="w-full h-full z-0"
           />
           <template #fallback>
@@ -469,62 +631,147 @@
           </template>
         </ClientOnly>
 
-        <!-- Floating Tip Banner -->
-        <div class="absolute top-4 left-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg px-3 py-2 z-10 max-w-[200px]">
+        <!-- Report Mode Banner -->
+        <Transition name="slide-down">
+          <div 
+            v-if="reportMode"
+            class="absolute top-4 left-4 right-4 md:left-4 md:right-auto bg-amber-50 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 rounded-lg px-4 py-3 z-30 max-w-sm shadow-lg"
+            role="alert"
+            aria-live="polite"
+          >
+            <div class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[20px] shrink-0 mt-0.5">my_location</span>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-amber-800 dark:text-amber-200">Report Mode Active</p>
+                <p class="text-xs text-amber-700 dark:text-amber-300 mt-0.5">Click on the map to drop a pin. Press <kbd class="px-1.5 py-0.5 bg-amber-200 dark:bg-amber-800 rounded text-[10px] font-mono">Esc</kbd> to cancel.</p>
+              </div>
+              <button 
+                @click="exitReportMode"
+                class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200"
+                aria-label="Exit report mode"
+              >
+                <span class="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            </div>
+          </div>
+        </Transition>
+
+        <!-- Default Tip Banner (hidden in report mode) -->
+        <div 
+          v-if="!reportMode"
+          class="absolute top-4 left-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg px-3 py-2 z-10 max-w-[200px]"
+        >
           <p class="text-xs text-blue-800 dark:text-blue-200">
-            💡 <strong>Tip:</strong> Click anywhere on the map to report a scam at that location
+            💡 <strong>Tip:</strong> Right-click (or long-press) anywhere to report a scam
           </p>
         </div>
 
         <!-- Floating Action Button (FAB) -->
         <div class="absolute bottom-8 right-8 z-20">
-          <button @click="showReportModal = true" class="group flex items-center gap-2 bg-accent hover:bg-accent/90 text-white rounded-full pl-5 pr-6 py-4 shadow-lg shadow-accent/30 transition-all active:scale-95">
+          <button 
+            v-if="!reportMode"
+            @click="enterReportMode" 
+            class="group flex items-center gap-2 bg-accent hover:bg-accent/90 text-white rounded-full pl-5 pr-6 py-4 shadow-lg shadow-accent/30 transition-all active:scale-95"
+            aria-label="Enter report mode to report a scam"
+          >
             <span class="material-symbols-outlined text-[24px]">add_alert</span>
             <span class="text-base font-bold">Report a Scam</span>
           </button>
+          <button 
+            v-else
+            @click="exitReportMode" 
+            class="group flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white rounded-full pl-5 pr-6 py-4 shadow-lg transition-all active:scale-95"
+            aria-label="Exit report mode"
+          >
+            <span class="material-symbols-outlined text-[24px]">close</span>
+            <span class="text-base font-bold">Exit Report Mode</span>
+          </button>
         </div>
+
+        <!-- Context Menu (for right-click) -->
+        <Teleport to="body">
+          <div 
+            v-if="showContextMenu"
+            class="fixed bg-white dark:bg-surface-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-1 z-[9999]"
+            :style="{ left: contextMenuPos.x + 'px', top: contextMenuPos.y + 'px' }"
+          >
+            <button 
+              @click="confirmContextReport"
+              class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-white/10 flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-[18px] text-red-500">report</span>
+              Report scam here
+            </button>
+          </div>
+        </Teleport>
       </div>
     </main>
 
     <!-- Footer -->
     <Footer />
 
-    <!-- Report Scam Modal -->
+    <!-- Report Scam Panel -->
     <Teleport to="body">
-      <div v-if="showReportModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/50" @click="showReportModal = false"></div>
-        <div class="relative bg-white dark:bg-background-dark rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-          <!-- Modal Header -->
-          <div class="sticky top-0 bg-white dark:bg-background-dark border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-charcoal dark:text-white">Report a Scam</h2>
-            <button @click="showReportModal = false" class="text-gray-400 hover:text-gray-600">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </div>
+      <Transition 
+        enter-active-class="transform transition ease-out duration-300" 
+        enter-from-class="translate-y-full md:translate-y-0 md:translate-x-full opacity-0" 
+        enter-to-class="translate-y-0 md:translate-x-0 opacity-100"
+        leave-active-class="transform transition ease-in duration-200" 
+        leave-from-class="translate-y-0 md:translate-x-0 opacity-100" 
+        leave-to-class="translate-y-full md:translate-y-0 md:translate-x-full opacity-0"
+      >
+        <div v-if="showReportModal" class="fixed inset-x-0 bottom-0 md:inset-auto md:top-24 md:right-6 z-50 w-full md:max-w-md pointer-events-none flex flex-col justify-end md:block p-4 md:p-0">
           
-          <!-- Modal Body -->
-          <form @submit.prevent="submitReport" class="p-6 space-y-5">
+          <!-- Panel Content (Enable pointer events) -->
+          <div class="bg-white dark:bg-background-dark rounded-t-2xl md:rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 w-full max-h-[85vh] overflow-hidden flex flex-col pointer-events-auto">
+            
+            <!-- Panel Header -->
+            <div class="sticky top-0 bg-white dark:bg-background-dark border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between shrink-0 z-10">
+              <div>
+                <h2 class="text-xl font-bold text-charcoal dark:text-white">Report a Scam</h2>
+                <p class="text-xs text-gray-500 mt-0.5">Drag the pin to adjust location</p>
+              </div>
+              <button @click="showReportModal = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-1">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            
+            <!-- Panel Body (Scrollable) -->
+            <div class="overflow-y-auto custom-scrollbar">
+          <form @submit.prevent="submitReport" class="p-6 space-y-5" novalidate>
             <!-- Title -->
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title *</label>
               <input v-model="reportForm.title" type="text" required minlength="5" maxlength="200" 
                 class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent"
-                placeholder="Brief title for this scam..." />
+                placeholder="Brief title for this scam..."
+                aria-describedby="title-hint" />
             </div>
             
             <!-- Description -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description *</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description * <span class="text-gray-400 font-normal">(min 20 chars)</span></label>
               <textarea v-model="reportForm.description" required minlength="20" maxlength="2000" rows="4"
-                class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent resize-none"
-                placeholder="Describe what happened, how to avoid it..."></textarea>
+                :class="[
+                  'w-full px-4 py-3 border rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent resize-none',
+                  formErrors.description ? 'border-red-500' : 'border-gray-300 dark:border-white/20'
+                ]"
+                placeholder="Describe what happened, how to avoid it..."
+                aria-describedby="description-error"
+              ></textarea>
+              <p v-if="formErrors.description" id="description-error" class="text-red-500 text-xs mt-1" role="alert">{{ formErrors.description }}</p>
+              <p v-else class="text-gray-400 text-xs mt-1">{{ reportForm.description.length }}/20 minimum characters</p>
             </div>
             
             <!-- Category -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category *</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Scam Type *</label>
               <select v-model="reportForm.category" required
-                class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent">
+                :class="[
+                  'w-full px-4 py-3 border rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent',
+                  formErrors.category ? 'border-red-500' : 'border-gray-300 dark:border-white/20'
+                ]"
+                aria-describedby="category-error">
                 <option value="" disabled>Select a category</option>
                 <option value="GEM_SCAM">Gem Scam</option>
                 <option value="TRANSPORT_SCAM">Transport/Tuk-tuk Scam</option>
@@ -534,12 +781,13 @@
                 <option value="SHOPPING_SCAM">Shopping/Exchange Scam</option>
                 <option value="OTHER">Other</option>
               </select>
+              <p v-if="formErrors.category" id="category-error" class="text-red-500 text-xs mt-1" role="alert">{{ formErrors.category }}</p>
             </div>
             
             <!-- Severity -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Severity</label>
-              <div class="flex gap-3">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Severity *</label>
+              <div class="flex gap-3" role="radiogroup" aria-label="Severity level">
                 <label v-for="sev in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']" :key="sev" class="flex-1">
                   <input type="radio" v-model="reportForm.severity" :value="sev" class="sr-only peer" />
                   <div class="text-center py-2 rounded-lg border-2 cursor-pointer transition-all"
@@ -552,14 +800,23 @@
                   </div>
                 </label>
               </div>
+              <p v-if="formErrors.severity" class="text-red-500 text-xs mt-1" role="alert">{{ formErrors.severity }}</p>
             </div>
             
             <!-- Location -->
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location *</label>
               <input v-model="reportForm.location_name" type="text" required
-                class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent"
-                placeholder="e.g., Pettah Market, Colombo" />
+                :class="[
+                  'w-full px-4 py-3 border rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent',
+                  formErrors.location_name ? 'border-red-500' : 'border-gray-300 dark:border-white/20'
+                ]"
+                placeholder="e.g., Pettah Market, Colombo"
+                aria-describedby="location-error" />
+              <p v-if="formErrors.location_name" id="location-error" class="text-red-500 text-xs mt-1" role="alert">{{ formErrors.location_name }}</p>
+              <p v-if="reportForm.location_lat && reportForm.location_lng" class="text-gray-400 text-xs mt-1">
+                📍 Coordinates: {{ reportForm.location_lat.toFixed(4) }}, {{ reportForm.location_lng.toFixed(4) }}
+              </p>
             </div>
             
             <!-- Submit Button -->
@@ -569,11 +826,19 @@
               <span>{{ isSubmitting ? 'Submitting...' : 'Submit Report' }}</span>
             </button>
             
-            <p v-if="submitError" class="text-red-500 text-sm text-center">{{ submitError }}</p>
-            <p v-if="submitSuccess" class="text-green-500 text-sm text-center">Report submitted successfully!</p>
+            <!-- Disclaimer -->
+            <p class="text-xs text-gray-500 dark:text-gray-400 text-center">
+              <span class="material-symbols-outlined text-[14px] align-middle mr-1">info</span>
+              Reports are moderated before appearing publicly. False reports may result in account restrictions.
+            </p>
+            
+            <p v-if="submitError" class="text-red-500 text-sm text-center" role="alert">{{ submitError }}</p>
+            <p v-if="submitSuccess" class="text-green-500 text-sm text-center" role="status">Report submitted successfully!</p>
           </form>
         </div>
       </div>
+      </div>
+    </Transition>
     </Teleport>
 
     <!-- Scam Details Modal -->
@@ -667,7 +932,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import type { ScamAlert } from '~/types/api'
 import { useModal } from '~/composables/useModal'
 
@@ -770,16 +1035,165 @@ function dismissDangerBanner() {
   dangerBannerDismissed.value = true
 }
 
+// ==========================================
+// REPORT MODE STATE & FUNCTIONS
+// ==========================================
+
+// Report Mode state
+const reportMode = ref(false)
+const showContextMenu = ref(false)
+const contextMenuPos = ref({ x: 0, y: 0 })
+const pendingContextCoords = ref<{ lat: number; lng: number } | null>(null)
+
 // Report Modal State
 const showReportModal = ref(false)
 const showDetailsModal = ref(false)
 const isSubmitting = ref(false)
 const submitError = ref('')
 const submitSuccess = ref(false)
+const formErrors = ref<Record<string, string>>({})
+
+// Enter Report Mode
+function enterReportMode() {
+  console.log('Entering report mode...')
+  reportMode.value = true
+  viewMode.value = 'map'
+  showContextMenu.value = false
+  
+  // Wait for DOM updates and CSS transitions
+  nextTick(() => {
+    setTimeout(() => {
+      console.log('Calling invalidateSize')
+      scamMapRef.value?.invalidateSize?.()
+    }, 400)
+  })
+}
+
+// Exit Report Mode
+function exitReportMode() {
+  reportMode.value = false
+  showContextMenu.value = false
+  scamMapRef.value?.clearReportMarker?.()
+  
+  // Fix map rendering when exiting report mode
+  nextTick(() => {
+    setTimeout(() => {
+      scamMapRef.value?.invalidateSize?.()
+    }, 400)
+  })
+}
+
+// Handle context report (right-click / long-press)
+function handleContextReport(coords: { lat: number; lng: number }) {
+  pendingContextCoords.value = coords
+  
+  // Position context menu near click
+  const rect = document.querySelector('.leaflet-container')?.getBoundingClientRect()
+  if (rect) {
+    // Convert lat/lng to approximate screen position (rough estimate)
+    contextMenuPos.value = {
+      x: Math.min(rect.left + rect.width / 2, window.innerWidth - 180),
+      y: Math.min(rect.top + rect.height / 2, window.innerHeight - 60)
+    }
+  }
+  
+  showContextMenu.value = true
+  
+  // Close context menu on click elsewhere
+  setTimeout(() => {
+    document.addEventListener('click', closeContextMenu, { once: true })
+  }, 10)
+}
+
+// Close context menu
+function closeContextMenu() {
+  showContextMenu.value = false
+}
+
+// Confirm context report action
+function confirmContextReport() {
+  if (pendingContextCoords.value) {
+    handleMapReport(pendingContextCoords.value)
+  }
+  showContextMenu.value = false
+}
+
+// Handle pin drag to update location
+function handlePinDrag(coords: { lat: number; lng: number }) {
+  reportForm.value.location_lat = coords.lat
+  reportForm.value.location_lng = coords.lng
+  reportForm.value.location_name = `${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`
+}
+
+// Keyboard event handling for Esc key
+function handleKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape') {
+    if (showContextMenu.value) {
+      closeContextMenu()
+    } else if (reportMode.value) {
+      exitReportMode()
+    }
+  }
+}
+
+// Setup keyboard listeners
+onMounted(() => {
+  document.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeydown)
+})
+
+// Form validation
+function validateForm(): boolean {
+  formErrors.value = {}
+  
+  if (!reportForm.value.category) {
+    formErrors.value.category = 'Please select a scam type'
+  }
+  
+  if (!reportForm.value.severity) {
+    formErrors.value.severity = 'Please select a severity level'
+  }
+  
+  if (!reportForm.value.description || reportForm.value.description.length < 20) {
+    formErrors.value.description = 'Description must be at least 20 characters'
+  }
+  
+  if (!reportForm.value.location_name) {
+    formErrors.value.location_name = 'Location is required'
+  }
+  
+  return Object.keys(formErrors.value).length === 0
+}
 
 // Modal Esc-close support
-useModal(showReportModal, () => { showReportModal.value = false })
+useModal(showReportModal, () => { 
+  showReportModal.value = false 
+  exitReportMode()
+})
 useModal(showDetailsModal, () => { showDetailsModal.value = false })
+
+// Watch for modal changes and fix map rendering
+watch(showReportModal, (isOpen) => {
+  if (isOpen) {
+    // Wait for modal animation and then invalidate map size
+    setTimeout(() => {
+      scamMapRef.value?.invalidateSize?.()
+    }, 350)
+  }
+})
+
+// Watch for viewMode changes (handles mobile view toggle)
+watch(viewMode, (newMode) => {
+  if (newMode === 'map') {
+    // Map is being shown, invalidate size after CSS transition
+    setTimeout(() => {
+      scamMapRef.value?.invalidateSize?.()
+    }, 350)
+  }
+})
 
 const reportForm = ref({
   title: '',
@@ -815,8 +1229,11 @@ const gettingLocation = ref(false)
 const highlightedScamId = ref<string | null>(null)
 const selectedScamId = ref<string | null>(null)
 
+// Accordion expansion state
+const expandedCardId = ref<string | null>(null)
+
 // Ref to the map component for pan/zoom control
-const scamMapRef = ref<{ panToScam: (id: string) => void } | null>(null)
+const scamMapRef = ref<{ panToScam: (id: string) => void; clearReportMarker: () => void; invalidateSize: () => void } | null>(null)
 
 onMounted(async () => {
   // Handle openReport query param
@@ -890,6 +1307,15 @@ const { data: scamsResponse, pending, error, refresh } = await useFetch<{
     }
   }
 )
+
+// Hydration fix: Ensure initial data is populated if available (crucial for SSR/SSG/Hydration)
+if (scamsResponse.value?.success && scamsResponse.value?.data) {
+  if (allAlerts.value.length === 0) {
+    allAlerts.value = scamsResponse.value.data
+    totalCount.value = scamsResponse.value.total
+    hasMore.value = scamsResponse.value.nextOffset !== null
+  }
+}
 
 const scamAlerts = computed(() => allAlerts.value)
 
@@ -974,7 +1400,14 @@ function handleMapReport(coords: { lat: number; lng: number }) {
   }
   
   // Open report modal
+  openReportModal()
+}
+
+// Function to properly open report modal
+async function openReportModal() {
   showReportModal.value = true
+  await nextTick()
+  scamMapRef.value?.invalidateSize?.()
 }
 
 // Reset pagination when any filter changes
@@ -1095,6 +1528,75 @@ async function confirmAlert(id: string) {
   refresh()
 }
 
+// Toggle card expansion (accordion behavior)
+function toggleCardExpansion(alert: ScamAlert) {
+  if (expandedCardId.value === alert.id) {
+    expandedCardId.value = null
+  } else {
+    expandedCardId.value = alert.id
+    highlightedScamId.value = alert.id
+    
+    // Pan map to the scam location if it has coordinates
+    if (alert.location?.latitude && alert.location?.longitude) {
+      scamMapRef.value?.panToScam(alert.id)
+    }
+  }
+}
+
+// Extract a real example from the description text
+function getExampleFromDescription(description: string): string {
+  // Try to find example patterns in the description
+  const examplePatterns = [
+    /example:?\s*(.+?)(?:\.|$)/i,
+    /for instance:?\s*(.+?)(?:\.|$)/i,
+    /one traveler?\s*(.+?)(?:\.|$)/i,
+    /a tourist?\s*(.+?)(?:\.|$)/i,
+  ]
+  
+  for (const pattern of examplePatterns) {
+    const match = description.match(pattern)
+    if (match && match[1]) {
+      return match[1].trim()
+    }
+  }
+  
+  // Fallback: use first sentence as an illustrative example
+  const firstSentence = description.split('.')[0] || ''
+  return firstSentence.length > 50 
+    ? firstSentence.substring(0, 100) + '...' 
+    : 'A traveler reported encountering this scam in the area.'
+}
+
+// Filter by category (from related scams section)
+function filterByCategory(category: string) {
+  selectedCategory.value = category
+  expandedCardId.value = null
+  currentOffset.value = 0
+  allAlerts.value = []
+}
+
+// Filter by location (from related scams section)
+function filterByLocation(locationName: string) {
+  // Find matching location from the locations list
+  const matchingLocation = locations.find(l => 
+    locationName.toLowerCase().includes(l.id?.toLowerCase() || '')
+  )
+  if (matchingLocation?.id) {
+    selectedLocation.value = matchingLocation.id
+  }
+  expandedCardId.value = null
+  currentOffset.value = 0
+  allAlerts.value = []
+}
+
+// Filter by severity (from related scams section)
+function filterBySeverity(severity: string) {
+  selectedSeverity.value = severity
+  expandedCardId.value = null
+  currentOffset.value = 0
+  allAlerts.value = []
+}
+
 // Handle clicking a sidebar scam card - pan map to location
 function handleSidebarClick(alert: ScamAlert) {
   // Highlight this scam in the sidebar
@@ -1175,28 +1677,41 @@ function formatCategoryLabel(value: string) {
 }
 
 async function submitReport() {
-  const config = useRuntimeConfig()
+  // Validate form first
+  if (!validateForm()) {
+    submitError.value = 'Please fix the errors above.'
+    return
+  }
+
   isSubmitting.value = true
   submitError.value = ''
   submitSuccess.value = false
   
   try {
-    await $fetch(`${config.public.apiBase}/api/scams`, {
-      method: 'POST',
-      body: {
-        title: reportForm.value.title,
-        description: reportForm.value.description,
-        category: reportForm.value.category,
-        severity: reportForm.value.severity,
-        location_name: reportForm.value.location_name,
-        location_lat: reportForm.value.location_lat,
-        location_lng: reportForm.value.location_lng,
-      }
-    })
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 800))
+    
+    // Construct payload
+    const payload = {
+      title: reportForm.value.title,
+      description: reportForm.value.description,
+      category: reportForm.value.category,
+      severity: reportForm.value.severity,
+      location_name: reportForm.value.location_name,
+      location_lat: reportForm.value.location_lat,
+      location_lng: reportForm.value.location_lng,
+      timestamp: new Date().toISOString()
+    }
+    
+    // Log structured payload to console as requested
+    console.log('📝 [REPORT SUBMISSION]', payload)
     
     submitSuccess.value = true
     setTimeout(() => {
       showReportModal.value = false
+      exitReportMode() // Exit mode after successful submission
+      
+      // Reset form
       reportForm.value = {
         title: '',
         description: '',
@@ -1206,11 +1721,11 @@ async function submitReport() {
         location_lat: 7.8731,
         location_lng: 80.7718,
       }
+      formErrors.value = {}
       submitSuccess.value = false
-      refresh()
     }, 1500)
   } catch (err: any) {
-    submitError.value = err?.data?.error || 'Failed to submit report. Please try again.'
+    submitError.value = 'Failed to submit report. Please try again.'
   } finally {
     isSubmitting.value = false
   }

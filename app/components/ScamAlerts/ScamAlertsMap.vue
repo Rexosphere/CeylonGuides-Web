@@ -14,19 +14,25 @@ const props = defineProps<{
     category: string
   }>
   highlightedId?: string | null
+  reportMode?: boolean
 }>()
 
 const emit = defineEmits<{
   (e: 'selectScam', id: string): void
   (e: 'reportAt', coords: { lat: number; lng: number }): void
   (e: 'mapCenter', coords: { lat: number; lng: number }): void
+  (e: 'pinDrag', coords: { lat: number; lng: number }): void
+  (e: 'contextReport', coords: { lat: number; lng: number }): void
 }>()
 
 const mapContainer = ref<HTMLElement>()
 let L: any = null
 let map: any = null
-const markersById = new Map<string, any>()  // Store markers by scam ID for lookup
-let reportMarker: any = null  // Temporary marker for report location
+let tileLayer: any = null
+const markersById = new Map<string, any>()
+let reportMarker: any = null
+let longPressTimer: any = null
+let longPressCoords: { lat: number; lng: number } | null = null
 
 // Pan and zoom to a specific scam by ID
 function panToScam(scamId: string) {
@@ -38,8 +44,146 @@ function panToScam(scamId: string) {
   }
 }
 
-// Expose panToScam method to parent components
-defineExpose({ panToScam })
+// Remove report marker from map
+function clearReportMarker() {
+  if (reportMarker) {
+    reportMarker.remove()
+    reportMarker = null
+  }
+}
+
+// Force map to recalculate size (fixes rendering issues)
+function invalidateSize() {
+  console.log('🔄 invalidateSize called, map exists:', !!map, 'tileLayer exists:', !!tileLayer)
+  
+  if (!map) return
+  
+  // Use setTimeout to ensure DOM has updated
+  setTimeout(() => {
+    if (map) {
+      console.log('🔄 Calling map.invalidateSize() [0ms]')
+      map.invalidateSize({ pan: false, animate: false })
+      
+      // Force tile layer to redraw
+      if (tileLayer) {
+        console.log('🔄 Calling tileLayer.redraw() [0ms]')
+        tileLayer.redraw()
+      }
+    }
+  }, 0)
+  
+  // Additional delayed call with tile refresh
+  setTimeout(() => {
+    if (map) {
+      console.log('🔄 Calling map.invalidateSize() [100ms]')
+      map.invalidateSize({ pan: false, animate: false })
+      if (tileLayer) {
+        console.log('🔄 Calling tileLayer.redraw() [100ms]')
+        tileLayer.redraw()
+      }
+    }
+  }, 100)
+  
+  // Final call for stubborn cases
+  setTimeout(() => {
+    if (map) {
+      console.log('🔄 Calling map.invalidateSize() [300ms]')
+      map.invalidateSize({ pan: false, animate: false })
+      if (tileLayer) {
+        console.log('🔄 Calling tileLayer.redraw() [300ms]')
+        tileLayer.redraw()
+        
+        // Check if tiles are actually present in DOM
+        setTimeout(() => {
+          const tiles = document.querySelectorAll('.leaflet-tile')
+          console.log('📊 Number of tiles in DOM:', tiles.length)
+          if (tiles.length > 0) {
+            const firstTile = tiles[0] as HTMLImageElement
+            console.log('📊 First tile src:', firstTile.src)
+            console.log('📊 First tile complete:', firstTile.complete)
+            console.log('📊 First tile naturalWidth:', firstTile.naturalWidth)
+            
+            // Check CSS properties
+            const tileStyle = window.getComputedStyle(firstTile)
+            console.log('🎨 Tile opacity:', tileStyle.opacity)
+            console.log('🎨 Tile visibility:', tileStyle.visibility)
+            console.log('🎨 Tile display:', tileStyle.display)
+            console.log('🎨 Tile z-index:', tileStyle.zIndex)
+            
+            // Check tile pane
+            const tilePane = document.querySelector('.leaflet-tile-pane') as HTMLElement
+            if (tilePane) {
+              const paneStyle = window.getComputedStyle(tilePane)
+              console.log('🎨 Tile pane opacity:', paneStyle.opacity)
+              console.log('🎨 Tile pane z-index:', paneStyle.zIndex)
+              console.log('🎨 Tile pane transform:', paneStyle.transform)
+            }
+            
+            // Check leaflet container
+            const container = document.querySelector('.leaflet-container') as HTMLElement
+            if (container) {
+              const containerStyle = window.getComputedStyle(container)
+              console.log('🎨 Container background:', containerStyle.backgroundColor)
+              
+              // Check all panes and their z-indices
+              const allPanes = container.querySelectorAll('[class*="pane"]')
+              console.log('🎨 All panes:')
+              allPanes.forEach((pane: Element) => {
+                const paneEl = pane as HTMLElement
+                const paneStyle = window.getComputedStyle(paneEl)
+                console.log(`  - ${paneEl.className}: z-index=${paneStyle.zIndex}, opacity=${paneStyle.opacity}, pointer-events=${paneStyle.pointerEvents}`)
+              })
+            }
+            
+            // If tiles haven't loaded, force a full reload
+            if (!firstTile.complete || firstTile.naturalWidth === 0) {
+              console.warn('⚠️ Tiles not loading properly, forcing refresh...')
+              // Remove and re-add tile layer
+              if (tileLayer && L) {
+                map.removeLayer(tileLayer)
+                setTimeout(() => {
+                  tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
+                    updateWhenIdle: false,
+                    updateWhenZooming: false,
+                    keepBuffer: 2
+                  }).addTo(map)
+                  console.log('✅ Tile layer recreated')
+                }, 50)
+              }
+            }
+          }
+        }, 200)
+      }
+    }
+  }, 300)
+}
+
+// Force complete tile layer reload (for stubborn rendering issues)
+function forceReload() {
+  if (!map || !tileLayer || !L) return
+  
+  // Remove existing tile layer
+  map.removeLayer(tileLayer)
+  
+  // Wait a tick, then recreate and add tile layer
+  setTimeout(() => {
+    tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
+      updateWhenIdle: false,
+      updateWhenZooming: false,
+      keepBuffer: 2
+    }).addTo(map)
+    
+    // Invalidate size after reload
+    setTimeout(() => {
+      map?.invalidateSize({ pan: false, animate: false })
+    }, 100)
+  }, 50)
+}
+
+// Expose methods to parent components
+defineExpose({ panToScam, clearReportMarker, invalidateSize, forceReload })
 
 // Severity colors
 const severityColors: Record<string, string> = {
@@ -63,9 +207,13 @@ const categoryIcons: Record<string, string> = {
 async function initMap() {
   if (!mapContainer.value || map) return
   
+  console.log('🗺️ Initializing map...')
+  
   // Dynamic import for SSR compatibility
   L = await import('leaflet')
   await import('leaflet/dist/leaflet.css')
+  
+  console.log('✅ Leaflet loaded')
   
   // Fix Leaflet default icon issue
   delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -76,35 +224,65 @@ async function initMap() {
   })
   
   // Center on Sri Lanka
-  map = L.map(mapContainer.value).setView([7.8731, 80.7718], 8)
+  map = L.map(mapContainer.value, {
+    zoomAnimation: false,
+    fadeAnimation: false,
+    markerZoomAnimation: false
+  }).setView([7.8731, 80.7718], 8)
   
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>'
+  console.log('✅ Map instance created')
+  
+  // Create and save tile layer reference
+  tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
+    updateWhenIdle: false,
+    updateWhenZooming: false,
+    keepBuffer: 2
   }).addTo(map)
   
-  // Add click handler for reporting scams
+  console.log('✅ Tile layer added')
+  
+  // Add load event listener
+  tileLayer.on('load', () => {
+    console.log('✅ Tiles loaded successfully')
+  })
+  
+  tileLayer.on('tileerror', (error: any) => {
+    console.error('❌ Tile load error:', error)
+  })
+  
+  // Click handler - only triggers in Report Mode
   map.on('click', (e: any) => {
-    // Remove previous report marker if exists
-    if (reportMarker) {
-      reportMarker.remove()
-    }
+    if (!props.reportMode) return
     
-    // Create a temporary marker at click location
-    reportMarker = L.marker([e.latlng.lat, e.latlng.lng], {
-      icon: L.divIcon({
-        className: 'report-marker',
-        html: '<div style="background: #3b82f6; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 12px;">📍</div>',
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-      })
-    }).addTo(map)
-    
-    reportMarker.bindPopup('Report scam here?').openPopup()
-    
-    emit('reportAt', {
-      lat: e.latlng.lat,
-      lng: e.latlng.lng
-    })
+    placeReportMarker(e.latlng.lat, e.latlng.lng)
+    emit('reportAt', { lat: e.latlng.lat, lng: e.latlng.lng })
+  })
+  
+  // Right-click context menu (desktop)
+  map.on('contextmenu', (e: any) => {
+    e.originalEvent.preventDefault()
+    emit('contextReport', { lat: e.latlng.lat, lng: e.latlng.lng })
+  })
+  
+  // Long-press detection for mobile
+  map.on('mousedown', (e: any) => {
+    longPressCoords = { lat: e.latlng.lat, lng: e.latlng.lng }
+    longPressTimer = setTimeout(() => {
+      if (longPressCoords) {
+        emit('contextReport', longPressCoords)
+      }
+    }, 600)
+  })
+  
+  map.on('mouseup', () => {
+    clearTimeout(longPressTimer)
+    longPressCoords = null
+  })
+  
+  map.on('mousemove', () => {
+    clearTimeout(longPressTimer)
+    longPressCoords = null
   })
   
   // Emit map center on move/zoom for dynamic danger banner
@@ -118,6 +296,44 @@ async function initMap() {
   emit('mapCenter', { lat: initialCenter.lat, lng: initialCenter.lng })
   
   updateMarkers()
+}
+
+// Place or move the report marker
+function placeReportMarker(lat: number, lng: number) {
+  if (!L || !map) return
+  
+  // Remove previous report marker if exists
+  if (reportMarker) {
+    reportMarker.remove()
+  }
+  
+  // Create a draggable marker at click location
+  reportMarker = L.marker([lat, lng], {
+    draggable: true,
+    icon: L.divIcon({
+      className: 'report-marker',
+      html: `<div class="report-pin-marker">
+        <div class="pin-head">📍</div>
+        <div class="pin-pulse"></div>
+      </div>`,
+      iconSize: [40, 40],
+      iconAnchor: [20, 40]
+    })
+  }).addTo(map)
+  
+  reportMarker.bindPopup('<div class="text-sm font-semibold">Report location</div><div class="text-xs text-gray-500">Drag to adjust</div>').openPopup()
+  
+  // Handle drag events
+  reportMarker.on('drag', (e: any) => {
+    const latlng = e.target.getLatLng()
+    emit('pinDrag', { lat: latlng.lat, lng: latlng.lng })
+  })
+  
+  reportMarker.on('dragend', (e: any) => {
+    const latlng = e.target.getLatLng()
+    emit('pinDrag', { lat: latlng.lat, lng: latlng.lng })
+    reportMarker.openPopup()
+  })
 }
 
 function updateMarkers() {
@@ -180,21 +396,35 @@ onMounted(() => {
   initMap()
 })
 
+// Watch for report mode changes to update cursor (but don't call invalidateSize)
+watch(() => props.reportMode, (newVal) => {
+  if (mapContainer.value) {
+    if (newVal) {
+      mapContainer.value.classList.add('report-mode-cursor')
+    } else {
+      mapContainer.value.classList.remove('report-mode-cursor')
+      clearReportMarker()
+    }
+  }
+})
+
 watch(() => props.scams, () => {
   updateMarkers()
 }, { deep: true })
 
 onUnmounted(() => {
+  clearTimeout(longPressTimer)
   map?.remove()
   map = null
 })
 </script>
 
 <template>
-  <div class="relative w-full h-full">
+  <div class="relative w-full h-full bg-gray-200 dark:bg-gray-800">
     <div
       ref="mapContainer"
-      class="w-full h-full"
+      class="w-full h-full bg-gray-200 dark:bg-gray-800"
+      :class="{ 'report-mode-cursor': reportMode }"
     />
     
     <!-- Map Legend -->
@@ -233,5 +463,68 @@ onUnmounted(() => {
 .leaflet-control-zoom a {
   background: white !important;
   color: #333 !important;
+}
+
+/* Fix Leaflet container background */
+.leaflet-container {
+  background: transparent !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .leaflet-container {
+    background: transparent !important;
+  }
+}
+
+/* Report Mode Cursor */
+.report-mode-cursor {
+  cursor: crosshair !important;
+}
+.report-mode-cursor .leaflet-container {
+  cursor: crosshair !important;
+}
+.report-mode-cursor .leaflet-interactive {
+  cursor: crosshair !important;
+}
+
+/* Report Pin Marker Styles */
+.report-pin-marker {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.report-pin-marker .pin-head {
+  font-size: 28px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  animation: bounce-in 0.3s ease-out;
+}
+.report-pin-marker .pin-pulse {
+  position: absolute;
+  bottom: -4px;
+  width: 20px;
+  height: 8px;
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 50%;
+  animation: pulse-shadow 1.5s ease-in-out infinite;
+}
+
+@keyframes bounce-in {
+  0% { transform: translateY(-20px) scale(0.8); opacity: 0; }
+  60% { transform: translateY(4px) scale(1.05); }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes pulse-shadow {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.5); opacity: 0.2; }
+}
+
+/* Draggable hint */
+.leaflet-marker-draggable .report-pin-marker .pin-head {
+  cursor: grab;
+}
+.leaflet-marker-draggable:active .report-pin-marker .pin-head {
+  cursor: grabbing;
 }
 </style>
