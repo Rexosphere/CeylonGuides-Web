@@ -1,41 +1,17 @@
-<script setup lang="ts">
-const scrollToCuratedFinds = () => {
-  const element = document.getElementById('what-to-buy')
-  if (element) {
-    const offset = 80 // Account for sticky nav height
-    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
-    const offsetPosition = elementPosition - offset
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    })
-  }
-}
-</script>
-
 <template>
-  <div class="w-full">
-    <div class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-8 relative overflow-hidden group" 
-         role="img" 
-         aria-label="Vibrant Sri Lankan market scene with spices and textures" 
-         style="background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url('/images/downloaded_b6813cf50612.avif');">
-      <div class="flex flex-col gap-3 text-center z-10 max-w-2xl">
-        <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] md:text-6xl drop-shadow-lg">
-          Bring a Piece of Sri Lanka Home
-        </h1>
-        <h2 class="text-white/90 text-sm font-medium leading-relaxed md:text-lg drop-shadow-md">
-          The ultimate guide to authentic souvenirs, bustling markets, and smart shopping in the Pearl of the Indian Ocean.
-        </h2>
-      </div>
-      <div class="flex gap-4 z-10">
-        <button
-          @click="scrollToCuratedFinds"
-          class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary hover:bg-primary/90 transition-colors text-white text-base font-bold leading-normal tracking-[0.015em] shadow-lg shadow-orange-900/20"
-        >
-          <span class="truncate">Start Exploring</span>
-        </button>
-      </div>
+  <header class="relative h-[400px] w-full flex items-center justify-center overflow-hidden">
+    <img alt="Sri Lankan Spices Market" class="absolute inset-0 w-full h-full object-cover"
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuJJoIU38vdf8OOz4PaLf7b4pDXdBzmaaUuS59UkvTnDbUA9LMIu_UaPgbPIL-HT8Afka27lqmOcI8nGbxlC1WyQledAJ9gsz-8ku9OvQDdfiei6jYDFfCDiV1_pZUHKDnBLdreqE0PPwPIKeRJAq9G_7-Lmtga6uQvHT9YwgF0D2Y1EzyEoAUEcuqpeSoiTE4L2iTBE072YN7GE3n5SEgyhzE1vutXVmaO4dYbF64t7Brp_Aebt8G3Gf7jL6dgafBe_Ttr68Xyq4" />
+    <div class="absolute inset-0 bg-slate-900/80"></div>
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">Bring a Piece of Sri Lanka Home
+      </h1>
+      <p class="text-slate-300 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">The ultimate guide to
+        authentic souvenirs, bustling markets, and smart shopping in the Pearl of the Indian Ocean.</p>
+      <button
+        class="mt-8 bg-primary hover:bg-teal-800 text-white font-medium py-3 px-8 rounded-full shadow-lg transition transform hover:scale-[1.02] active:scale-[0.98]">
+        Start Exploring
+      </button>
     </div>
-  </div>
+  </header>
 </template>
