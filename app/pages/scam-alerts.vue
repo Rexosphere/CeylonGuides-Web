@@ -34,14 +34,31 @@
       </div>
     </section>
 
-    <!-- Proximity Alert Banner -->
-    <div class="flex-none bg-red-50 dark:bg-red-900/20 border-b border-red-100 dark:border-red-900/50 px-6 py-2 flex items-center justify-center gap-3 text-red-700 dark:text-red-300 text-sm font-medium z-20">
-      <span class="material-symbols-outlined text-[20px]">fmd_bad</span>
-      <p>Warning: You are viewing a high-activity area for reported scams (Pettah Market).</p>
-      <button class="ml-4 text-red-700/60 hover:text-red-700 dark:text-red-300/60 dark:hover:text-red-300">
-        <span class="material-symbols-outlined text-[18px]">close</span>
-      </button>
-    </div>
+    <!-- Dynamic Proximity Alert Banner -->
+    <Transition name="slide-down">
+      <div 
+        v-if="showDangerBanner && dangerLocation"
+        :class="[
+          'flex-none border-b px-6 py-2 flex items-center justify-center gap-3 text-sm font-medium z-20',
+          dangerLocation.risk === 'HIGH' 
+            ? 'bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-900/50 text-red-700 dark:text-red-300'
+            : 'bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-900/50 text-amber-700 dark:text-amber-300'
+        ]"
+      >
+        <span class="material-symbols-outlined text-[20px]">fmd_bad</span>
+        <p>
+          <strong>{{ dangerLocation.risk }} Risk:</strong> 
+          You are viewing {{ dangerLocation.name }}, a high-activity area for reported scams.
+          <span v-if="dangerLocation.count > 0" class="text-xs opacity-80">({{ dangerLocation.count }} alerts nearby)</span>
+        </p>
+        <button 
+          @click="dismissDangerBanner"
+          class="ml-4 opacity-60 hover:opacity-100 transition-opacity"
+        >
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+    </Transition>
 
     <!-- Main Layout -->
     <main class="flex relative" style="min-height: 700px;">
@@ -92,8 +109,8 @@
             </div>
           </div>
           
-          <!-- Filter Chips -->
-          <div class="flex gap-2 overflow-x-auto pb-4 custom-scrollbar -mx-6 px-6">
+          <!-- Category Filter Chips -->
+          <div class="flex gap-2 overflow-x-auto pb-3 custom-scrollbar -mx-6 px-6">
             <button 
               v-for="cat in categories" 
               :key="cat.id ?? 'all'"
@@ -107,6 +124,78 @@
             >
               <span v-if="cat.id" :class="['size-2 rounded-full', cat.color]"></span>
               {{ cat.label }}
+            </button>
+          </div>
+
+          <!-- Severity Filter Chips -->
+          <div class="flex gap-2 overflow-x-auto pb-3 custom-scrollbar -mx-6 px-6">
+            <span class="shrink-0 text-xs font-semibold text-gray-500 dark:text-gray-400 pr-1 self-center">Risk:</span>
+            <button 
+              v-for="sev in severities" 
+              :key="sev.id ?? 'all-risk'"
+              @click="selectedSeverity = sev.id"
+              :class="[
+                'shrink-0 h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 transition-colors',
+                selectedSeverity === sev.id 
+                  ? 'bg-charcoal text-white shadow-sm' 
+                  : 'bg-white dark:bg-background-dark border border-gray-200 dark:border-white/10 text-charcoal dark:text-white hover:border-accent'
+              ]"
+            >
+              <span v-if="sev.icon">{{ sev.icon }}</span>
+              {{ sev.label }}
+            </button>
+          </div>
+
+          <!-- Location Filter Dropdown -->
+          <div class="flex items-center gap-3 pb-3 -mx-6 px-6">
+            <span class="shrink-0 text-xs font-semibold text-gray-500 dark:text-gray-400">Location:</span>
+            <select
+              v-model="selectedLocation"
+              class="flex-1 h-8 px-3 rounded-lg text-xs font-medium bg-white dark:bg-background-dark border border-gray-200 dark:border-white/10 text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent"
+            >
+              <option v-for="loc in locations" :key="loc.id ?? 'all-loc'" :value="loc.id">
+                {{ loc.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Active Filters Summary & Clear -->
+          <div 
+            v-if="selectedCategory || selectedSeverity || selectedLocation || nearMeMode"
+            class="flex items-center gap-2 pb-3 -mx-6 px-6"
+          >
+            <span class="text-xs text-gray-500">Active filters:</span>
+            <div class="flex gap-1 flex-wrap">
+              <span 
+                v-if="selectedCategory" 
+                class="text-[10px] px-2 py-0.5 bg-accent/10 text-accent rounded-full"
+              >
+                {{ categories.find(c => c.id === selectedCategory)?.label }}
+              </span>
+              <span 
+                v-if="selectedSeverity" 
+                class="text-[10px] px-2 py-0.5 bg-accent/10 text-accent rounded-full"
+              >
+                {{ severities.find(s => s.id === selectedSeverity)?.label }} Risk
+              </span>
+              <span 
+                v-if="selectedLocation" 
+                class="text-[10px] px-2 py-0.5 bg-accent/10 text-accent rounded-full"
+              >
+                {{ selectedLocation }}
+              </span>
+              <span 
+                v-if="nearMeMode" 
+                class="text-[10px] px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded-full"
+              >
+                📍 Within {{ radiusKm }}km
+              </span>
+            </div>
+            <button 
+              @click="selectedCategory = null; selectedSeverity = null; selectedLocation = null; disableNearMe()"
+              class="text-xs text-red-500 hover:text-red-600 font-medium"
+            >
+              Clear all
             </button>
           </div>
 
@@ -223,10 +312,49 @@
             <button @click="refresh()" class="mt-4 px-4 py-2 bg-accent text-white rounded-lg">Retry</button>
           </div>
 
-          <!-- Empty State -->
-          <div v-else-if="scamAlerts.length === 0" class="text-center py-12 text-gray-500">
-            <span class="material-symbols-outlined text-4xl mb-2">verified_user</span>
-            <p>No scam alerts in this area. Stay safe!</p>
+          <!-- Empty State with Helpful Guidance -->
+          <div v-else-if="scamAlerts.length === 0" class="text-center py-12 px-6">
+            <span class="material-symbols-outlined text-5xl mb-3 text-green-500">verified_user</span>
+            <h3 class="text-lg font-bold text-charcoal dark:text-white mb-2">No scam alerts found</h3>
+            
+            <!-- Dynamic guidance based on active filters -->
+            <div v-if="selectedCategory || selectedSeverity || selectedLocation || nearMeMode" class="text-sm text-gray-500 dark:text-gray-400 space-y-2">
+              <p>No results match your current filters:</p>
+              <div class="flex flex-wrap justify-center gap-2 mt-2 mb-4">
+                <span v-if="selectedCategory" class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs">
+                  {{ categories.find(c => c.id === selectedCategory)?.label }}
+                </span>
+                <span v-if="selectedSeverity" class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs">
+                  {{ severities.find(s => s.id === selectedSeverity)?.label }} Risk
+                </span>
+                <span v-if="selectedLocation" class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs">
+                  {{ selectedLocation }}
+                </span>
+                <span v-if="nearMeMode" class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs">
+                  📍 Within {{ radiusKm }}km
+                </span>
+              </div>
+              <p class="text-gray-400">Try broadening your search by removing some filters.</p>
+              <button 
+                @click="selectedCategory = null; selectedSeverity = null; selectedLocation = null; disableNearMe()"
+                class="mt-3 px-4 py-2 bg-accent text-white rounded-lg font-medium text-sm hover:bg-accent/90"
+              >
+                Clear all filters
+              </button>
+            </div>
+            
+            <!-- No filters active - actually no scams in area -->
+            <div v-else class="text-sm text-gray-500 dark:text-gray-400">
+              <p>Great news! No scam alerts have been reported in this area.</p>
+              <p class="mt-2">Stay vigilant and help others by reporting any suspicious activities.</p>
+              <button 
+                @click="showReportModal = true"
+                class="mt-4 px-4 py-2 bg-accent text-white rounded-lg font-medium text-sm hover:bg-accent/90 inline-flex items-center gap-2"
+              >
+                <span class="material-symbols-outlined text-[18px]">add_alert</span>
+                Report a Scam
+              </button>
+            </div>
           </div>
 
           <!-- Alert Cards -->
@@ -235,7 +363,7 @@
               v-for="alert in scamAlerts" 
               :key="alert.id"
               :id="`scam-${alert.id}`"
-              @click="openScamDetails(alert.id)"
+              @click="handleSidebarClick(alert)"
               :class="[
                 'group relative bg-white dark:bg-background-dark rounded-xl border p-4 shadow-sm hover:shadow-md transition-all cursor-pointer',
                 getSeverityClass(alert.severity),
@@ -323,9 +451,12 @@
         <!-- Interactive Leaflet Map -->
         <ClientOnly>
           <ScamAlertsMap
+            ref="scamMapRef"
             :scams="scamAlerts"
-            @select-scam="openScamDetails"
+            :highlighted-id="highlightedScamId"
+            @select-scam="handleMarkerClick"
             @report-at="handleMapReport"
+            @map-center="handleMapCenter"
             class="w-full h-full z-0"
           />
           <template #fallback>
@@ -548,6 +679,96 @@ definePageMeta({
 
 const viewMode = ref<'list' | 'map'>('list')
 const selectedCategory = ref<string | null>(null)
+const selectedSeverity = ref<string | null>(null)  // Filter by severity: HIGH, MEDIUM, LOW
+const selectedLocation = ref<string | null>(null)  // Filter by location/district
+
+// Dynamic danger banner state
+const showDangerBanner = ref(false)
+const dangerBannerDismissed = ref(false)
+const dangerLocation = ref<{ name: string; risk: string; count: number } | null>(null)
+const mapCenter = ref<{ lat: number; lng: number }>({ lat: 7.8731, lng: 80.7718 })
+
+// High-risk scam hotspots with coordinates and risk levels
+const HIGH_RISK_LOCATIONS = [
+  { name: 'Pettah Market', lat: 6.9375, lng: 79.8556, risk: 'HIGH', radius: 1.5 },
+  { name: 'Colombo Fort', lat: 6.9344, lng: 79.8428, risk: 'HIGH', radius: 1 },
+  { name: 'Temple of the Tooth', lat: 7.2936, lng: 80.6413, risk: 'HIGH', radius: 0.8 },
+  { name: 'Galle Fort', lat: 6.0269, lng: 80.2167, risk: 'MEDIUM', radius: 1 },
+  { name: 'Sigiriya', lat: 7.9570, lng: 80.7603, risk: 'HIGH', radius: 1.5 },
+  { name: 'Negombo Beach', lat: 7.2088, lng: 79.8357, risk: 'MEDIUM', radius: 2 },
+  { name: 'Hikkaduwa Beach', lat: 6.1395, lng: 80.1063, risk: 'MEDIUM', radius: 1.5 },
+  { name: 'Unawatuna Beach', lat: 6.0116, lng: 80.2488, risk: 'MEDIUM', radius: 1 },
+  { name: 'Ratnapura Gem District', lat: 6.6828, lng: 80.3981, risk: 'HIGH', radius: 2 },
+  { name: 'Kandy City', lat: 7.2906, lng: 80.6337, risk: 'MEDIUM', radius: 1.5 },
+  { name: 'Airport Road', lat: 7.1808, lng: 79.8845, risk: 'MEDIUM', radius: 2 },
+  { name: 'Yala National Park Entrance', lat: 6.3556, lng: 81.5167, risk: 'HIGH', radius: 3 },
+]
+
+// Calculate distance in km using Haversine formula
+function getDistanceKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371 // Earth's radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLng = (lng2 - lng1) * Math.PI / 180
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return R * c
+}
+
+// Handle map center change - check if near a high-risk location
+function handleMapCenter(coords: { lat: number; lng: number }) {
+  mapCenter.value = coords
+  
+  // Reset if dismissed
+  if (dangerBannerDismissed.value) {
+    // Check if moved far away to un-dismiss
+    const anyNearby = HIGH_RISK_LOCATIONS.some(loc => 
+      getDistanceKm(coords.lat, coords.lng, loc.lat, loc.lng) <= loc.radius
+    )
+    if (!anyNearby) {
+      dangerBannerDismissed.value = false
+    }
+    return
+  }
+  
+  // Find nearest high-risk location
+  let nearestDanger: typeof HIGH_RISK_LOCATIONS[0] | null = null
+  let nearestDistance = Infinity
+  
+  for (const loc of HIGH_RISK_LOCATIONS) {
+    const dist = getDistanceKm(coords.lat, coords.lng, loc.lat, loc.lng)
+    if (dist <= loc.radius && dist < nearestDistance) {
+      nearestDistance = dist
+      nearestDanger = loc
+    }
+  }
+  
+  if (nearestDanger) {
+    // Count scams in this area
+    const scamCount = scamAlerts.value.filter(scam => {
+      if (!scam.location?.latitude || !scam.location?.longitude) return false
+      const dist = getDistanceKm(scam.location.latitude, scam.location.longitude, nearestDanger!.lat, nearestDanger!.lng)
+      return dist <= nearestDanger!.radius
+    }).length
+    
+    dangerLocation.value = {
+      name: nearestDanger.name,
+      risk: nearestDanger.risk,
+      count: scamCount
+    }
+    showDangerBanner.value = true
+  } else {
+    showDangerBanner.value = false
+    dangerLocation.value = null
+  }
+}
+
+// Dismiss danger banner
+function dismissDangerBanner() {
+  showDangerBanner.value = false
+  dangerBannerDismissed.value = true
+}
 
 // Report Modal State
 const showReportModal = ref(false)
@@ -594,6 +815,9 @@ const gettingLocation = ref(false)
 const highlightedScamId = ref<string | null>(null)
 const selectedScamId = ref<string | null>(null)
 
+// Ref to the map component for pan/zoom control
+const scamMapRef = ref<{ panToScam: (id: string) => void } | null>(null)
+
 onMounted(async () => {
   // Handle openReport query param
   if (route.query.openReport) {
@@ -639,6 +863,8 @@ const { data: scamsResponse, pending, error, refresh } = await useFetch<{
     const base = config.public.apiBase
     const params = new URLSearchParams()
     if (selectedCategory.value) params.set('category', selectedCategory.value)
+    if (selectedSeverity.value) params.set('severity', selectedSeverity.value)
+    if (selectedLocation.value) params.set('location', selectedLocation.value)
     params.set('limit', String(limit))
     params.set('offset', String(currentOffset.value))
     // Add location params if Near Me mode is active
@@ -650,7 +876,7 @@ const { data: scamsResponse, pending, error, refresh } = await useFetch<{
     return `${base}/api/scams?${params}`
   },
   { 
-    watch: [selectedCategory, nearMeMode, radiusKm],
+    watch: [selectedCategory, selectedSeverity, selectedLocation, nearMeMode, radiusKm],
     onResponse({ response }) {
       if (response._data?.success) {
         if (currentOffset.value === 0) {
@@ -751,11 +977,34 @@ function handleMapReport(coords: { lat: number; lng: number }) {
   showReportModal.value = true
 }
 
-// Reset pagination when category changes
-watch(selectedCategory, () => {
+// Reset pagination when any filter changes
+watch([selectedCategory, selectedSeverity, selectedLocation], () => {
   currentOffset.value = 0
   allAlerts.value = []
 })
+
+// Severity options for filter
+const severities = [
+  { id: null, label: 'All Risk', color: 'bg-gray-500' },
+  { id: 'HIGH', label: 'High', color: 'bg-red-500', icon: '🔴' },
+  { id: 'MEDIUM', label: 'Medium', color: 'bg-orange-500', icon: '🟠' },
+  { id: 'LOW', label: 'Low', color: 'bg-green-500', icon: '🟢' },
+]
+
+// Location options for filter (major tourist areas)
+const locations = [
+  { id: null, label: 'All Locations' },
+  { id: 'Colombo', label: 'Colombo' },
+  { id: 'Kandy', label: 'Kandy' },
+  { id: 'Galle', label: 'Galle' },
+  { id: 'Negombo', label: 'Negombo' },
+  { id: 'Sigiriya', label: 'Sigiriya' },
+  { id: 'Hikkaduwa', label: 'Hikkaduwa' },
+  { id: 'Unawatuna', label: 'Unawatuna' },
+  { id: 'Weligama', label: 'Weligama' },
+  { id: 'Yala', label: 'Yala' },
+  { id: 'Ratnapura', label: 'Ratnapura' },
+]
 
 // Filter categories
 const categories = [
@@ -844,6 +1093,34 @@ async function confirmAlert(id: string) {
   const config = useRuntimeConfig()
   await $fetch(`${config.public.apiBase}/api/scams/${id}/confirm`, { method: 'POST' })
   refresh()
+}
+
+// Handle clicking a sidebar scam card - pan map to location
+function handleSidebarClick(alert: ScamAlert) {
+  // Highlight this scam in the sidebar
+  highlightedScamId.value = alert.id
+  
+  // Pan map to the scam location (if it has coordinates)
+  if (alert.location?.latitude && alert.location?.longitude) {
+    scamMapRef.value?.panToScam(alert.id)
+  }
+  
+  // Open the details modal
+  openScamDetails(alert.id)
+}
+
+// Handle marker click from map - highlight sidebar item and scroll to it
+function handleMarkerClick(id: string) {
+  highlightedScamId.value = id
+  
+  // Scroll the sidebar to show this scam card
+  nextTick(() => {
+    const element = document.getElementById(`scam-${id}`)
+    element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  })
+  
+  // Open the details modal
+  openScamDetails(id)
 }
 
 async function openScamDetails(id: string) {

@@ -13,18 +13,33 @@ const props = defineProps<{
     severity: string
     category: string
   }>
+  highlightedId?: string | null
 }>()
 
 const emit = defineEmits<{
   (e: 'selectScam', id: string): void
   (e: 'reportAt', coords: { lat: number; lng: number }): void
+  (e: 'mapCenter', coords: { lat: number; lng: number }): void
 }>()
 
 const mapContainer = ref<HTMLElement>()
 let L: any = null
 let map: any = null
-const markers: any[] = []
+const markersById = new Map<string, any>()  // Store markers by scam ID for lookup
 let reportMarker: any = null  // Temporary marker for report location
+
+// Pan and zoom to a specific scam by ID
+function panToScam(scamId: string) {
+  const marker = markersById.get(scamId)
+  if (marker && map) {
+    const latlng = marker.getLatLng()
+    map.setView(latlng, 14, { animate: true })
+    marker.openPopup()
+  }
+}
+
+// Expose panToScam method to parent components
+defineExpose({ panToScam })
 
 // Severity colors
 const severityColors: Record<string, string> = {
@@ -92,6 +107,16 @@ async function initMap() {
     })
   })
   
+  // Emit map center on move/zoom for dynamic danger banner
+  map.on('moveend', () => {
+    const center = map.getCenter()
+    emit('mapCenter', { lat: center.lat, lng: center.lng })
+  })
+  
+  // Emit initial center
+  const initialCenter = map.getCenter()
+  emit('mapCenter', { lat: initialCenter.lat, lng: initialCenter.lng })
+  
   updateMarkers()
 }
 
@@ -99,8 +124,8 @@ function updateMarkers() {
   if (!map || !L) return
   
   // Clear existing markers
-  markers.forEach(m => m.remove())
-  markers.length = 0
+  markersById.forEach(m => m.remove())
+  markersById.clear()
   
   // Add new markers
   props.scams.forEach(scam => {
@@ -135,14 +160,15 @@ function updateMarkers() {
     })
     
     marker.addTo(map)
-    markers.push(marker)
+    markersById.set(scam.id, marker)
   })
   
   // Fit bounds if we have markers
-  if (markers.length > 1) {
-    const group = L.featureGroup(markers)
+  const markersArray = Array.from(markersById.values())
+  if (markersArray.length > 1) {
+    const group = L.featureGroup(markersArray)
     map.fitBounds(group.getBounds().pad(0.1))
-  } else if (markers.length === 1) {
+  } else if (markersArray.length === 1) {
     const scam = props.scams.find(s => s.location?.latitude && s.location?.longitude)
     if (scam?.location) {
       map.setView([scam.location.latitude, scam.location.longitude], 12)
