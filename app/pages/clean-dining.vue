@@ -1,378 +1,40 @@
 <template>
-  <div class="bg-background-light dark:bg-dining-dark font-manrope text-[#111718] dark:text-white min-h-screen flex flex-col overflow-x-hidden">
-    <!-- Header handled by layout -->
+  <div>
+    <!-- Hero Section -->
+    <CleanDiningHero />
 
-    <!-- Main Content -->
-    <main class="flex-grow w-full max-w-[1440px] mx-auto px-4 md:px-10 py-6">
-      <!-- Header & Filters Section -->
-      <div class="flex flex-col gap-6 mb-8">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-          <div class="max-w-2xl">
-            <h1 class="text-[#111718] dark:text-white text-3xl md:text-5xl font-black leading-tight tracking-tight mb-3">Clean Dining & Safe Food Guide</h1>
-            <p class="text-[#618689] dark:text-gray-400 text-lg">Discover hygienic and certified culinary experiences across Sri Lanka's most beautiful locales.</p>
-          </div>
-        </div>
-        
-        <!-- Filter Chips -->
-        <div class="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
-          <button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-[#111718] dark:bg-white px-6 transition-transform hover:scale-105">
-            <span class="text-white dark:text-[#111718] text-sm font-bold">All</span>
-          </button>
-          <div class="flex h-10 shrink-0 items-center gap-x-2 rounded-full bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 px-5">
-            <span class="material-symbols-outlined text-[18px] text-dining-primary">category</span>
-            <select
-              v-model="selectedCategory"
-              class="bg-transparent text-sm font-medium text-[#111718] dark:text-gray-200 focus:outline-none"
-            >
-              <option value="">All Categories</option>
-              <option v-for="item in categories" :key="item.category" :value="item.category">
-                {{ formatCategory(item.category) }}
-              </option>
-            </select>
-          </div>
-          <button 
-            @click="selectDietary(selectedDietary === 'VEGETARIAN' ? null : 'VEGETARIAN')"
-            :class="[
-              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
-              selectedDietary === 'VEGETARIAN' 
-                ? 'bg-green-600 text-white border-green-600' 
-                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]" :class="selectedDietary === 'VEGETARIAN' ? 'text-white' : 'text-green-600'">eco</span>
-            <span class="text-sm font-medium" :class="selectedDietary === 'VEGETARIAN' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Vegetarian</span>
-          </button>
-          <button 
-            @click="selectDietary(selectedDietary === 'VEGAN' ? null : 'VEGAN')"
-            :class="[
-              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
-              selectedDietary === 'VEGAN' 
-                ? 'bg-green-500 text-white border-green-500' 
-                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]" :class="selectedDietary === 'VEGAN' ? 'text-white' : 'text-green-500'">nutrition</span>
-            <span class="text-sm font-medium" :class="selectedDietary === 'VEGAN' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Vegan</span>
-          </button>
-          <button 
-            @click="selectDietary(selectedDietary === 'HALAL' ? null : 'HALAL')"
-            :class="[
-              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
-              selectedDietary === 'HALAL' 
-                ? 'bg-purple-600 text-white border-purple-600' 
-                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]" :class="selectedDietary === 'HALAL' ? 'text-white' : 'text-purple-500'">restaurant</span>
-            <span class="text-sm font-medium" :class="selectedDietary === 'HALAL' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Halal</span>
-          </button>
-          <button 
-            @click="selectHygiene(selectedHygiene === 'GOOD' ? null : 'GOOD')"
-            :class="[
-              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
-              selectedHygiene === 'GOOD' 
-                ? 'bg-blue-600 text-white border-blue-600' 
-                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]" :class="selectedHygiene === 'GOOD' ? 'text-white' : 'text-blue-500'">verified_user</span>
-            <span class="text-sm font-medium" :class="selectedHygiene === 'GOOD' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">Safe & Verified</span>
-          </button>
-          <button 
-            @click="selectHygiene(selectedHygiene === 'EXCELLENT' ? null : 'EXCELLENT')"
-            :class="[
-              'flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 transition-colors',
-              selectedHygiene === 'EXCELLENT' 
-                ? 'bg-coral-orange text-white border-coral-orange' 
-                : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 hover:border-dining-primary'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]" :class="selectedHygiene === 'EXCELLENT' ? 'text-white' : 'text-coral-orange'">spa</span>
-            <span class="text-sm font-medium" :class="selectedHygiene === 'EXCELLENT' ? 'text-white' : 'text-[#111718] dark:text-gray-200'">5-Lotus Hygiene</span>
-          </button>
-        </div>
+    <!-- Filter Bar -->
+    <CleanDiningFilterBar v-model:search-query="searchQuery" :active-filters="activeFilters"
+      :restaurant-count="restaurants.length" @toggle-filter="toggleFilter" @clear-filters="clearFilters" />
 
-        <!-- Near Me & Sort Controls -->
-        <div class="flex items-center gap-3 flex-wrap">
-          <button
-            v-if="!userLocation"
-            @click="enableLocation"
-            :disabled="gettingLocation"
-            class="flex h-10 items-center gap-2 px-5 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 text-white rounded-full text-sm font-medium transition-colors"
-          >
-            <span v-if="gettingLocation" class="animate-spin">⏳</span>
-            <span v-else class="material-symbols-outlined text-[18px]">my_location</span>
-            {{ gettingLocation ? 'Getting location...' : 'Near Me' }}
-          </button>
-          
-          <div v-else class="flex gap-2">
-            <button
-              @click="sortBy = 'distance'"
-              :class="[
-                'flex h-10 items-center gap-2 px-4 rounded-full text-sm font-medium transition-colors',
-                sortBy === 'distance' 
-                  ? 'bg-dining-primary text-[#102022]' 
-                  : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 text-[#111718] dark:text-gray-200 hover:border-dining-primary'
-              ]"
-            >
-              <span class="material-symbols-outlined text-[18px]">near_me</span>
-              Nearest
-            </button>
-            <button
-              @click="sortBy = 'rating'"
-              :class="[
-                'flex h-10 items-center gap-2 px-4 rounded-full text-sm font-medium transition-colors',
-                sortBy === 'rating' 
-                  ? 'bg-dining-primary text-[#102022]' 
-                  : 'bg-white dark:bg-[#1f2b2e] border border-gray-200 dark:border-gray-700 text-[#111718] dark:text-gray-200 hover:border-dining-primary'
-              ]"
-            >
-              <span class="material-symbols-outlined text-[18px]">star</span>
-              Top Rated
-            </button>
-            <button
-              @click="userLocation = null; sortBy = 'relevance'"
-              class="flex h-10 items-center px-3 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              title="Clear location"
-            >
-              <span class="material-symbols-outlined text-[18px]">close</span>
-            </button>
+    <!-- Main Content Section -->
+    <section class="py-8 bg-background-light dark:bg-background-dark min-h-screen">
+      <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <!-- Restaurant List -->
+          <div class="lg:col-span-8 space-y-6">
+            <!-- Loading State -->
+            <div v-if="pending" class="flex justify-center py-12">
+              <div class="animate-spin size-8 border-2 border-primary border-t-transparent rounded-full"></div>
+            </div>
+
+            <!-- Empty State -->
+            <div v-else-if="displayRestaurants.length === 0" class="text-center py-12 text-gray-500">
+              <span class="material-symbols-outlined text-4xl mb-2">restaurant</span>
+              <p>No restaurants found. Try adjusting your filters.</p>
+            </div>
+
+            <!-- Restaurant Cards -->
+            <CleanDiningRestaurantCard v-for="restaurant in displayRestaurants" :key="restaurant.name"
+              :restaurant="restaurant" @view-details="viewRestaurantDetails(restaurant)" />
           </div>
+
+          <!-- Map Sidebar -->
+          <CleanDiningMap />
         </div>
       </div>
-
-      <!-- Split View Layout -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
-        <!-- List View (Left) -->
-        <div class="lg:col-span-7 flex flex-col gap-6">
-          <!-- Dynamic Restaurant Cards -->
-          <div v-if="pending" class="col-span-full flex justify-center py-12">
-            <div class="animate-spin size-8 border-2 border-dining-primary border-t-transparent rounded-full"></div>
-          </div>
-          
-          <div v-else-if="restaurants.length === 0" class="col-span-full text-center py-12 text-gray-500">
-            <span class="material-symbols-outlined text-4xl mb-2">restaurant</span>
-            <p>No restaurants found. Try adjusting your filters.</p>
-          </div>
-          
-          <div v-for="restaurant in restaurants" :key="restaurant.id" :id="`restaurant-${restaurant.id}`" class="group flex flex-col sm:flex-row bg-white dark:bg-[#1f2b2e] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-transparent hover:border-dining-primary/20">
-            <div class="sm:w-64 h-56 sm:h-auto shrink-0 bg-cover bg-center relative" :style="`background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400');`">
-              <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold text-deep-teal dark:text-dining-primary flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">location_on</span>
-                {{ restaurant.location?.name || restaurant.district || 'Sri Lanka' }}
-              </div>
-              <!-- Distance Badge (when Near Me active) -->
-              <div 
-                v-if="userLocation && restaurant.location?.latitude && restaurant.location?.longitude" 
-                class="absolute top-3 right-3 bg-blue-500 text-white px-2 py-1 rounded-lg text-xs font-bold flex items-center gap-1"
-              >
-                <span class="material-symbols-outlined text-sm">straighten</span>
-                {{ getDistance(userLocation.lat, userLocation.lng, restaurant.location.latitude, restaurant.location.longitude).toFixed(1) }} km
-              </div>
-            </div>
-            <div class="flex flex-col flex-grow p-5 justify-between">
-              <div>
-                <div class="flex justify-between items-start mb-2">
-                  <h3 class="text-xl font-bold text-[#111718] dark:text-white group-hover:text-dining-primary transition-colors">{{ restaurant.name }}</h3>
-                  <div class="flex items-center gap-0.5 text-coral-orange" :title="`${restaurant.rating || 0}/5 Rating`">
-                    <span v-for="n in 5" :key="n" class="material-symbols-outlined text-lg" :class="n <= Math.round(restaurant.rating || 0) ? 'fill-current' : 'opacity-30'">spa</span>
-                  </div>
-                </div>
-                <p class="text-[#618689] dark:text-gray-400 text-sm mb-4 line-clamp-2">{{ restaurant.description || 'Delicious local cuisine' }}</p>
-              </div>
-              <div class="flex flex-wrap gap-2 mt-2">
-                <!-- Halal Badge -->
-                <span v-if="restaurant.is_verified_halal" class="px-3 py-1 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 text-xs font-medium border border-purple-100 dark:border-purple-800 flex items-center gap-1">
-                  <span>✓</span> Halal Certified
-                </span>
-                <!-- Dietary Options -->
-                <span v-for="option in (restaurant.dietary_options || []).slice(0, 2)" :key="option" class="px-3 py-1 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 text-xs font-medium border border-green-100 dark:border-green-800">{{ option }}</span>
-                <!-- Trust Badges -->
-                <TrustBadge 
-                  v-if="restaurant.hygiene_rating" 
-                  type="hygiene" 
-                  :value="restaurant.hygiene_rating"
-                  label="Hygiene certification"
-                />
-                <TrustBadge 
-                  v-if="restaurant.review_count"
-                  type="confidence"
-                  :value="restaurant.review_count"
-                  label="Community reviews"
-                />
-              </div>
-              <!-- Review Button -->
-              <button @click="openDetails(restaurant.id)" class="flex items-center gap-2 text-[#111718] dark:text-gray-200 text-sm font-medium hover:underline">
-                <span class="material-symbols-outlined text-lg">info</span>
-                View Details
-              </button>
-              <button @click="openReviewModal(restaurant)" class="mt-4 flex items-center gap-2 text-dining-primary text-sm font-medium hover:underline">
-                <span class="material-symbols-outlined text-lg">rate_review</span>
-                Leave a Review
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Map View (Right - Sticky) -->
-        <div class="lg:col-span-5 hidden lg:block">
-          <div class="sticky top-28 h-[calc(100vh-140px)] w-full rounded-2xl overflow-hidden shadow-sm border border-[#f0f4f4] dark:border-gray-800 bg-[#e5e7eb] relative group/map">
-            <!-- Map Image Placeholder -->
-            <div class="absolute inset-0 bg-cover bg-center opacity-80 dark:opacity-60" style='background-image: url("/images/downloaded_a5ef9569c1a1.avif"); filter: grayscale(20%);'></div>
-            <!-- Map UI Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10 pointer-events-none"></div>
-            
-            <!-- Map Pins -->
-            <div class="absolute top-1/3 left-1/4 group cursor-pointer">
-              <div class="relative">
-                <div class="w-10 h-10 bg-dining-primary rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white transform transition hover:scale-110 hover:-translate-y-1">
-                  <span class="material-symbols-outlined text-sm">restaurant</span>
-                </div>
-                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white dark:bg-[#1f2b2e] px-3 py-1.5 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
-                  <p class="text-xs font-bold text-[#111718] dark:text-white">The Coconut Tree</p>
-                  <div class="flex text-coral-orange text-[10px]">★★★★★</div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="absolute top-1/2 right-1/3 group cursor-pointer">
-              <div class="relative">
-                <div class="w-10 h-10 bg-white dark:bg-[#1f2b2e] rounded-full border-4 border-white dark:border-gray-700 shadow-lg flex items-center justify-center text-dining-primary transform transition hover:scale-110 hover:-translate-y-1">
-                  <span class="material-symbols-outlined text-sm">restaurant</span>
-                </div>
-                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white dark:bg-[#1f2b2e] px-3 py-1.5 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
-                  <p class="text-xs font-bold text-[#111718] dark:text-white">Ministry of Crab</p>
-                </div>
-              </div>
-            </div>
-            
-            <div class="absolute bottom-1/4 left-1/3 group cursor-pointer">
-              <div class="relative">
-                <div class="w-10 h-10 bg-white dark:bg-[#1f2b2e] rounded-full border-4 border-white dark:border-gray-700 shadow-lg flex items-center justify-center text-dining-primary transform transition hover:scale-110 hover:-translate-y-1">
-                  <span class="material-symbols-outlined text-sm">restaurant</span>
-                </div>
-              </div>
-            </div>
-            
-            <button class="absolute bottom-4 right-4 bg-white dark:bg-[#1f2b2e] p-2 rounded-lg shadow-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition text-[#111718] dark:text-white">
-              <span class="material-symbols-outlined block">my_location</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Floating Action Button -->
-    <div class="fixed bottom-6 right-6 z-40">
-      <button class="flex items-center gap-2 bg-dining-primary hover:bg-cyan-400 text-[#102022] px-6 py-4 rounded-full shadow-[0_4px_14px_0_rgba(19,218,236,0.39)] transition-all hover:-translate-y-1 font-bold group">
-        <span class="material-symbols-outlined group-hover:rotate-90 transition-transform">add_circle</span>
-        Submit Rating
-      </button>
-    </div>
+    </section>
   </div>
-
-  <!-- Review Modal -->
-  <Teleport to="body">
-    <div v-if="showReviewModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div class="absolute inset-0 bg-black/50" @click="showReviewModal = false"></div>
-      <div class="relative bg-white dark:bg-dining-dark rounded-2xl shadow-2xl w-full max-w-md">
-        <div class="border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
-          <h2 class="text-xl font-bold text-[#111718] dark:text-white">Leave a Review</h2>
-          <button @click="showReviewModal = false" class="text-gray-400 hover:text-gray-600">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-        
-        <form @submit.prevent="submitReview" class="p-6 space-y-5">
-          <div v-if="selectedRestaurant">
-            <p class="text-sm text-gray-500 dark:text-gray-400">Reviewing:</p>
-            <p class="font-bold text-[#111718] dark:text-white">{{ selectedRestaurant.name }}</p>
-          </div>
-          
-          <!-- Star Rating -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rating *</label>
-            <div class="flex gap-2">
-              <button v-for="star in 5" :key="star" type="button" @click="reviewForm.rating = star"
-                class="text-3xl transition-transform hover:scale-110"
-                :class="star <= reviewForm.rating ? 'text-yellow-400' : 'text-gray-300'">
-                ★
-              </button>
-            </div>
-          </div>
-          
-          <!-- Comment -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Comment</label>
-            <textarea v-model="reviewForm.comment" rows="3" maxlength="1000"
-              class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-[#1f2b2e] text-[#111718] dark:text-white focus:ring-2 focus:ring-dining-primary focus:border-transparent resize-none"
-              placeholder="Share your experience..."></textarea>
-          </div>
-          
-          <button type="submit" :disabled="reviewSubmitting || reviewForm.rating === 0"
-            class="w-full py-3 bg-dining-primary hover:bg-dining-primary/90 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all">
-            {{ reviewSubmitting ? 'Submitting...' : 'Submit Review' }}
-          </button>
-          
-          <p v-if="reviewError" class="text-red-500 text-sm text-center">{{ reviewError }}</p>
-          <p v-if="reviewSuccess" class="text-green-500 text-sm text-center">Review submitted!</p>
-        </form>
-      </div>
-    </div>
-  </Teleport>
-
-  <!-- Details Modal -->
-  <Teleport to="body">
-    <div v-if="showDetailsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div class="absolute inset-0 bg-black/50" @click="closeDetails"></div>
-      <div class="relative bg-white dark:bg-dining-dark rounded-2xl shadow-2xl w-full max-w-md">
-        <div class="border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
-          <h2 class="text-xl font-bold text-[#111718] dark:text-white">Restaurant Details</h2>
-          <button @click="closeDetails" class="text-gray-400 hover:text-gray-600">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-
-        <div class="p-6 space-y-4">
-          <div v-if="detailsLoading" class="text-sm text-gray-500">Loading details...</div>
-          <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
-          <div v-else-if="restaurantDetails">
-            <h3 class="font-bold text-[#111718] dark:text-white">{{ restaurantDetails.name }}</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ restaurantDetails.description || 'No description available.' }}</p>
-            <div class="flex flex-wrap gap-2 text-xs">
-              <span class="px-2 py-1 rounded bg-primary/10 text-primary">{{ restaurantDetails.category }}</span>
-              <span v-if="restaurantDetails.price_range" class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10">{{ restaurantDetails.price_range }} range</span>
-              <span v-if="restaurantDetails.hygiene_rating" class="px-2 py-1 rounded bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
-                Hygiene: {{ restaurantDetails.hygiene_rating }}
-              </span>
-              <span v-if="restaurantDetails.is_verified_halal" class="px-2 py-1 rounded bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
-                Halal Certified
-              </span>
-            </div>
-            <div v-if="restaurantDetails.cuisine_types?.length" class="text-xs text-gray-500 dark:text-gray-400">
-              Cuisine: {{ restaurantDetails.cuisine_types.join(', ') }}
-            </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">
-              Location: {{ restaurantDetails.location?.name || restaurantDetails.district || 'Sri Lanka' }}
-            </div>
-            <div v-if="restaurantDetails.reviews?.length" class="pt-3 border-t border-gray-100 dark:border-white/10">
-              <h4 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Recent reviews</h4>
-              <div class="space-y-2">
-                <div v-for="review in restaurantDetails.reviews.slice(0, 3)" :key="review.id" class="text-xs text-gray-600 dark:text-gray-300">
-                  <div class="flex items-center justify-between">
-                    <span class="font-semibold">{{ review.user_name || 'Traveler' }}</span>
-                    <span class="text-amber-600">{{ review.rating.toFixed(1) }}★</span>
-                  </div>
-                  <p v-if="review.comment" class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">{{ review.comment }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-else class="text-sm text-gray-500">No details available.</div>
-        </div>
-      </div>
-    </div>
-  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -394,6 +56,7 @@ const selectedDietary = ref<string | null>(null)
 const selectedHygiene = ref<string | null>(null)
 const searchQuery = ref('')
 const debouncedQuery = ref('')
+const activeFilters = ref<string[]>([])
 
 // Debounce search input (300ms)
 let debounceTimer: ReturnType<typeof setTimeout>
@@ -427,10 +90,10 @@ const detailsLoading = ref(false)
 const detailsError = ref('')
 const restaurantDetails = ref<Restaurant | null>(null)
 
-const { data: restaurantsResponse, pending, refresh } = await useFetch<{ 
+const { data: restaurantsResponse, pending, refresh } = await useFetch<{
   success: boolean
   data: Restaurant[]
-  count: number 
+  count: number
 }>(
   () => {
     const params = new URLSearchParams()
@@ -480,9 +143,9 @@ async function enableLocation() {
     alert('Geolocation not supported')
     return
   }
-  
+
   gettingLocation.value = true
-  
+
   navigator.geolocation.getCurrentPosition(
     (position) => {
       userLocation.value = {
@@ -506,7 +169,7 @@ function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): nu
   const R = 6371 // Earth radius in km
   const dLat = (lat2 - lat1) * Math.PI / 180
   const dLng = (lng2 - lng1) * Math.PI / 180
-  const a = 
+  const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
     Math.sin(dLng / 2) * Math.sin(dLng / 2)
@@ -517,7 +180,7 @@ function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): nu
 // Sorted restaurants based on sortBy and location
 const sortedRestaurants = computed(() => {
   const list = [...(restaurantsResponse.value?.data || [])]
-  
+
   if (sortBy.value === 'distance' && userLocation.value) {
     list.sort((a, b) => {
       const distA = getDistance(
@@ -537,11 +200,75 @@ const sortedRestaurants = computed(() => {
   } else if (sortBy.value === 'rating') {
     list.sort((a, b) => (b.rating || 0) - (a.rating || 0))
   }
-  
+
   return list
 })
 
 const restaurants = computed(() => sortedRestaurants.value)
+
+// Sample restaurant data for the new design
+const sampleRestaurants = [
+  {
+    name: 'A Minute By Tuk Tuk',
+    location: 'Galle Fort',
+    rating: 4,
+    description: 'Colorful open-air eatery on the oceanfront (Old Dutch Hospital) with a seafood-centric menu.',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBuKoU059FSWsAAhLEWLUoUJTsh_3FwnWDg7mJo2upWT75W0aJd7TqkQloSdCV_kEOrFPq6iaflpGdnTuBwmDHCZQEVIiWgrp6tNA2qG_KZlKXqWrYP1WkpZ9NuyrM5I4PCEnNXCliH8_xGbnJH5zlMT5xZoL9q6z_5QdHLTRipPisKlbG3SevLTHc8mTsRSWH4LePj2v-enfIGsapMrJ2s0pJ3c1fcdOKoPNS8SlKsbxuF2q77qOo_RRlZGbJB0USVnFSfiOxmLhw',
+    grade: 'Grade A',
+    tags: ['Sri Lankan', 'Vegetarian', 'Seafood', 'Outdoor Seating']
+  },
+  {
+    name: 'Paradise Road The Gallery Café',
+    location: 'Colombo 7',
+    rating: 5,
+    description: 'Stylish cafe in a Geoffrey Bawa heritage building offering international and Sri Lankan dishes.',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDZWXUCz6Fr49V7H4gxXHBLQYAwtp78rRRlIv4In6r4hrRnlGV7cFPUQfMSgJre3GEAI8Fm-zXjPE6WMMFX483FjvsRaGK6wQYRg75cEc6n1Fb-Md1dkerRPzfTPc5Bl3UDUFq7B6O1B80qz4B2okkEIYXbTsyiX3L221SAAbuBTLoDNDF20teeH6tcsbO-iQzRuPGCiQOUJbfY1vHjME8j8w8o7_h8Bx9bC43b4YnbRYNGEd_5JMvXfjIYBiOBJPmd-ZQMtrJKiK4',
+    grade: 'Safe & Secure',
+    tags: ['International', 'Vegetarian', 'Outdoor Seating', 'Safe & Secure']
+  }
+]
+
+// Display restaurants with filtering
+const displayRestaurants = computed(() => {
+  let filtered = sampleRestaurants
+
+  // Apply search filter
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(r =>
+      r.name.toLowerCase().includes(query) ||
+      r.location.toLowerCase().includes(query) ||
+      r.description.toLowerCase().includes(query) ||
+      r.tags.some(tag => tag.toLowerCase().includes(query))
+    )
+  }
+
+  // Apply active filters
+  if (activeFilters.value.length > 0) {
+    filtered = filtered.filter(r => {
+      return activeFilters.value.every(filter => {
+        switch (filter) {
+          case 'safe':
+            return r.grade === 'Safe & Secure' || r.grade === 'Grade A'
+          case 'vegetarian':
+            return r.tags.some(tag => tag.toLowerCase().includes('vegetarian'))
+          case 'vegan':
+            return r.tags.some(tag => tag.toLowerCase().includes('vegan'))
+          case 'halal':
+            return r.tags.some(tag => tag.toLowerCase().includes('halal'))
+          case 'hygiene':
+            return r.grade === 'Grade A'
+          case 'fineDining':
+            return r.tags.some(tag => tag.toLowerCase().includes('fine'))
+          default:
+            return true
+        }
+      })
+    })
+  }
+
+  return filtered
+})
 
 // Dietary filters
 const dietaryFilters = [
@@ -601,10 +328,10 @@ function closeDetails() {
 
 async function submitReview() {
   if (!selectedRestaurant.value || reviewForm.value.rating === 0) return
-  
+
   reviewSubmitting.value = true
   reviewError.value = ''
-  
+
   try {
     await $fetch(`${apiBase}/api/dining/${selectedRestaurant.value.id}/reviews`, {
       method: 'POST',
@@ -613,7 +340,7 @@ async function submitReview() {
         comment: reviewForm.value.comment || undefined
       }
     })
-    
+
     reviewSuccess.value = true
     setTimeout(() => {
       showReviewModal.value = false
@@ -625,12 +352,34 @@ async function submitReview() {
     reviewSubmitting.value = false
   }
 }
+
+// Filter management
+function toggleFilter(filter: string) {
+  const index = activeFilters.value.indexOf(filter)
+  if (index > -1) {
+    activeFilters.value.splice(index, 1)
+  } else {
+    activeFilters.value.push(filter)
+  }
+}
+
+function clearFilters() {
+  activeFilters.value = []
+  searchQuery.value = ''
+}
+
+// View restaurant details
+function viewRestaurantDetails(restaurant: any) {
+  console.log('View details for:', restaurant.name)
+  // TODO: Implement modal or navigation to details page
+}
 </script>
 
 <style scoped>
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
