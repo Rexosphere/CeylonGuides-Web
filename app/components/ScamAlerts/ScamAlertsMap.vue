@@ -33,6 +33,10 @@ const markersById = new Map<string, any>()
 let reportMarker: any = null
 let longPressTimer: any = null
 let longPressCoords: { lat: number; lng: number } | null = null
+let markerClusterGroup: any = null
+const userLocationMarker = ref<any>(null)
+const locatingUser = ref(false)
+const locationError = ref('')
 
 // Pan and zoom to a specific scam by ID
 function panToScam(scamId: string) {
@@ -182,6 +186,69 @@ function forceReload() {
   }, 50)
 }
 
+// Locate user's current position
+function locateMe() {
+  if (!navigator.geolocation) {
+    locationError.value = 'Geolocation not supported'
+    setTimeout(() => locationError.value = '', 3000)
+    return
+  }
+  
+  locatingUser.value = true
+  locationError.value = ''
+  
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const { latitude, longitude } = position.coords
+      
+      if (map) {
+        // Remove previous user location marker
+        if (userLocationMarker.value) {
+          userLocationMarker.value.remove()
+        }
+        
+        // Add user location marker
+        userLocationMarker.value = L.circleMarker([latitude, longitude], {
+          radius: 8,
+          fillColor: '#3b82f6',
+          color: '#fff',
+          weight: 3,
+          opacity: 1,
+          fillOpacity: 0.8
+        }).addTo(map)
+        
+        userLocationMarker.value.bindPopup('<div class="text-sm font-semibold">📍 Your Location</div>').openPopup()
+        
+        // Pan to user location
+        map.setView([latitude, longitude], 13, { animate: true })
+      }
+      
+      locatingUser.value = false
+    },
+    (error) => {
+      console.error('Geolocation error:', error)
+      locationError.value = 'Could not get your location'
+      locatingUser.value = false
+      setTimeout(() => locationError.value = '', 3000)
+    },
+    { timeout: 10000, enableHighAccuracy: true }
+  )
+}
+
+// Zoom in
+function zoomIn() {
+  if (map) {
+    map.zoomIn()
+  }
+}
+
+// Zoom out
+function zoomOut() {
+  if (map) {
+    map.zoomOut()
+  }
+}
+
 // Expose methods to parent components
 defineExpose({ panToScam, clearReportMarker, invalidateSize, forceReload })
 
@@ -212,6 +279,16 @@ async function initMap() {
   // Dynamic import for SSR compatibility
   L = await import('leaflet')
   await import('leaflet/dist/leaflet.css')
+  
+  // Import marker clustering
+  try {
+    const MarkerCluster = await import('leaflet.markercluster')
+    await import('leaflet.markercluster/dist/MarkerCluster.css')
+    await import('leaflet.markercluster/dist/MarkerCluster.Default.css')
+    console.log('✅ Marker clustering loaded')
+  } catch (e) {
+    console.warn('⚠️ Marker clustering not available:', e)
+  }
   
   console.log('✅ Leaflet loaded')
   
@@ -339,9 +416,23 @@ function placeReportMarker(lat: number, lng: number) {
 function updateMarkers() {
   if (!map || !L) return
   
-  // Clear existing markers
+  // Clear existing markers and cluster group
   markersById.forEach(m => m.remove())
   markersById.clear()
+  
+  if (markerClusterGroup) {
+    map.removeLayer(markerClusterGroup)
+  }
+  
+  // Create new marker cluster group if available
+  if (L.markerClusterGroup) {
+    markerClusterGroup = L.markerClusterGroup({
+      maxClusterRadius: 60,
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      zoomToBoundsOnClick: true
+    })
+  }
   
   // Add new markers
   props.scams.forEach(scam => {
@@ -375,9 +466,20 @@ function updateMarkers() {
       emit('selectScam', scam.id)
     })
     
-    marker.addTo(map)
+    // Add to cluster group or directly to map
+    if (markerClusterGroup) {
+      markerClusterGroup.addLayer(marker)
+    } else {
+      marker.addTo(map)
+    }
+    
     markersById.set(scam.id, marker)
   })
+  
+  // Add cluster group to map
+  if (markerClusterGroup) {
+    map.addLayer(markerClusterGroup)
+  }
   
   // Fit bounds if we have markers
   const markersArray = Array.from(markersById.values())
@@ -421,6 +523,67 @@ onUnmounted(() => {
 
 <template>
   <div class="relative w-full h-full bg-gray-200 dark:bg-gray-800">
+    <!-- Zoom Controls -->
+    <div class="absolute top-4 left-4 z-[400] flex flex-col gap-1 shadow-lg">
+      <button
+        @click="zoomIn"
+        class="size-10 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center font-bold text-gray-700 dark:text-gray-200 transition-colors shadow-sm"
+        title="Zoom in"
+      >
+        <span class="material-symbols-outlined text-[20px]">add</span>
+      </button>
+      <button
+        @click="zoomOut"
+        class="size-10 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center font-bold text-gray-700 dark:text-gray-200 transition-colors shadow-sm"
+        title="Zoom out"
+      >
+        <span class="material-symbols-outlined text-[20px]">remove</span>
+      </button>
+    </div>
+
+    <!-- Locate Me Button -->
+    <div class="absolute top-4 left-16 z-[400]">
+      <button
+        @click="locateMe"
+        :disabled="locatingUser"
+        class="size-10 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center transition-colors shadow-lg disabled:opacity-50 disabled:cursor-wait"
+        title="Show my location"
+      >
+        <span v-if="locatingUser" class="animate-spin material-symbols-outlined text-[20px] text-blue-500">progress_activity</span>
+        <span v-else class="material-symbols-outlined text-[20px] text-blue-500">my_location</span>
+      </button>
+      <Transition name="fade">
+        <div v-if="locationError" class="absolute top-12 left-0 bg-red-500 text-white text-xs px-3 py-1 rounded shadow-lg whitespace-nowrap">
+          {{ locationError }}
+        </div>
+      </Transition>
+    </div>
+
+    <!-- Severity Legend -->
+    <div class="absolute bottom-4 left-4 z-[400] bg-white dark:bg-surface-dark rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-3 text-xs">
+      <div class="font-semibold text-gray-700 dark:text-gray-200 mb-2 flex items-center gap-1">
+        <span class="material-symbols-outlined text-[16px]">info</span>
+        Risk Levels
+      </div>
+      <div class="space-y-1.5">
+        <div class="flex items-center gap-2">
+          <div class="size-3 rounded-full bg-[#991b1b]"></div>
+          <span class="text-gray-600 dark:text-gray-300">Critical</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="size-3 rounded-full bg-[#ef4444]"></div>
+          <span class="text-gray-600 dark:text-gray-300">High</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="size-3 rounded-full bg-[#f59e0b]"></div>
+          <span class="text-gray-600 dark:text-gray-300">Medium</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="size-3 rounded-full bg-[#10b981]"></div>
+          <span class="text-gray-600 dark:text-gray-300">Low</span>
+        </div>
+      </div>
+    </div>
     <div
       ref="mapContainer"
       class="w-full h-full bg-gray-200 dark:bg-gray-800"
@@ -526,5 +689,15 @@ onUnmounted(() => {
 }
 .leaflet-marker-draggable:active .report-pin-marker .pin-head {
   cursor: grabbing;
+}
+
+/* Fade transition for error messages */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
