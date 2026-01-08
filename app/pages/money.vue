@@ -4,6 +4,7 @@
     <main class="flex h-full grow flex-col">
       <MoneyHero />
       <MoneyStats />
+      <MoneyConverter />
       <MoneyATM />
       <MoneyBudget />
       <MoneyScamAlert />
@@ -15,6 +16,7 @@
 <script setup lang="ts">
 import MoneyHero from '~/components/Money/MoneyHero.vue'
 import MoneyStats from '~/components/Money/MoneyStats.vue'
+import MoneyConverter from '~/components/Money/MoneyConverter.vue'
 import MoneyATM from '~/components/Money/MoneyATM.vue'
 import MoneyBudget from '~/components/Money/MoneyBudget.vue'
 import MoneyScamAlert from '~/components/Money/MoneyScamAlert.vue'
