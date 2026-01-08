@@ -1,46 +1,58 @@
 <template>
-  <div v-if="filteredDistricts.length > 0" class="w-full px-4 md:px-20 lg:px-40 py-5 flex justify-center bg-white dark:bg-[#181311] border-y border-gray-100 dark:border-neutral-800">
-    <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-      <div class="flex flex-wrap justify-between items-center px-4 pb-6 pt-5">
-        <h2 class="text-text-main dark:text-white text-[28px] font-bold leading-tight tracking-[-0.015em]">Key Shopping Districts</h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
-        <div
-          v-for="district in filteredDistricts"
-          :key="district.id"
-          @click="selectDistrict(district)"
-          class="flex items-center gap-4 bg-background-light dark:bg-[#221510] p-4 rounded-xl border border-transparent hover:border-primary/20 transition-all cursor-pointer"
-        >
-          <div 
-            class="w-24 h-24 rounded-lg bg-cover bg-center shrink-0"
-            :style="{ backgroundImage: `url('${district.image}')` }"
-            role="img"
-            :aria-label="district.name"
-          ></div>
-          <div class="flex flex-col gap-1">
-            <span class="text-primary text-xs font-bold uppercase tracking-wider">{{ district.areaLabel }}</span>
-            <h3 class="text-text-main dark:text-white text-lg font-bold">{{ district.name }}</h3>
-            <p class="text-text-muted dark:text-gray-400 text-sm line-clamp-2">{{ district.description }}</p>
-            <div class="flex items-center gap-2 mt-1">
-              <span
-                :class="[
-                  'px-2 py-0.5 text-xs font-bold rounded',
-                  district.priceLevel === 'budget' ? 'bg-green-100 text-green-700' :
-                  district.priceLevel === 'moderate' ? 'bg-blue-100 text-blue-700' :
-                  'bg-purple-100 text-purple-700'
-                ]"
-              >
-                {{ district.priceLevel }}
-              </span>
-              <span v-if="district.bargaining === 'expected'" class="px-2 py-0.5 text-xs font-bold rounded bg-orange-100 text-orange-700">
-                Bargaining OK
-              </span>
-            </div>
-          </div>
+  <div>
+    <div v-if="displayDistricts.length > 0" class="space-y-4">
+      <div
+        v-for="district in displayDistricts"
+        :id="`district-${district.id}`"
+        :key="district.id"
+        @click="handleCardClick(district)"
+        :class="[
+          'flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer',
+          isHighlighted(district.id)
+            ? 'bg-primary/10 border-primary shadow-lg scale-[1.02]'
+            : 'bg-white dark:bg-[#221510] border-gray-200 dark:border-neutral-800 hover:border-primary/30 hover:shadow-md'
+        ]"
+      >
+      <div 
+        class="w-20 h-20 md:w-24 md:h-24 rounded-lg bg-cover bg-center shrink-0"
+        :style="{ backgroundImage: `url('${district.image}')` }"
+        role="img"
+        :aria-label="district.name"
+      ></div>
+      <div class="flex-1 min-w-0">
+        <span class="text-primary text-xs font-bold uppercase tracking-wider">{{ district.areaLabel }}</span>
+        <h3 class="text-text-main dark:text-white text-base md:text-lg font-bold mt-1 mb-1">{{ district.name }}</h3>
+        <p class="text-text-muted dark:text-gray-400 text-sm line-clamp-2 mb-2">{{ district.description }}</p>
+        <div class="flex items-center gap-2 flex-wrap">
+          <span
+            :class="[
+              'px-2 py-0.5 text-xs font-bold rounded',
+              district.priceLevel === 'budget' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
+              district.priceLevel === 'moderate' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' :
+              'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
+            ]"
+          >
+            {{ district.priceLevel === 'budget' ? '$' : district.priceLevel === 'moderate' ? '$$' : '$$$' }}
+          </span>
+          <span 
+            :class="[
+              'px-2 py-0.5 text-xs font-bold rounded',
+              district.bargaining === 'expected' 
+                ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'
+                : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+            ]"
+          >
+            {{ district.bargaining === 'expected' ? 'Bargaining' : 'Fixed Price' }}
+          </span>
+          <span class="text-xs text-text-muted dark:text-gray-400 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">schedule</span>
+            {{ district.suggestedDurationMin }}m
+          </span>
         </div>
       </div>
+      <span class="material-symbols-outlined text-gray-400 text-xl shrink-0">chevron_right</span>
     </div>
+  </div>
 
     <!-- District Details Modal -->
     <Teleport to="body">
@@ -59,12 +71,26 @@
               class="h-full w-full bg-cover bg-center"
               :style="{ backgroundImage: `url('${selectedDistrict.image}')` }"
             ></div>
-            <button
-              @click="selectedDistrict = null"
-              class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
-            >
-              <span class="material-symbols-outlined">close</span>
-            </button>
+            <div class="absolute top-4 right-4 flex gap-2">
+              <button
+                @click="handleToggleSave(selectedDistrict.id)"
+                :class="[
+                  'bg-white/90 hover:bg-white text-gray-800 rounded-full p-2.5 transition-all shadow-lg',
+                  isDistrictSaved(selectedDistrict.id) ? 'text-primary' : ''
+                ]"
+                :aria-label="isDistrictSaved(selectedDistrict.id) ? 'Remove from saved' : 'Save district'"
+              >
+                <span class="material-symbols-outlined" :style="{ fontVariationSettings: isDistrictSaved(selectedDistrict.id) ? '\'FILL\' 1' : '\'FILL\' 0' }">
+                  bookmark
+                </span>
+              </button>
+              <button
+                @click="selectedDistrict = null"
+                class="bg-white/90 hover:bg-white text-gray-800 rounded-full p-2.5 transition-colors shadow-lg"
+              >
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
           </div>
 
           <!-- Content -->
@@ -130,6 +156,16 @@
               </ul>
             </div>
 
+            <!-- Context-specific Warnings (for Pettah) -->
+            <div v-if="districtWarnings.length" class="space-y-3">
+              <ShoppingWarningCard 
+                v-for="warning in districtWarnings" 
+                :key="warning.id"
+                :warning="warning"
+                :expandable="true"
+              />
+            </div>
+
             <div class="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
               <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-blue-600">schedule</span>
@@ -147,14 +183,58 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useShoppingData } from '~/composables/useShoppingData'
+import { useSavedItems } from '~/composables/useSavedItems'
+import { getWarningsByContext } from '~/data/shopping.data'
 import type { ShoppingDistrict } from '~/data/shopping.data'
+import ShoppingWarningCard from './ShoppingWarningCard.vue'
+
+const props = defineProps<{
+  districts?: ShoppingDistrict[]
+  highlightedDistrictId?: string | null
+}>()
+
+const emit = defineEmits<{
+  districtCardClick: [districtId: string]
+}>()
 
 const { filteredDistricts } = useShoppingData()
+const { isSaved, toggleSave } = useSavedItems()
 const selectedDistrict = ref<ShoppingDistrict | null>(null)
+
+const displayDistricts = computed(() => props.districts || filteredDistricts.value)
+
+// Get warnings based on selected district
+const districtWarnings = computed(() => {
+  if (!selectedDistrict.value) return []
+  
+  // Show pickpocket warning for Pettah
+  if (selectedDistrict.value.id === 'pettah-market') {
+    return getWarningsByContext('pettah')
+  }
+  
+  return []
+})
 
 const selectDistrict = (district: ShoppingDistrict) => {
   selectedDistrict.value = district
+}
+
+const handleCardClick = (district: ShoppingDistrict) => {
+  emit('districtCardClick', district.id)
+  selectDistrict(district)
+}
+
+const handleToggleSave = (districtId: string) => {
+  toggleSave(districtId, 'district')
+}
+
+const isDistrictSaved = (districtId: string) => {
+  return isSaved(districtId, 'district')
+}
+
+const isHighlighted = (districtId: string) => {
+  return props.highlightedDistrictId === districtId
 }
 </script>

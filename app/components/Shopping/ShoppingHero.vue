@@ -1,3 +1,19 @@
+<script setup lang="ts">
+const scrollToCuratedFinds = () => {
+  const element = document.getElementById('what-to-buy')
+  if (element) {
+    const offset = 80 // Account for sticky nav height
+    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+    const offsetPosition = elementPosition - offset
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    })
+  }
+}
+</script>
+
 <template>
   <div class="w-full">
     <div class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-8 relative overflow-hidden group" 
@@ -13,7 +29,10 @@
         </h2>
       </div>
       <div class="flex gap-4 z-10">
-        <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary hover:bg-primary/90 transition-colors text-white text-base font-bold leading-normal tracking-[0.015em] shadow-lg shadow-orange-900/20">
+        <button
+          @click="scrollToCuratedFinds"
+          class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary hover:bg-primary/90 transition-colors text-white text-base font-bold leading-normal tracking-[0.015em] shadow-lg shadow-orange-900/20"
+        >
           <span class="truncate">Start Exploring</span>
         </button>
       </div>

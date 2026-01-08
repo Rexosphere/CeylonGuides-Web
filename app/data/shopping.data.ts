@@ -7,6 +7,7 @@ export interface CuratedFind {
   authenticityChecklist: string[]
   buyWhere: string[]
   avoid?: string[]
+  bargainingTip?: string
   iconKey: 'tea' | 'gem' | 'textile' | 'spice' | 'mask' | 'wellness' | 'handicraft'
   image: string
   description: string
@@ -42,6 +43,87 @@ export interface VATRefund {
   processSteps: string[]
   excludedItems: string[]
 }
+
+export interface WarningDetail {
+  icon?: string
+  text: string
+}
+
+export interface ShoppingWarning {
+  id: string
+  title: string
+  description: string
+  icon: string
+  severity: 'high' | 'medium' | 'low'
+  details?: WarningDetail[]
+  contexts: ('gems' | 'pettah' | 'tourist-traps' | 'spices')[]
+}
+
+// Shopping Scam Warnings
+export const shoppingWarnings: ShoppingWarning[] = [
+  {
+    id: 'tuktuk-gem-scam',
+    title: 'Tuk-Tuk Commission Gem Shop Scam',
+    description: 'Driver takes you to gem shops where they earn 40-60% commission on anything you buy.',
+    icon: 'local_taxi',
+    severity: 'high',
+    contexts: ['gems', 'tourist-traps'],
+    details: [
+      { icon: 'warning', text: 'Driver insists "my friend has best gem shop" or "government certified store"' },
+      { icon: 'warning', text: 'Prices are inflated 5-10x to cover driver commissions' },
+      { icon: 'warning', text: 'High-pressure sales tactics and fake "closing soon" urgency' },
+      { icon: 'check_circle', text: 'Solution: Visit gems.gov.lk certified dealers independently' },
+      { icon: 'check_circle', text: 'Refuse tuk-tuk "recommendations" - research shops beforehand' }
+    ]
+  },
+  {
+    id: 'fake-certificates',
+    title: 'Fake Certificates & Stone Swapping',
+    description: 'Fraudulent gem certificates and switching real stones with glass/synthetic after payment.',
+    icon: 'content_copy',
+    severity: 'high',
+    contexts: ['gems', 'tourist-traps'],
+    details: [
+      { icon: 'warning', text: 'Certificate looks official but is printed on home printer' },
+      { icon: 'warning', text: 'Stone is swapped during "final polishing" or "gift wrapping"' },
+      { icon: 'warning', text: 'Lab address on certificate doesn\'t exist or is fake' },
+      { icon: 'check_circle', text: 'Only accept certificates from National Gem & Jewellery Authority' },
+      { icon: 'check_circle', text: 'Never let stone out of your sight after selection' },
+      { icon: 'check_circle', text: 'Get independent appraisal before leaving Sri Lanka' }
+    ]
+  },
+  {
+    id: 'spice-garden-pricing',
+    title: 'Spice Garden Inflated Pricing',
+    description: 'Tourist-focused spice gardens charge 3-5x normal prices for the same products.',
+    icon: 'yard',
+    severity: 'medium',
+    contexts: ['spices', 'tourist-traps'],
+    details: [
+      { icon: 'warning', text: 'Free tour leads to high-pressure sales pitch in gift shop' },
+      { icon: 'warning', text: 'Small packets of spices cost $20-50 vs $5-10 in local markets' },
+      { icon: 'warning', text: 'Products claim medicinal benefits with no scientific backing' },
+      { icon: 'check_circle', text: 'Buy spices at local markets (Pettah) or supermarkets (Odel, Laksala)' },
+      { icon: 'check_circle', text: 'Politely decline purchases if you visited for educational tour' }
+    ]
+  },
+  {
+    id: 'pickpocket-crowded-markets',
+    title: 'Pickpocket Risk in Crowded Markets',
+    description: 'Thieves target distracted tourists in busy market areas like Pettah.',
+    icon: 'do_not_touch',
+    severity: 'medium',
+    contexts: ['pettah', 'tourist-traps'],
+    details: [
+      { icon: 'warning', text: 'Crowded narrow alleys create perfect pickpocket conditions' },
+      { icon: 'warning', text: 'Distraction techniques: someone bumps you while another steals' },
+      { icon: 'warning', text: 'Open bags and back pockets are easy targets' },
+      { icon: 'check_circle', text: 'Use front-facing crossbody bag with zipper' },
+      { icon: 'check_circle', text: 'Keep valuables in front pockets or money belt' },
+      { icon: 'check_circle', text: 'Stay alert - avoid using phone while walking through crowds' }
+    ]
+  }
+]
 
 export const curatedFinds: CuratedFind[] = [
   {
@@ -125,6 +207,7 @@ export const curatedFinds: CuratedFind[] = [
       'Mass-produced "batik" from factories',
       'Synthetic fabrics sold as cotton'
     ],
+    bargainingTip: 'At Pettah Market, start at 50% of the asking price. In boutiques like Barefoot or Odel, prices are usually fixed.',
     iconKey: 'textile',
     image: '/images/downloaded_7bb9f5cc5d8e.avif',
     description: 'Colorful batik sarongs, handloom scarves, linen shirts, and modern Sri Lankan designer clothing. Batik blends Indonesian wax-resist techniques with local motifs. Cotton tops/skirts $25-40, linen dresses $50-80, designer pieces $100-150.',
@@ -154,6 +237,7 @@ export const curatedFinds: CuratedFind[] = [
       'Tuk-tuk commission scams to specific gardens',
       'Cassia bark sold as Ceylon cinnamon (thicker, inferior)'
     ],
+    bargainingTip: 'In Pettah spice markets, negotiate firmly - aim for 30-40% off the first price. Bulk purchases get better rates.',
     iconKey: 'spice',
     image: '/images/downloaded_5eb95fca2bc2.avif',
     description: 'True Ceylon cinnamon (thin-quilled "true cinnamon") is mild and aromatic - about $4-6 for 100g. Other essentials include cardamom, black pepper, curry powder blends. Forest honey 250g costs $6-10. Kithul jaggery is a natural sweetener healthier than white sugar.',
@@ -181,6 +265,7 @@ export const curatedFinds: CuratedFind[] = [
     avoid: [
       'Mass-produced painted plastic masks'
     ],
+    bargainingTip: 'Genuine masks from Ambalangoda workshops cost more but are authentic. Market vendors may negotiate 10-20% off.',
     iconKey: 'mask',
     image: '/images/downloaded_de2043fb1421.avif',
     description: 'Traditional wooden masks from Ambalangoda, especially "Raksha" demon masks (bright red/orange) are iconic home decor. Small wall masks $10-15, medium elaborate masks $25-40, large hand-carved pieces $60-100.',
@@ -236,6 +321,7 @@ export const curatedFinds: CuratedFind[] = [
       'Beach vendors sell painted softwood as "ebony"',
       'Plastic or resin pieces disguised as wood'
     ],
+    bargainingTip: 'Street vendors expect bargaining - start at 40% of asking price and meet in the middle. Government stores have fixed prices.',
     iconKey: 'handicraft',
     image: '/images/downloaded_de2043fb1421.avif',
     description: 'Hand-carved elephants and Buddha figurines are iconic souvenirs. Small wood or brass pieces cost $5-10, medium statuettes $15-25, large or intricately carved statues $40-80.',
@@ -522,4 +608,14 @@ export const getItemsByPriceRange = (items: CuratedFind[], maxUSD: number): Cura
 export const getDistrictsByBargaining = (districts: ShoppingDistrict[], allowBargaining: boolean): ShoppingDistrict[] => {
   const bargainingType = allowBargaining ? 'expected' : 'fixed'
   return districts.filter(district => district.bargaining === bargainingType)
+}
+
+// Helper: Get warnings for specific context
+export function getWarningsByContext(context: 'gems' | 'pettah' | 'tourist-traps' | 'spices'): ShoppingWarning[] {
+  return shoppingWarnings.filter(w => w.contexts.includes(context))
+}
+
+// Helper: Get warning by ID
+export function getWarningById(id: string): ShoppingWarning | undefined {
+  return shoppingWarnings.find(w => w.id === id)
 }
