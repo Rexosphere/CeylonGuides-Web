@@ -1,53 +1,41 @@
 <template>
-  <div class="flex flex-col gap-4 p-4">
-    <h3 class="text-lg font-bold text-neutral-dark dark:text-white">
+  <div class="p-6">
+    <h2 class="text-2xl font-bold text-primary dark:text-white mb-6">
       {{ accommodations.length }} Stays found in Sri Lanka
-    </h3>
+    </h2>
 
-    <div v-if="accommodations.length === 0" class="py-10 text-center">
-      <div class="flex flex-col items-center gap-4">
-        <span class="material-symbols-outlined text-[48px] text-neutral-gray">search_off</span>
-        <div class="text-sm text-neutral-gray dark:text-neutral-400">
-          No stays found matching your filters.
+    <div class="space-y-4">
+
+      <div v-if="accommodations.length === 0" class="py-10 text-center">
+        <div class="flex flex-col items-center gap-4">
+          <span class="material-symbols-outlined text-[48px] text-neutral-gray">search_off</span>
+          <div class="text-sm text-neutral-gray dark:text-neutral-400">
+            No stays found matching your filters.
+          </div>
+          <button class="text-sm font-bold text-primary hover:underline" @click="$emit('clearFilters')">
+            Clear all filters
+          </button>
         </div>
-        <button
-          class="text-sm font-bold text-primary hover:underline"
-          @click="$emit('clearFilters')"
-        >
-          Clear all filters
+      </div>
+
+      <template v-else>
+        <AccommodationCard v-for="accommodation in paginatedAccommodations" :key="accommodation.id"
+          :accommodation="accommodation" :isHighlighted="highlightedId === accommodation.id" @view="openDetails"
+          @viewOnMap="$emit('viewOnMap', $event)" @hover="$emit('hover', $event)" />
+      </template>
+
+      <!-- Load More -->
+      <div v-if="hasMoreStays" class="py-4 flex justify-center">
+        <button @click="showMoreStays"
+          class="bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 text-text-main dark:text-gray-300 px-6 py-2.5 rounded-full text-sm font-semibold hover:border-primary hover:text-primary transition-all shadow-sm">
+          Show More Stays ({{ remainingStays }})
         </button>
       </div>
     </div>
-    
-    <template v-else>
-      <AccommodationCard 
-        v-for="accommodation in paginatedAccommodations"
-        :key="accommodation.id" 
-        :accommodation="accommodation"
-        :isHighlighted="highlightedId === accommodation.id"
-        @view="openDetails"
-        @viewOnMap="$emit('viewOnMap', $event)"
-        @hover="$emit('hover', $event)"
-      />
-    </template>
-    
-    <!-- Load More -->
-    <div v-if="hasMoreStays" class="flex justify-center p-4">
-      <button 
-        @click="showMoreStays"
-        class="rounded-lg border border-neutral-light bg-white px-6 py-2 text-sm font-bold text-neutral-dark transition-colors hover:bg-neutral-50 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
-      >
-        Show More Stays ({{ remainingStays }})
-      </button>
-    </div>
-  </div>
 
-  <!-- Details Drawer -->
-  <AccommodationDetailsDrawer 
-    :isOpen="showDetails"
-    :accommodation="selectedAccommodation"
-    @close="closeDetails"
-  />
+    <!-- Details Drawer -->
+    <AccommodationDetailsDrawer :isOpen="showDetails" :accommodation="selectedAccommodation" @close="closeDetails" />
+  </div>
 </template>
 
 <script setup lang="ts">

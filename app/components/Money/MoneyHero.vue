@@ -1,70 +1,57 @@
 <template>
-  <section class="relative w-full">
-    <div class="relative w-full h-[540px] flex items-center justify-center p-4">
-      <!-- Background Image -->
-      <div class="absolute inset-0 bg-cover bg-center z-0" 
-           role="img" 
-           aria-label="Stunning aerial view of Sri Lanka tea plantations and mountains" 
-           style="background-image: linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%), url('/images/downloaded_2e782d1a6f27.avif');">
-      </div>
-      <div class="relative z-10 flex flex-col items-center max-w-4xl text-center gap-8 animate-fade-in-up">
-        <div class="space-y-4">
-          <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
-            Navigate Your Finances in Paradise
-          </h1>
-          <p class="text-white/90 text-lg md:text-xl font-medium max-w-2xl mx-auto">
-            Essential guide to Rupee (LKR), ATMs, and smart budgeting for your Sri Lankan adventure.
-          </p>
-        </div>
-        <!-- Quick Currency Preview (Functional) -->
-        <div class="w-full max-w-2xl bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 p-2 rounded-xl shadow-2xl">
-          <div class="bg-white dark:bg-surface-dark rounded-lg p-6 flex flex-col md:flex-row gap-4 items-center shadow-sm">
-            <div class="flex-1 w-full space-y-2 text-left">
-              <label class="text-xs font-bold text-text-muted uppercase tracking-wider">I have (USD)</label>
-              <div class="relative group">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors">attach_money</span>
-                <input 
-                  v-model.number="usdAmount"
-                  class="w-full h-12 rounded-lg border border-gray-200 dark:border-neutral-700 bg-background-light dark:bg-[#221510] pl-10 pr-4 focus:ring-2 focus:ring-primary focus:border-primary transition-all font-bold text-lg text-text-main dark:text-white focus:outline-none" 
-                  placeholder="100" 
-                  type="number"
-                />
-              </div>
-            </div>
-            <div class="flex items-end pb-2 md:pb-0">
-              <div class="size-10 rounded-full bg-background-light dark:bg-[#3a2c26] flex items-center justify-center text-primary border border-gray-200 dark:border-neutral-700">
-                <span class="material-symbols-outlined">arrow_forward</span>
-              </div>
-            </div>
-            <div class="flex-1 w-full space-y-2 text-left">
-              <label class="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-2">
-                You get (LKR)
-                <span 
-                  v-if="isLive" 
-                  class="text-green-500 text-[10px] font-medium flex items-center gap-0.5"
-                >
-                  <span class="material-symbols-outlined text-xs">check_circle</span>
-                  Live
-                </span>
-              </label>
-              <div class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-primary font-bold">₨</span>
-                <div class="w-full h-12 rounded-lg border border-primary/30 bg-primary/5 dark:bg-primary/10 pl-10 pr-4 flex items-center font-bold text-lg text-primary">
-                  {{ formattedLkr }}
-                </div>
-              </div>
-            </div>
-            <div class="flex items-end w-full md:w-auto mt-2 md:mt-0">
-              <button 
-                @click="scrollToConverter"
-                class="h-12 w-full md:w-auto px-6 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/30 transition-all active:scale-95 whitespace-nowrap flex items-center gap-2"
-              >
-                <span class="material-symbols-outlined">expand_more</span>
-                More Options
-              </button>
+  <section class="relative min-h-[600px] flex items-center pb-20 pt-32 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img alt="Background" class="w-full h-full object-cover"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1YiC7YVXGt-xuGkViSLL7V1J6pGQ4HtWRQB80jgm6vCBH5nlpqcXbVdolhv_QkznZwBtRM6w0QdJmyi0ERRlSWtxDGEbASd9SxoYTENDXchan4g2yEoHbTuYa3G7YJ0qeTe69qqbuVXXnHl9hQjsMm4n4U5CQ38dFpRHqQZVaRyyDFQAnhJ73d4xTxlvcYiC961g5D-YxTxc0AFQzGXX2N5lhws0ZF1w5bLF-SGRi1HDKnwb0L28HL0Qdr4zstG9qBUJX__AffTg" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-primary/80 to-primary/40"></div>
+    </div>
+    <div class="container mx-auto px-6 relative z-10 text-center text-white">
+      <h1 class="text-4xl md:text-6xl font-display font-bold mb-4 drop-shadow-lg leading-tight">Navigate Your Finances
+        in Paradise</h1>
+      <p class="text-lg md:text-xl text-white/90 mb-12 max-w-3xl mx-auto font-light">Essential guide to Rupee (LKR),
+        ATMs, and smart budgeting for your Sri Lankan adventure.</p>
+      <div
+        class="bg-white dark:bg-card-dark p-3 rounded-2xl shadow-xl max-w-4xl mx-auto flex flex-col md:flex-row items-stretch gap-2">
+        <div
+          class="flex-1 bg-gray-50 dark:bg-gray-800 rounded-xl px-5 py-3 border border-gray-200 dark:border-gray-700 flex flex-col justify-center">
+          <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block text-left">I Have
+            (USD)</label>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-lg text-gray-500">$</span>
+            <input
+              class="bg-transparent border-none p-0 text-xl font-bold text-gray-800 dark:text-white focus:ring-0 w-full"
+              type="number" value="100" />
+            <div class="flex flex-col items-center">
+              <button class="text-gray-400 hover:text-primary"><span
+                  class="material-icons text-sm">arrow_drop_up</span></button>
+              <button class="text-gray-400 hover:text-primary"><span
+                  class="material-icons text-sm">arrow_drop_down</span></button>
             </div>
           </div>
         </div>
+        <div class="flex items-center justify-center px-2">
+          <span class="material-icons text-gray-400 text-2xl rotate-90 md:rotate-0">arrow_forward</span>
+        </div>
+        <div
+          class="flex-1 bg-gray-50 dark:bg-gray-800 rounded-xl px-5 py-3 border border-gray-200 dark:border-gray-700 relative flex flex-col justify-center">
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">You Get (LKR)</label>
+            <span
+              class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span class="material-icons text-[10px]">check_circle</span> LIVE
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-lg text-gray-500">Rs</span>
+            <input
+              class="bg-transparent border-none p-0 text-xl font-bold text-gray-800 dark:text-white focus:ring-0 w-full"
+              readonly type="text" value="~30,987" />
+          </div>
+        </div>
+        <button
+          class="bg-primary hover:bg-opacity-90 text-white px-8 py-4 rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2 md:w-auto w-full">
+          More Options
+        </button>
       </div>
     </div>
   </section>

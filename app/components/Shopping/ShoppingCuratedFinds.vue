@@ -1,245 +1,103 @@
 <template>
-  <div v-if="displayItems.length > 0">
-    <!-- Intro / Page Heading -->
-    <div class="mb-8">
-      <h2 class="text-3xl md:text-4xl font-bold text-text-main dark:text-white mb-3 flex items-center gap-3">
-        <span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1">shopping_bag</span>
-        Curated Finds: What to Buy
-      </h2>
-      <p class="text-text-muted dark:text-gray-400 text-lg max-w-3xl">
-        From world-famous Ceylon tea to intricate hand-carved masks, discover the treasures that define our island's craftsmanship.
-      </p>
+  <section>
+    <div class="flex items-center gap-2 mb-6">
+      <span class="material-symbols-outlined text-primary">shopping_bag</span>
+      <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Curated Finds: What to Buy</h2>
     </div>
-
-    <!-- Items Grid - Responsive 5-column on desktop -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+    <p class="text-slate-500 dark:text-slate-400 mb-8 max-w-3xl leading-relaxed">From world-famous Ceylon tea to
+      intricate hand-carved masks, discover the treasures that define our island's craftsmanship.</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
       <div
-        v-for="item in displayItems"
-        :key="item.id"
-        @click="selectItem(item)"
-        class="group flex flex-col gap-3 cursor-pointer"
-      >
-        <div 
-          class="w-full aspect-[4/5] bg-center bg-no-repeat bg-cover rounded-xl transition-transform duration-300 group-hover:-translate-y-1 shadow-sm group-hover:shadow-lg"
-          :style="{ backgroundImage: `url('${item.image}')` }"
-          role="img"
-          :aria-label="item.title"
-        ></div>
-        <div>
-          <p class="text-text-main dark:text-white text-sm md:text-base font-bold leading-normal group-hover:text-primary transition-colors">
-            {{ item.title }}
-          </p>
-          <p class="text-text-muted dark:text-gray-400 text-xs md:text-sm font-normal leading-normal">
-            {{ item.priceRangeUSD }}
-          </p>
+        class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-subtle hover:shadow-card transition border border-slate-200 dark:border-slate-700">
+        <div class="h-40 overflow-hidden">
+          <img alt="Ceylon Tea" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-qfwqgPwYu0AM_5ShFiOnrK0QBEvwQnJZSwModRBFGU1Vc3olZXh9wKRr9Nb9J5cGcOXJSmHKN4YXxxFTC3qBZOGs86iI1_JqgDcTiJmiuD3QWCtpehh_cHaEbJFyZw_IvYL6sryMW1olIw6QwLKnNlaAweCH5TiepGTZIhVWjwO0fHMbmM5VmjkEbzm0LMF27k4AotdZHuDIszz6fG6-H8-rnLVsJCKUF3jqBjHc5wXueE53wcnPXeIwMokAa4H_nFOqrDuaGjU" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-slate-800 dark:text-white mb-1">Ceylon Tea</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">$5-20</p>
+        </div>
+      </div>
+      <div
+        class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-subtle hover:shadow-card transition border border-slate-200 dark:border-slate-700">
+        <div class="h-40 overflow-hidden relative">
+          <span
+            class="absolute top-2 right-2 bg-slate-900/90 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">Certified</span>
+          <img alt="Blue Sapphires" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5vhbIYKd0SZ6YJJVzMLLz9iOt7hyYTCqpj2qpkJfLyNCp_XANB6NDT52oc0eVZFkb3K_mmqC_k99Wv5j8ZXsQTTuRTYR99jdKlyiiz9E7MWVOWniRn0Q3-cgx8Zp-gcGR9tGsLb0mgidUSnKFrUS87t1WYAlZUu6mcvo63LMbOSQDe_c3bcRxH5yqcXmmAkA_EzcxeoOrvKM9fb6acaiioHgc-sxU_c4uyqtWVKeIWwV1xmCXaTALhHSq0o7itRR7f3PR8XFayXo" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-slate-800 dark:text-white mb-1">Blue Sapphires</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">$200-5000+</p>
+        </div>
+      </div>
+      <div
+        class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-subtle hover:shadow-card transition border border-slate-200 dark:border-slate-700">
+        <div class="h-40 overflow-hidden">
+          <img alt="Handloom &amp; Batik"
+            class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuANJvvEnigQmOfeO0xHevICcViifhLrYfTh7Af7cHIGycevI2B1MzCvXC3giA-9jqz0PenjdBlaE3T5jhyJY9jrPWoE-iEnn1JNs4qSn7_SRSbrtNAOsNfEaWqzKDfdl8m4hm1iiJM0nE_9LAv2FRDjs2pNAk7FJhlCKYMuKOWse-7WAdBuPWCEhSGb-PxRkfZu9hycEtESwmopTuPCQJbj_7vERPwpwxp8H47o0UBwd-4hIJcYnDjsMjvzBNWATP0D2A7uJli9phY" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-slate-800 dark:text-white mb-1">Handloom &amp; Batik</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">$25-150</p>
+        </div>
+      </div>
+      <div
+        class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-subtle hover:shadow-card transition border border-slate-200 dark:border-slate-700">
+        <div class="h-40 overflow-hidden">
+          <img alt="Ceylon Spices" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwMV0u1DIhP3-varnR_5ClzybJVtvkvf3xq4At8VLN8Hfijvez7JNOeHNXiEglFdtj_LhTggM3IV5_YYAiykMfyQMZRIOC1SeecJNgcd3Xs_DdxwW8sUEs7zQYFbcdozrVlaEewoLekFWnakf5VghEYm2pRdTountSICkheQ0pinPglocA4dSc2vkRM6B4iu4q0JpDT_e64_2_tglwk9b4K3orJhXkTfwQHS2Niqrd9HIbXCBLfFDcVXTwgh0QAx5K8YlH0L-1kbQ" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-slate-800 dark:text-white mb-1">Ceylon Spices</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">$4-20</p>
+        </div>
+      </div>
+      <div
+        class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-subtle hover:shadow-card transition border border-slate-200 dark:border-slate-700">
+        <div class="h-40 overflow-hidden">
+          <img alt="Raksha Masks" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzGvjLfhmDjXl5rHJwY28dK51ZaYb_qFbn71IAdpVnhfYq-M1i7_D-VV5IVSuJGt3FV-_rRYmICuCovvLQoJtK7Wtg7KBrm05U7kBAi5ZSrRFotb5En3VXGXrPYqBW9yYNcWnCduB0ptwOAb85Cv3JTPLf7WeIlQxmaLrKpNUuXWiTngtKYnjbBkk6sMAfollNhwsNpUMWGcxAJ_Al5rTR0orL9VL6D7mJtYKL87O3VZi_IBq2KUZwS4K5tbYW--OlhDHrboYAs5k" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-slate-800 dark:text-white mb-1">Raksha Masks</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">$10-100</p>
+        </div>
+      </div>
+      <div
+        class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-subtle hover:shadow-card transition border border-slate-200 dark:border-slate-700">
+        <div class="h-40 overflow-hidden">
+          <img alt="Ayurvedic Products" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr_NQwQHmUAzulaXnQajCez-Yo5aawBMLTAYZu1yCXMwsu8AU9WNVhSXoysZtgihn92hxx-qlH2CoZvIr7rb6ipuKY8iftdfk7hvwUJY_anwfjotWqkjHGKlNyB2XXT8BPJY8LLRokglv09SH-Sxkjc538j184W4Hkl9h5WZOc-6-P0wzto1pNQu9D7RS6lKm902lsoQH88xSEEQg-N09JqzefTElDciuQgRV-AwqPAT5ErHgMdS0R3zNNT_arNOMtwirTlH3Jpyg" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-slate-800 dark:text-white mb-1">Ayurvedic Products</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">$5-60</p>
+        </div>
+      </div>
+      <div
+        class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-subtle hover:shadow-card transition border border-slate-200 dark:border-slate-700">
+        <div class="h-40 overflow-hidden">
+          <img alt="Wooden Elephants" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3nU8_dCQ5k-Yb6oUsBMnVV_WL49_Kia0l9MjYdYWmwBURVWZFcCCUWUCvqnRCvT81FilA2eIr2bpX4F19Zzbttc6MbAuapp6jopj9IrjEUQHBxnUm83EV23jGTD3werkUDGdI3tHJ8C6i6wdPSCtanuMhciZU2OsOULWawoSlznKbiqWKYS1zT9os05hO8ebGfNBTP8S8Rrn6qd3DaC347701ihMo3LWbN-mjJ0D6zslLHIbeR-MHFzeMA2SPi78rDYW8AI1-PuQ" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-slate-800 dark:text-white mb-1">Wooden Elephants</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">$5-80</p>
+        </div>
+      </div>
+      <div
+        class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-subtle hover:shadow-card transition border border-slate-200 dark:border-slate-700">
+        <div class="h-40 overflow-hidden">
+          <img alt="Lacquerware" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfSBGm3cUmjUC4bOcd90OjOfSKzu4Q2yIveQG1hLibeXAKW4dlUZ61nS6Yx9Hzxmipo7x3kjbwg5vCine8JmO8-pdbAFlBFMt5D-Hbh6eHbsV7J4QvxClAqUFulBd0vEWQKL6w5GkpL-Zo8AY_eXC3WwqNvaPPsarCMTlDQka7FX-EBs5SthIRlCsJRPkr-zE1GTDe8obuY1zWub2geDLyT5raqXg3X2UAy-u7bzv1kYzanXeqHy6vWsF4k1-ly6oViUHLqwc4Ytc" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-slate-800 dark:text-white mb-1">Lacquerware</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">$12-100</p>
         </div>
       </div>
     </div>
-
-    <!-- Item Details Modal/Drawer -->
-    <Teleport to="body">
-      <div
-        v-if="selectedItem"
-        class="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 p-0 md:p-4"
-        @click="selectedItem = null"
-      >
-        <div
-          @click.stop
-          class="bg-white dark:bg-[#181311] rounded-t-3xl md:rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-slide-up"
-        >
-          <!-- Header with Image -->
-          <div class="relative h-56 w-full">
-            <div
-              class="h-full w-full bg-cover bg-center"
-              :style="{ backgroundImage: `url('${selectedItem.image}')` }"
-            ></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            
-            <!-- Close and Save buttons -->
-            <div class="absolute top-4 right-4 flex gap-2">
-              <button
-                @click="handleToggleSave(selectedItem.id)"
-                :class="[
-                  'bg-white/90 hover:bg-white text-gray-800 rounded-full p-2.5 transition-all shadow-lg',
-                  isItemSaved(selectedItem.id) ? 'text-primary' : ''
-                ]"
-                :aria-label="isItemSaved(selectedItem.id) ? 'Remove from saved' : 'Save item'"
-              >
-                <span class="material-symbols-outlined" :style="{ fontVariationSettings: isItemSaved(selectedItem.id) ? '\'FILL\' 1' : '\'FILL\' 0' }">
-                  bookmark
-                </span>
-              </button>
-              <button
-                @click="selectedItem = null"
-                class="bg-white/90 hover:bg-white text-gray-800 rounded-full p-2.5 transition-all shadow-lg"
-                aria-label="Close"
-              >
-                <span class="material-symbols-outlined">close</span>
-              </button>
-            </div>
-
-            <!-- Title overlay -->
-            <div class="absolute bottom-0 left-0 right-0 p-6">
-              <h3 class="text-3xl font-bold text-white mb-1 drop-shadow-lg">{{ selectedItem.title }}</h3>
-              <p class="text-white/90 text-sm drop-shadow">{{ selectedItem.shortTagline }}</p>
-            </div>
-          </div>
-
-          <!-- Content -->
-          <div class="p-6 space-y-6">
-            <!-- What it is -->
-            <div>
-              <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-2">What it is</h4>
-              <p class="text-text-muted dark:text-gray-300">{{ selectedItem.description }}</p>
-            </div>
-
-            <!-- Typical Prices -->
-            <div class="bg-gray-50 dark:bg-[#221510] rounded-xl p-4">
-              <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-3">Typical Prices</h4>
-              <div class="flex items-center gap-4">
-                <div class="flex-1">
-                  <p class="text-2xl font-bold text-primary">{{ selectedItem.priceRangeUSD }}</p>
-                  <p class="text-sm text-text-muted dark:text-gray-400">{{ selectedItem.priceRangeLKR }}</p>
-                </div>
-                <div class="text-right">
-                  <span class="inline-flex items-center gap-1 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-xs font-semibold">
-                    <span class="material-symbols-outlined text-sm">verified</span>
-                    From shopping.md
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Authenticity Checklist -->
-            <div v-if="selectedItem.authenticityChecklist.length">
-              <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-3 flex items-center gap-2">
-                <span class="material-symbols-outlined text-green-500">verified</span>
-                Authenticity Checklist
-              </h4>
-              <ul class="space-y-2.5 bg-green-50 dark:bg-green-900/10 rounded-xl p-4 border border-green-200 dark:border-green-800">
-                <li v-for="item in selectedItem.authenticityChecklist" :key="item" class="flex items-start gap-3 text-sm">
-                  <span class="material-symbols-outlined text-green-500 text-lg mt-0.5 flex-shrink-0">check_circle</span>
-                  <span class="text-text-main dark:text-gray-200">{{ item }}</span>
-                </li>
-              </ul>
-            </div>
-
-            <!-- Context-specific Warnings (for Gems) -->
-            <div v-if="itemWarnings.length" class="space-y-3">
-              <h4 class="text-xs font-bold text-red-700 dark:text-red-300 uppercase tracking-wider flex items-center gap-2">
-                <span class="material-symbols-outlined">report</span>
-                Critical Scam Alerts
-              </h4>
-              <ShoppingWarningCard 
-                v-for="warning in itemWarnings" 
-                :key="warning.id"
-                :warning="warning"
-                :expandable="true"
-              />
-            </div>
-
-            <!-- Best Places to Buy -->
-            <div v-if="selectedItem.buyWhere.length">
-              <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-3 flex items-center gap-2">
-                <span class="material-symbols-outlined">store</span>
-                Best Places to Buy
-              </h4>
-              <div class="flex flex-wrap gap-2">
-                <span
-                  v-for="place in selectedItem.buyWhere"
-                  :key="place"
-                  class="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-sm rounded-lg border border-blue-200 dark:border-blue-800 font-medium"
-                >
-                  {{ place }}
-                </span>
-              </div>
-            </div>
-
-            <!-- Common Scams / What to Avoid -->
-            <div v-if="selectedItem.avoid && selectedItem.avoid.length" class="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl p-5">
-              <h4 class="text-xs font-bold text-red-700 dark:text-red-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                <span class="material-symbols-outlined text-lg">warning</span>
-                Common Scams / What to Avoid
-              </h4>
-              <ul class="space-y-2">
-                <li v-for="warning in selectedItem.avoid" :key="warning" class="flex items-start gap-3 text-sm text-red-700 dark:text-red-300">
-                  <span class="material-symbols-outlined text-base mt-0.5 flex-shrink-0">cancel</span>
-                  <span>{{ warning }}</span>
-                </li>
-              </ul>
-            </div>
-
-            <!-- Quick Bargaining Tip -->
-            <div v-if="selectedItem.bargainingTip" class="bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 rounded-xl p-5">
-              <h4 class="text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider mb-2 flex items-center gap-2">
-                <span class="material-symbols-outlined text-lg">handshake</span>
-                Quick Bargaining Tip
-              </h4>
-              <p class="text-sm text-amber-700 dark:text-amber-200 font-medium">{{ selectedItem.bargainingTip }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Teleport>
-  </div>
+  </section>
 </template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useShoppingData } from '~/composables/useShoppingData'
-import { useSavedItems } from '~/composables/useSavedItems'
-import { getWarningsByContext } from '~/data/shopping.data'
-import type { CuratedFind } from '~/data/shopping.data'
-import ShoppingWarningCard from './ShoppingWarningCard.vue'
-
-const props = defineProps<{
-  items?: CuratedFind[]
-}>()
-
-const { filteredItems } = useShoppingData()
-const { isSaved, toggleSave } = useSavedItems()
-const selectedItem = ref<CuratedFind | null>(null)
-
-const displayItems = computed(() => props.items || filteredItems.value)
-
-// Get warnings based on selected item context
-const itemWarnings = computed(() => {
-  if (!selectedItem.value) return []
-  
-  // Show gem warnings for sapphires/rubies
-  if (selectedItem.value.id === 'blue-sapphires') {
-    return getWarningsByContext('gems')
-  }
-  
-  return []
-})
-
-const selectItem = (item: CuratedFind) => {
-  selectedItem.value = item
-}
-
-const handleToggleSave = (itemId: string) => {
-  toggleSave(itemId, 'curated-find')
-}
-
-const isItemSaved = (itemId: string) => {
-  return isSaved(itemId, 'curated-find')
-}
-</script>
-
-<style scoped>
-@keyframes slide-up {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
-}
-</style>

@@ -1,19 +1,19 @@
 <template>
-  <div class="relative flex w-full flex-col items-center justify-center gap-6 bg-cover bg-center py-20 px-8 text-center" 
-    :style="{ backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('${heroImage}')` }">
-    <div class="z-10 flex flex-col gap-2">
-      <h1 class="text-3xl font-black leading-tight tracking-tight text-white lg:text-4xl">
-        Stay in Serenity
-      </h1>
-      <p class="text-white/90 text-sm lg:text-base max-w-md mx-auto">
+  <section class="relative h-[400px] flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img alt="Sri Lanka Serene Stay" class="w-full h-full object-cover"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA36aUgclGurShs2XPD999tW8rfVS6WwEHKMV4nJx0IXyNJM0MsH6FdAb_ULgUdTXhsgxvgwy81V-OuOwSoMkeQtIvaIlp8OawHkuHn-O5aDJjGNooD_ingTJBJwlIVRTZZASAER5ExhZY0OVvddjChCwMkfGCGta8twLyFzxFBrJfaQjv3aKEEWiCsSlgbAODw35jm52sSM3bOV_D9IlS5bcEhH_T0kHsJGdV12eZTwZSkLXZ6hewtjWLlezr_h-H_UtLa5NnDFiM" />
+      <div class="absolute inset-0 bg-primary/40 mix-blend-multiply"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+    </div>
+    <div class="container mx-auto px-6 relative z-10 text-center text-white pt-10">
+      <h1 class="text-4xl md:text-5xl font-bold mb-3 tracking-tight">Stay in Serenity</h1>
+      <p class="text-lg md:text-xl text-white/90 font-light max-w-2xl mx-auto">
         Discover curated hotels, guesthouses, and homestays verified for safety and comfort.
       </p>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
-const heroImage = '/images/downloaded_3d3dcfa78790.avif'
 </script>
