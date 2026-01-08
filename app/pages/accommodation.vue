@@ -1,98 +1,40 @@
 <template>
   <div class="bg-background-light dark:bg-background-dark min-h-screen">
     <Header variant="solid" />
-    
-    <!-- Main Content Layout -->
-    <!-- Hero Section (Full Width) -->
-    <div class="pt-[73px] lg:pt-[80px]">
-      <AccommodationHero />
-    </div>
 
-    <!-- Mobile Tabs -->
-    <div class="sticky top-[73px] z-40 bg-white dark:bg-neutral-900 border-b border-neutral-light dark:border-white/10 md:hidden sha shadow-sm">
-      <div class="grid grid-cols-3">
-        <button 
-          v-for="tab in ['List', 'Map', 'Filters']"
-          :key="tab"
-          @click="activeTab = tab.toLowerCase()"
-          class="py-3 text-sm font-bold border-b-2 transition-colors relative"
-          :class="activeTab === tab.toLowerCase() ? 'border-primary text-primary' : 'border-transparent text-neutral-gray hover:text-neutral-dark dark:hover:text-white'"
-        >
-          {{ tab }}
-        </button>
-      </div>
-    </div>
-    
+    <!-- Hero Section -->
+    <AccommodationHero />
+
     <!-- Main Content Layout -->
-    <main class="relative flex min-h-[calc(100vh-80px)] w-full flex-col md:flex-row">
+    <div class="flex flex-col lg:flex-row h-[calc(100vh-64px)] overflow-hidden">
       <!-- Left Panel: Filters & List -->
-      <div 
-        class="flex flex-col w-full md:w-[60%] lg:w-[65%] border-r border-neutral-light dark:border-white/10 bg-white dark:bg-background-dark"
-        :class="{'hidden md:flex': activeTab === 'map'}"
-      >
-        
+      <div
+        class="w-full lg:w-[55%] xl:w-[60%] h-full overflow-y-auto bg-background-light dark:bg-background-dark flex flex-col">
         <!-- Filters Container -->
-        <div 
-          class="z-30 bg-white dark:bg-background-dark border-b border-neutral-light dark:border-white/10 md:sticky md:top-[80px]"
-          :class="activeTab === 'filters' ? 'block' : 'hidden md:block'"
-        >
-          <AccommodationFilters
-            :regions="regions"
-            :category="selectedCategory"
-            :region="selectedRegion"
-            :search="searchQuery"
-            :priceMinUsd="priceMinUsd"
-            :priceMaxUsd="priceMaxUsd"
-            :minRating="selectedMinRating"
-            :safetyCertified="safetyCertifiedOnly"
-            :amenities="selectedAmenities"
-            :sort="selectedSort"
-            :city="selectedCity"
-            :cities="availableCities"
-            :showFavoritesOnly="showFavoritesOnly"
-            @update:category="selectedCategory = $event"
-            @update:region="selectedRegion = $event"
-            @update:search="searchQuery = $event"
-            @update:priceMinUsd="priceMinUsd = $event"
-            @update:priceMaxUsd="priceMaxUsd = $event"
-            @update:minRating="selectedMinRating = $event"
-            @update:safetyCertified="safetyCertifiedOnly = $event"
-            @update:amenities="selectedAmenities = $event"
-            @update:sort="selectedSort = $event"
-            @update:city="selectedCity = $event"
-            @update:showFavoritesOnly="showFavoritesOnly = $event"
-          />
-        </div>
+        <AccommodationFilters :regions="regions" :category="selectedCategory" :region="selectedRegion"
+          :search="searchQuery" :priceMinUsd="priceMinUsd" :priceMaxUsd="priceMaxUsd" :minRating="selectedMinRating"
+          :safetyCertified="safetyCertifiedOnly" :amenities="selectedAmenities" :sort="selectedSort"
+          :city="selectedCity" :cities="availableCities" :showFavoritesOnly="showFavoritesOnly"
+          @update:category="selectedCategory = $event" @update:region="selectedRegion = $event"
+          @update:search="searchQuery = $event" @update:priceMinUsd="priceMinUsd = $event"
+          @update:priceMaxUsd="priceMaxUsd = $event" @update:minRating="selectedMinRating = $event"
+          @update:safetyCertified="safetyCertifiedOnly = $event" @update:amenities="selectedAmenities = $event"
+          @update:sort="selectedSort = $event" @update:city="selectedCity = $event"
+          @update:showFavoritesOnly="showFavoritesOnly = $event" />
 
         <!-- List Container -->
-        <div 
-          class="flex-1" 
-          :class="activeTab === 'list' ? 'block' : 'hidden md:block'"
-        >
-          <AccommodationList 
-            :accommodations="filteredAccommodations"
-            :highlightedId="highlightedId"
-            @viewOnMap="handleViewOnMap"
-            @hover="handleListHover"
-            @clearFilters="clearAllFilters"
-          />
-        </div>
+        <AccommodationList :accommodations="filteredAccommodations" :highlightedId="highlightedId"
+          @viewOnMap="handleViewOnMap" @hover="handleListHover" @clearFilters="clearAllFilters" />
       </div>
 
       <!-- Right Panel: Map -->
-      <div 
-        class="w-full md:w-[40%] lg:w-[35%] bg-neutral-100 dark:bg-neutral-900 md:sticky md:top-[80px] md:h-[calc(100vh-80px)] border-l border-neutral-light dark:border-white/10"
-        :class="activeTab === 'map' ? 'block h-[calc(100vh-120px)] sticky top-[120px]' : 'hidden md:block'"
-      >
-        <AccommodationMap 
-          ref="mapRef"
-          :accommodations="accommodationsForMap" 
-          :highlightedId="highlightedId"
-          @select="handleMapSelect"
-          @hover="handleMapHover"
-        />
+      <div
+        class="w-full lg:w-[45%] xl:w-[40%] bg-neutral-100 dark:bg-neutral-900 lg:sticky lg:top-0 lg:h-screen border-l border-neutral-light dark:border-white/10">
+        <AccommodationMap ref="mapRef" :accommodations="accommodationsForMap" :highlightedId="highlightedId"
+          @select="handleMapSelect" @hover="handleMapHover" />
       </div>
-    </main>
+    </div>
+
 
     <Footer />
   </div>
@@ -161,13 +103,13 @@ const availableCities = computed(() => {
     // Let's assume location string is the city name for now or simpler strings
     // In parser: `location = titlePart.substring(lastCommaIndex + 1).trim()`
     if (a.location) {
-        // Simple extraction
-        const city = a.location.split('(')[0]?.trim()
-        const districtMatch = a.location.match(/\((.*?)\)/)
-        const district = districtMatch ? districtMatch[1] : undefined
-        if (city) {
-          citiesMap.set(city, district)
-        }
+      // Simple extraction
+      const city = a.location.split('(')[0]?.trim()
+      const districtMatch = a.location.match(/\((.*?)\)/)
+      const district = districtMatch ? districtMatch[1] : undefined
+      if (city) {
+        citiesMap.set(city, district)
+      }
     }
   })
   return Array.from(citiesMap.entries())
@@ -191,18 +133,18 @@ const amenityKeywords: Record<string, string[]> = {
   terrace: ['terrace', 'balcony', 'deck']
 }
 
-function matchesAmenity(amenities: Array<{label: string}> | undefined, query: string): boolean {
+function matchesAmenity(amenities: Array<{ label: string }> | undefined, query: string): boolean {
   if (!amenities) return false
   const q = query.toLowerCase()
   // Check mapped amenities
   const labels = amenities.map(a => a.label.toLowerCase())
   if (labels.some(l => l.includes(q))) return true
-  
+
   // Keyword check
   for (const [key, keywords] of Object.entries(amenityKeywords)) {
     if (keywords.some(k => q.includes(k))) {
-       // If query matches a keyword (e.g. "swim"), check if amenity (e.g. "pool") exists
-       if (labels.some(l => l.includes(key))) return true
+      // If query matches a keyword (e.g. "swim"), check if amenity (e.g. "pool") exists
+      if (labels.some(l => l.includes(key))) return true
     }
   }
   return false
@@ -231,10 +173,10 @@ const filteredAccommodations = computed(() => {
 
   // Price
   if (priceMinUsd.value !== null) {
-      results = results.filter(a => a.price >= priceMinUsd.value!)
+    results = results.filter(a => a.price >= priceMinUsd.value!)
   }
   if (priceMaxUsd.value !== null) {
-      results = results.filter(a => a.price <= priceMaxUsd.value!)
+    results = results.filter(a => a.price <= priceMaxUsd.value!)
   }
 
   // Rating
@@ -255,23 +197,23 @@ const filteredAccommodations = computed(() => {
   // Amenities
   if (selectedAmenities.value.length > 0) {
     results = results.filter(a => {
-        const itemAmenities = (a.amenities || []).map(am => am.label) // Parser returns {icon, label}
-        // Check if ALL selected amenities are present (AND logic)
-        // OR Logic? Usually AND for amenities
-        // Let's use AND
-        // Wait, props.amenities are values like 'pool', 'wifi'. 
-        // Parser amenities labels are 'Pool', 'WiFi'.
-        // Need to normalize match.
-        return selectedAmenities.value.every(req => {
-            const reqLower = req.toLowerCase()
-            return itemAmenities.some(ia => {
-                const iaLower = ia.toLowerCase()
-                // Map 'wifi' to 'WiFi', 'pool' to 'Pool' etc.
-                if (reqLower === 'wifi') return iaLower.includes('wifi')
-                if (reqLower === 'pool') return iaLower.includes('pool')
-                return iaLower.includes(reqLower)
-            })
+      const itemAmenities = (a.amenities || []).map(am => am.label) // Parser returns {icon, label}
+      // Check if ALL selected amenities are present (AND logic)
+      // OR Logic? Usually AND for amenities
+      // Let's use AND
+      // Wait, props.amenities are values like 'pool', 'wifi'. 
+      // Parser amenities labels are 'Pool', 'WiFi'.
+      // Need to normalize match.
+      return selectedAmenities.value.every(req => {
+        const reqLower = req.toLowerCase()
+        return itemAmenities.some(ia => {
+          const iaLower = ia.toLowerCase()
+          // Map 'wifi' to 'WiFi', 'pool' to 'Pool' etc.
+          if (reqLower === 'wifi') return iaLower.includes('wifi')
+          if (reqLower === 'pool') return iaLower.includes('pool')
+          return iaLower.includes(reqLower)
         })
+      })
     })
   }
 
@@ -279,23 +221,23 @@ const filteredAccommodations = computed(() => {
   if (searchQuery.value) {
     const q = searchQuery.value.toLowerCase()
     results = results.filter(a => {
-       const titleMatch = a.title.toLowerCase().includes(q)
-       const locMatch = a.location.toLowerCase().includes(q)
-       const descMatch = (a.description || '').toLowerCase().includes(q)
-       const amenityMatch = matchesAmenity(a.amenities, q)
-       return titleMatch || locMatch || descMatch || amenityMatch
+      const titleMatch = a.title.toLowerCase().includes(q)
+      const locMatch = a.location.toLowerCase().includes(q)
+      const descMatch = (a.description || '').toLowerCase().includes(q)
+      const amenityMatch = matchesAmenity(a.amenities, q)
+      return titleMatch || locMatch || descMatch || amenityMatch
     })
   }
 
   // Sorting
   results.sort((a, b) => {
-      switch (selectedSort.value) {
-          case 'price_asc': return a.price - b.price
-          case 'price_desc': return b.price - a.price
-          case 'rating_desc': return b.rating - a.rating
-          case 'most_reviewed': return b.reviews - a.reviews
-          default: return b.rating - a.rating // Recommended
-      }
+    switch (selectedSort.value) {
+      case 'price_asc': return a.price - b.price
+      case 'price_desc': return b.price - a.price
+      case 'rating_desc': return b.rating - a.rating
+      case 'most_reviewed': return b.reviews - a.reviews
+      default: return b.rating - a.rating // Recommended
+    }
   })
 
   return results
@@ -309,13 +251,13 @@ const accommodationsForMap = computed(() => {
 function handleMapSelect(id: string) {
   // Highlight the matching card
   highlightedId.value = id
-  
+
   // Scroll to the accommodation in the list
   const el = document.getElementById(`accommodation-${id}`)
   if (el) {
     el.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
-  
+
   // Clear highlight after a delay
   setTimeout(() => {
     highlightedId.value = null
