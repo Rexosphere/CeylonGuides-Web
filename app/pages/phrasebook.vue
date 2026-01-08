@@ -1,231 +1,42 @@
 <template>
   <div class="w-full">
     <!-- Hero Section -->
-    <div class="relative w-full">
-      <div 
-        class="flex min-h-[420px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-4 relative" 
-        style='background-image: linear-gradient(rgba(16, 34, 31, 0.4) 0%, rgba(16, 34, 31, 0.7) 100%), url("/images/downloaded_e51794257d3d.avif");'
-      >
-        <div class="flex flex-col gap-3 text-center max-w-[720px] z-10 pt-20">
-          <h1 class="text-white text-4xl md:text-6xl font-black leading-tight tracking-tight drop-shadow-lg font-display">
-            Speak Like a Local
-          </h1>
-          <p class="text-white/90 text-base md:text-lg font-medium leading-relaxed max-w-xl mx-auto">
-            Connect deeply with Sri Lanka. Master essential phrases and learn the cultural etiquette that opens hearts.
-          </p>
-        </div>
-
-        <!-- Search Bar -->
-        <div class="w-full max-w-[560px] z-10 mt-4">
-          <div class="flex w-full items-center bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-2 border border-white/20">
-            <div class="flex items-center justify-center pl-3 text-gray-500">
-              <span class="material-symbols-outlined">search</span>
-            </div>
-            <input 
-              v-model="searchQuery"
-              class="w-full bg-transparent border-none text-charcoal placeholder:text-gray-500 focus:ring-0 h-12 px-3 text-base outline-none" 
-              placeholder="Search phrases (e.g., 'How much?', 'Thank you')..."
-            />
-            <button class="flex items-center justify-center h-10 w-10 rounded-lg text-gray-500 hover:text-primary hover:bg-background-light transition-colors" title="Voice Search">
-              <span class="material-symbols-outlined">mic</span>
-            </button>
-            <button class="hidden sm:flex h-10 px-6 ml-2 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg items-center justify-center transition-colors">
-              Search
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <PhrasebookHero :background-image="heroBackground" @search="handleSearch" />
 
     <!-- Main Content Container -->
-    <div class="flex flex-col items-center px-4 md:px-10 lg:px-40 py-10 gap-12 w-full max-w-[1440px] mx-auto">
-      
-      <!-- Language Toggle & Controls -->
-      <div class="flex flex-col md:flex-row w-full justify-between items-center gap-6 border-b border-gray-200 pb-8">
-        <div>
-          <h2 class="text-2xl font-bold text-charcoal font-display">Categories</h2>
-          <p class="text-gray-500 mt-1">Select a topic to start learning</p>
-        </div>
-        <div class="flex items-center gap-3 bg-white p-1.5 rounded-xl border border-gray-200 shadow-sm">
-          <label 
-            v-for="lang in ['Sinhala', 'Tamil']" 
-            :key="lang"
-            class="cursor-pointer"
-          >
-            <input 
-              type="radio" 
-              name="lang" 
-              :value="lang.toLowerCase()" 
-              v-model="selectedLanguage"
-              class="peer sr-only"
-            />
-            <div class="px-5 py-2.5 rounded-lg text-sm font-bold text-gray-500 peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-sm transition-all flex items-center gap-2">
-              <span>{{ lang }}</span>
-            </div>
-          </label>
-        </div>
+    <main class="flex-grow max-w-[1440px] mx-auto w-full px-4 md:px-6 py-8 -mt-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- Left Sidebar -->
+        <PhrasebookSidebar :daily-phrases="dailyPhrases" @shuffle="shuffleDailyPhrases" @select-phrase="openDetails"
+          @start-quiz="startQuiz" @download="downloadOffline" />
+
+        <!-- Main Content -->
+        <section class="lg:col-span-6 space-y-6">
+          <!-- Category Filter & Language Toggle -->
+          <PhrasebookCategoryFilter :category-name="currentCategoryName" :phrase-count="phrases.length"
+            :selected-language="selectedLanguage" :categories="categoryButtons" @select-language="handleLanguageChange"
+            @select-category="selectCategory" @toggle-learning-mode="toggleLearningMode" />
+
+          <!-- Phrases List -->
+          <div class="space-y-4">
+            <PhrasebookPhraseCard v-for="phrase in displayPhrases" :key="phrase.id" :phrase="phrase"
+              :badge="phrase.category === 'EMERGENCY' ? 'Emergency' : undefined"
+              :is-emergency="phrase.category === 'EMERGENCY'" :is-favorite="isSaved(phrase.id)"
+              :show-decoration="phrase.category === 'EMERGENCY'" @play-audio="speakPhrase"
+              @toggle-favorite="toggleSavePhrase" @show-info="openDetails" />
+          </div>
+        </section>
+
+        <!-- Right Sidebar -->
+        <PhrasebookRightSidebar :context-text="contextText" :cultural-tip="culturalTip"
+          :related-phrases="relatedPhrases" :progress="userProgress" :category-progress="categoryProgress"
+          :recent-activity="recentActivity" @select-phrase="openDetails" @refresh-progress="refreshProgress" />
       </div>
-
-      <!-- Categories Grid -->
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full">
-        <div 
-          v-for="category in categories" 
-          :key="category.id"
-          @click="selectCategory(category.id)"
-          :class="[
-            'group flex flex-col items-center gap-3 p-6 bg-white rounded-2xl shadow-sm border cursor-pointer transition-all',
-            selectedCategory === category.id 
-              ? 'border-primary shadow-md bg-primary/5' 
-              : 'border-gray-200 hover:border-primary hover:shadow-md'
-          ]"
-        >
-          <div :class="[
-            'h-12 w-12 rounded-full flex items-center justify-center transition-colors',
-            selectedCategory === category.id
-              ? 'bg-primary text-white'
-              : 'bg-background-light text-primary group-hover:bg-primary group-hover:text-white'
-          ]">
-            <span class="material-symbols-outlined text-2xl">{{ category.icon }}</span>
-          </div>
-          <span class="text-charcoal font-bold text-sm text-center">{{ category.name }}</span>
-        </div>
-      </div>
-
-      <!-- Content Area -->
-      <div class="w-full flex flex-col lg:flex-row gap-8">
-        
-        <!-- Phrases List -->
-        <div class="flex-1 flex flex-col gap-6">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="p-2 bg-primary/10 rounded-lg text-primary">
-              <span class="material-symbols-outlined">handshake</span>
-            </div>
-            <h3 class="text-xl font-bold text-charcoal font-display">Greetings & Politeness</h3>
-          </div>
-
-          <!-- Emergency Phrase Set Banner -->
-          <div v-if="savedPhrases.length > 0" class="p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-              <span class="text-2xl">⭐</span>
-              <div>
-                <h4 class="font-bold text-yellow-900">Emergency Phrase Set</h4>
-                <p class="text-sm text-yellow-700">{{ savedPhrases.length }} phrase{{ savedPhrases.length > 1 ? 's' : '' }} saved for quick access</p>
-              </div>
-            </div>
-            <NuxtLink 
-              to="/safety-mode"
-              class="shrink-0 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-medium transition-colors"
-            >
-              Use in Safety Mode
-            </NuxtLink>
-          </div>
-
-          <!-- Phrases Loops -->
-          <template v-for="(phrase, index) in phrases" :key="phrase.id || index">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow gap-4">
-              <div class="flex flex-col gap-1 flex-1">
-                <p class="sinhala-text text-2xl font-bold text-charcoal">{{ phrase.native }}</p>
-                <p class="text-sm font-bold text-primary uppercase tracking-wide">{{ phrase.phonetic }}</p>
-                <p class="text-gray-500 text-sm mt-1">{{ phrase.english }}</p>
-              </div>
-              
-              <!-- Action Buttons -->
-              <div class="flex items-center gap-2">
-                <!-- Details Button -->
-                <button
-                  @click="openDetails(phrase.id)"
-                  class="shrink-0 h-12 w-12 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all flex items-center justify-center border border-gray-200"
-                  title="View details"
-                >
-                  <span class="material-symbols-outlined">info</span>
-                </button>
-                <!-- Speak Button -->
-                <button 
-                  @click="speakPhrase(phrase.native)"
-                  class="shrink-0 h-12 w-12 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center border border-primary/20 group"
-                  title="Speak this phrase"
-                >
-                  <span class="material-symbols-outlined">volume_up</span>
-                </button>
-                
-                <!-- Save Button -->
-                <button 
-                  @click="toggleSavePhrase(phrase.id)"
-                  :class="[
-                    'shrink-0 h-12 w-12 rounded-full transition-all flex items-center justify-center border text-xl',
-                    isSaved(phrase.id) 
-                      ? 'bg-yellow-100 text-yellow-600 border-yellow-300' 
-                      : 'bg-background-light text-gray-400 border-gray-200 hover:border-yellow-300 hover:text-yellow-500'
-                  ]"
-                  :title="isSaved(phrase.id) ? 'Remove from emergency set' : 'Save to emergency set'"
-                >
-                  {{ isSaved(phrase.id) ? '★' : '☆' }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Insert Etiquette Banner after 2nd item -->
-            <div v-if="index === 1" class="relative overflow-hidden rounded-2xl bg-[#10221f] p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center border border-primary/20 shadow-lg my-2">
-              <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-primary/10 blur-2xl"></div>
-              <div class="relative z-10 p-4 bg-white/10 backdrop-blur-md rounded-xl text-primary border border-white/10 shrink-0">
-                <span class="material-symbols-outlined text-4xl">dry_cleaning</span>
-              </div>
-              <div class="relative z-10 flex-1 text-center sm:text-left">
-                <h4 class="text-white font-bold text-lg mb-1 flex items-center justify-center sm:justify-start gap-2">
-                  <span class="material-symbols-outlined text-primary text-sm">info</span>
-                  Cultural Tip: Greeting
-                </h4>
-                <p class="text-gray-300 text-sm leading-relaxed">
-                  When saying "Ayubowan", place your palms together in a prayer-like gesture at chest height. A slight bow of the head shows deeper respect.
-                </p>
-              </div>
-            </div>
-          </template>
-        </div>
-
-        <!-- Sidebar -->
-        <div class="w-full lg:w-[320px] flex flex-col gap-6">
-          <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm h-fit sticky top-24">
-            <div class="flex items-center gap-2 mb-4 text-charcoal">
-              <span class="material-symbols-outlined text-primary">temple_buddhist</span>
-              <h3 class="font-bold text-lg">Temple Etiquette</h3>
-            </div>
-            <div class="flex flex-col gap-4">
-              <div v-for="(tip, idx) in templeTips" :key="idx" class="flex gap-4 items-start">
-                <div class="mt-1 h-2 w-2 rounded-full bg-primary shrink-0"></div>
-                <div class="flex flex-col gap-1">
-                  <span class="text-sm font-bold text-charcoal">{{ tip.title }}</span>
-                  <p class="text-xs text-text-muted leading-relaxed text-gray-500">{{ tip.desc }}</p>
-                </div>
-              </div>
-              <div class="mt-4 pt-4 border-t border-gray-100">
-                <button class="w-full py-2.5 rounded-lg border border-primary text-primary font-bold text-sm hover:bg-primary hover:text-white transition-colors">
-                  Read Full Guide
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Ad Card -->
-          <div 
-            class="rounded-2xl bg-cover bg-center h-64 relative overflow-hidden group cursor-pointer" 
-            style='background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url("/images/downloaded_c08da80504a7.avif");'
-          >
-            <div class="absolute bottom-0 left-0 p-6 w-full">
-              <span class="inline-block px-3 py-1 bg-primary text-white text-xs font-bold rounded-full mb-2">Popular Tour</span>
-              <h3 class="text-white font-bold text-xl leading-tight mb-1">Ella Tea Plantations</h3>
-              <div class="flex items-center text-white/80 text-sm gap-1 group-hover:translate-x-1 transition-transform">
-                <span>Book a local guide</span>
-                <span class="material-symbols-outlined text-sm">arrow_forward</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      
-      </div>
-    </div>
+    </main>
   </div>
 
+  <!-- Details Modal -->
   <Teleport to="body">
     <div v-if="showDetailsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div class="absolute inset-0 bg-black/50" @click="closeDetails"></div>
@@ -241,16 +52,22 @@
           <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
           <div v-else-if="selectedPhrase">
             <p class="text-2xl font-bold text-charcoal">{{ selectedPhrase.english }}</p>
-            <p class="text-lg text-primary mt-2">{{ selectedPhrase.sinhala }}</p>
+            <p class="text-lg text-primary mt-2 sinhala-text">{{ selectedPhrase.sinhala }}</p>
             <p class="text-lg text-primary">{{ selectedPhrase.tamil }}</p>
-            <p v-if="selectedPhrase.pronunciation" class="text-sm text-gray-500 mt-1">{{ selectedPhrase.pronunciation }}</p>
-            <p v-if="selectedPhrase.cultural_context" class="text-sm text-gray-500 mt-3">{{ selectedPhrase.cultural_context }}</p>
+            <p v-if="selectedPhrase.pronunciation" class="text-sm text-gray-500 mt-1">{{ selectedPhrase.pronunciation }}
+            </p>
+            <p v-if="selectedPhrase.cultural_context" class="text-sm text-gray-500 mt-3">{{
+              selectedPhrase.cultural_context }}</p>
           </div>
           <div v-else class="text-sm text-gray-500">No details available.</div>
         </div>
       </div>
     </div>
   </Teleport>
+
+  <!-- Learning Mode Modal -->
+  <PhrasebookLearningMode :is-open="showLearningMode" :phrases="learningModePhrases"
+    :category-name="currentCategoryName" @close="closeLearningMode" @complete="onLearningModeComplete" />
 </template>
 
 <script setup lang="ts">
@@ -259,7 +76,7 @@ import type { Phrase, EtiquetteTip } from '~/types/api'
 
 const searchQuery = ref('')
 const debouncedQuery = ref('')
-const selectedLanguage = ref<'sinhala' | 'tamil'>('sinhala')
+const selectedLanguage = ref<'sinhala' | 'tamil' | 'both'>('sinhala')
 const selectedCategory = ref<string | null>(null)
 
 // Debounce search input (300ms)
@@ -302,9 +119,11 @@ const phrases = computed(() => {
   return data.map(p => ({
     id: p.id,
     native: selectedLanguage.value === 'sinhala' ? p.sinhala : p.tamil,
+    romanized: p.pronunciation.split(' / ')[0] || p.pronunciation,
     sinhala: p.sinhala,
     tamil: p.tamil,
     phonetic: p.pronunciation,
+    pronunciation: p.pronunciation,
     english: p.english,
     category: p.category,
     cultural_context: p.cultural_context,
@@ -332,12 +151,12 @@ onMounted(() => {
       console.error('Failed to parse saved phrases:', e)
     }
   }
-  
+
   // Read category from URL query param
   if (route.query.category) {
     selectedCategory.value = route.query.category as string
   }
-  
+
   // Handle ?id= deep-link to auto-open phrase details
   if (route.query.id) {
     openDetails(route.query.id as string)
@@ -352,14 +171,17 @@ watch(() => route.query.category, (newCategory) => {
 })
 
 // Text-to-Speech function
-function speakPhrase(text: string) {
+function speakPhrase(phraseId: string) {
+  const phrase = phrases.value.find(p => p.id === phraseId)
+  if (!phrase) return
+
   if (!('speechSynthesis' in window)) {
     alert('Text-to-speech not supported in this browser')
     return
   }
-  
+
   speechSynthesis.cancel() // Stop any ongoing speech
-  const utterance = new SpeechSynthesisUtterance(text)
+  const utterance = new SpeechSynthesisUtterance(phrase.native)
   utterance.lang = selectedLanguage.value === 'sinhala' ? 'si-LK' : 'ta-LK'
   utterance.rate = 0.8 // Slower for learning
   speechSynthesis.speak(utterance)
@@ -396,8 +218,9 @@ const categoryIconMap: Record<string, string> = {
   DIRECTIONS: 'explore',
   DINING: 'restaurant',
   SHOPPING: 'shopping_bag',
-  EMERGENCY: 'emergency',
+  EMERGENCY: 'medical_services',
   TRANSPORT: 'directions_bus',
+  COMMON_EXPRESSIONS: 'chat_bubble',
 }
 
 function formatCategoryLabel(value: string) {
@@ -414,12 +237,13 @@ const categories = computed(() => {
     }))
   }
   return [
-    { name: 'Greetings', id: 'GREETINGS', icon: 'handshake' },
-    { name: 'Directions', id: 'DIRECTIONS', icon: 'explore' },
-    { name: 'Dining', id: 'DINING', icon: 'restaurant' },
-    { name: 'Shopping', id: 'SHOPPING', icon: 'shopping_bag' },
-    { name: 'Emergency', id: 'EMERGENCY', icon: 'emergency' },
+    { name: 'Greetings & Politeness', id: 'GREETINGS', icon: 'handshake' },
+    { name: 'Asking for Directions', id: 'DIRECTIONS', icon: 'explore' },
+    { name: 'Food & Dining', id: 'DINING', icon: 'restaurant' },
+    { name: 'Shopping & Bargaining', id: 'SHOPPING', icon: 'shopping_bag' },
+    { name: 'Emergency & Safety', id: 'EMERGENCY', icon: 'medical_services' },
     { name: 'Transport', id: 'TRANSPORT', icon: 'directions_bus' },
+    { name: 'Common Expressions', id: 'COMMON_EXPRESSIONS', icon: 'chat_bubble' },
   ]
 })
 
@@ -447,6 +271,150 @@ function closeDetails() {
   showDetailsModal.value = false
   selectedPhrase.value = null
 }
+
+// New component data and methods
+const heroBackground = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBpt66VBieVQZbQQywVqdZQYUYLqgKDfRscce78zRB76eM9X6_fJl1dAS63wMPhTYR91nYQMzdzBQdN615E3hyF3H0FWWHCOVRvZPy2NDcQT0JAHAicCCfIHzg8pmteMkOIizGv9thyePZX44RkMVI-JQq5hchWR8ox9cpTLPpNQ3yRTHsx6O7-_B8k1HyozCmRotLCVCYTuzDhX2_0-xf_hdxIcUSuZN-voWUVkvpJwqZaOCF3f6lnYYV2-rHQ6m-0krpTcHO3xIM'
+
+const handleSearch = (query: string) => {
+  debouncedQuery.value = query
+}
+
+// Daily phrases for sidebar
+const dailyPhrases = computed(() => {
+  return phrases.value.slice(0, 4).map(p => ({
+    id: p.id,
+    english: p.english,
+    pronunciation: p.pronunciation
+  }))
+})
+
+const shuffleDailyPhrases = () => {
+  // Shuffle logic would go here - for now just a placeholder
+  console.log('Shuffling daily phrases')
+}
+
+const startQuiz = () => {
+  console.log('Starting quiz')
+  // Navigate to quiz page or open quiz modal
+}
+
+const downloadOffline = () => {
+  console.log('Downloading offline content')
+  // Implement offline download
+}
+
+// Category filter data
+const currentCategoryName = computed(() => {
+  if (!selectedCategory.value) return 'All Categories'
+  const cat = categories.value.find(c => c.id === selectedCategory.value)
+  return cat?.name || 'All Categories'
+})
+
+const categoryButtons = computed(() => {
+  return categories.value.map(cat => ({
+    id: cat.id,
+    name: cat.name.replace('&', '&amp;').replace(/\n/g, '<br/>'),
+    icon: cat.icon,
+    isActive: selectedCategory.value === cat.id,
+    badge: cat.id === 'EMERGENCY' ? 'QUICK ACCESS' : undefined
+  }))
+})
+
+const handleLanguageChange = (language: string) => {
+  selectedLanguage.value = language as 'sinhala' | 'tamil' | 'both'
+}
+
+
+// Display phrases for main content
+const displayPhrases = computed(() => {
+  return phrases.value
+})
+
+// Right sidebar data
+const contextText = computed(() => {
+  if (selectedCategory.value === 'EMERGENCY') {
+    return 'Use these loudly and clearly. Locals will help immediately. Keep your phone charged and emergency contacts saved.'
+  }
+  return 'Practice these phrases in context. Pay attention to tone and body language for better communication.'
+})
+
+const culturalTip = computed(() => {
+  if (selectedCategory.value === 'EMERGENCY') {
+    return 'People will respond quickly to cries for help.'
+  }
+  return 'Sri Lankans appreciate when visitors make an effort to speak the local language, even if imperfectly.'
+})
+
+const relatedPhrases = computed(() => {
+  return phrases.value.slice(0, 4).map(p => ({
+    id: p.id,
+    english: p.english,
+    pronunciation: p.pronunciation
+  }))
+})
+
+const userProgress = computed(() => ({
+  practiced: savedPhrases.value.length,
+  percentage: Math.round((savedPhrases.value.length / Math.max(phrases.value.length, 1)) * 100),
+  mastered: 0,
+  learning: savedPhrases.value.length,
+  new: phrases.value.length - savedPhrases.value.length
+}))
+
+const categoryProgress = computed(() => {
+  return categories.value.map(cat => {
+    const totalInCategory = phrases.value.filter(p => p.category === cat.id).length
+    const completedInCategory = phrases.value.filter(p => p.category === cat.id && savedPhrases.value.includes(p.id)).length
+    return {
+      name: cat.name,
+      completed: completedInCategory,
+      total: totalInCategory,
+      percentage: totalInCategory > 0 ? Math.round((completedInCategory / totalInCategory) * 100) : 0
+    }
+  })
+})
+
+const recentActivity = computed(() => {
+  return savedPhrases.value.slice(0, 5).map((id, index) => {
+    const phrase = phrases.value.find(p => p.id === id)
+    return {
+      id,
+      phrase: phrase?.english || 'Unknown phrase',
+      time: index === 0 ? '7m ago' : '1h ago'
+    }
+  })
+})
+
+const refreshProgress = () => {
+  console.log('Refreshing progress')
+  // Implement progress refresh
+}
+
+// Learning Mode state and methods
+const showLearningMode = ref(false)
+
+const learningModePhrases = computed(() => {
+  // Return phrases for the current category, or all phrases if no category selected
+  if (selectedCategory.value) {
+    return phrases.value.filter(p => p.category === selectedCategory.value)
+  }
+  return phrases.value
+})
+
+const toggleLearningMode = () => {
+  showLearningMode.value = true
+}
+
+const closeLearningMode = () => {
+  showLearningMode.value = false
+}
+
+const onLearningModeComplete = () => {
+  console.log('Learning mode completed!')
+  // Could show a congratulations message or update progress
+  showLearningMode.value = false
+}
+
 
 // Add custom font for Sinhala text
 useHead({
