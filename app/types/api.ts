@@ -127,12 +127,15 @@ export interface Accommodation {
   name: string
   description?: string
   category: string
+  region_key?: string
   rating: number
   price_range: string
   price_per_night_lkr?: number
+  price_per_night_usd?: number
   amenities: string[]
   image_url?: string | null
   is_verified: boolean
+  safety_certified?: boolean
   review_count: number
   location: Location
   contact_phone?: string | null
