@@ -1,22 +1,9 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
+import type { Accommodation } from '~/types/api'
 
 const props = defineProps<{
-  accommodations: Array<{
-    id: string
-    name: string
-    location?: {
-      latitude?: number
-      longitude?: number
-      name?: string
-    }
-    category: string
-    price_per_night_lkr?: number
-    price_per_night_usd?: number
-    rating?: number
-    amenities?: string[]
-    safety_certified?: boolean
-  }>
+  accommodations: Accommodation[]
   highlightedId?: string | number | null
 }>()
 
@@ -46,33 +33,19 @@ const categoryColors: Record<string, string> = {
   'HOSTEL': '#f97316',
 }
 
-// Amenity icons
-const amenityIcons: Record<string, string> = {
-  wifi: '📶',
-  pool: '🏊',
-  spa: '💆',
-  breakfast: '🍳',
-  restaurant: '🍽️',
-  parking: '🅿️',
-  airport_shuttle: '✈️',
-  garden: '🌳',
-  gym: '💪',
-}
-
-function toUsd(usd?: number, lkr?: number) {
-  if (usd) return `$${usd}`
-  if (lkr) return `$${Math.round(lkr / 300)}`
-  return '$?'
+function getPrice(acc: Accommodation): string {
+    return acc.price ? `$${acc.price}` : '$?'
 }
 
 // Count accommodations with valid coordinates
 const staysOnMapCount = computed(() => {
-  return props.accommodations.filter(a => a.location?.latitude && a.location?.longitude).length
+  return props.accommodations.filter(a => a.lat && a.lng).length
 })
 
-function createMarkerIcon(acc: typeof props.accommodations[0], isHighlighted: boolean = false) {
-  const color = categoryColors[acc.category] || '#6b7280'
-  const price = toUsd(acc.price_per_night_usd, acc.price_per_night_lkr)
+function createMarkerIcon(acc: Accommodation, isHighlighted: boolean = false) {
+  const typeKey = acc.type || 'HOTEL'
+  const color = categoryColors[typeKey] || '#6b7280'
+  const price = getPrice(acc)
   const scale = isHighlighted ? 1.2 : 1
   const shadow = isHighlighted ? '0 0 20px rgba(59, 130, 246, 0.6), 0 4px 12px rgba(0,0,0,0.3)' : '0 2px 6px rgba(0,0,0,0.2)'
   const borderWidth = isHighlighted ? 3 : 2
@@ -96,7 +69,7 @@ function createMarkerIcon(acc: typeof props.accommodations[0], isHighlighted: bo
         color: ${isHighlighted ? 'white' : '#333'};
         animation: ${animation};
       ">
-        ${acc.safety_certified ? '<span style="font-size: 10px;">✓</span> ' : ''}${price}
+        ${acc.isSafetyCertified ? '<span style="font-size: 10px;">✓</span> ' : ''}${price}
       </div>
     `,
     iconSize: [70, 30],
@@ -104,31 +77,43 @@ function createMarkerIcon(acc: typeof props.accommodations[0], isHighlighted: bo
   })
 }
 
-function createPopupContent(acc: typeof props.accommodations[0]) {
-  const color = categoryColors[acc.category] || '#6b7280'
-  const price = toUsd(acc.price_per_night_usd, acc.price_per_night_lkr)
+function createPopupContent(acc: Accommodation) {
+  const typeKey = acc.type || 'HOTEL'
+  const color = categoryColors[typeKey] || '#6b7280'
+  const price = getPrice(acc)
   
   // Format amenities (show first 4)
   const amenities = (acc.amenities || []).slice(0, 4)
+  
+  // Amenities are objects {icon, label}
   const amenitiesHtml = amenities.length > 0
     ? `<div style="margin-top: 8px; display: flex; gap: 4px; flex-wrap: wrap;">
-        ${amenities.map(a => `<span style="font-size: 14px;" title="${a}">${amenityIcons[a] || '•'}</span>`).join('')}
+        ${amenities.map(a => {
+            const label = a.label
+            const icon = a.icon // Material symbol name
+            return `<span style="font-size: 14px; display: inline-flex; align-items: center;" title="${label}">
+                <span class="material-symbols-outlined" style="font-size: 16px;">${icon}</span>
+            </span>`
+        }).join('')}
        </div>`
     : ''
   
+  const title = acc.title
+  const cat = typeKey.replace(/_/g, ' ')
+
   return `
     <div style="min-width: 200px; padding: 4px;">
       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-        <strong style="font-size: 14px; flex: 1;">${acc.name}</strong>
-        ${acc.safety_certified ? '<span style="color: #10b981; font-size: 12px;" title="Safety Certified">✓</span>' : ''}
+        <strong style="font-size: 14px; flex: 1;">${title}</strong>
+        ${acc.isSafetyCertified ? '<span style="color: #10b981; font-size: 12px;" title="Safety Certified">✓</span>' : ''}
       </div>
       <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
         <span style="padding: 2px 8px; border-radius: 4px; background: ${color}15; color: ${color}; font-weight: 600; font-size: 11px;">
-          ${acc.category.replace(/_/g, ' ')}
+          ${cat}
         </span>
         ${acc.rating ? `<span style="color: #f59e0b; font-size: 12px; font-weight: 600;">⭐ ${acc.rating.toFixed(1)}</span>` : ''}
       </div>
-      ${acc.location?.name ? `<div style="color: #666; font-size: 11px; margin-top: 6px;">📍 ${acc.location.name}</div>` : ''}
+      ${acc.location ? `<div style="color: #666; font-size: 11px; margin-top: 6px;">📍 ${acc.location}</div>` : ''}
       ${amenitiesHtml}
       <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #eee;">
         <span style="color: #10b981; font-weight: bold; font-size: 16px;">${price}</span>
@@ -176,12 +161,16 @@ function updateMarkers() {
   
   // Add new markers
   props.accommodations.forEach(acc => {
-    if (!acc.location?.latitude || !acc.location?.longitude) return
+    // Only use flat lat/lng
+    const lat = acc.lat
+    const lng = acc.lng
+    
+    if (!lat || !lng) return
     
     const isHighlighted = props.highlightedId === acc.id
     const priceIcon = createMarkerIcon(acc, isHighlighted)
     
-    const marker = L.marker([acc.location.latitude, acc.location.longitude], {
+    const marker = L.marker([lat, lng], {
       icon: priceIcon,
       zIndexOffset: isHighlighted ? 1000 : 0
     })
@@ -241,9 +230,10 @@ function fitBoundsToMarkers() {
       duration: 0.5
     })
   } else if (markers.size === 1) {
-    const acc = props.accommodations.find(a => a.location?.latitude && a.location?.longitude)
-    if (acc?.location) {
-      map.setView([acc.location.latitude, acc.location.longitude], 12, {
+    // Find the one valid acc
+    const acc = props.accommodations.find(a => a.lat && a.lng)
+    if (acc && acc.lat && acc.lng) {
+      map.setView([acc.lat, acc.lng], 12, {
         animate: true
       })
     }
@@ -253,8 +243,9 @@ function fitBoundsToMarkers() {
 // Center map on specific accommodation
 function centerOnAccommodation(id: string | number) {
   const acc = props.accommodations.find(a => a.id === id)
-  if (acc?.location?.latitude && acc?.location?.longitude && map) {
-    map.setView([acc.location.latitude, acc.location.longitude], 14, {
+  
+  if (acc && acc.lat && acc.lng && map) {
+    map.setView([acc.lat, acc.lng], 14, {
       animate: true,
       duration: 0.5
     })
@@ -287,7 +278,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="relative hidden md:block md:flex-1 bg-neutral-100 dark:bg-neutral-900 overflow-hidden sticky top-[80px] h-[calc(100vh-80px)]">
+  <div class="relative w-full h-full bg-neutral-100 dark:bg-neutral-900 overflow-hidden">
     <div 
       ref="mapContainer" 
       class="w-full h-full"
@@ -309,7 +300,7 @@ onUnmounted(() => {
       Fit All
     </button>
     
-    <!-- Map Legend -->
+    <!-- Map Legend: Same as before but verified working -->
     <div class="absolute bottom-4 left-4 bg-white dark:bg-surface-dark rounded-xl shadow-lg p-3 z-[1000]">
       <div class="text-xs font-bold text-gray-600 dark:text-gray-300 mb-2">Categories</div>
       <div class="grid grid-cols-2 gap-x-4 gap-y-1">
