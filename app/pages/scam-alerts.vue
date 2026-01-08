@@ -1,1750 +1,2266 @@
 <template>
-  <div class="flex flex-col bg-background-light dark:bg-background-dark font-display text-charcoal dark:text-white">
-    <!-- Header with solid variant -->
-    <Header variant="solid" />
-
+  <div class="scam-alerts-page">
+    <!-- Compact Header -->
     <!-- Hero Section -->
-    <section class="relative h-[60vh] min-h-[500px] w-full overflow-hidden">
-      <div 
-        class="absolute inset-0 bg-cover bg-center" 
-        style='background-image: linear-gradient(rgba(16, 32, 34, 0.5) 0%, rgba(16, 32, 34, 0.7) 100%), url("/scam_alert_hero_1767782820867.png");'>
-      </div>
-      <div class="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
-        <div class="max-w-4xl space-y-6">
-          <div class="flex items-center justify-center gap-3 mb-4">
-            <span class="material-symbols-outlined text-red-500 text-5xl md:text-6xl">shield_with_heart</span>
-          </div>
-          <h1 class="font-display text-5xl font-extrabold tracking-tight text-white md:text-6xl lg:text-7xl drop-shadow-md">
-            Scam Alert Database
-          </h1>
-          <p class="mx-auto max-w-2xl text-lg font-medium text-white/90 md:text-xl drop-shadow-sm">
-            Real-time community reports to keep you safe. Stay informed about common scams and report suspicious activities to protect fellow travelers.
-          </p>
-          <div class="flex items-center justify-center gap-4 pt-4">
-            <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              <span class="material-symbols-outlined text-white text-[20px]">verified_user</span>
-              <span class="text-white text-sm font-semibold">Community Verified</span>
-            </div>
-            <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              <span class="material-symbols-outlined text-white text-[20px]">update</span>
-              <span class="text-white text-sm font-semibold">Real-time Updates</span>
-            </div>
-          </div>
+    <ScamHero
+      :stats="scamStats"
+      :report-count="userReports.length"
+      @report="showReportModal = true"
+      @toggle-reports="showMyReports = !showMyReports"
+    />
+
+    <!-- Mobile Tabs -->
+    <div class="mobile-tabs">
+      <button 
+        :class="['tab-btn', { active: activeTab === 'alerts' }]"
+        @click="activeTab = 'alerts'"
+      >
+        ⚠️ Alerts
+      </button>
+      <button 
+        :class="['tab-btn', { active: activeTab === 'map' }]"
+        @click="activeTab = 'map'"
+      >
+        📍 Map
+      </button>
+      <button 
+        :class="['tab-btn', { active: activeTab === 'assistant' }]"
+        @click="activeTab = 'assistant'"
+      >
+        🤖 Assistant
+      </button>
+    </div>
+
+    <div class="main-container">
+      <!-- Warning Banner (Full Width) -->
+      <WarningBanner
+        :show="showWarningBanner"
+        :severity="warningBannerSeverity"
+        :title="warningBannerTitle"
+        :message="warningBannerMessage"
+        :nearby-scams="nearbyHighRiskScams"
+        @close="showWarningBanner = false"
+      />
+
+      <!-- My Reports Section (Full Width, Collapsible) -->
+      <section v-if="showMyReports && userReports.length > 0" class="my-reports-section">
+        <div class="section-header-inline">
+          <h2 class="section-title-sm">📋 Your Reports</h2>
+          <button class="close-btn-sm" @click="showMyReports = false">✕</button>
         </div>
-      </div>
-    </section>
-
-    <!-- Safety Assistant Section -->
-    <section class="py-10 px-4 bg-gradient-to-b from-gray-50 to-background-light dark:from-surface-dark dark:to-background-dark">
-      <div class="max-w-xl mx-auto">
-        <SafetyAssistant :scams="scamAlerts" />
-      </div>
-    </section>
-
-    <!-- Dynamic Proximity Alert Banner -->
-    <Transition name="slide-down">
-      <div 
-        v-if="showDangerBanner && dangerLocation"
-        :class="[
-          'flex-none border-b px-6 py-2 flex items-center justify-center gap-3 text-sm font-medium z-20',
-          dangerLocation.risk === 'HIGH' 
-            ? 'bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-900/50 text-red-700 dark:text-red-300'
-            : 'bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-900/50 text-amber-700 dark:text-amber-300'
-        ]"
-      >
-        <span class="material-symbols-outlined text-[20px]">fmd_bad</span>
-        <p>
-          <strong>{{ dangerLocation.risk }} Risk:</strong> 
-          You are viewing {{ dangerLocation.name }}, a high-activity area for reported scams.
-          <span v-if="dangerLocation.count > 0" class="text-xs opacity-80">({{ dangerLocation.count }} alerts nearby)</span>
-        </p>
-        <button 
-          @click="dismissDangerBanner"
-          class="ml-4 opacity-60 hover:opacity-100 transition-opacity"
-        >
-          <span class="material-symbols-outlined text-[18px]">close</span>
-        </button>
-      </div>
-    </Transition>
-
-    <!-- Main Layout -->
-    <main class="flex relative" style="min-height: 700px;">
-      <!-- Sidebar (List View & Controls) -->
-      <aside
-        class="w-full md:w-[420px] lg:w-[480px] bg-white dark:bg-surface-dark flex flex-col border-r border-gray-200 dark:border-white/10 z-10 shadow-xl md:shadow-none absolute inset-0 md:relative transform transition-transform duration-300 bg-background-light"
-        style="height: 700px;"
-        :class="[
-          viewMode === 'list' ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        ]"
-      >
-        <!-- Sidebar Header & Filters -->
-        <div class="flex-none p-6 pb-2 border-b border-transparent">
-          <div class="flex flex-col gap-4 mb-6">
-            <div>
-              <h1 class="text-2xl font-bold text-charcoal dark:text-white leading-tight">Scam Database</h1>
-              <p class="text-gray-500 text-sm mt-1">Real-time community reports to keep you safe.</p>
-            </div>
-            
-            <!-- View Toggle (Mobile Only) -->
-            <div class="md:hidden bg-background-light dark:bg-background-dark p-1 rounded-lg flex self-start">
-              <label class="cursor-pointer relative">
-                <input 
-                  type="radio" 
-                  name="view" 
-                  value="map" 
-                  v-model="viewMode" 
-                  class="peer sr-only"
-                />
-                <div class="px-4 py-1.5 rounded-md text-sm font-medium text-gray-500 peer-checked:bg-white dark:peer-checked:bg-[#4a3b36] peer-checked:text-accent peer-checked:shadow-sm transition-all flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[18px]">map</span>
-                  Map
-                </div>
-              </label>
-              <label class="cursor-pointer relative">
-                <input 
-                  type="radio" 
-                  name="view" 
-                  value="list" 
-                  v-model="viewMode" 
-                  class="peer sr-only"
-                />
-                <div class="px-4 py-1.5 rounded-md text-sm font-medium text-gray-500 peer-checked:bg-white dark:peer-checked:bg-[#4a3b36] peer-checked:text-accent peer-checked:shadow-sm transition-all flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[18px]">list</span>
-                  List
-                </div>
-              </label>
-            </div>
-          </div>
-          
-          <!-- Category Filter Chips -->
-          <div class="flex gap-2 overflow-x-auto pb-3 custom-scrollbar -mx-6 px-6">
-            <button 
-              v-for="cat in categories" 
-              :key="cat.id ?? 'all'"
-              @click="selectedCategory = cat.id"
-              :class="[
-                'shrink-0 h-8 px-4 rounded-full text-xs font-medium flex items-center gap-1 transition-colors',
-                selectedCategory === cat.id 
-                  ? 'bg-charcoal text-white shadow-sm' 
-                  : 'bg-white dark:bg-background-dark border border-gray-200 dark:border-white/10 text-charcoal dark:text-white hover:border-accent'
-              ]"
-            >
-              <span v-if="cat.id" :class="['size-2 rounded-full', cat.color]"></span>
-              {{ cat.label }}
-            </button>
-          </div>
-
-          <!-- Severity Filter Chips -->
-          <div class="flex gap-2 overflow-x-auto pb-3 custom-scrollbar -mx-6 px-6">
-            <span class="shrink-0 text-xs font-semibold text-gray-500 dark:text-gray-400 pr-1 self-center">Risk:</span>
-            <button 
-              v-for="sev in severities" 
-              :key="sev.id ?? 'all-risk'"
-              @click="selectedSeverity = sev.id"
-              :class="[
-                'shrink-0 h-7 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 transition-colors',
-                selectedSeverity === sev.id 
-                  ? 'bg-charcoal text-white shadow-sm' 
-                  : 'bg-white dark:bg-background-dark border border-gray-200 dark:border-white/10 text-charcoal dark:text-white hover:border-accent'
-              ]"
-            >
-              <span v-if="sev.icon">{{ sev.icon }}</span>
-              {{ sev.label }}
-            </button>
-          </div>
-
-          <!-- Location Filter Dropdown -->
-          <div class="flex items-center gap-3 pb-3 -mx-6 px-6">
-            <span class="shrink-0 text-xs font-semibold text-gray-500 dark:text-gray-400">Location:</span>
-            <select
-              v-model="selectedLocation"
-              class="flex-1 h-8 px-3 rounded-lg text-xs font-medium bg-white dark:bg-background-dark border border-gray-200 dark:border-white/10 text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent"
-            >
-              <option v-for="loc in locations" :key="loc.id ?? 'all-loc'" :value="loc.id">
-                {{ loc.label }}
-              </option>
-            </select>
-          </div>
-
-          <!-- Active Filters Summary & Clear -->
-          <div 
-            v-if="selectedCategory || selectedSeverity || selectedLocation || nearMeMode"
-            class="flex items-center gap-2 pb-3 -mx-6 px-6"
+        <div class="reports-grid-compact">
+          <div
+            v-for="report in userReports"
+            :key="report.id"
+            class="report-card-compact"
           >
-            <span class="text-xs text-gray-500">Active filters:</span>
-            <div class="flex gap-1 flex-wrap">
-              <span 
-                v-if="selectedCategory" 
-                class="text-[10px] px-2 py-0.5 bg-accent/10 text-accent rounded-full"
-              >
-                {{ categories.find(c => c.id === selectedCategory)?.label }}
+            <div class="report-header-compact">
+              <span :class="['severity-badge-sm', report.severity]">
+                {{ report.severity }}
               </span>
-              <span 
-                v-if="selectedSeverity" 
-                class="text-[10px] px-2 py-0.5 bg-accent/10 text-accent rounded-full"
-              >
-                {{ severities.find(s => s.id === selectedSeverity)?.label }} Risk
-              </span>
-              <span 
-                v-if="selectedLocation" 
-                class="text-[10px] px-2 py-0.5 bg-accent/10 text-accent rounded-full"
-              >
-                {{ selectedLocation }}
-              </span>
-              <span 
-                v-if="nearMeMode" 
-                class="text-[10px] px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded-full"
-              >
-                📍 Within {{ radiusKm }}km
-              </span>
+              <button class="delete-btn-sm" @click="deleteReport(report.id)">🗑️</button>
             </div>
-            <button 
-              @click="selectedCategory = null; selectedSeverity = null; selectedLocation = null; disableNearMe()"
-              class="text-xs text-red-500 hover:text-red-600 font-medium"
-            >
-              Clear all
-            </button>
-          </div>
-
-          <!-- Near Me Toggle -->
-          <div class="flex items-center gap-3 pb-4 -mx-6 px-6">
-            <button
-              v-if="!nearMeMode"
-              @click="enableNearMe"
-              :disabled="gettingLocation"
-              class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-wait text-sm font-medium transition-colors"
-            >
-              <span v-if="gettingLocation" class="animate-spin">⏳</span>
-              <span v-else>📍</span>
-              {{ gettingLocation ? 'Getting location...' : 'Show Near Me' }}
-            </button>
-            
-            <div v-else class="flex items-center gap-3 flex-wrap">
-              <span class="text-green-600 dark:text-green-400 font-semibold text-sm flex items-center gap-1">
-                📍 Near Me
-              </span>
-              <input
-                v-model.number="radiusKm"
-                type="range"
-                min="1"
-                max="20"
-                class="w-24 accent-accent"
-              />
-              <span class="text-xs text-gray-600 dark:text-gray-400">{{ radiusKm }}km</span>
-              <button
-                @click="disableNearMe"
-                class="px-3 py-1 text-xs border border-gray-300 dark:border-white/20 rounded hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
-              >
-                Clear
-              </button>
-            </div>
-          </div>
-
-          <!-- Near Me Risk Gauge -->
-          <div v-if="nearMeMode" class="pb-4 -mx-6 px-6">
-            <!-- Risk Gauge Card -->
-            <div 
-              :class="[
-                'rounded-xl p-4 border-2',
-                riskScore >= 70 ? 'bg-red-50 dark:bg-red-900/20 border-red-500' :
-                riskScore >= 40 ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-500' :
-                'bg-green-50 dark:bg-green-900/20 border-green-500'
-              ]"
-            >
-              <div class="flex items-center justify-between mb-3">
-                <div>
-                  <h3 
-                    :class="[
-                      'text-lg font-bold',
-                      riskScore >= 70 ? 'text-red-700 dark:text-red-300' :
-                      riskScore >= 40 ? 'text-orange-700 dark:text-orange-300' :
-                      'text-green-700 dark:text-green-300'
-                    ]"
-                  >
-                    {{ riskScore >= 70 ? '🔴 High Risk' : riskScore >= 40 ? '🟠 Moderate Risk' : '🟢 Low Risk' }}
-                  </h3>
-                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
-                    {{ scamAlerts.length }} alert{{ scamAlerts.length !== 1 ? 's' : '' }} 
-                    within {{ radiusKm }}km
-                  </p>
-                </div>
-                <div class="text-right">
-                  <div 
-                    :class="[
-                      'text-3xl font-bold',
-                      riskScore >= 70 ? 'text-red-600 dark:text-red-400' :
-                      riskScore >= 40 ? 'text-orange-600 dark:text-orange-400' :
-                      'text-green-600 dark:text-green-400'
-                    ]"
-                  >
-                    {{ riskScore }}
-                  </div>
-                  <div class="text-[10px] text-gray-500 uppercase tracking-wide">Risk Score</div>
-                </div>
-              </div>
-              
-              <!-- Risk Details -->
-              <div v-if="scamAlerts.length > 0" class="grid grid-cols-2 gap-3 text-xs">
-                <div class="bg-white/50 dark:bg-black/20 rounded-lg p-2">
-                  <div class="text-gray-500">Most Common</div>
-                  <div class="font-semibold text-gray-800 dark:text-gray-200 truncate">{{ getMostCommonCategory() }}</div>
-                </div>
-                <div class="bg-white/50 dark:bg-black/20 rounded-lg p-2">
-                  <div class="text-gray-500">High/Critical</div>
-                  <div class="font-semibold text-red-600 dark:text-red-400">
-                    {{ scamAlerts.filter(s => s.severity === 'HIGH' || s.severity === 'CRITICAL').length }}
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Location Privacy Note -->
-            <p class="text-[10px] text-gray-400 mt-2 text-center">
-              📍 Your location is used locally only and never stored.
-            </p>
+            <h3 class="report-title-sm">{{ getScamTitle(report.scamType) }}</h3>
+            <p class="report-meta">📍 {{ formatReportTime(report.timestamp) }}</p>
           </div>
         </div>
+      </section>
 
-        <!-- Scrollable List Area -->
-        <div class="flex-1 overflow-y-auto custom-scrollbar px-6 pb-20">
-          <!-- Loading State -->
-          <div v-if="pending" class="flex items-center justify-center py-12">
-            <div class="animate-spin size-8 border-2 border-accent border-t-transparent rounded-full"></div>
+      <!-- Desktop: Two Column Layout | Mobile: Tabbed Content -->
+      <div class="layout-grid">
+        <!-- LEFT COLUMN: Filters + Scam List -->
+        <div :class="['left-column', { hidden: activeTab !== 'alerts' }]">
+          <!-- Filters -->
+          <div class="filters-compact">
+            <ScamFilters
+              :severity="selectedSeverity"
+              :location="selectedLocation"
+              :category="selectedCategory"
+              :search-query="searchQuery"
+              :selected-tags="selectedTags"
+              :traveler-type="travelerType"
+              :locations="adaptedLocations"
+              :categories="categories"
+              :result-count="filteredScams.length"
+              :nearby-mode="nearbyMode"
+              :nearby-loading="nearbyLoading"
+              :nearby-distance="nearbyDistance"
+              :nearby-error="nearbyError"
+              @update:severity="selectedSeverity = $event"
+              @update:location="handleLocationFilter"
+              @update:category="selectedCategory = $event"
+              @update:searchQuery="searchQuery = $event"
+              @update:selectedTags="selectedTags = $event"
+              @update:travelerType="travelerType = $event"
+              @toggleNearby="handleNearbyToggle"
+              @reset="resetFilters"
+            />
           </div>
 
-          <!-- Error State -->
-          <div v-else-if="error" class="text-center py-12 text-red-500">
-            <span class="material-symbols-outlined text-4xl mb-2">error</span>
-            <p>Failed to load alerts. Please try again.</p>
-            <button @click="refresh()" class="mt-4 px-4 py-2 bg-accent text-white rounded-lg">Retry</button>
-          </div>
-
-          <!-- Empty State with Helpful Guidance -->
-          <div v-else-if="scamAlerts.length === 0" class="text-center py-12 px-6">
-            <span class="material-symbols-outlined text-5xl mb-3 text-green-500">verified_user</span>
-            <h3 class="text-lg font-bold text-charcoal dark:text-white mb-2">No scam alerts found</h3>
-            
-            <!-- Dynamic guidance based on active filters -->
-            <div v-if="selectedCategory || selectedSeverity || selectedLocation || nearMeMode" class="text-sm text-gray-500 dark:text-gray-400 space-y-2">
-              <p>No results match your current filters:</p>
-              <div class="flex flex-wrap justify-center gap-2 mt-2 mb-4">
-                <span v-if="selectedCategory" class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs">
-                  {{ categories.find(c => c.id === selectedCategory)?.label }}
-                </span>
-                <span v-if="selectedSeverity" class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs">
-                  {{ severities.find(s => s.id === selectedSeverity)?.label }} Risk
-                </span>
-                <span v-if="selectedLocation" class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs">
-                  {{ selectedLocation }}
-                </span>
-                <span v-if="nearMeMode" class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-xs">
-                  📍 Within {{ radiusKm }}km
-                </span>
-              </div>
-              <p class="text-gray-400">Try broadening your search by removing some filters.</p>
-              <button 
-                @click="selectedCategory = null; selectedSeverity = null; selectedLocation = null; disableNearMe()"
-                class="mt-3 px-4 py-2 bg-accent text-white rounded-lg font-medium text-sm hover:bg-accent/90"
-              >
-                Clear all filters
-              </button>
+          <!-- Scam Alerts List -->
+          <div class="scams-list">
+            <div v-if="filteredScams.length === 0" class="no-results-compact">
+              <p>🔍 No scams match your filters</p>
+              <button @click="resetFilters" class="btn-reset-sm">Reset Filters</button>
             </div>
-            
-            <!-- No filters active - actually no scams in area -->
-            <div v-else class="text-sm text-gray-500 dark:text-gray-400">
-              <p>Great news! No scam alerts have been reported in this area.</p>
-              <p class="mt-2">Stay vigilant and help others by reporting any suspicious activities.</p>
-              <button 
-                @click="openReportModal"
-                class="mt-4 px-4 py-2 bg-accent text-white rounded-lg font-medium text-sm hover:bg-accent/90 inline-flex items-center gap-2"
-              >
-                <span class="material-symbols-outlined text-[18px]">add_alert</span>
-                Report a Scam
-              </button>
-            </div>
-          </div>
 
-          <!-- Alert Cards (Accordion Style) -->
-          <div v-else class="flex flex-col gap-4">
-            <div 
-              v-for="alert in scamAlerts" 
-              :key="alert.id"
-              :id="`scam-${alert.id}`"
-              :class="[
-                'group relative bg-white dark:bg-background-dark rounded-xl border shadow-sm transition-all overflow-hidden',
-                getSeverityClass(alert.severity),
-                highlightedScamId === alert.id ? 'ring-2 ring-primary ring-offset-2' : '',
-                expandedCardId === alert.id ? 'shadow-lg' : 'hover:shadow-md'
-              ]"
+            <article
+              v-for="scam in filteredScams"
+              :key="scam.id"
+              :id="`scam-${scam.id}`"
+              class="scam-card-compact"
+              :class="[`severity-${scam.severity}`, { expanded: expandedCards.has(scam.id) }]"
             >
-              <!-- Collapsed Header (always visible) -->
-              <div 
-                @click="toggleCardExpansion(alert)"
-                class="p-4 cursor-pointer"
+              <!-- Scam Header -->
+            <div class="scam-header">
+              <div class="scam-title-row">
+                <h3 class="scam-title">{{ scam.title }}</h3>
+                <button 
+                  class="expand-btn"
+                  @click.stop="toggleCard(scam.id)"
+                  :aria-label="expandedCards.has(scam.id) ? 'Collapse' : 'Expand'"
+                >
+                  {{ expandedCards.has(scam.id) ? '▼' : '▶' }}
+                </button>
+              </div>
+              <span :class="['severity-badge', `badge-${scam.severity}`]">
+                {{ getSeverityIcon(scam.severity) }} {{ scam.severity.toUpperCase() }} RISK
+              </span>
+            </div>
+
+            <!-- Scam Description -->
+            <p class="scam-description">{{ scam.description }}</p>
+
+            <!-- Location Chips -->
+            <div v-if="getAffectedLocations(scam.id).length > 0" class="location-chips">
+              <button
+                v-for="location in getAffectedLocations(scam.id)"
+                :key="location.id"
+                @click.stop="focusOnLocation(location.id)"
+                class="location-chip"
               >
-                <div class="flex items-start gap-3">
-                  <div :class="['size-10 rounded-full flex items-center justify-center shrink-0', getSeverityColor(alert.severity, alert.category)]">
-                    <span class="material-symbols-outlined">{{ getSeverityIcon(alert.category) }}</span>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 mb-1 pr-8">
-                      <h3 class="font-bold text-charcoal dark:text-white text-base truncate">{{ alert.title }}</h3>
-                      <!-- Severity Badge -->
-                      <span 
-                        :class="[
-                          'shrink-0 text-[10px] px-2 py-0.5 rounded-full uppercase font-bold tracking-wider',
-                          alert.severity === 'CRITICAL' ? 'bg-red-500 text-white' :
-                          alert.severity === 'HIGH' ? 'bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-300' :
-                          alert.severity === 'MEDIUM' ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300' :
-                          'bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300'
-                        ]"
-                      >
-                        {{ alert.severity }}
-                      </span>
+                📍 {{ location.name }}
+              </button>
+            </div>
+
+            <!-- Expanded Content -->
+            <Transition name="expand">
+              <div v-if="expandedCards.has(scam.id)" class="expanded-content">
+                <!-- Real Examples -->
+                <div v-if="scam.realExamples && scam.realExamples.length > 0" class="scam-examples">
+                  <strong class="section-label">⚠️ Real Examples:</strong>
+                  <ul class="examples-list">
+                    <li v-for="(example, index) in scam.realExamples" :key="index">
+                      {{ example }}
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Protection Tips -->
+                <div v-if="scam.preventionTips && scam.preventionTips.length > 0" class="scam-tips">
+                  <strong class="section-label">
+                    {{ (scam.severity === 'critical' || scam.severity === 'high') ? '🛡️ Prevention (Critical):' : '🛡️ How to Protect Yourself:' }}
+                  </strong>
+                  <ul class="tips-list">
+                    <li v-for="(tip, index) in scam.preventionTips" :key="index">
+                      {{ tip }}
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- What to do if confronted (Critical/High only) -->
+                <div v-if="(scam.severity === 'critical' || scam.severity === 'high')" class="confrontation-guide">
+                  <strong class="section-label urgent">🚨 If You're Confronted:</strong>
+                  <ul class="emergency-steps">
+                    <li><strong>Stay Calm:</strong> Don't panic or show fear. Remain polite but firm.</li>
+                    <li><strong>Refuse Firmly:</strong> Say "No thank you" clearly and walk away. Don't negotiate.</li>
+                    <li><strong>Seek Help:</strong> Move toward populated areas, police, or your accommodation.</li>
+                    <li><strong>Document:</strong> If safe, take photos/videos and note details (names, vehicle numbers).</li>
+                    <li><strong>Report Immediately:</strong> Contact tourist police or your embassy if threatened.</li>
+                  </ul>
+                </div>
+
+                <!-- Reporting Contacts (Critical/High only) -->
+                <div v-if="(scam.severity === 'critical' || scam.severity === 'high')" class="reporting-section">
+                  <strong class="section-label urgent">📞 Report This Scam:</strong>
+                  <div class="contact-cards">
+                    <div class="contact-card">
+                      <div class="contact-icon">👮</div>
+                      <div class="contact-info">
+                        <strong>Tourist Police (24/7)</strong>
+                        <a href="tel:1912" class="contact-number">1912</a>
+                        <span class="contact-note">English speaking officers</span>
+                      </div>
                     </div>
-                    <!-- 1-line summary (truncated) -->
-                    <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">
-                      {{ alert.description }}
-                    </p>
-                    <!-- Affected locations -->
-                    <div class="flex items-center gap-1.5 text-xs font-medium text-gray-500 mt-2">
-                      <span class="material-symbols-outlined text-[16px]">location_on</span>
-                      <span>{{ alert.location?.name || 'Unknown location' }}</span>
-                      <span v-if="alert.location?.district" class="text-gray-400">· {{ alert.location.district }}</span>
+                    <div class="contact-card">
+                      <div class="contact-icon">🚔</div>
+                      <div class="contact-info">
+                        <strong>Emergency Police</strong>
+                        <a href="tel:119" class="contact-number">119</a>
+                        <span class="contact-note">Immediate assistance</span>
+                      </div>
+                    </div>
+                    <div class="contact-card">
+                      <div class="contact-icon">🏛️</div>
+                      <div class="contact-info">
+                        <strong>Your Embassy</strong>
+                        <span class="contact-number">Keep contact handy</span>
+                        <span class="contact-note">For serious incidents</span>
+                      </div>
                     </div>
                   </div>
-                  <!-- Expand/Collapse indicator -->
-                  <div class="absolute top-4 right-4 flex items-center gap-2">
-                    <span class="text-xs text-gray-400">{{ getTimeAgo(alert.last_reported) }}</span>
-                    <span 
-                      class="material-symbols-outlined text-gray-400 transition-transform duration-200"
-                      :class="{ 'rotate-180': expandedCardId === alert.id }"
+                </div>
+
+                <!-- Medium Severity Caution -->
+                <div v-if="scam.severity === 'medium'" class="caution-notice">
+                  <div class="caution-icon">⚠️</div>
+                  <div class="caution-text">
+                    <strong>Exercise Caution:</strong> While not immediately dangerous, this scam can result in financial loss. 
+                    Follow prevention tips carefully and stay alert.
+                  </div>
+                </div>
+
+                <!-- Low Severity Info -->
+                <div v-if="scam.severity === 'low'" class="info-notice">
+                  <div class="info-icon">ℹ️</div>
+                  <div class="info-text">
+                    <strong>Low Risk:</strong> This is a minor inconvenience but good to be aware of. 
+                    Simple awareness is usually sufficient protection.
+                  </div>
+                </div>
+
+                <!-- Traveler-Specific Warnings -->
+                <div 
+                  v-if="travelerType !== 'all' && scam.travelerWarnings && scam.travelerWarnings[travelerType]" 
+                  class="traveler-warnings"
+                  :class="`traveler-${travelerType}`"
+                >
+                  <div class="traveler-warning-header">
+                    <span class="warning-icon">
+                      {{ getTravelerIcon(travelerType) }}
+                    </span>
+                    <strong class="section-label">{{ getTravelerLabel(travelerType) }} Alert</strong>
+                  </div>
+                  <ul class="warning-list">
+                    <li v-for="(warning, idx) in scam.travelerWarnings[travelerType]" :key="idx">
+                      {{ warning }}
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Common in these places -->
+                <div v-if="scam.commonLocations && scam.commonLocations.length > 0" class="common-places">
+                  <strong class="section-label">📍 Common in these places:</strong>
+                  <div class="places-grid">
+                    <button
+                      v-for="locId in scam.commonLocations"
+                      :key="locId"
+                      @click.stop="focusOnLocation(locId)"
+                      class="place-btn"
                     >
-                      expand_more
+                      {{ getLocationName(locId) }}
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Tags -->
+                <div v-if="scam.tags && scam.tags.length > 0" class="scam-tags">
+                  <strong class="section-label">🏷️ Tags:</strong>
+                  <div class="tags-list">
+                    <span v-for="tag in scam.tags" :key="tag" class="tag">
+                      {{ tag }}
                     </span>
                   </div>
                 </div>
               </div>
+            </Transition>
 
-              <!-- Expanded Content (drawer/accordion) -->
-              <Transition
-                enter-active-class="transition-all duration-300 ease-out"
-                leave-active-class="transition-all duration-200 ease-in"
-                enter-from-class="max-h-0 opacity-0"
-                enter-to-class="max-h-[1000px] opacity-100"
-                leave-from-class="max-h-[1000px] opacity-100"
-                leave-to-class="max-h-0 opacity-0"
-              >
-                <div 
-                  v-if="expandedCardId === alert.id"
-                  class="border-t border-gray-100 dark:border-white/10 overflow-hidden"
-                >
-                  <div class="p-4 pt-4 space-y-5 bg-gray-50/50 dark:bg-black/20">
-                    
-                    <!-- How the scam works -->
-                    <div>
-                      <h4 class="flex items-center gap-2 text-sm font-bold text-charcoal dark:text-white mb-2">
-                        <span class="material-symbols-outlined text-[18px] text-amber-500">search</span>
-                        How This Scam Works
-                      </h4>
-                      <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                        {{ alert.description }}
-                      </p>
-                    </div>
-
-                    <!-- Real Example -->
-                    <div>
-                      <h4 class="flex items-center gap-2 text-sm font-bold text-charcoal dark:text-white mb-2">
-                        <span class="material-symbols-outlined text-[18px] text-blue-500">auto_stories</span>
-                        Real Example
-                      </h4>
-                      <div class="bg-white dark:bg-surface-dark rounded-lg p-3 border border-gray-200 dark:border-white/10">
-                        <p class="text-sm text-gray-600 dark:text-gray-300 italic">
-                          "{{ getExampleFromDescription(alert.description) }}"
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Prevention Checklist -->
-                    <div>
-                      <h4 class="flex items-center gap-2 text-sm font-bold text-charcoal dark:text-white mb-2">
-                        <span class="material-symbols-outlined text-[18px] text-green-500">checklist</span>
-                        Prevention Checklist
-                      </h4>
-                      <ul v-if="alert.prevention_tips?.length" class="space-y-2">
-                        <li 
-                          v-for="(tip, index) in alert.prevention_tips" 
-                          :key="index"
-                          class="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300"
-                        >
-                          <span class="material-symbols-outlined text-[18px] text-green-500 shrink-0 mt-0.5">check_circle</span>
-                          <span>{{ tip }}</span>
-                        </li>
-                      </ul>
-                      <p v-else class="text-sm text-gray-500 italic">No prevention tips available yet.</p>
-                    </div>
-
-                    <!-- Where this happens most -->
-                    <div>
-                      <h4 class="flex items-center gap-2 text-sm font-bold text-charcoal dark:text-white mb-2">
-                        <span class="material-symbols-outlined text-[18px] text-red-500">fmd_bad</span>
-                        Where This Happens Most
-                      </h4>
-                      <div class="flex items-center gap-2 flex-wrap">
-                        <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full text-xs font-medium">
-                          <span class="material-symbols-outlined text-[14px]">location_on</span>
-                          {{ alert.location?.name || 'Unknown' }}
-                        </span>
-                        <span v-if="alert.location?.district" class="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium">
-                          {{ alert.location.district }} District
-                        </span>
-                      </div>
-                    </div>
-
-                    <!-- Related Scams (by tag/category) -->
-                    <div>
-                      <h4 class="flex items-center gap-2 text-sm font-bold text-charcoal dark:text-white mb-2">
-                        <span class="material-symbols-outlined text-[18px] text-purple-500">label</span>
-                        Related Scams
-                      </h4>
-                      <div class="flex items-center gap-2 flex-wrap">
-                        <button 
-                          @click.stop="filterByCategory(alert.category)"
-                          :class="[
-                            'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
-                            selectedCategory === alert.category 
-                              ? 'bg-accent text-white' 
-                              : 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-900/50'
-                          ]"
-                        >
-                          {{ formatCategoryLabel(alert.category) }}
-                        </button>
-                        <button 
-                          v-if="alert.location?.name"
-                          @click.stop="filterByLocation(alert.location.name)"
-                          :class="[
-                            'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
-                            'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50'
-                          ]"
-                        >
-                          {{ alert.location.name }}
-                        </button>
-                        <button 
-                          @click.stop="filterBySeverity(alert.severity)"
-                          :class="[
-                            'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
-                            alert.severity === 'HIGH' || alert.severity === 'CRITICAL'
-                              ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200'
-                              : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-200'
-                          ]"
-                        >
-                          {{ alert.severity }} Risk
-                        </button>
-                      </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex items-center justify-between gap-3 pt-3 border-t border-gray-200 dark:border-white/10">
-                      <div class="flex items-center gap-2">
-                        <TrustBadge 
-                          type="severity" 
-                          :value="alert.severity" 
-                        />
-                        <TrustBadge 
-                          type="confidence" 
-                          :value="alert.report_count" 
-                          label="Number of confirmations"
-                        />
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <button
-                          @click.stop="confirmAlert(alert.id)"
-                          class="px-4 py-2 bg-accent text-white rounded-lg text-xs font-semibold hover:bg-accent/90 transition-colors"
-                        >
-                          👍 Confirm Report
-                        </button>
-                        <button
-                          @click.stop="toggleCardExpansion(alert)"
-                          class="px-3 py-2 border border-gray-200 dark:border-white/20 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Transition>
+            <!-- Category Tag -->
+            <div class="scam-footer">
+              <span class="category-tag-sm">
+                {{ getCategoryIcon(scam.category) }} {{ scam.category }}
+              </span>
             </div>
-          </div>
-
-          <div v-if="scamAlerts.length > 0" class="mt-6 text-center pb-6">
-            <button
-              v-if="hasMore"
-              @click="loadMore"
-              :disabled="loadingMore"
-              class="px-6 py-3 bg-accent hover:bg-accent/90 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2 mx-auto"
-            >
-              <span v-if="loadingMore" class="animate-spin size-4 border-2 border-white border-t-transparent rounded-full"></span>
-              <span>{{ loadingMore ? 'Loading...' : 'Load more reports' }}</span>
-            </button>
-            <p v-else class="text-gray-400 text-sm">All reports loaded ({{ totalCount }} total)</p>
+          </article>
           </div>
         </div>
 
-        <!-- Mobile Toggle Handle -->
-        <div 
-          @click="viewMode = 'list'"
-          v-if="viewMode === 'map'"
-          class="absolute -right-8 top-1/2 bg-white dark:bg-background-dark p-2 rounded-r-lg shadow-md md:hidden cursor-pointer border-y border-r border-gray-200 dark:border-white/10"
-        >
-          <span class="material-symbols-outlined text-gray-500">chevron_left</span>
-        </div>
-      </aside>
-
-      <!-- Map Area -->
-      <div
-        class="flex-1 relative bg-gray-200 dark:bg-[#1a1614] z-0"
-        :class="[viewMode === 'map' ? 'block' : 'hidden md:block']"
-        style="height: 700px;"
-      >
-        <!-- Interactive Leaflet Map -->
-        <ClientOnly>
-          <ScamAlertsMap
-            ref="scamMapRef"
-            :scams="scamAlerts"
-            :highlighted-id="highlightedScamId"
-            :report-mode="reportMode"
-            @select-scam="handleMarkerClick"
-            @report-at="handleMapReport"
-            @map-center="handleMapCenter"
-            @pin-drag="handlePinDrag"
-            @context-report="handleContextReport"
-            class="w-full h-full z-0"
-          />
-          <template #fallback>
-            <div class="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-surface-dark">
-              <div class="text-center">
-                <div class="animate-spin size-8 border-2 border-accent border-t-transparent rounded-full mx-auto mb-2"></div>
-                <p class="text-gray-500">Loading map...</p>
-              </div>
-            </div>
-          </template>
-        </ClientOnly>
-
-        <!-- Report Mode Banner -->
-        <Transition name="slide-down">
-          <div 
-            v-if="reportMode"
-            class="absolute top-4 left-4 right-4 md:left-4 md:right-auto bg-amber-50 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 rounded-lg px-4 py-3 z-30 max-w-sm shadow-lg"
-            role="alert"
-            aria-live="polite"
-          >
-            <div class="flex items-start gap-3">
-              <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[20px] shrink-0 mt-0.5">my_location</span>
-              <div class="flex-1">
-                <p class="text-sm font-semibold text-amber-800 dark:text-amber-200">Report Mode Active</p>
-                <p class="text-xs text-amber-700 dark:text-amber-300 mt-0.5">Click on the map to drop a pin. Press <kbd class="px-1.5 py-0.5 bg-amber-200 dark:bg-amber-800 rounded text-[10px] font-mono">Esc</kbd> to cancel.</p>
-              </div>
-              <button 
-                @click="exitReportMode"
-                class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200"
-                aria-label="Exit report mode"
-              >
-                <span class="material-symbols-outlined text-[18px]">close</span>
-              </button>
-            </div>
-          </div>
-        </Transition>
-
-        <!-- Default Tip Banner (hidden in report mode) -->
-        <div 
-          v-if="!reportMode"
-          class="absolute top-4 left-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg px-3 py-2 z-10 max-w-[200px]"
-        >
-          <p class="text-xs text-blue-800 dark:text-blue-200">
-            💡 <strong>Tip:</strong> Right-click (or long-press) anywhere to report a scam
-          </p>
-        </div>
-
-        <!-- Floating Action Button (FAB) -->
-        <div class="absolute bottom-8 right-8 z-20">
-          <button 
-            v-if="!reportMode"
-            @click="enterReportMode" 
-            class="group flex items-center gap-2 bg-accent hover:bg-accent/90 text-white rounded-full pl-5 pr-6 py-4 shadow-lg shadow-accent/30 transition-all active:scale-95"
-            aria-label="Enter report mode to report a scam"
-          >
-            <span class="material-symbols-outlined text-[24px]">add_alert</span>
-            <span class="text-base font-bold">Report a Scam</span>
-          </button>
-          <button 
-            v-else
-            @click="exitReportMode" 
-            class="group flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white rounded-full pl-5 pr-6 py-4 shadow-lg transition-all active:scale-95"
-            aria-label="Exit report mode"
-          >
-            <span class="material-symbols-outlined text-[24px]">close</span>
-            <span class="text-base font-bold">Exit Report Mode</span>
-          </button>
-        </div>
-
-        <!-- Context Menu (for right-click) -->
-        <Teleport to="body">
-          <div 
-            v-if="showContextMenu"
-            class="fixed bg-white dark:bg-surface-dark rounded-lg shadow-xl border border-gray-200 dark:border-white/10 py-1 z-[9999]"
-            :style="{ left: contextMenuPos.x + 'px', top: contextMenuPos.y + 'px' }"
-          >
-            <button 
-              @click="confirmContextReport"
-              class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-white/10 flex items-center gap-2"
-            >
-              <span class="material-symbols-outlined text-[18px] text-red-500">report</span>
-              Report scam here
-            </button>
-          </div>
-        </Teleport>
-      </div>
-    </main>
-
-    <!-- Footer -->
-    <Footer />
-
-    <!-- Report Scam Panel -->
-    <Teleport to="body">
-      <Transition 
-        enter-active-class="transform transition ease-out duration-300" 
-        enter-from-class="translate-y-full md:translate-y-0 md:translate-x-full opacity-0" 
-        enter-to-class="translate-y-0 md:translate-x-0 opacity-100"
-        leave-active-class="transform transition ease-in duration-200" 
-        leave-from-class="translate-y-0 md:translate-x-0 opacity-100" 
-        leave-to-class="translate-y-full md:translate-y-0 md:translate-x-full opacity-0"
-      >
-        <div v-if="showReportModal" class="fixed inset-x-0 bottom-0 md:inset-auto md:top-24 md:right-6 z-50 w-full md:max-w-md pointer-events-none flex flex-col justify-end md:block p-4 md:p-0">
-          
-          <!-- Panel Content (Enable pointer events) -->
-          <div class="bg-white dark:bg-background-dark rounded-t-2xl md:rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 w-full max-h-[85vh] overflow-hidden flex flex-col pointer-events-auto">
-            
-            <!-- Panel Header -->
-            <div class="sticky top-0 bg-white dark:bg-background-dark border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between shrink-0 z-10">
-              <div>
-                <h2 class="text-xl font-bold text-charcoal dark:text-white">Report a Scam</h2>
-                <p class="text-xs text-gray-500 mt-0.5">Drag the pin to adjust location</p>
-              </div>
-              <button @click="showReportModal = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-1">
-                <span class="material-symbols-outlined">close</span>
-              </button>
-            </div>
-            
-            <!-- Panel Body (Scrollable) -->
-            <div class="overflow-y-auto custom-scrollbar">
-          <form @submit.prevent="submitReport" class="p-6 space-y-5" novalidate>
-            <!-- Title -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title *</label>
-              <input v-model="reportForm.title" type="text" required minlength="5" maxlength="200" 
-                class="w-full px-4 py-3 border border-gray-300 dark:border-white/20 rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent"
-                placeholder="Brief title for this scam..."
-                aria-describedby="title-hint" />
-            </div>
-            
-            <!-- Description -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description * <span class="text-gray-400 font-normal">(min 20 chars)</span></label>
-              <textarea v-model="reportForm.description" required minlength="20" maxlength="2000" rows="4"
-                :class="[
-                  'w-full px-4 py-3 border rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent resize-none',
-                  formErrors.description ? 'border-red-500' : 'border-gray-300 dark:border-white/20'
-                ]"
-                placeholder="Describe what happened, how to avoid it..."
-                aria-describedby="description-error"
-              ></textarea>
-              <p v-if="formErrors.description" id="description-error" class="text-red-500 text-xs mt-1" role="alert">{{ formErrors.description }}</p>
-              <p v-else class="text-gray-400 text-xs mt-1">{{ reportForm.description.length }}/20 minimum characters</p>
-            </div>
-            
-            <!-- Category -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Scam Type *</label>
-              <select v-model="reportForm.category" required
-                :class="[
-                  'w-full px-4 py-3 border rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent',
-                  formErrors.category ? 'border-red-500' : 'border-gray-300 dark:border-white/20'
-                ]"
-                aria-describedby="category-error">
-                <option value="" disabled>Select a category</option>
-                <option value="GEM_SCAM">Gem Scam</option>
-                <option value="TRANSPORT_SCAM">Transport/Tuk-tuk Scam</option>
-                <option value="ACCOMMODATION_SCAM">Accommodation Scam</option>
-                <option value="TOUR_GUIDE_SCAM">Fake Tour Guide</option>
-                <option value="RESTAURANT_SCAM">Restaurant Scam</option>
-                <option value="SHOPPING_SCAM">Shopping/Exchange Scam</option>
-                <option value="OTHER">Other</option>
-              </select>
-              <p v-if="formErrors.category" id="category-error" class="text-red-500 text-xs mt-1" role="alert">{{ formErrors.category }}</p>
-            </div>
-            
-            <!-- Severity -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Severity *</label>
-              <div class="flex gap-3" role="radiogroup" aria-label="Severity level">
-                <label v-for="sev in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']" :key="sev" class="flex-1">
-                  <input type="radio" v-model="reportForm.severity" :value="sev" class="sr-only peer" />
-                  <div class="text-center py-2 rounded-lg border-2 cursor-pointer transition-all"
-                    :class="[
-                      reportForm.severity === sev 
-                        ? 'border-accent bg-accent/10 text-accent font-bold'
-                        : 'border-gray-200 dark:border-white/20 text-gray-600 dark:text-gray-400 hover:border-gray-300'
-                    ]">
-                    {{ sev }}
-                  </div>
-                </label>
-              </div>
-              <p v-if="formErrors.severity" class="text-red-500 text-xs mt-1" role="alert">{{ formErrors.severity }}</p>
-            </div>
-            
-            <!-- Location -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location *</label>
-              <input v-model="reportForm.location_name" type="text" required
-                :class="[
-                  'w-full px-4 py-3 border rounded-lg bg-white dark:bg-surface-dark text-charcoal dark:text-white focus:ring-2 focus:ring-accent focus:border-transparent',
-                  formErrors.location_name ? 'border-red-500' : 'border-gray-300 dark:border-white/20'
-                ]"
-                placeholder="e.g., Pettah Market, Colombo"
-                aria-describedby="location-error" />
-              <p v-if="formErrors.location_name" id="location-error" class="text-red-500 text-xs mt-1" role="alert">{{ formErrors.location_name }}</p>
-              <p v-if="reportForm.location_lat && reportForm.location_lng" class="text-gray-400 text-xs mt-1">
-                📍 Coordinates: {{ reportForm.location_lat.toFixed(4) }}, {{ reportForm.location_lng.toFixed(4) }}
-              </p>
-            </div>
-            
-            <!-- Submit Button -->
-            <button type="submit" :disabled="isSubmitting"
-              class="w-full py-4 bg-accent hover:bg-accent/90 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2">
-              <span v-if="isSubmitting" class="animate-spin size-5 border-2 border-white border-t-transparent rounded-full"></span>
-              <span>{{ isSubmitting ? 'Submitting...' : 'Submit Report' }}</span>
-            </button>
-            
-            <!-- Disclaimer -->
-            <p class="text-xs text-gray-500 dark:text-gray-400 text-center">
-              <span class="material-symbols-outlined text-[14px] align-middle mr-1">info</span>
-              Reports are moderated before appearing publicly. False reports may result in account restrictions.
-            </p>
-            
-            <p v-if="submitError" class="text-red-500 text-sm text-center" role="alert">{{ submitError }}</p>
-            <p v-if="submitSuccess" class="text-green-500 text-sm text-center" role="status">Report submitted successfully!</p>
-          </form>
-        </div>
-      </div>
-      </div>
-    </Transition>
-    </Teleport>
-
-    <!-- Scam Details Modal -->
-    <Teleport to="body">
-      <div v-if="showDetailsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/50" @click="closeScamDetails"></div>
-        <div class="relative bg-white dark:bg-background-dark rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <div class="sticky top-0 bg-white dark:bg-background-dark border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-charcoal dark:text-white">Scam Details</h2>
-            <button @click="closeScamDetails" class="text-gray-400 hover:text-gray-600">
-              <span class="material-symbols-outlined">close</span>
-            </button>
+        <!-- RIGHT COLUMN: Sticky Map + Assistant + Location Panel -->
+        <div :class="['right-column', { hidden: activeTab === 'alerts' }]">
+          <!-- Location Risk Panel (if location selected) -->
+          <div v-if="selectedLocationData" class="risk-panel-sticky">
+            <LocationRiskPanel
+              :location="selectedLocationData"
+              :scams="allScams"
+              @close="handleLocationPanelClose"
+              @scam-selected="handleScamSelected"
+            />
           </div>
 
-          <div class="p-6">
-            <div v-if="detailsLoading" class="flex items-center justify-center py-10">
-              <div class="animate-spin size-8 border-2 border-accent border-t-transparent rounded-full"></div>
-            </div>
+          <!-- Map -->
+          <div v-if="activeTab !== 'assistant'" class="map-sticky">
+            <h3 class="panel-title">📍 Scam Risk Map</h3>
+            <ClientOnly>
+              <ScamMap
+                :locations="filteredLocations"
+                :selected-location-id="selectedLocationForMap"
+                :nearby-mode="nearbyMode"
+                :user-location="userLocation"
+                @location-selected="handleMapLocationSelect"
+                @view-location-details="scrollToScamDetails"
+              />
+              <template #fallback>
+                <div class="map-loading-sm">Loading map...</div>
+              </template>
+            </ClientOnly>
+          </div>
 
-            <div v-else-if="detailsError" class="text-center py-8 text-red-500">
-              <span class="material-symbols-outlined text-4xl mb-2">error</span>
-              <p>{{ detailsError }}</p>
-              <button @click="openScamDetails(selectedScamId || highlightedScamId || '')" class="mt-4 px-4 py-2 bg-accent text-white rounded-lg">Retry</button>
-            </div>
-
-            <div v-else-if="scamDetails" class="space-y-5">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h3 class="text-xl font-bold text-charcoal dark:text-white">{{ scamDetails.title }}</h3>
-                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    {{ formatCategoryLabel(scamDetails.category) }} · {{ scamDetails.severity }}
-                  </p>
-                </div>
-                <span :class="['text-xs font-bold px-2.5 py-1 rounded-full uppercase', scamDetails.severity === 'CRITICAL' || scamDetails.severity === 'HIGH' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-700']">
-                  {{ scamDetails.severity }}
-                </span>
-              </div>
-
-              <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                {{ scamDetails.description }}
-              </p>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
-                  <div class="text-gray-500">Location</div>
-                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ scamDetails.location?.name || 'Unknown location' }}</div>
-                </div>
-                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
-                  <div class="text-gray-500">Last reported</div>
-                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ getTimeAgo(scamDetails.last_reported) }}</div>
-                </div>
-                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
-                  <div class="text-gray-500">Confirmations</div>
-                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ scamDetails.report_count }}</div>
-                </div>
-                <div class="bg-gray-50 dark:bg-white/5 rounded-lg p-3">
-                  <div class="text-gray-500">Verified</div>
-                  <div class="font-semibold text-gray-800 dark:text-gray-200">{{ scamDetails.is_verified ? 'Yes' : 'Pending' }}</div>
-                </div>
-              </div>
-
-              <div>
-                <h4 class="text-sm font-bold text-charcoal dark:text-white mb-2">How to avoid</h4>
-                <ul v-if="scamDetails.prevention_tips?.length" class="list-disc pl-5 text-sm text-gray-600 dark:text-gray-300 space-y-1">
-                  <li v-for="tip in scamDetails.prevention_tips" :key="tip">{{ tip }}</li>
-                </ul>
-                <p v-else class="text-sm text-gray-500">No prevention tips yet.</p>
-              </div>
-
-              <div class="flex items-center justify-between gap-3 pt-2">
-                <button
-                  class="px-4 py-2 bg-accent text-white rounded-lg font-semibold hover:bg-accent/90 disabled:opacity-60"
-                  :disabled="confirmingDetails"
-                  @click="confirmDetailsAlert"
-                >
-                  {{ confirmingDetails ? 'Confirming...' : 'Confirm this report' }}
-                </button>
-                <button
-                  class="px-4 py-2 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-semibold hover:bg-gray-50 dark:hover:bg-white/5"
-                  @click="closeScamDetails"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+          <!-- Safety Assistant -->
+          <div v-if="activeTab !== 'map'" class="assistant-sticky">
+            <h3 class="panel-title">🤖 Safety Assistant</h3>
+            <ScamSafetyAssistantV2 />
           </div>
         </div>
       </div>
-    </Teleport>
+    </div>
+
+    <!-- Report Scam Modal -->
+    <ReportScamModal
+      :show="showReportModal"
+      :scam-types="scamTypes"
+      @close="showReportModal = false"
+      @submit="handleReportSubmit"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
-import type { ScamAlert } from '~/types/api'
-import { useModal } from '~/composables/useModal'
+import { ref, computed } from 'vue'
+import { useScamData } from '~/composables/useScamData'
+import { getUserLocation, findNearbyLocations, formatDistance, type Coordinates } from '~/utils/geolocation'
+import { locations as allLocationData, scamTypes as allScamTypes } from '~/data/scamData'
+import type { TravelerType } from '~/types/scamData'
 
-const route = useRoute()
-
-definePageMeta({
-  layout: false
-})
-
-const viewMode = ref<'list' | 'map'>('list')
-const selectedCategory = ref<string | null>(null)
-const selectedSeverity = ref<string | null>(null)  // Filter by severity: HIGH, MEDIUM, LOW
-const selectedLocation = ref<string | null>(null)  // Filter by location/district
-
-// Dynamic danger banner state
-const showDangerBanner = ref(false)
-const dangerBannerDismissed = ref(false)
-const dangerLocation = ref<{ name: string; risk: string; count: number } | null>(null)
-const mapCenter = ref<{ lat: number; lng: number }>({ lat: 7.8731, lng: 80.7718 })
-
-// High-risk scam hotspots with coordinates and risk levels
-const HIGH_RISK_LOCATIONS = [
-  { name: 'Pettah Market', lat: 6.9375, lng: 79.8556, risk: 'HIGH', radius: 1.5 },
-  { name: 'Colombo Fort', lat: 6.9344, lng: 79.8428, risk: 'HIGH', radius: 1 },
-  { name: 'Temple of the Tooth', lat: 7.2936, lng: 80.6413, risk: 'HIGH', radius: 0.8 },
-  { name: 'Galle Fort', lat: 6.0269, lng: 80.2167, risk: 'MEDIUM', radius: 1 },
-  { name: 'Sigiriya', lat: 7.9570, lng: 80.7603, risk: 'HIGH', radius: 1.5 },
-  { name: 'Negombo Beach', lat: 7.2088, lng: 79.8357, risk: 'MEDIUM', radius: 2 },
-  { name: 'Hikkaduwa Beach', lat: 6.1395, lng: 80.1063, risk: 'MEDIUM', radius: 1.5 },
-  { name: 'Unawatuna Beach', lat: 6.0116, lng: 80.2488, risk: 'MEDIUM', radius: 1 },
-  { name: 'Ratnapura Gem District', lat: 6.6828, lng: 80.3981, risk: 'HIGH', radius: 2 },
-  { name: 'Kandy City', lat: 7.2906, lng: 80.6337, risk: 'MEDIUM', radius: 1.5 },
-  { name: 'Airport Road', lat: 7.1808, lng: 79.8845, risk: 'MEDIUM', radius: 2 },
-  { name: 'Yala National Park Entrance', lat: 6.3556, lng: 81.5167, risk: 'HIGH', radius: 3 },
-]
-
-// Calculate distance in km using Haversine formula
-function getDistanceKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371 // Earth's radius in km
-  const dLat = (lat2 - lat1) * Math.PI / 180
-  const dLng = (lng2 - lng1) * Math.PI / 180
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2)
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  return R * c
-}
-
-// Handle map center change - check if near a high-risk location
-function handleMapCenter(coords: { lat: number; lng: number }) {
-  mapCenter.value = coords
-  
-  // Reset if dismissed
-  if (dangerBannerDismissed.value) {
-    // Check if moved far away to un-dismiss
-    const anyNearby = HIGH_RISK_LOCATIONS.some(loc => 
-      getDistanceKm(coords.lat, coords.lng, loc.lat, loc.lng) <= loc.radius
-    )
-    if (!anyNearby) {
-      dangerBannerDismissed.value = false
-    }
-    return
-  }
-  
-  // Find nearest high-risk location
-  let nearestDanger: typeof HIGH_RISK_LOCATIONS[0] | null = null
-  let nearestDistance = Infinity
-  
-  for (const loc of HIGH_RISK_LOCATIONS) {
-    const dist = getDistanceKm(coords.lat, coords.lng, loc.lat, loc.lng)
-    if (dist <= loc.radius && dist < nearestDistance) {
-      nearestDistance = dist
-      nearestDanger = loc
-    }
-  }
-  
-  if (nearestDanger) {
-    // Count scams in this area
-    const scamCount = scamAlerts.value.filter(scam => {
-      if (!scam.location?.latitude || !scam.location?.longitude) return false
-      const dist = getDistanceKm(scam.location.latitude, scam.location.longitude, nearestDanger!.lat, nearestDanger!.lng)
-      return dist <= nearestDanger!.radius
-    }).length
-    
-    dangerLocation.value = {
-      name: nearestDanger.name,
-      risk: nearestDanger.risk,
-      count: scamCount
-    }
-    showDangerBanner.value = true
-  } else {
-    showDangerBanner.value = false
-    dangerLocation.value = null
-  }
-}
-
-// Dismiss danger banner
-function dismissDangerBanner() {
-  showDangerBanner.value = false
-  dangerBannerDismissed.value = true
-}
-
-// ==========================================
-// REPORT MODE STATE & FUNCTIONS
-// ==========================================
-
-// Report Mode state
-const reportMode = ref(false)
-const showContextMenu = ref(false)
-const contextMenuPos = ref({ x: 0, y: 0 })
-const pendingContextCoords = ref<{ lat: number; lng: number } | null>(null)
-
-// Report Modal State
-const showReportModal = ref(false)
-const showDetailsModal = ref(false)
-const isSubmitting = ref(false)
-const submitError = ref('')
-const submitSuccess = ref(false)
-const formErrors = ref<Record<string, string>>({})
-
-// Enter Report Mode
-function enterReportMode() {
-  console.log('Entering report mode...')
-  reportMode.value = true
-  viewMode.value = 'map'
-  showContextMenu.value = false
-  
-  // Wait for DOM updates and CSS transitions
-  nextTick(() => {
-    setTimeout(() => {
-      console.log('Calling invalidateSize')
-      scamMapRef.value?.invalidateSize?.()
-    }, 400)
-  })
-}
-
-// Exit Report Mode
-function exitReportMode() {
-  reportMode.value = false
-  showContextMenu.value = false
-  scamMapRef.value?.clearReportMarker?.()
-  
-  // Fix map rendering when exiting report mode
-  nextTick(() => {
-    setTimeout(() => {
-      scamMapRef.value?.invalidateSize?.()
-    }, 400)
-  })
-}
-
-// Handle context report (right-click / long-press)
-function handleContextReport(coords: { lat: number; lng: number }) {
-  pendingContextCoords.value = coords
-  
-  // Position context menu near click
-  const rect = document.querySelector('.leaflet-container')?.getBoundingClientRect()
-  if (rect) {
-    // Convert lat/lng to approximate screen position (rough estimate)
-    contextMenuPos.value = {
-      x: Math.min(rect.left + rect.width / 2, window.innerWidth - 180),
-      y: Math.min(rect.top + rect.height / 2, window.innerHeight - 60)
-    }
-  }
-  
-  showContextMenu.value = true
-  
-  // Close context menu on click elsewhere
-  setTimeout(() => {
-    document.addEventListener('click', closeContextMenu, { once: true })
-  }, 10)
-}
-
-// Close context menu
-function closeContextMenu() {
-  showContextMenu.value = false
-}
-
-// Confirm context report action
-function confirmContextReport() {
-  if (pendingContextCoords.value) {
-    handleMapReport(pendingContextCoords.value)
-  }
-  showContextMenu.value = false
-}
-
-// Handle pin drag to update location
-function handlePinDrag(coords: { lat: number; lng: number }) {
-  reportForm.value.location_lat = coords.lat
-  reportForm.value.location_lng = coords.lng
-  reportForm.value.location_name = `${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`
-}
-
-// Keyboard event handling for Esc key
-function handleKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') {
-    if (showContextMenu.value) {
-      closeContextMenu()
-    } else if (reportMode.value) {
-      exitReportMode()
-    }
-  }
-}
-
-// Setup keyboard listeners
-onMounted(() => {
-  document.addEventListener('keydown', handleKeydown)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeydown)
-})
-
-// Form validation
-function validateForm(): boolean {
-  formErrors.value = {}
-  
-  if (!reportForm.value.category) {
-    formErrors.value.category = 'Please select a scam type'
-  }
-  
-  if (!reportForm.value.severity) {
-    formErrors.value.severity = 'Please select a severity level'
-  }
-  
-  if (!reportForm.value.description || reportForm.value.description.length < 20) {
-    formErrors.value.description = 'Description must be at least 20 characters'
-  }
-  
-  if (!reportForm.value.location_name) {
-    formErrors.value.location_name = 'Location is required'
-  }
-  
-  return Object.keys(formErrors.value).length === 0
-}
-
-// Modal Esc-close support
-useModal(showReportModal, () => { 
-  showReportModal.value = false 
-  exitReportMode()
-})
-useModal(showDetailsModal, () => { showDetailsModal.value = false })
-
-// Watch for modal changes and fix map rendering
-watch(showReportModal, (isOpen) => {
-  if (isOpen) {
-    // Wait for modal animation and then invalidate map size
-    setTimeout(() => {
-      scamMapRef.value?.invalidateSize?.()
-    }, 350)
-  }
-})
-
-// Watch for viewMode changes (handles mobile view toggle)
-watch(viewMode, (newMode) => {
-  if (newMode === 'map') {
-    // Map is being shown, invalidate size after CSS transition
-    setTimeout(() => {
-      scamMapRef.value?.invalidateSize?.()
-    }, 350)
-  }
-})
-
-const reportForm = ref({
-  title: '',
-  description: '',
-  category: '',
-  severity: 'MEDIUM',
-  location_name: '',
-  location_lat: 7.8731, // Default to Sri Lanka center
-  location_lng: 80.7718,
-})
-
-// Details modal state
-const detailsLoading = ref(false)
-const detailsError = ref('')
-const scamDetails = ref<ScamAlert | null>(null)
-const confirmingDetails = ref(false)
-
-// Pagination state
-const currentOffset = ref(0)
-const limit = 20
-const allAlerts = ref<ScamAlert[]>([])
-const hasMore = ref(true)
-const totalCount = ref(0)
-const loadingMore = ref(false)
-
-// Near Me mode state
-const userLocation = ref<{ lat: number; lng: number } | null>(null)
-const nearMeMode = ref(false)
-const radiusKm = ref(5)
-const gettingLocation = ref(false)
-
-// Handle deep-links for report modal, category filter, or specific scam
-const highlightedScamId = ref<string | null>(null)
-const selectedScamId = ref<string | null>(null)
-
-// Accordion expansion state
-const expandedCardId = ref<string | null>(null)
-
-// Ref to the map component for pan/zoom control
-const scamMapRef = ref<{ panToScam: (id: string) => void; clearReportMarker: () => void; invalidateSize: () => void } | null>(null)
-
-onMounted(async () => {
-  // Handle openReport query param
-  if (route.query.openReport) {
-    const category = route.query.openReport as string
-    showReportModal.value = true
-    
-    // Pre-fill category based on query param
-    if (category === 'transport') {
-      reportForm.value.category = 'TRANSPORT_SCAM'
-    }
-  }
-  
-  // Handle category filter from URL
-  if (route.query.category) {
-    selectedCategory.value = route.query.category as string
-  }
-  
-  // Handle specific scam ID - highlight and scroll to it
-  if (route.query.id) {
-    highlightedScamId.value = route.query.id as string
-    
-    // Wait for DOM update then scroll
-    await nextTick()
-    setTimeout(() => {
-      const element = document.getElementById(`scam-${highlightedScamId.value}`)
-      element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }, 500)
-
-    openScamDetails(highlightedScamId.value)
-  }
-})
-
-// Fetch scam alerts from API
-const { data: scamsResponse, pending, error, refresh } = await useFetch<{ 
-  success: boolean; 
-  data: ScamAlert[]; 
-  count: number;
-  total: number;
-  nextOffset: number | null;
-}>(
-  () => {
-    const config = useRuntimeConfig()
-    const base = config.public.apiBase
-    const params = new URLSearchParams()
-    if (selectedCategory.value) params.set('category', selectedCategory.value)
-    if (selectedSeverity.value) params.set('severity', selectedSeverity.value)
-    if (selectedLocation.value) params.set('location', selectedLocation.value)
-    params.set('limit', String(limit))
-    params.set('offset', String(currentOffset.value))
-    // Add location params if Near Me mode is active
-    if (nearMeMode.value && userLocation.value) {
-      params.set('lat', String(userLocation.value.lat))
-      params.set('lng', String(userLocation.value.lng))
-      params.set('radius', String(radiusKm.value))
-    }
-    return `${base}/api/scams?${params}`
-  },
-  { 
-    watch: [selectedCategory, selectedSeverity, selectedLocation, nearMeMode, radiusKm],
-    onResponse({ response }) {
-      if (response._data?.success) {
-        if (currentOffset.value === 0) {
-          allAlerts.value = response._data.data || []
-        } else {
-          allAlerts.value = [...allAlerts.value, ...(response._data.data || [])]
-        }
-        totalCount.value = response._data.total || 0
-        hasMore.value = response._data.nextOffset !== null
-      }
-    }
-  }
-)
-
-// Hydration fix: Ensure initial data is populated if available (crucial for SSR/SSG/Hydration)
-if (scamsResponse.value?.success && scamsResponse.value?.data) {
-  if (allAlerts.value.length === 0) {
-    allAlerts.value = scamsResponse.value.data
-    totalCount.value = scamsResponse.value.total
-    hasMore.value = scamsResponse.value.nextOffset !== null
-  }
-}
-
-const scamAlerts = computed(() => allAlerts.value)
-
-// Load more function
-async function loadMore() {
-  if (!hasMore.value || loadingMore.value) return
-  loadingMore.value = true
-  currentOffset.value += limit
-  await refresh()
-  loadingMore.value = false
-}
-
-// Near Me mode functions
-async function enableNearMe() {
-  if (!navigator.geolocation) {
-    alert('Geolocation not supported by your browser')
-    return
-  }
-  
-  gettingLocation.value = true
-  
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      userLocation.value = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      }
-      nearMeMode.value = true
-      currentOffset.value = 0
-      allAlerts.value = []
-      gettingLocation.value = false
+// SEO Meta
+useHead({
+  title: 'Scam Alerts - Sri Lanka Travel Safety Guide',
+  meta: [
+    {
+      name: 'description',
+      content: 'Stay safe in Sri Lanka with our comprehensive scam alert system. Interactive maps, real examples, and protection tips for tourists.'
     },
-    (error) => {
-      alert('Could not get your location. Please enable location access.')
-      console.error('Geolocation error:', error)
-      gettingLocation.value = false
-    },
-    { timeout: 10000 }
-  )
-}
-
-function disableNearMe() {
-  nearMeMode.value = false
-  userLocation.value = null
-  currentOffset.value = 0
-  allAlerts.value = []
-}
-
-function getMostCommonCategory(): string {
-  if (allAlerts.value.length === 0) return 'None'
-  const counts: Record<string, number> = {}
-  allAlerts.value.forEach(s => {
-    counts[s.category] = (counts[s.category] || 0) + 1
-  })
-  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1])
-  return sorted[0]?.[0]?.replace(/_/g, ' ') || 'Various'
-}
-
-// Calculate weighted risk score (0-100)
-const riskScore = computed(() => {
-  if (scamAlerts.value.length === 0) return 0
-  
-  const weights: Record<string, number> = { CRITICAL: 10, HIGH: 5, MEDIUM: 2, LOW: 1 }
-  const total = scamAlerts.value.reduce((sum, scam) => {
-    return sum + (weights[scam.severity] || 1)
-  }, 0)
-  
-  // Normalize: more alerts = higher score, weighted by severity
-  const avgWeight = total / scamAlerts.value.length
-  const countFactor = Math.min(scamAlerts.value.length / 5, 2) // Cap at 2x for 10+ alerts
-  return Math.min(100, Math.round(avgWeight * 10 * countFactor))
-})
-
-// Handle map click for reporting
-function handleMapReport(coords: { lat: number; lng: number }) {
-  // Pre-fill report form with coordinates
-  reportForm.value = {
-    ...reportForm.value,
-    location_lat: coords.lat,
-    location_lng: coords.lng,
-    location_name: `${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`
-  }
-  
-  // Open report modal
-  openReportModal()
-}
-
-// Function to properly open report modal
-async function openReportModal() {
-  showReportModal.value = true
-  await nextTick()
-  scamMapRef.value?.invalidateSize?.()
-}
-
-// Reset pagination when any filter changes
-watch([selectedCategory, selectedSeverity, selectedLocation], () => {
-  currentOffset.value = 0
-  allAlerts.value = []
-})
-
-// Severity options for filter
-const severities = [
-  { id: null, label: 'All Risk', color: 'bg-gray-500' },
-  { id: 'HIGH', label: 'High', color: 'bg-red-500', icon: '🔴' },
-  { id: 'MEDIUM', label: 'Medium', color: 'bg-orange-500', icon: '🟠' },
-  { id: 'LOW', label: 'Low', color: 'bg-green-500', icon: '🟢' },
-]
-
-// Location options for filter (major tourist areas)
-const locations = [
-  { id: null, label: 'All Locations' },
-  { id: 'Colombo', label: 'Colombo' },
-  { id: 'Kandy', label: 'Kandy' },
-  { id: 'Galle', label: 'Galle' },
-  { id: 'Negombo', label: 'Negombo' },
-  { id: 'Sigiriya', label: 'Sigiriya' },
-  { id: 'Hikkaduwa', label: 'Hikkaduwa' },
-  { id: 'Unawatuna', label: 'Unawatuna' },
-  { id: 'Weligama', label: 'Weligama' },
-  { id: 'Yala', label: 'Yala' },
-  { id: 'Ratnapura', label: 'Ratnapura' },
-]
-
-// Filter categories
-const categories = [
-  { id: null, label: 'All', color: 'bg-charcoal' },
-  { id: 'TRANSPORT_SCAM', label: 'Tuk-tuk', color: 'bg-orange-500' },
-  { id: 'GEM_SCAM', label: 'Gem Scams', color: 'bg-purple-500' },
-  { id: 'TOUR_GUIDE_SCAM', label: 'Fake Guides', color: 'bg-red-500' },
-  { id: 'ACCOMMODATION_SCAM', label: 'Stays', color: 'bg-slate-500' },
-  { id: 'RESTAURANT_SCAM', label: 'Dining', color: 'bg-emerald-500' },
-  { id: 'SHOPPING_SCAM', label: 'Exchange', color: 'bg-blue-500' },
-  { id: 'OTHER', label: 'Other', color: 'bg-gray-500' },
-]
-
-// Helper functions
-function getTimeAgo(dateStr: string): string {
-  const date = new Date(dateStr)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffMins = Math.floor(diffMs / 60000)
-  if (diffMins < 60) return `${diffMins}m ago`
-  const diffHours = Math.floor(diffMins / 60)
-  if (diffHours < 24) return `${diffHours}h ago`
-  return `${Math.floor(diffHours / 24)}d ago`
-}
-
-function getSeverityClass(severity: string) {
-  switch (severity) {
-    case 'HIGH':
-    case 'CRITICAL':
-      return 'border-red-100 dark:border-red-900/30'
-    case 'MEDIUM':
-      return 'border-orange-100 dark:border-orange-900/30'
-    default:
-      return 'border-gray-200 dark:border-white/10'
-  }
-}
-
-function getSeverityIcon(category: string) {
-  switch (category) {
-    case 'TOUR_GUIDE_SCAM':
-      return 'person_alert'
-    case 'TRANSPORT_SCAM':
-      return 'local_taxi'
-    case 'GEM_SCAM':
-      return 'diamond'
-    case 'ACCOMMODATION_SCAM':
-      return 'hotel'
-    case 'RESTAURANT_SCAM':
-      return 'restaurant'
-    case 'SHOPPING_SCAM':
-      return 'currency_exchange'
-    default:
-      return 'warning'
-  }
-}
-
-function getSeverityColor(severity: string, category: string) {
-  if (severity === 'HIGH' || severity === 'CRITICAL') {
-    return 'bg-red-50 dark:bg-red-900/20 text-red-500'
-  }
-  switch (category) {
-    case 'TRANSPORT_SCAM':
-      return 'bg-orange-50 dark:bg-orange-900/20 text-orange-500'
-    case 'GEM_SCAM':
-      return 'bg-purple-50 dark:bg-purple-900/20 text-purple-500'
-    case 'ACCOMMODATION_SCAM':
-      return 'bg-slate-50 dark:bg-slate-900/20 text-slate-500'
-    case 'RESTAURANT_SCAM':
-      return 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500'
-    case 'SHOPPING_SCAM':
-      return 'bg-blue-50 dark:bg-blue-900/20 text-blue-500'
-    default:
-      return 'bg-gray-50 dark:bg-gray-900/20 text-gray-500'
-  }
-}
-
-function getDaysAgo(dateStr: string): number {
-  const date = new Date(dateStr)
-  const now = new Date()
-  const diffTime = Math.abs(now.getTime() - date.getTime())
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
-  return diffDays
-}
-
-async function confirmAlert(id: string) {
-  const config = useRuntimeConfig()
-  await $fetch(`${config.public.apiBase}/api/scams/${id}/confirm`, { method: 'POST' })
-  refresh()
-}
-
-// Toggle card expansion (accordion behavior)
-function toggleCardExpansion(alert: ScamAlert) {
-  if (expandedCardId.value === alert.id) {
-    expandedCardId.value = null
-  } else {
-    expandedCardId.value = alert.id
-    highlightedScamId.value = alert.id
-    
-    // Pan map to the scam location if it has coordinates
-    if (alert.location?.latitude && alert.location?.longitude) {
-      scamMapRef.value?.panToScam(alert.id)
+    {
+      name: 'keywords',
+      content: 'Sri Lanka scams, tourist safety, travel alerts, scam prevention, Ceylon travel tips'
     }
-  }
-}
-
-// Extract a real example from the description text
-function getExampleFromDescription(description: string): string {
-  // Try to find example patterns in the description
-  const examplePatterns = [
-    /example:?\s*(.+?)(?:\.|$)/i,
-    /for instance:?\s*(.+?)(?:\.|$)/i,
-    /one traveler?\s*(.+?)(?:\.|$)/i,
-    /a tourist?\s*(.+?)(?:\.|$)/i,
   ]
-  
-  for (const pattern of examplePatterns) {
-    const match = description.match(pattern)
-    if (match && match[1]) {
-      return match[1].trim()
+})
+
+// Initialize composable
+const scamDataComposable = useScamData()
+const allScams = scamDataComposable.allScams.value
+const allLocations = scamDataComposable.allLocations.value
+const scamTypes = allScamTypes
+
+// Adapt locations to RiskLocation type for legacy components
+const adaptedLocations = computed(() => {
+  return allLocations.map((loc: any) => ({
+    id: loc.id,
+    name: loc.name,
+    area: loc.name, // Use name as area
+    risk: loc.riskLevel,
+    lat: loc.coordinates.lat,
+    lng: loc.coordinates.lng,
+    description: loc.summary || '',
+    scamTypes: loc.commonScams || [],
+    color: getRiskColor(loc.riskLevel)
+  }))
+})
+
+const getRiskColor = (riskLevel: string): string => {
+  switch (riskLevel) {
+    case 'high': return '#dc2626'
+    case 'medium': return '#ea580c'
+    case 'low': return '#16a34a'
+    default: return '#64748b'
+  }
+}
+
+// Filter states
+const selectedSeverity = ref<'all' | 'high' | 'medium' | 'low'>('all')
+const selectedLocation = ref<string>('all')
+const selectedCategory = ref<string>('all')
+const searchQuery = ref<string>('')
+const selectedTags = ref<string[]>([])
+const travelerType = ref<TravelerType>('all')
+
+// Map state
+const selectedLocationForMap = ref<string | null>(null)
+
+// Expanded scam cards
+const expandedCards = ref<Set<string>>(new Set())
+
+// Nearby mode state
+const nearbyMode = ref(false)
+const nearbyLoading = ref(false)
+const nearbyDistance = ref<number | null>(5) // Default 5km radius
+const nearbyError = ref<string | null>(null)
+const userLocation = ref<Coordinates | null>(null)
+const nearbyLocationIds = ref<string[]>([])
+
+// Warning banner state
+const showWarningBanner = ref(false)
+const warningBannerSeverity = ref<'critical' | 'high' | 'medium'>('high')
+
+// Report modal state
+const showReportModal = ref(false)
+const showMyReports = ref(false)
+const userReports = ref<any[]>([])
+
+// Mobile tab state
+const activeTab = ref<'alerts' | 'map' | 'assistant' | ''>('alerts')
+
+// Load user reports from localStorage on mount
+if (typeof window !== 'undefined') {
+  const savedReports = localStorage.getItem('scamReports')
+  if (savedReports) {
+    try {
+      userReports.value = JSON.parse(savedReports)
+    } catch (e) {
+      console.error('Failed to load reports:', e)
+      userReports.value = []
     }
   }
+}
+const warningBannerTitle = ref('')
+const warningBannerMessage = ref('')
+const nearbyHighRiskScams = ref<Array<{ id: string; name: string; distance: string }>>([])
+
+// Selected location data for risk panel
+const selectedLocationData = computed(() => {
+  if (selectedLocation.value === 'all') return null
+  return allLocations.find((loc: any) => loc.id === selectedLocation.value) || null
+})
+
+// Computed filtered data
+const filteredScams = computed(() => {
+  let scams = [...allScams]
   
-  // Fallback: use first sentence as an illustrative example
-  const firstSentence = description.split('.')[0] || ''
-  return firstSentence.length > 50 
-    ? firstSentence.substring(0, 100) + '...' 
-    : 'A traveler reported encountering this scam in the area.'
-}
-
-// Filter by category (from related scams section)
-function filterByCategory(category: string) {
-  selectedCategory.value = category
-  expandedCardId.value = null
-  currentOffset.value = 0
-  allAlerts.value = []
-}
-
-// Filter by location (from related scams section)
-function filterByLocation(locationName: string) {
-  // Find matching location from the locations list
-  const matchingLocation = locations.find(l => 
-    locationName.toLowerCase().includes(l.id?.toLowerCase() || '')
-  )
-  if (matchingLocation?.id) {
-    selectedLocation.value = matchingLocation.id
-  }
-  expandedCardId.value = null
-  currentOffset.value = 0
-  allAlerts.value = []
-}
-
-// Filter by severity (from related scams section)
-function filterBySeverity(severity: string) {
-  selectedSeverity.value = severity
-  expandedCardId.value = null
-  currentOffset.value = 0
-  allAlerts.value = []
-}
-
-// Handle clicking a sidebar scam card - pan map to location
-function handleSidebarClick(alert: ScamAlert) {
-  // Highlight this scam in the sidebar
-  highlightedScamId.value = alert.id
-  
-  // Pan map to the scam location (if it has coordinates)
-  if (alert.location?.latitude && alert.location?.longitude) {
-    scamMapRef.value?.panToScam(alert.id)
+  // Filter by severity
+  if (selectedSeverity.value !== 'all') {
+    scams = scams.filter(s => s.severity === selectedSeverity.value)
   }
   
-  // Open the details modal
-  openScamDetails(alert.id)
-}
-
-// Handle marker click from map - highlight sidebar item and scroll to it
-function handleMarkerClick(id: string) {
-  highlightedScamId.value = id
-  
-  // Scroll the sidebar to show this scam card
-  nextTick(() => {
-    const element = document.getElementById(`scam-${id}`)
-    element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  })
-  
-  // Open the details modal
-  openScamDetails(id)
-}
-
-async function openScamDetails(id: string) {
-  const config = useRuntimeConfig()
-  if (!id) {
-    detailsError.value = 'Missing scam ID.'
-    showDetailsModal.value = true
-    return
+  // Filter by location
+  if (selectedLocation.value !== 'all') {
+    scams = scams.filter(s => s.commonLocations.includes(selectedLocation.value))
   }
-  selectedScamId.value = id
-  showReportModal.value = false
-  showDetailsModal.value = true
-  detailsLoading.value = true
-  detailsError.value = ''
-  scamDetails.value = null
   
-  try {
-    const response = await $fetch<{ success: boolean; data: ScamAlert; error?: string }>(`${config.public.apiBase}/api/scams/${id}`)
-    if (response.success) {
-      scamDetails.value = response.data
-    } else {
-      detailsError.value = response.error || 'Failed to load scam details.'
-    }
-  } catch (err: any) {
-    detailsError.value = err?.data?.error || 'Failed to load scam details.'
-  } finally {
-    detailsLoading.value = false
+  // Filter by category
+  if (selectedCategory.value !== 'all') {
+    scams = scams.filter(s => s.category === selectedCategory.value)
   }
-}
-
-function closeScamDetails() {
-  showDetailsModal.value = false
-  detailsError.value = ''
-}
-
-async function confirmDetailsAlert() {
-  if (!scamDetails.value || confirmingDetails.value) return
-  confirmingDetails.value = true
-  try {
-    await confirmAlert(scamDetails.value.id)
-    scamDetails.value = {
-      ...scamDetails.value,
-      report_count: (scamDetails.value.report_count || 0) + 1
-    }
-  } finally {
-    confirmingDetails.value = false
+  
+  // Filter by tags
+  if (selectedTags.value.length > 0) {
+    scams = scams.filter(s => 
+      selectedTags.value.some(tag => s.tags?.includes(tag))
+    )
   }
-}
-
-function formatCategoryLabel(value: string) {
-  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
-}
-
-async function submitReport() {
-  // Validate form first
-  if (!validateForm()) {
-    submitError.value = 'Please fix the errors above.'
-    return
+  
+  // Filter by search query
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase()
+    scams = scams.filter(s => 
+      s.title.toLowerCase().includes(query) ||
+      s.description.toLowerCase().includes(query) ||
+      s.tags?.some((tag: string) => tag.toLowerCase().includes(query))
+    )
   }
 
-  isSubmitting.value = true
-  submitError.value = ''
-  submitSuccess.value = false
+  // Filter by nearby mode
+  if (nearbyMode.value && nearbyLocationIds.value.length > 0) {
+    scams = scams.filter(s => 
+      s.commonLocations.some((locId: string) => nearbyLocationIds.value.includes(locId))
+    )
+  }
   
-  try {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 800))
-    
-    // Construct payload
-    const payload = {
-      title: reportForm.value.title,
-      description: reportForm.value.description,
-      category: reportForm.value.category,
-      severity: reportForm.value.severity,
-      location_name: reportForm.value.location_name,
-      location_lat: reportForm.value.location_lat,
-      location_lng: reportForm.value.location_lng,
-      timestamp: new Date().toISOString()
-    }
-    
-    // Log structured payload to console as requested
-    console.log('📝 [REPORT SUBMISSION]', payload)
-    
-    submitSuccess.value = true
+  return scams
+})
+
+const filteredLocations = computed(() => {
+  if (nearbyMode.value && nearbyLocationIds.value.length > 0) {
+    return allLocations.filter((l: any) => nearbyLocationIds.value.includes(l.id))
+  }
+  
+  if (selectedLocation.value !== 'all') {
+    const location = allLocations.find((l: any) => l.id === selectedLocation.value)
+    return location ? [location] : []
+  }
+  return allLocations
+})
+
+// Categories
+const categories = computed(() => [
+  { id: 'transport', name: 'Transport', label: 'Transport', icon: '🚕' },
+  { id: 'shopping', name: 'Shopping', label: 'Shopping', icon: '🛍️' },
+  { id: 'tourism', name: 'Tourism', label: 'Tourism', icon: '📸' },
+  { id: 'accommodation', name: 'Accommodation', label: 'Accommodation', icon: '🏨' },
+  { id: 'wildlife', name: 'Wildlife', label: 'Wildlife', icon: '🦁' },
+  { id: 'beach', name: 'Beach & Water', label: 'Beach & Water', icon: '🏖️' },
+  { id: 'nightlife', name: 'Nightlife', label: 'Nightlife', icon: '🍺' },
+  { id: 'temple', name: 'Temple & Culture', label: 'Temple & Culture', icon: '🛕' },
+  { id: 'money', name: 'Money & Banking', label: 'Money & Banking', icon: '💰' }
+])
+
+// Stats
+const scamStats = computed(() => ({
+  total: allScams.length,
+  high: allScams.filter((s: any) => s.severity === 'high').length,
+  critical: allScams.filter((s: any) => s.severity === 'critical').length,
+  highRiskLocations: allLocations.filter((l: any) => l.riskLevel === 'high').length,
+  locations: allLocations.length
+}));
+
+// Safety tips
+const safetyTips = [
+  {
+    category: 'general',
+    tips: [
+      'Always research fair prices before purchasing or hiring services',
+      'Use official apps (PickMe, Uber) for transportation',
+      'Be skeptical of unsolicited help or offers',
+      'Keep copies of important documents separate from originals',
+      'Trust your instincts - if something feels off, walk away'
+    ]
+  },
+  {
+    category: 'transport',
+    tips: [
+      'Insist on using the meter or agree on a fixed fare before starting',
+      'Refuse detours to shops or "special places"',
+      'Use reputable taxi apps for transparent pricing',
+      'Avoid tuk-tuks that approach you at tourist hotspots'
+    ]
+  },
+  {
+    category: 'shopping',
+    tips: [
+      'Don\'t buy gems or precious items from tuk-tuk drivers\' connections',
+      'Research market prices online before shopping',
+      'Be prepared to walk away from pushy vendors',
+      'Only buy from government-certified shops (verify independently)',
+      'Get written authenticity certificates and receipts'
+    ]
+  }
+]
+
+// Methods
+const handleLocationFilter = (locationId: string) => {
+  selectedLocation.value = locationId
+  selectedLocationForMap.value = locationId !== 'all' ? locationId : null
+}
+
+const handleMapLocationSelect = (locationId: string) => {
+  selectedLocation.value = locationId
+  
+  // Scroll to scam list
+  const scamsSection = document.querySelector('.scams-section')
+  if (scamsSection) {
+    scamsSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
+const focusOnLocation = (locationId: string) => {
+  selectedLocationForMap.value = locationId
+  selectedLocation.value = locationId
+  
+  // Scroll to map
+  const mapSection = document.querySelector('.map-section')
+  if (mapSection) {
+    mapSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+}
+
+const scrollToScamDetails = (locationId: string) => {
+  handleMapLocationSelect(locationId)
+}
+
+const getAffectedLocations = (scamId: string) => {
+  const scam = allScams.find((s: any) => s.id === scamId)
+  if (!scam) return []
+  
+  return scam.commonLocations
+    .map((locId: string) => allLocations.find((l: any) => l.id === locId))
+    .filter((location): location is NonNullable<typeof location> => location !== undefined)
+    .slice(0, 3)
+}
+
+const resetFilters = () => {
+  selectedSeverity.value = 'all'
+  selectedLocation.value = 'all'
+  selectedCategory.value = 'all'
+  searchQuery.value = ''
+  selectedTags.value = []
+  travelerType.value = 'all'
+  selectedLocationForMap.value = null
+  nearbyMode.value = false
+  nearbyLocationIds.value = []
+  showWarningBanner.value = false
+}
+
+const handleLocationPanelClose = () => {
+  selectedLocation.value = 'all'
+  selectedLocationForMap.value = null
+}
+
+const handleScamSelected = (scamId: string) => {
+  // Scroll to the scam card
+  const element = document.getElementById(`scam-${scamId}`)
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    // Expand the card
+    expandedCards.value.add(scamId)
+    // Highlight the card briefly
+    element.classList.add('highlight-flash')
     setTimeout(() => {
-      showReportModal.value = false
-      exitReportMode() // Exit mode after successful submission
-      
-      // Reset form
-      reportForm.value = {
-        title: '',
-        description: '',
-        category: '',
-        severity: 'MEDIUM',
-        location_name: '',
-        location_lat: 7.8731,
-        location_lng: 80.7718,
-      }
-      formErrors.value = {}
-      submitSuccess.value = false
-    }, 1500)
-  } catch (err: any) {
-    submitError.value = 'Failed to submit report. Please try again.'
-  } finally {
-    isSubmitting.value = false
+      element.classList.remove('highlight-flash')
+    }, 2000)
   }
+}
+
+const handleNearbyToggle = async () => {
+  if (nearbyMode.value) {
+    // Disable nearby mode
+    nearbyMode.value = false
+    nearbyLocationIds.value = []
+    userLocation.value = null
+    nearbyError.value = null
+    showWarningBanner.value = false
+    return
+  }
+
+  // Enable nearby mode
+  nearbyLoading.value = true
+  nearbyError.value = null
+  showWarningBanner.value = false
+
+  try {
+    // Request user location
+    const location = await getUserLocation()
+    
+    if (!location) {
+      nearbyError.value = 'Location access denied. Please enable location services to use this feature.'
+      nearbyLoading.value = false
+      return
+    }
+
+    userLocation.value = location
+
+    // Find nearby locations within radius
+    const radius = nearbyDistance.value || 5
+    const nearby = findNearbyLocations(
+      location,
+      allLocations.map((loc: any) => ({
+        ...loc,
+        coordinates: { lat: loc.coordinates.lat, lng: loc.coordinates.lng }
+      })),
+      radius
+    )
+
+    if (nearby.length === 0) {
+      nearbyError.value = `No scam hotspots found within ${radius}km. You're in a relatively safe area!`
+      nearbyMode.value = false
+      nearbyLoading.value = false
+      return
+    }
+
+    // Update nearby location IDs
+    nearbyLocationIds.value = nearby.map(loc => loc.id)
+    nearbyMode.value = true
+
+    // Check for high-risk nearby locations
+    const highRiskNearby = nearby.filter((loc: any) => 
+      loc.riskLevel === 'high' || loc.riskLevel === 'critical'
+    )
+
+    if (highRiskNearby.length > 0) {
+      // Show warning banner
+      const criticalCount = highRiskNearby.filter((loc: any) => loc.riskLevel === 'critical').length
+      
+      if (criticalCount > 0) {
+        warningBannerSeverity.value = 'critical'
+        warningBannerTitle.value = '🚨 Critical Risk Area Nearby!'
+        warningBannerMessage.value = `You are within ${radius}km of ${criticalCount} critical risk location${criticalCount > 1 ? 's' : ''}. Exercise extreme caution!`
+      } else {
+        warningBannerSeverity.value = 'high'
+        warningBannerTitle.value = '⚠️ High Risk Area Nearby'
+        warningBannerMessage.value = `You are within ${radius}km of ${highRiskNearby.length} high risk location${highRiskNearby.length > 1 ? 's' : ''}. Stay alert and follow safety guidelines.`
+      }
+
+      nearbyHighRiskScams.value = highRiskNearby.slice(0, 5).map((loc: any) => ({
+        id: loc.id,
+        name: loc.name,
+        distance: formatDistance(loc.distance)
+      }))
+
+      showWarningBanner.value = true
+    }
+
+  } catch (error) {
+    console.error('Error getting nearby locations:', error)
+    nearbyError.value = 'Failed to get your location. Please try again.'
+  } finally {
+    nearbyLoading.value = false
+  }
+}
+
+const toggleCard = (scamId: string) => {
+  if (expandedCards.value.has(scamId)) {
+    expandedCards.value.delete(scamId)
+  } else {
+    expandedCards.value.add(scamId)
+  }
+  // Trigger reactivity
+  expandedCards.value = new Set(expandedCards.value)
+}
+
+const handleScamCardClick = (scamId: string) => {
+  // Highlight related map markers
+  const scam = allScams.find((s: any) => s.id === scamId)
+  if (scam && scam.commonLocations && scam.commonLocations.length > 0) {
+    // Focus on first common location
+    selectedLocationForMap.value = scam.commonLocations[0] || null
+    
+    // Scroll to map
+    setTimeout(() => {
+      const mapSection = document.querySelector('.map-section')
+      if (mapSection) {
+        mapSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }, 100)
+  }
+}
+
+const getLocationName = (locationId: string): string => {
+  const location = allLocations.find((l: any) => l.id === locationId)
+  return location ? location.name : locationId
+}
+
+const getTravelerIcon = (type: TravelerType): string => {
+  switch (type) {
+    case 'solo-female': return '👩'
+    case 'couple': return '💑'
+    case 'family': return '👨‍👩‍👧‍👦'
+    case 'backpacker': return '🎒'
+    default: return '👥'
+  }
+}
+
+const getTravelerLabel = (type: TravelerType): string => {
+  switch (type) {
+    case 'solo-female': return 'Solo Female Traveler'
+    case 'couple': return 'Couple'
+    case 'family': return 'Family'
+    case 'backpacker': return 'Backpacker'
+    default: return 'All Travelers'
+  }
+}
+
+const getSeverityIcon = (severity: string): string => {
+  switch (severity) {
+    case 'critical': return '🔴'
+    case 'high': return '🟠'
+    case 'medium': return '🟡'
+    case 'low': return '🟢'
+    default: return '⚠️'
+  }
+}
+
+const getCategoryIcon = (category: string): string => {
+  const cat = categories.value.find(c => c.id === category)
+  return cat?.icon || '🏷️'
+}
+
+const getCategoryTitle = (category: string): string => {
+  const titles: Record<string, string> = {
+    general: '🌍 General Safety',
+    transport: '🚕 Transport Safety',
+    shopping: '🛍️ Shopping Safety',
+    temples: '🛕 Temple & Religious Sites',
+    money: '💳 Money & Transactions',
+    'solo-female': '👩 Solo Female Travelers'
+  }
+  return titles[category] || category
+}
+
+// Report handling functions
+const handleReportSubmit = (report: any) => {
+  // Report is already saved in localStorage by the modal
+  // Just reload the reports
+  if (typeof window !== 'undefined') {
+    const savedReports = localStorage.getItem('scamReports')
+    if (savedReports) {
+      try {
+        userReports.value = JSON.parse(savedReports)
+        showMyReports.value = true // Auto-show reports after submission
+      } catch (e) {
+        console.error('Failed to reload reports:', e)
+      }
+    }
+  }
+}
+
+const deleteReport = (reportId: string) => {
+  if (confirm('Are you sure you want to delete this report?')) {
+    userReports.value = userReports.value.filter(r => r.id !== reportId)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('scamReports', JSON.stringify(userReports.value))
+    }
+  }
+}
+
+const getScamTitle = (scamId: string): string => {
+  const scam = allScams.find((s: any) => s.id === scamId)
+  return scam ? scam.title : scamId
+}
+
+const formatReportTime = (timestamp: string): string => {
+  const date = new Date(timestamp)
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const minutes = Math.floor(diff / 60000)
+  const hours = Math.floor(diff / 3600000)
+  const days = Math.floor(diff / 86400000)
+
+  if (minutes < 1) return 'Just now'
+  if (minutes < 60) return `${minutes}m ago`
+  if (hours < 24) return `${hours}h ago`
+  if (days < 7) return `${days}d ago`
+  return date.toLocaleDateString()
 }
 </script>
 
 <style scoped>
-/* Custom scrollbar for the sidebar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+.scam-alerts-page {
+  min-height: 100vh;
+  background: #f8f9fa;
 }
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+
+/* Compact Header */
+.compact-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 16px 20px;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.1);
 }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #e6dedb;
-  border-radius: 20px;
+
+.header-content {
+  max-width: 1600px;
+  margin: 0 auto;
 }
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #4a3b36;
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.header-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.header-btn.report-btn {
+  background: #10b981;
+  color: white;
+}
+
+.header-btn.report-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.header-btn.reports-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.header-btn.reports-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.header-stats {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.stat.critical {
+  color: #fca5a5;
+  font-weight: 700;
+}
+
+/* Mobile Tabs */
+.mobile-tabs {
+  display: none;
+  background: white;
+  border-bottom: 2px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+  background: rgba(37, 99, 235, 0.05);
+}
+
+/* Main Container */
+.main-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Layout Grid - Two Column Desktop */
+.layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 20px;
+  align-items: start;
+}
+
+.left-column {
+  min-height: 80vh;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Compact Components */
+.my-reports-section {
+  background: rgba(99, 102, 241, 0.05);
+  border: 2px solid #6366f1;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.section-header-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.section-title-sm {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.close-btn-sm {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: rgba(99, 102, 241, 0.1);
+  color: #4f46e5;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.close-btn-sm:hover {
+  background: #4f46e5;
+  color: white;
+}
+
+.reports-grid-compact {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.report-card-compact {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  border-left: 3px solid #6366f1;
+}
+
+.report-header-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.severity-badge-sm {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.severity-badge-sm.critical { background: #dc2626; color: white; }
+.severity-badge-sm.high { background: #ea580c; color: white; }
+.severity-badge-sm.medium { background: #f59e0b; color: white; }
+.severity-badge-sm.low { background: #10b981; color: white; }
+
+.delete-btn-sm {
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.delete-btn-sm:hover {
+  opacity: 1;
+}
+
+.report-title-sm {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 4px 0;
+}
+
+.report-meta {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.filters-compact {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.scams-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.no-results-compact {
+  text-align: center;
+  padding: 40px 20px;
+  background: white;
+  border-radius: 12px;
+  border: 2px dashed #d1d5db;
+}
+
+.no-results-compact p {
+  margin: 0 0 12px 0;
+  color: #6b7280;
+}
+
+.btn-reset-sm {
+  padding: 8px 16px;
+  border: 2px solid #2563eb;
+  background: white;
+  color: #2563eb;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-reset-sm:hover {
+  background: #2563eb;
+  color: white;
+}
+
+.scam-card-compact {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  border-left: 4px solid #d1d5db;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.scam-card-compact:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateX(2px);
+}
+
+.scam-card-compact.severity-critical { border-left-color: #dc2626; }
+.scam-card-compact.severity-high { border-left-color: #ea580c; }
+.scam-card-compact.severity-medium { border-left-color: #f59e0b; }
+.scam-card-compact.severity-low { border-left-color: #10b981; }
+
+.scam-card-compact.expanded {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.category-tag-sm {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+  padding: 0 0 8px 0;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.map-sticky,
+.assistant-sticky {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.map-loading-sm {
+  height: 400px;
+  background: #f9fafb;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.risk-panel-sticky {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  border: 2px solid #ef4444;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 1024px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .right-column {
+    position: static;
+    max-height: none;
+  }
+
+  .mobile-tabs {
+    display: flex;
+  }
+
+  .left-column.hidden {
+    display: none;
+  }
+
+  .right-column.hidden .map-sticky,
+  .right-column.hidden .assistant-sticky {
+    display: none;
+  }
+
+  .right-column:not(.hidden) {
+    display: block;
+  }
+
+  .right-column:not(.hidden) .map-sticky,
+  .right-column:not(.hidden) .assistant-sticky {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .compact-header {
+    padding: 12px 16px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .header-btn {
+    width: 100%;
+    font-size: 13px;
+    padding: 10px;
+  }
+}
+
+
+/* Legacy Styles Below */
+
+
+.report-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.report-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.reports-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.reports-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.report-icon,
+.reports-icon {
+  font-size: 20px;
+}
+
+/* My Reports Section */
+.my-reports-section {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(99, 102, 241, 0.02) 100%);
+  border: 2px solid #6366f1;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 48px;
+  animation: slide-down 0.4s ease-out;
+}
+
+.my-reports-section .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.close-reports-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(99, 102, 241, 0.1);
+  color: #4f46e5;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-reports-btn:hover {
+  background: #4f46e5;
+  color: white;
+  transform: scale(1.1);
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.report-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  position: relative;
+  border-left: 4px solid #6366f1;
+}
+
+.report-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.severity-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.severity-badge.critical {
+  background: #dc2626;
+  color: white;
+}
+
+.severity-badge.high {
+  background: #ea580c;
+  color: white;
+}
+
+.severity-badge.medium {
+  background: #f59e0b;
+  color: white;
+}
+
+.severity-badge.low {
+  background: #10b981;
+  color: white;
+}
+
+.report-status {
+  font-size: 12px;
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.report-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+}
+
+.report-description {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.report-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 12px;
+}
+
+.report-location {
+  font-family: monospace;
+}
+
+.delete-report-btn {
+  width: 100%;
+  padding: 8px 16px;
+  border: 2px solid #ef4444;
+  background: white;
+  color: #ef4444;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.delete-report-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Main Content */
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.filters-section,
+.risk-panel-section,
+.assistant-section,
+.map-section,
+.scams-section,
+.general-tips-section,
+.disclaimer-section {
+  margin-bottom: 48px;
+}
+
+.section-header {
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1f2937;
+  margin: 0 0 8px 0;
+}
+
+.section-description {
+  font-size: 16px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Map Loading */
+.map-loading {
+  height: 600px;
+  background: #f3f4f6;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #6b7280;
+}
+
+/* No Results */
+.no-results {
+  text-align: center;
+  padding: 80px 20px;
+  background: white;
+  border-radius: 12px;
+}
+
+.no-results-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.no-results h3 {
+  font-size: 24px;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+}
+
+.no-results p {
+  font-size: 16px;
+  color: #6b7280;
+  margin: 0 0 24px 0;
+}
+
+.reset-filters-btn {
+  padding: 12px 24px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reset-filters-btn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+/* Scams Grid */
+.scams-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.scam-card {
+  background: white;
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid #e5e7eb;
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+}
+
+.scam-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.scam-card.expanded {
+  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+  border-left-color: #667eea;
+}
+
+.scam-card.severity-critical {
+  border-left-color: #dc2626;
+  border-left-width: 6px;
+  background: linear-gradient(to right, rgba(220, 38, 38, 0.05) 0%, white 100%);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+}
+
+.scam-card.severity-critical:hover {
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+}
+
+.scam-card.severity-high {
+  border-left-color: #ef4444;
+  border-left-width: 5px;
+  background: linear-gradient(to right, rgba(239, 68, 68, 0.04) 0%, white 100%);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12);
+}
+
+.scam-card.severity-high:hover {
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);
+}
+
+.scam-card.severity-medium {
+  border-left-color: #f59e0b;
+  border-left-width: 4px;
+  background: linear-gradient(to right, rgba(245, 158, 11, 0.03) 0%, white 100%);
+}
+
+.scam-card.severity-low {
+  border-left-color: #10b981;
+  border-left-width: 3px;
+}
+
+.scam-card.highlight {
+  animation: highlight 2s ease;
+}
+
+@keyframes highlight {
+  0%, 100% {
+    background: white;
+  }
+  50% {
+    background: #fef3c7;
+  }
+}
+
+@keyframes highlight-flash {
+  0%, 100% {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5), 0 8px 24px rgba(59, 130, 246, 0.3);
+  }
+}
+
+.scam-card.highlight-flash {
+  animation: highlight-flash 0.8s ease-in-out 2;
+}
+
+.scam-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.scam-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.scam-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  flex: 1;
+}
+
+.expand-btn {
+  background: #f3f4f6;
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.expand-btn:hover {
+  background: #667eea;
+  color: white;
+  transform: scale(1.1);
+}
+
+.severity-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+.badge-critical {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+  animation: pulse-critical 2s infinite;
+}
+
+@keyframes pulse-critical {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.badge-high {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  color: white;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+}
+
+.badge-medium {
+  background: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fbbf24;
+}
+
+.badge-low {
+  background: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #86efac;
+}
+
+.scam-description {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin: 0 0 20px 0;
+}
+
+.scam-example,
+.scam-tips,
+.affected-locations {
+  margin-top: 20px;
+}
+
+.example-label,
+.tips-label,
+.locations-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.example-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6b7280;
+  font-style: italic;
+  margin: 0;
+  padding: 12px;
+  background: #fef3c7;
+  border-left: 3px solid #f59e0b;
+  border-radius: 4px;
+}
+
+.tips-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.tips-list li {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 8px;
+}
+
+.scam-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.category-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #f3f4f6;
+  color: #6b7280;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.locations-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.location-tag {
+  padding: 6px 12px;
+  background: #dbeafe;
+  color: #1e40af;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.location-tag:hover {
+  background: #bfdbfe;
+  transform: translateY(-1px);
+}
+
+/* Location Chips */
+.location-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.location-chip {
+  padding: 6px 12px;
+  background: #ede9fe;
+  color: #7c3aed;
+  border: 1.5px solid #c4b5fd;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.location-chip:hover {
+  background: #7c3aed;
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* Expanded Content */
+.expanded-content {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #f3f4f6;
+}
+
+.section-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 12px;
+}
+
+.section-label.urgent {
+  color: #dc2626;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scam-examples {
+  margin-bottom: 20px;
+}
+
+.examples-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.examples-list li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6b7280;
+  font-style: italic;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  background: #fef3c7;
+  border-left: 3px solid #f59e0b;
+  border-radius: 4px;
+}
+
+.common-places {
+  margin-top: 20px;
+}
+
+.places-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.place-btn {
+  padding: 8px 14px;
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.place-btn:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.scam-tags {
+  margin-top: 20px;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tags-list .tag {
+  padding: 4px 10px;
+  background: #f1f5f9;
+  color: #64748b;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Scam Footer */
+.scam-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.expand-hint {
+  font-size: 12px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Expand Transition */
+.expand-enter-active,
+.expand-leave-active {
+  transition: all 0.3s ease;
+  max-height: 2000px;
+  overflow: hidden;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* General Tips Section */
+.tips-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.tip-category-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.tip-category-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 16px 0;
+}
+
+.general-tips-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.general-tips-list li {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 10px;
+}
+
+/* Disclaimer Section */
+.disclaimer-card {
+  display: flex;
+  gap: 20px;
+  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+  border-radius: 12px;
+  padding: 32px;
+  border: 2px solid #3b82f6;
+}
+
+.disclaimer-icon {
+  font-size: 48px;
+  flex-shrink: 0;
+}
+
+.disclaimer-content h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin: 0 0 12px 0;
+}
+
+.disclaimer-content p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #1e40af;
+  margin: 0 0 12px 0;
+}
+
+.disclaimer-content p:last-child {
+  margin-bottom: 0;
+}
+
+.disclaimer-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Confrontation Guide (Critical/High) */
+.confrontation-guide {
+  margin-top: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.08) 0%, rgba(220, 38, 38, 0.02) 100%);
+  border: 2px solid #dc2626;
+  border-radius: 12px;
+}
+
+.emergency-steps {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.emergency-steps li {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #1f2937;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.emergency-steps li strong {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+/* Reporting Section (Critical/High) */
+.reporting-section {
+  margin-top: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(37, 99, 235, 0.02) 100%);
+  border: 2px solid #3b82f6;
+  border-radius: 12px;
+}
+
+.contact-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.contact-card {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s;
+}
+
+.contact-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.contact-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-info strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.contact-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.contact-number:hover {
+  color: #1d4ed8;
+}
+
+.contact-note {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* Caution Notice (Medium) */
+.caution-notice {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(251, 146, 60, 0.02) 100%);
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px;
+}
+
+.caution-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.caution-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #92400e;
+}
+
+.caution-text strong {
+  font-weight: 700;
+  color: #d97706;
+}
+
+/* Info Notice (Low) */
+.info-notice {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%);
+  border-left: 4px solid #10b981;
+  border-radius: 8px;
+}
+
+.info-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.info-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #065f46;
+}
+
+.info-text strong {
+  font-weight: 700;
+  color: #059669;
+}
+
+/* Traveler-Specific Warnings */
+.traveler-warnings {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 3px solid;
+  animation: slide-in 0.3s ease-out;
+}
+
+.traveler-warnings.traveler-solo-female {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.12) 0%, rgba(220, 38, 38, 0.04) 100%);
+  border-color: #dc2626;
+}
+
+.traveler-warnings.traveler-couple {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.12) 0%, rgba(236, 72, 153, 0.04) 100%);
+  border-color: #ec4899;
+}
+
+.traveler-warnings.traveler-family {
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.12) 0%, rgba(22, 163, 74, 0.04) 100%);
+  border-color: #16a34a;
+}
+
+.traveler-warnings.traveler-backpacker {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.04) 100%);
+  border-color: #f59e0b;
+}
+
+.traveler-warning-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.warning-icon {
+  font-size: 28px;
+}
+
+.warning-list {
+  margin: 0;
+  padding-left: 24px;
+  list-style: disc;
+}
+
+.warning-list li {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #1f2937;
+  margin-bottom: 12px;
+}
+
+.warning-list li:last-child {
+  margin-bottom: 0;
+}
+
+.traveler-solo-female .warning-list li {
+  color: #7f1d1d;
+  font-weight: 500;
+}
+
+.traveler-couple .warning-list li {
+  color: #831843;
+}
+
+.traveler-family .warning-list li {
+  color: #14532d;
+}
+
+.traveler-backpacker .warning-list li {
+  color: #78350f;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 32px;
+  }
+
+  .hero-description {
+    font-size: 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .section-title {
+    font-size: 24px;
+  }
+
+  .scam-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .disclaimer-card {
+    flex-direction: column;
+    padding: 24px;
+  }
+
+  .tips-categories {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
