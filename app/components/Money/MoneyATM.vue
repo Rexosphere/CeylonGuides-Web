@@ -1,139 +1,59 @@
 <template>
-  <section class="py-12 bg-white dark:bg-[#1a100c] border-y border-gray-200 dark:border-neutral-700">
-    <div class="px-4 md:px-10 max-w-7xl mx-auto w-full">
-      <div class="flex flex-col lg:flex-row gap-12">
-        <div class="lg:w-1/3 flex flex-col justify-center space-y-6">
-          <div class="space-y-2">
-            <h2 class="text-3xl font-bold tracking-tight text-text-main dark:text-white">Trusted ATMs & Exchange</h2>
-            <p class="text-text-muted dark:text-gray-400">
-              Avoid unauthorized money changers. Stick to registered banks and official ATMs for the best rates and safety.
-            </p>
-          </div>
-          <div class="space-y-4">
-            <div class="flex gap-4 items-start">
-              <div class="size-10 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined">account_balance</span>
+  <section class="py-16 bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-gray-800">
+    <div class="container mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-12">
+        <div>
+          <h2 class="text-2xl font-bold text-primary dark:text-white mb-4">Trusted ATMs & Exchange</h2>
+          <p class="text-text-muted dark:text-gray-400 mb-8 leading-relaxed">
+            Avoid unauthorized money changers. Stick to registered banks and official ATMs for the best rates and
+            safety.
+          </p>
+          <div class="space-y-6">
+            <div class="flex gap-4">
+              <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center shrink-0">
+                <span class="material-icons">account_balance</span>
               </div>
               <div>
-                <h4 class="font-bold text-lg text-text-main dark:text-white">Trusted Banks</h4>
-                <p class="text-sm text-text-muted dark:text-gray-400">{{ atmGuidance.trustedBanks.join(', ') }}</p>
-              </div>
-            </div>
-            <div class="flex gap-4 items-start">
-              <div class="size-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined">local_atm</span>
-              </div>
-              <div>
-                <h4 class="font-bold text-lg text-text-main dark:text-white">ATM Limits & Fees</h4>
-                <p class="text-sm text-text-muted dark:text-gray-400">{{ atmGuidance.feeNotes }}</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Location Permission Banner -->
-          <div v-if="showLocationBanner" class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-            <div class="flex items-start gap-3">
-              <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">location_off</span>
-              <div class="flex-1">
-                <h4 class="font-bold text-sm text-blue-800 dark:text-blue-300">Enable Location</h4>
-                <p class="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                  Allow location access to find ATMs near you and get directions.
+                <h3 class="font-bold text-primary dark:text-white mb-1">Trusted Banks</h3>
+                <p class="text-xs text-text-muted dark:text-gray-400 leading-relaxed">
+                  Commercial Bank, Sampath Bank, Hatton National Bank (HNB), Bank of Ceylon (BOC)
                 </p>
-                <button 
-                  @click="requestLocation"
-                  class="mt-2 text-xs font-bold text-blue-700 dark:text-blue-300 hover:underline"
-                >
-                  Enable Location →
-                </button>
               </div>
-              <button @click="showLocationBanner = false" class="text-blue-400 hover:text-blue-600">
-                <span class="material-symbols-outlined text-lg">close</span>
-              </button>
             </div>
-          </div>
-          
-          <!-- Nearest ATMs List -->
-          <div v-if="nearestATMs.length > 0" class="space-y-3">
-            <h4 class="font-bold text-sm text-text-muted uppercase tracking-wide">Nearest ATMs</h4>
-            <div class="space-y-2">
-              <div 
-                v-for="(atm, index) in nearestATMs" 
-                :key="atm.id"
-                @click="focusATM(atm)"
-                class="bg-gray-50 dark:bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors border border-transparent hover:border-primary/30"
-              >
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-3">
-                    <div 
-                      class="size-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                      :class="index === 0 ? 'bg-primary' : 'bg-gray-400'"
-                    >
-                      {{ index + 1 }}
-                    </div>
-                    <div>
-                      <div class="font-bold text-sm text-text-main dark:text-white">{{ atm.name }}</div>
-                      <div class="text-xs text-text-muted flex items-center gap-1">
-                        <span class="material-symbols-outlined text-xs">{{ atm.type === 'atm' ? 'local_atm' : 'account_balance' }}</span>
-                        {{ atm.type === 'atm' ? 'ATM' : 'Bank' }}
-                        <span class="mx-1">•</span>
-                        {{ formatDistance(atm.distance) }}
-                      </div>
-                    </div>
-                  </div>
-                  <a 
-                    :href="getGoogleMapsUrl(atm)"
-                    target="_blank"
-                    @click.stop
-                    class="flex items-center gap-1 text-xs font-bold text-primary hover:underline"
-                  >
-                    <span class="material-symbols-outlined text-sm">open_in_new</span>
-                    Maps
-                  </a>
-                </div>
+            <div class="flex gap-4">
+              <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
+                <span class="material-icons">payments</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-primary dark:text-white mb-1">ATM Limits & Fees</h3>
+                <p class="text-xs text-text-muted dark:text-gray-400 leading-relaxed">
+                  ATMs typically charge up to Rs1,000 per withdrawal. Some BOC machines may be fee-free. Your home bank
+                  may also charge currency conversion fees.
+                </p>
               </div>
             </div>
           </div>
-          
-          <!-- Stats -->
-          <div v-if="atmLocations.length > 0 && !nearestATMs.length" class="bg-primary/5 dark:bg-primary/10 rounded-lg p-3 text-sm">
-            <span class="font-bold text-primary">{{ atmLocations.length }}</span>
-            <span class="text-text-muted"> ATMs found in view</span>
+          <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl mt-8 mb-6 text-xs text-text-muted">
+            <strong>2</strong> ATMs found in view
           </div>
-          
-          <button 
-            @click="findNearestATM"
-            :disabled="loadingLocation"
-            class="flex items-center justify-center gap-2 w-full sm:w-auto h-12 px-6 border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold rounded-lg transition-colors disabled:opacity-50"
-          >
-            <span v-if="loadingLocation" class="material-symbols-outlined animate-spin">sync</span>
-            <span v-else class="material-symbols-outlined">{{ nearestATMs.length ? 'refresh' : 'near_me' }}</span>
-            {{ loadingLocation ? 'Finding...' : nearestATMs.length ? 'Refresh Results' : 'Find Nearest ATM' }}
+          <button
+            class="w-full border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold py-3 px-6 rounded-xl transition-colors flex items-center justify-center gap-2">
+            <span class="material-icons">near_me</span> Find Nearest ATM
           </button>
         </div>
-        
-        <div class="lg:w-2/3 h-[400px] lg:h-auto min-h-[400px] rounded-2xl overflow-hidden relative shadow-lg">
-          <!-- Leaflet Map Container -->
-          <div ref="mapContainer" class="w-full h-full min-h-[400px] z-0"></div>
-          
-          <!-- Loading Overlay -->
-          <div v-if="loadingATMs" class="absolute inset-0 bg-white/80 dark:bg-black/60 flex items-center justify-center z-10">
-            <div class="flex flex-col items-center gap-2">
-              <span class="material-symbols-outlined text-4xl text-primary animate-spin">sync</span>
-              <span class="text-sm font-medium text-text-muted">Loading ATMs...</span>
-            </div>
+        <div
+          class="relative h-[500px] rounded-2xl overflow-hidden shadow-card border border-gray-200 dark:border-gray-700 bg-gray-200 group">
+          <img alt="ATM Map" class="w-full h-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOR5YxA3cS9ZWn9ykUUc77dEs4YeAKXIyGs1fQWvnAqgPNnRAWtx2G3RAz_bVoNzJdcmMXXu6Tb_kjgfQGq9N8y2MuNlGgHD9MrT5_DP0nhVmGmgvmRSSrPvh_2jgVKLmsLUP-aVaLcc4JINVlWjOdA5t1ysodoVwh5ik98n4_-ZOcUhrqGjm54BE4qyyIgmP-vdMJdSHZfnK-D9oo3wb34oAa3CRfriDOnHxdmGLFNsz7CtfXuDBPh71UCbS7DeSq44Oe2iUl9UI" />
+          <div class="absolute top-4 right-4 flex flex-col gap-2">
+            <button class="bg-white p-2 rounded-lg shadow-md hover:bg-gray-50 text-gray-700"><span
+                class="material-icons">add</span></button>
+            <button class="bg-white p-2 rounded-lg shadow-md hover:bg-gray-50 text-gray-700"><span
+                class="material-icons">remove</span></button>
           </div>
-          
-          <!-- Use My Location Button -->
-          <div class="absolute bottom-4 right-4 z-10">
-            <button 
-              @click="useMyLocation"
-              :disabled="loadingLocation"
-              class="bg-white dark:bg-surface-dark text-text-main dark:text-white px-4 py-2 rounded-lg shadow-lg text-sm font-bold flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
-            >
-              <span v-if="loadingLocation" class="material-symbols-outlined text-primary animate-spin">sync</span>
-              <span v-else class="material-symbols-outlined text-primary">my_location</span>
-              Use my location
-            </button>
+          <div
+            class="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg shadow-lg text-xs font-bold text-primary flex items-center gap-2 cursor-pointer hover:bg-gray-50">
+            <span class="material-icons text-sm">my_location</span> Use my location
           </div>
           
           <!-- Error Message -->

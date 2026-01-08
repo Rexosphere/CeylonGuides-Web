@@ -1,271 +1,39 @@
 <template>
-  <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark text-dark-charcoal dark:text-white font-display antialiased">
-    
+  <div>
     <!-- Hero Section -->
-    <section class="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
-      <div 
-        class="absolute inset-0 bg-cover bg-center" 
-        style='background-image: linear-gradient(rgba(16, 32, 34, 0.4) 0%, rgba(16, 32, 34, 0.6) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuD2xNtC6Msj0wV0Tayt-tD_VIILj7f1Irigig_tna9kLLbT8-yAmzXL7uDX1mX-Mu8FyRfrnVPT8wtNLwicbBZYF3c83iuJZnwt8fQ8SpoWNfszslkw1kJg8Svwc3IO5FYie78bOYCpvDWUafqt0fDRZ844Z1_HSJKr-ZMRfyAgJ98kc6VDgrWi7qCG4Gj4kfQFV7vgIxMbsCNdjMjYfTT2sce-YdFHHUUeUm_BgKc6N_FpNZOpooDYXNTQN94wUkFRTxEiGsobQeA");'>
-      </div>
-      <div class="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
-        <div class="max-w-4xl space-y-6">
-          <h1 class="font-display text-5xl font-extrabold tracking-tight text-white md:text-6xl lg:text-7xl drop-shadow-md">
-            Clean Dining & Safe Food Guide
-          </h1>
-          <p class="mx-auto max-w-2xl text-lg font-medium text-white/90 md:text-xl drop-shadow-sm">
-            Discover hygienic and certified culinary experiences across Sri Lanka's most beautiful locales.
-          </p>
+    <CleanDiningHero />
+
+    <!-- Filter Bar -->
+    <CleanDiningFilterBar v-model:search-query="searchQuery" :active-filters="activeFilters"
+      :restaurant-count="restaurants.length" @toggle-filter="toggleFilter" @clear-filters="clearFilters" />
+
+    <!-- Main Content Section -->
+    <section class="py-8 bg-background-light dark:bg-background-dark min-h-screen">
+      <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <!-- Restaurant List -->
+          <div class="lg:col-span-8 space-y-6">
+            <!-- Loading State -->
+            <div v-if="pending" class="flex justify-center py-12">
+              <div class="animate-spin size-8 border-2 border-primary border-t-transparent rounded-full"></div>
+            </div>
+
+            <!-- Empty State -->
+            <div v-else-if="displayRestaurants.length === 0" class="text-center py-12 text-gray-500">
+              <span class="material-symbols-outlined text-4xl mb-2">restaurant</span>
+              <p>No restaurants found. Try adjusting your filters.</p>
+            </div>
+
+            <!-- Restaurant Cards -->
+            <CleanDiningRestaurantCard v-for="restaurant in displayRestaurants" :key="restaurant.name"
+              :restaurant="restaurant" @view-details="viewRestaurantDetails(restaurant)" />
+          </div>
+
+          <!-- Map Sidebar -->
+          <CleanDiningMap />
         </div>
       </div>
     </section>
-
-    <!-- Filters Section -->
-    <section class="sticky top-[73px] z-40 w-full border-b border-[#f0f4f4] dark:border-gray-700 bg-white dark:bg-background-dark py-4 shadow-sm">
-      <div class="container mx-auto px-4 lg:px-8">
-        <!-- Search Bar -->
-        <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-center">
-          <div class="relative flex-1">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-            <input 
-              v-model="searchInput"
-              @input="debouncedSearch"
-              type="text"
-              placeholder="Search by name, cuisine, city, or features..."
-              class="w-full rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 pl-12 pr-4 py-3 text-sm text-slate-700 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <button 
-              v-if="searchInput"
-              @click="clearSearch"
-              class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-gray-700"
-            >
-              <span class="material-symbols-outlined text-slate-400 text-[18px]">close</span>
-            </button>
-          </div>
-          
-          <!-- Sort Dropdown -->
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-slate-400 text-[20px]">sort</span>
-            <select 
-              v-model="selectedSortValue"
-              @change="setSort(selectedSortValue)"
-              class="rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-sm font-medium text-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="recommended">Recommended</option>
-              <option value="hygiene">Highest Hygiene</option>
-              <option value="alphabetical">A-Z</option>
-              <option value="city">By City</option>
-              <option value="distance" :disabled="!userLocation">Near Me</option>
-            </select>
-          </div>
-          
-          <!-- Near Me Button -->
-          <button 
-            @click="handleNearMe"
-            :disabled="isLocating"
-            :class="[
-              'flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition-all',
-              userLocation 
-                ? 'bg-emerald-500 text-white hover:bg-emerald-600' 
-                : 'bg-primary text-dark-charcoal hover:bg-primary/90',
-              isLocating && 'opacity-50 cursor-not-allowed'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[20px]" :class="{ 'animate-spin': isLocating }">
-              {{ isLocating ? 'sync' : userLocation ? 'my_location' : 'near_me' }}
-            </span>
-            {{ isLocating ? 'Locating...' : userLocation ? 'Located' : 'Near Me' }}
-          </button>
-        </div>
-
-        <!-- Category Filters (Toggle Chips) -->
-        <div class="hide-scrollbar flex gap-3 overflow-x-auto pb-1">
-          <button 
-            v-for="filter in filterOptions" 
-            :key="filter.value"
-            @click="setFilter(filter.value)"
-            :class="[
-              'flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all hover:scale-105',
-              selectedFilter === filter.value 
-                ? 'bg-primary text-dark-charcoal font-bold shadow-md' 
-                : 'bg-[#f0f4f4] dark:bg-gray-800 text-dark-charcoal dark:text-white hover:bg-[#e0e8e9] dark:hover:bg-gray-700'
-            ]"
-          >
-            <span class="material-symbols-outlined text-[18px]">{{ filter.icon }}</span>
-            {{ filter.label }}
-          </button>
-        </div>
-        
-        <!-- City Filter + Results Count -->
-        <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-slate-400">location_on</span>
-            <select 
-              v-model="selectedCityValue"
-              @change="setCity(selectedCityValue)"
-              class="rounded-xl border border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="all">All Cities</option>
-              <option v-for="city in cities" :key="city" :value="city">{{ city }}</option>
-            </select>
-          </div>
-          
-          <div class="text-sm text-slate-500 dark:text-slate-400">
-            Showing <span class="font-bold text-slate-700 dark:text-white">{{ restaurants.length }}</span> restaurants
-            <span v-if="locationError" class="ml-2 text-red-500">• {{ locationError }}</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Info Panel - Badge Explanations & Disclaimer -->
-    <section class="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-gray-800 dark:to-gray-900 border-b border-slate-200 dark:border-gray-700">
-      <div class="container mx-auto px-4 lg:px-8 py-4">
-        <div class="flex flex-col lg:flex-row lg:items-start gap-4">
-          <!-- Badge Explanations -->
-          <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm">
-              <div class="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
-                <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400">verified_user</span>
-              </div>
-              <div>
-                <h4 class="font-bold text-sm text-slate-800 dark:text-white">Safe & Secure</h4>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Highest SLTDA certification for hygiene & safety protocols</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm">
-              <div class="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
-                <span class="material-symbols-outlined text-green-600 dark:text-green-400">workspace_premium</span>
-              </div>
-              <div>
-                <h4 class="font-bold text-sm text-slate-800 dark:text-white">Grade A</h4>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Excellent hygiene & professional service standards</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-gray-800 shadow-sm">
-              <div class="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30">
-                <span class="material-symbols-outlined text-amber-600 dark:text-amber-400">verified</span>
-              </div>
-              <div>
-                <h4 class="font-bold text-sm text-slate-800 dark:text-white">Grade B</h4>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Good hygiene practices with minor improvements noted</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Safety Disclaimer -->
-          <div class="lg:w-72 xl:w-80 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-            <div class="flex items-start gap-2">
-              <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[18px] mt-0.5">info</span>
-              <p class="text-xs text-amber-700 dark:text-amber-300">
-                <span class="font-bold">Disclaimer:</span> Ratings are for guidance only and are not medical or legal advice. Always exercise personal judgment when dining.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Hybrid Content: List & Map -->
-    <div class="container mx-auto flex flex-col-reverse px-4 py-8 lg:flex-row lg:gap-8 lg:px-8 lg:py-12">
-      <!-- Venue List (Left) -->
-      <div class="flex w-full flex-col gap-6 lg:w-[55%] xl:w-[60%]">
-        <!-- Stats Bar -->
-        <div class="flex flex-wrap items-center gap-4 p-4 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-slate-100 dark:border-gray-700">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-emerald-500">verified_user</span>
-            <span class="text-sm font-bold text-slate-700 dark:text-white">{{ safeAndSecureCount }}</span>
-            <span class="text-xs text-slate-500">Safe & Secure</span>
-          </div>
-          <div class="w-px h-6 bg-slate-200 dark:bg-gray-600 hidden sm:block"></div>
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-green-500">workspace_premium</span>
-            <span class="text-sm font-bold text-slate-700 dark:text-white">{{ gradeACount }}</span>
-            <span class="text-xs text-slate-500">Grade A</span>
-          </div>
-          <div class="w-px h-6 bg-slate-200 dark:bg-gray-600 hidden sm:block"></div>
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-amber-500">verified</span>
-            <span class="text-sm font-bold text-slate-700 dark:text-white">{{ gradeBCount }}</span>
-            <span class="text-xs text-slate-500">Grade B</span>
-          </div>
-          <div class="flex-1"></div>
-          <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10">
-            <span class="material-symbols-outlined text-primary text-[18px]">format_list_numbered</span>
-            <span class="text-sm font-bold text-primary">{{ restaurants.length }}</span>
-            <span class="text-xs text-slate-600 dark:text-slate-400">results</span>
-          </div>
-        </div>
-
-        <template v-if="restaurants.length > 0">
-          <DiningCard 
-            v-for="restaurant in restaurants" 
-            :key="restaurant.id"
-            :data-restaurant-id="restaurant.id"
-            :restaurant="restaurant"
-            :is-selected="selectedRestaurant?.id === restaurant.id"
-            :geocoding-status="getGeocodingStatus(restaurant.id)"
-            :distance="userLocation ? formatDistance(getDistanceFromUser(restaurant)) : ''"
-            @click="handleCardClick(restaurant)"
-            @view-details="openDetails(restaurant)"
-          />
-        </template>
-        
-        <!-- Empty State -->
-        <div v-else class="flex flex-col items-center justify-center py-16 text-center">
-          <div class="mb-4 p-4 rounded-full bg-slate-100 dark:bg-gray-800">
-            <span class="material-symbols-outlined text-4xl text-slate-400">search_off</span>
-          </div>
-          <h3 class="text-xl font-bold text-slate-700 dark:text-white mb-2">No restaurants found</h3>
-          <p class="text-slate-500 dark:text-slate-400 max-w-md">
-            Try adjusting your filters or selecting a different city to find more dining options.
-          </p>
-          <button 
-            @click="resetFilters"
-            class="mt-4 px-6 py-2 rounded-full bg-primary text-dark-charcoal font-bold hover:bg-primary/90 transition-colors"
-          >
-            Reset Filters
-          </button>
-        </div>
-      </div>
-
-      <!-- Sticky Map (Right) -->
-      <div class="mb-8 w-full lg:mb-0 lg:h-[calc(100vh-200px)] lg:w-[45%] xl:w-[40%] sticky lg:top-36">
-        <div class="h-[400px] w-full overflow-hidden rounded-2xl bg-slate-200 dark:bg-gray-800 shadow-md lg:h-full">
-          <ClientOnly>
-            <DiningMap 
-              :restaurants="mappableRestaurants"
-              :selected-restaurant="selectedRestaurant"
-              @select-restaurant="handleMapSelect"
-            />
-            <template #fallback>
-              <div class="h-full w-full flex items-center justify-center bg-slate-100 dark:bg-gray-800">
-                <div class="text-center">
-                  <span class="material-symbols-outlined text-4xl text-slate-400 animate-pulse">map</span>
-                  <p class="mt-2 text-slate-500">Loading map...</p>
-                </div>
-              </div>
-            </template>
-          </ClientOnly>
-        </div>
-      </div>
-    </div>
-
-    <!-- Restaurant Details Modal -->
-    <DiningDetailsModal 
-      v-if="selectedRestaurant"
-      :show="showDetails"
-      :restaurant="selectedRestaurant"
-      @close="closeDetails"
-      @add-to-trip="handleAddToTrip"
-    />
-
-    <!-- Floating Action Button -->
-    <button 
-      @click="scrollToTop"
-      class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-primary text-dark-charcoal shadow-xl transition-transform hover:scale-105 hover:bg-primary/90"
-    >
-      <span class="material-symbols-outlined">arrow_upward</span>
-    </button>
   </div>
 </template>
 
@@ -273,129 +41,337 @@
 import { ref, nextTick, onMounted, computed } from 'vue'
 import { useDining, type Restaurant, type DiningFilter, type SortOption } from '~/composables/useDining'
 
-// SEO Meta
-definePageMeta({
-  layout: 'default'
-})
+// Default layout enabled
+// definePageMeta({
+//   layout: 'default'
+// })
 
-useHead({
-  title: 'Clean Dining & Food Guide - CeylonGuide',
-  meta: [
-    { name: 'description', content: 'Discover hygienic and certified culinary experiences across Sri Lanka\'s most beautiful locales.' }
-  ]
-})
+// Get config
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
 
-// Filter options configuration - drives the filter bar
-const filterOptions: { value: DiningFilter; label: string; icon: string }[] = [
-  { value: 'all', label: 'All', icon: 'restaurant' },
-  { value: 'safeAndSecure', label: 'Safe & Secure', icon: 'verified_user' },
-  { value: 'vegetarian', label: 'Vegetarian', icon: 'spa' },
-  { value: 'vegan', label: 'Vegan', icon: 'eco' },
-  { value: 'halal', label: 'Halal', icon: 'restaurant_menu' },
-  { value: 'highHygiene', label: 'High Hygiene', icon: 'water_drop' },
-  { value: 'premium', label: 'Fine Dining', icon: 'diamond' }
-]
+// Filters
+const selectedCategory = ref<string | null>(null)
+const selectedDietary = ref<string | null>(null)
+const selectedHygiene = ref<string | null>(null)
+const searchQuery = ref('')
+const debouncedQuery = ref('')
+const activeFilters = ref<string[]>([])
 
-// Use dining composable
-const { 
-  restaurants,
-  mappableRestaurants,
-  cities, 
-  selectedFilter,
-  selectedRestaurant,
-  showDetails,
-  setFilter,
-  setCity,
-  setSearch,
-  setSort,
-  openDetails,
-  closeDetails,
-  selectRestaurant,
-  resetFilters,
-  initGeocoding,
-  getGeocodingStatus,
-  getUserLocation,
-  userLocation,
-  isLocating,
-  locationError,
-  getDistanceFromUser,
-  formatDistance
-} = useDining()
-
-// Initialize geocoding for restaurants without coordinates
-onMounted(() => {
-  // Start geocoding in background (won't block UI)
-  initGeocoding()
-})
-
-// Local state for UI controls
-const selectedCityValue = ref('all')
-const selectedSortValue = ref<SortOption>('recommended')
-const searchInput = ref('')
-
-// Computed stats for current filtered results
-const safeAndSecureCount = computed(() => 
-  restaurants.value.filter(r => r.certificationType === 'SafeAndSecure').length
-)
-const gradeACount = computed(() => 
-  restaurants.value.filter(r => r.certificationType === 'TouristFriendlyGradeA').length
-)
-const gradeBCount = computed(() => 
-  restaurants.value.filter(r => r.certificationType === 'TouristFriendlyGradeB').length
-)
-
-// Debounced search
-let searchTimeout: ReturnType<typeof setTimeout> | null = null
-function debouncedSearch() {
-  if (searchTimeout) clearTimeout(searchTimeout)
-  searchTimeout = setTimeout(() => {
-    setSearch(searchInput.value)
+// Debounce search input (300ms)
+let debounceTimer: ReturnType<typeof setTimeout>
+watch(searchQuery, (newVal) => {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    debouncedQuery.value = newVal
   }, 300)
+})
+
+const { data: categoriesResponse } = await useFetch<{
+  success: boolean
+  data: Array<{ category: string; count: number }>
+}>(`${apiBase}/api/dining/categories/list`)
+
+const categories = computed(() => categoriesResponse.value?.data || [])
+
+function formatCategory(value: string) {
+  return value.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (t) => t.toUpperCase())
 }
 
-// Clear search
-function clearSearch() {
-  searchInput.value = ''
-  setSearch('')
-}
+// Review Modal State
+const showReviewModal = ref(false)
+const selectedRestaurant = ref<Restaurant | null>(null)
+const reviewSubmitting = ref(false)
+const reviewError = ref('')
+const reviewSuccess = ref(false)
+const reviewForm = ref({ rating: 0, comment: '' })
+const showDetailsModal = ref(false)
+const detailsLoading = ref(false)
+const detailsError = ref('')
+const restaurantDetails = ref<Restaurant | null>(null)
 
-// Handle Near Me button
-async function handleNearMe() {
-  await getUserLocation()
-}
+const { data: restaurantsResponse, pending, refresh } = await useFetch<{
+  success: boolean
+  data: Restaurant[]
+  count: number
+}>(
+  () => {
+    const params = new URLSearchParams()
+    if (selectedCategory.value) params.set('category', selectedCategory.value)
+    if (selectedDietary.value) params.set('dietary', selectedDietary.value)
+    if (selectedHygiene.value) params.set('hygiene', selectedHygiene.value)
+    if (debouncedQuery.value) params.set('search', debouncedQuery.value)
+    const queryStr = params.toString()
+    return `${apiBase}/api/dining${queryStr ? `?${queryStr}` : ''}`
+  },
+  { watch: [selectedCategory, selectedDietary, selectedHygiene, debouncedQuery] }
+)
 
-// Handle Add to Trip button (placeholder - fires event)
-function handleAddToTrip(restaurant: Restaurant) {
-  // TODO: Integrate with trip planning feature
-  console.log('Add to trip:', restaurant.id, restaurant.name)
-  alert(`"${restaurant.name}" has been added to your trip! (Placeholder)`)
-  closeDetails()
-}
+// Handle deep-links for specific restaurant
+const route = useRoute()
 
-// Handle clicking a restaurant card - select it (map will pan via watch)
-function handleCardClick(restaurant: Restaurant) {
-  selectRestaurant(restaurant)
-}
-
-// Handle clicking a map marker - select and scroll card into view
-function handleMapSelect(restaurant: Restaurant) {
-  selectRestaurant(restaurant)
-  
-  // Scroll the card into view
+function scrollToRestaurant(id: string) {
   nextTick(() => {
-    const cardElement = document.querySelector(`[data-restaurant-id="${restaurant.id}"]`)
-    if (cardElement) {
-      cardElement.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center' 
-      })
+    const el = document.getElementById(`restaurant-${id}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('ring-2', 'ring-dining-primary', 'ring-offset-2')
+      setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-dining-primary', 'ring-offset-2')
+      }, 3000)
     }
   })
 }
 
-// Scroll to top
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+onMounted(async () => {
+  if (route.query.id) {
+    const restaurantId = route.query.id as string
+    await nextTick()
+    await openDetails(restaurantId)
+    scrollToRestaurant(restaurantId)
+  }
+})
+
+// Near Me mode state
+const userLocation = ref<{ lat: number; lng: number } | null>(null)
+const sortBy = ref<'relevance' | 'distance' | 'rating'>('relevance')
+const gettingLocation = ref(false)
+
+// Enable location
+async function enableLocation() {
+  if (!navigator.geolocation) {
+    alert('Geolocation not supported')
+    return
+  }
+
+  gettingLocation.value = true
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      userLocation.value = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      }
+      sortBy.value = 'distance'
+      gettingLocation.value = false
+    },
+    (error) => {
+      console.error('Location error:', error)
+      alert('Could not get location')
+      gettingLocation.value = false
+    },
+    { timeout: 10000 }
+  )
+}
+
+// Calculate distance (Haversine formula)
+function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371 // Earth radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLng = (lng2 - lng1) * Math.PI / 180
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return R * c
+}
+
+// Sorted restaurants based on sortBy and location
+const sortedRestaurants = computed(() => {
+  const list = [...(restaurantsResponse.value?.data || [])]
+
+  if (sortBy.value === 'distance' && userLocation.value) {
+    list.sort((a, b) => {
+      const distA = getDistance(
+        userLocation.value!.lat,
+        userLocation.value!.lng,
+        a.location?.latitude || 0,
+        a.location?.longitude || 0
+      )
+      const distB = getDistance(
+        userLocation.value!.lat,
+        userLocation.value!.lng,
+        b.location?.latitude || 0,
+        b.location?.longitude || 0
+      )
+      return distA - distB
+    })
+  } else if (sortBy.value === 'rating') {
+    list.sort((a, b) => (b.rating || 0) - (a.rating || 0))
+  }
+
+  return list
+})
+
+const restaurants = computed(() => sortedRestaurants.value)
+
+// Sample restaurant data for the new design
+const sampleRestaurants = [
+  {
+    name: 'A Minute By Tuk Tuk',
+    location: 'Galle Fort',
+    rating: 4,
+    description: 'Colorful open-air eatery on the oceanfront (Old Dutch Hospital) with a seafood-centric menu.',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBuKoU059FSWsAAhLEWLUoUJTsh_3FwnWDg7mJo2upWT75W0aJd7TqkQloSdCV_kEOrFPq6iaflpGdnTuBwmDHCZQEVIiWgrp6tNA2qG_KZlKXqWrYP1WkpZ9NuyrM5I4PCEnNXCliH8_xGbnJH5zlMT5xZoL9q6z_5QdHLTRipPisKlbG3SevLTHc8mTsRSWH4LePj2v-enfIGsapMrJ2s0pJ3c1fcdOKoPNS8SlKsbxuF2q77qOo_RRlZGbJB0USVnFSfiOxmLhw',
+    grade: 'Grade A',
+    tags: ['Sri Lankan', 'Vegetarian', 'Seafood', 'Outdoor Seating']
+  },
+  {
+    name: 'Paradise Road The Gallery Café',
+    location: 'Colombo 7',
+    rating: 5,
+    description: 'Stylish cafe in a Geoffrey Bawa heritage building offering international and Sri Lankan dishes.',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDZWXUCz6Fr49V7H4gxXHBLQYAwtp78rRRlIv4In6r4hrRnlGV7cFPUQfMSgJre3GEAI8Fm-zXjPE6WMMFX483FjvsRaGK6wQYRg75cEc6n1Fb-Md1dkerRPzfTPc5Bl3UDUFq7B6O1B80qz4B2okkEIYXbTsyiX3L221SAAbuBTLoDNDF20teeH6tcsbO-iQzRuPGCiQOUJbfY1vHjME8j8w8o7_h8Bx9bC43b4YnbRYNGEd_5JMvXfjIYBiOBJPmd-ZQMtrJKiK4',
+    grade: 'Safe & Secure',
+    tags: ['International', 'Vegetarian', 'Outdoor Seating', 'Safe & Secure']
+  }
+]
+
+// Display restaurants with filtering
+const displayRestaurants = computed(() => {
+  let filtered = sampleRestaurants
+
+  // Apply search filter
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(r =>
+      r.name.toLowerCase().includes(query) ||
+      r.location.toLowerCase().includes(query) ||
+      r.description.toLowerCase().includes(query) ||
+      r.tags.some(tag => tag.toLowerCase().includes(query))
+    )
+  }
+
+  // Apply active filters
+  if (activeFilters.value.length > 0) {
+    filtered = filtered.filter(r => {
+      return activeFilters.value.every(filter => {
+        switch (filter) {
+          case 'safe':
+            return r.grade === 'Safe & Secure' || r.grade === 'Grade A'
+          case 'vegetarian':
+            return r.tags.some(tag => tag.toLowerCase().includes('vegetarian'))
+          case 'vegan':
+            return r.tags.some(tag => tag.toLowerCase().includes('vegan'))
+          case 'halal':
+            return r.tags.some(tag => tag.toLowerCase().includes('halal'))
+          case 'hygiene':
+            return r.grade === 'Grade A'
+          case 'fineDining':
+            return r.tags.some(tag => tag.toLowerCase().includes('fine'))
+          default:
+            return true
+        }
+      })
+    })
+  }
+
+  return filtered
+})
+
+// Dietary filters
+const dietaryFilters = [
+  { id: null, label: 'All', icon: 'restaurant' },
+  { id: 'VEGETARIAN', label: 'Vegetarian', icon: 'eco' },
+  { id: 'VEGAN', label: 'Vegan', icon: 'psychiatry' },
+  { id: 'HALAL', label: 'Halal', icon: 'mosque' },
+]
+
+// Hygiene rating helper
+function getHygieneStars(rating: string): number {
+  switch (rating) {
+    case 'EXCELLENT': return 5
+    case 'GOOD': return 4
+    case 'FAIR': return 3
+    case 'POOR': return 2
+    default: return 0
+  }
+}
+
+function selectDietary(id: string | null) {
+  selectedDietary.value = selectedDietary.value === id ? null : id
+}
+
+function selectHygiene(id: string | null) {
+  selectedHygiene.value = selectedHygiene.value === id ? null : id
+}
+
+function openReviewModal(restaurant: Restaurant) {
+  selectedRestaurant.value = restaurant
+  reviewForm.value = { rating: 0, comment: '' }
+  reviewError.value = ''
+  reviewSuccess.value = false
+  showReviewModal.value = true
+}
+
+async function openDetails(restaurantId: string) {
+  showDetailsModal.value = true
+  detailsLoading.value = true
+  detailsError.value = ''
+  try {
+    const response = await $fetch<{ success: boolean; data: Restaurant }>(`${apiBase}/api/dining/${restaurantId}`)
+    if (response.success) {
+      restaurantDetails.value = response.data
+    }
+  } catch (err: any) {
+    detailsError.value = err?.data?.error || 'Failed to load restaurant details.'
+  } finally {
+    detailsLoading.value = false
+  }
+}
+
+function closeDetails() {
+  showDetailsModal.value = false
+  restaurantDetails.value = null
+}
+
+async function submitReview() {
+  if (!selectedRestaurant.value || reviewForm.value.rating === 0) return
+
+  reviewSubmitting.value = true
+  reviewError.value = ''
+
+  try {
+    await $fetch(`${apiBase}/api/dining/${selectedRestaurant.value.id}/reviews`, {
+      method: 'POST',
+      body: {
+        rating: reviewForm.value.rating,
+        comment: reviewForm.value.comment || undefined
+      }
+    })
+
+    reviewSuccess.value = true
+    setTimeout(() => {
+      showReviewModal.value = false
+      refresh()
+    }, 1500)
+  } catch (err: any) {
+    reviewError.value = err?.data?.error || 'Failed to submit review'
+  } finally {
+    reviewSubmitting.value = false
+  }
+}
+
+// Filter management
+function toggleFilter(filter: string) {
+  const index = activeFilters.value.indexOf(filter)
+  if (index > -1) {
+    activeFilters.value.splice(index, 1)
+  } else {
+    activeFilters.value.push(filter)
+  }
+}
+
+function clearFilters() {
+  activeFilters.value = []
+  searchQuery.value = ''
+}
+
+// View restaurant details
+function viewRestaurantDetails(restaurant: any) {
+  console.log('View details for:', restaurant.name)
+  // TODO: Implement modal or navigation to details page
 }
 </script>
 
@@ -404,6 +380,7 @@ function scrollToTop() {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;

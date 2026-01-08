@@ -99,6 +99,8 @@ export interface Facility {
   photos: string[]
   amenities?: string[]
   ratings?: FacilityRating[]
+  price?: number
+  description?: string
 }
 
 export interface FacilityRating {
