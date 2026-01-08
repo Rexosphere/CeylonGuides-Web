@@ -1,5 +1,5 @@
 <template>
-  <div class="sticky top-0 z-20 flex w-full flex-col gap-4 border-b border-neutral-light bg-white/95 px-6 py-4 backdrop-blur-sm dark:border-white/10 dark:bg-background-dark/95">
+  <div class="sticky top-0 z-20 flex w-full flex-col gap-3 border-b border-neutral-light bg-white/95 px-4 py-3 backdrop-blur-sm dark:border-white/10 dark:bg-background-dark/95">
     <!-- Search Bar -->
     <div class="relative">
       <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-gray text-[18px]">search</span>

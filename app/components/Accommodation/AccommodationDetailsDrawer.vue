@@ -14,11 +14,11 @@
           <div class="sticky top-0 z-10 flex items-center justify-between bg-white/95 dark:bg-surface-dark/95 backdrop-blur-sm px-6 py-4 border-b border-gray-100 dark:border-white/10">
             <div>
               <h2 class="text-xl font-bold text-neutral-dark dark:text-white">
-                {{ accommodation?.name || 'Stay Details' }}
+                {{ accommodation?.title || 'Stay Details' }}
               </h2>
               <p v-if="accommodation?.location" class="text-sm text-neutral-gray flex items-center gap-1 mt-0.5">
                 <span class="material-symbols-outlined text-[14px]">location_on</span>
-                {{ accommodation.location.name }}, {{ accommodation.location.district }}
+                {{ accommodation.location }}
               </p>
             </div>
             <button 
@@ -29,27 +29,13 @@
             </button>
           </div>
 
-          <!-- Loading State -->
-          <div v-if="loading" class="flex items-center justify-center py-20">
-            <div class="flex flex-col items-center gap-3">
-              <div class="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-              <span class="text-sm text-neutral-gray">Loading details...</span>
-            </div>
-          </div>
-
-          <!-- Error State -->
-          <div v-else-if="error" class="p-6 text-center">
-            <span class="material-symbols-outlined text-[48px] text-red-400">error</span>
-            <p class="mt-2 text-sm text-red-600">{{ error }}</p>
-          </div>
-
           <!-- Content -->
-          <div v-else-if="accommodation" class="flex flex-col">
+          <div v-if="accommodation" class="flex flex-col">
             <!-- Hero Image -->
             <img 
-              v-if="accommodation.image_url" 
-              :src="accommodation.image_url" 
-              :alt="accommodation.name"
+              v-if="accommodation.image" 
+              :src="accommodation.image" 
+              :alt="accommodation.title"
               class="w-full h-56 object-cover"
             />
 
@@ -58,11 +44,8 @@
               <div class="flex items-center justify-between">
                 <div>
                   <div class="flex items-baseline gap-1">
-                    <span class="text-3xl font-bold text-primary">${{ accommodation.price_per_night_usd || toUsd(accommodation.price_per_night_lkr) }}</span>
+                    <span class="text-3xl font-bold text-primary">${{ accommodation.price }}</span>
                     <span class="text-sm text-neutral-gray">/ night</span>
-                  </div>
-                  <div v-if="accommodation.price_range" class="text-xs text-neutral-gray mt-0.5">
-                    {{ priceRangeLabels[accommodation.price_range] || accommodation.price_range }} price range
                   </div>
                 </div>
                 <div class="text-right">
@@ -71,7 +54,7 @@
                     {{ accommodation.rating?.toFixed(1) || 'N/A' }}
                   </div>
                   <div class="text-xs text-neutral-gray">
-                    {{ accommodation.review_count?.toLocaleString() || 0 }} reviews
+                    {{ accommodation.reviews?.toLocaleString() || 0 }} reviews
                   </div>
                 </div>
               </div>
@@ -79,12 +62,12 @@
               <!-- Type & Safety Badge -->
               <div class="flex flex-wrap gap-2">
                 <span class="inline-flex items-center gap-1.5 rounded-lg bg-neutral-100 px-3 py-1.5 text-sm font-medium text-neutral-700 dark:bg-white/10 dark:text-neutral-300">
-                  <span class="material-symbols-outlined text-[16px]">{{ categoryIcons[accommodation.category] || 'hotel' }}</span>
-                  {{ formatCategory(accommodation.category) }}
+                  <span class="material-symbols-outlined text-[16px]">{{ categoryIcons[accommodation.type] || 'hotel' }}</span>
+                  {{ formatCategory(accommodation.type) }}
                 </span>
                 
                 <!-- Safety Certified Badge with Tooltip -->
-                <div v-if="accommodation.safety_certified" class="relative group">
+                <div v-if="accommodation.isSafetyCertified" class="relative group">
                   <span class="inline-flex items-center gap-1.5 rounded-lg bg-green-100 px-3 py-1.5 text-sm font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-300 cursor-help">
                     <span class="material-symbols-outlined text-[16px]">verified_user</span>
                     Safety Certified
@@ -128,11 +111,6 @@
                     </div>
                   </div>
                 </div>
-
-                <span v-if="accommodation.is_verified" class="inline-flex items-center gap-1 rounded-lg bg-blue-100 px-3 py-1.5 text-sm font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
-                  <span class="material-symbols-outlined text-[16px]">verified</span>
-                  Verified Listing
-                </span>
               </div>
 
               <!-- Description -->
@@ -149,11 +127,11 @@
                 <div class="grid grid-cols-2 gap-2">
                   <div 
                     v-for="amenity in accommodation.amenities" 
-                    :key="amenity"
+                    :key="amenity.label"
                     class="flex items-center gap-2 rounded-lg bg-gray-50 dark:bg-white/5 px-3 py-2"
                   >
-                    <span class="material-symbols-outlined text-[18px] text-primary">{{ amenityIcons[amenity] || 'check_circle' }}</span>
-                    <span class="text-sm text-neutral-dark dark:text-neutral-300">{{ formatAmenity(amenity) }}</span>
+                    <span class="material-symbols-outlined text-[18px] text-primary">{{ amenity.icon }}</span>
+                    <span class="text-sm text-neutral-dark dark:text-neutral-300">{{ amenity.label }}</span>
                   </div>
                 </div>
               </div>
@@ -164,53 +142,12 @@
                   <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[20px] mt-0.5">lightbulb</span>
                   <div>
                     <h4 class="text-sm font-bold text-amber-800 dark:text-amber-300 mb-1">
-                      {{ accommodation.region_key ? regionLabels[accommodation.region_key] : 'Travel Tip' }}
+                      {{ accommodation.region ? regionLabels[accommodation.region] : 'Travel Tip' }}
                     </h4>
                     <p class="text-xs text-amber-700 dark:text-amber-400">
                       {{ regionTip }}
                     </p>
                   </div>
-                </div>
-              </div>
-
-              <!-- Contact Info -->
-              <div v-if="accommodation.contact_phone || accommodation.contact_email">
-                <h3 class="text-sm font-bold text-neutral-dark dark:text-white mb-3">Contact</h3>
-                <div class="space-y-2">
-                  <a 
-                    v-if="accommodation.contact_phone" 
-                    :href="`tel:${accommodation.contact_phone}`"
-                    class="flex items-center gap-2 text-sm text-neutral-gray hover:text-primary transition-colors"
-                  >
-                    <span class="material-symbols-outlined text-[18px]">phone</span>
-                    {{ accommodation.contact_phone }}
-                  </a>
-                  <a 
-                    v-if="accommodation.contact_email" 
-                    :href="`mailto:${accommodation.contact_email}`"
-                    class="flex items-center gap-2 text-sm text-neutral-gray hover:text-primary transition-colors"
-                  >
-                    <span class="material-symbols-outlined text-[18px]">email</span>
-                    {{ accommodation.contact_email }}
-                  </a>
-                </div>
-              </div>
-
-              <!-- Booking / Source -->
-              <div class="border-t border-gray-100 dark:border-white/10 pt-6">
-                <a 
-                  v-if="accommodation.website_url"
-                  :href="accommodation.website_url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="flex items-center justify-center gap-2 w-full rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white hover:bg-primary/90 transition-colors"
-                >
-                  <span class="material-symbols-outlined text-[18px]">open_in_new</span>
-                  Open in Booking Site
-                </a>
-                <div v-else class="flex items-center justify-center gap-2 text-sm text-neutral-gray">
-                  <span class="material-symbols-outlined text-[16px]">info</span>
-                  <span>Source: Booking.com / Expedia</span>
                 </div>
               </div>
             </div>
@@ -222,24 +159,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { computed } from 'vue'
 import type { Accommodation } from '~/types/api'
 
 const props = defineProps<{
   isOpen: boolean
-  accommodationId: string | number | null
+  accommodation: Accommodation | null
 }>()
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
-
-const config = useRuntimeConfig()
-const apiBase = config.public.apiBase
-
-const accommodation = ref<Accommodation | null>(null)
-const loading = ref(false)
-const error = ref('')
 
 // Category icons
 const categoryIcons: Record<string, string> = {
@@ -250,29 +180,6 @@ const categoryIcons: Record<string, string> = {
   'VILLA': 'villa',
   'HOMESTAY': 'home',
   'HOSTEL': 'bed',
-}
-
-// Amenity icons
-const amenityIcons: Record<string, string> = {
-  wifi: 'wifi',
-  pool: 'pool',
-  spa: 'spa',
-  breakfast: 'free_breakfast',
-  restaurant: 'restaurant',
-  parking: 'local_parking',
-  airport_shuttle: 'airport_shuttle',
-  garden: 'yard',
-  gym: 'fitness_center',
-  beach: 'beach_access',
-  ac: 'ac_unit',
-}
-
-// Price range labels
-const priceRangeLabels: Record<string, string> = {
-  '$': 'Budget',
-  '$$': 'Mid-range',
-  '$$$': 'Upscale',
-  '$$$$': 'Luxury',
 }
 
 // Region labels and tips
@@ -295,56 +202,13 @@ const regionTips: Record<string, string> = {
 }
 
 const regionTip = computed(() => {
-  if (!accommodation.value?.region_key) return null
-  return regionTips[accommodation.value.region_key] || null
+  if (!props.accommodation?.region) return null
+  return regionTips[props.accommodation.region] || null
 })
 
 function formatCategory(category: string): string {
-  return category.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
+  return (category || '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
 }
-
-function formatAmenity(amenity: string): string {
-  return amenity.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
-}
-
-function toUsd(lkr?: number): number {
-  return lkr ? Math.round(lkr / 300) : 0
-}
-
-async function fetchDetails() {
-  if (!props.accommodationId) return
-  
-  loading.value = true
-  error.value = ''
-  accommodation.value = null
-
-  try {
-    const response = await $fetch<{ success: boolean; data: Accommodation }>(
-      `${apiBase}/api/accommodations/${props.accommodationId}`
-    )
-    if (response.success) {
-      accommodation.value = response.data
-    } else {
-      error.value = 'Failed to load accommodation details'
-    }
-  } catch (e: any) {
-    error.value = e?.data?.error || 'Failed to load details. Please try again.'
-  } finally {
-    loading.value = false
-  }
-}
-
-watch(() => props.isOpen, (isOpen) => {
-  if (isOpen && props.accommodationId) {
-    fetchDetails()
-  }
-})
-
-watch(() => props.accommodationId, () => {
-  if (props.isOpen && props.accommodationId) {
-    fetchDetails()
-  }
-})
 </script>
 
 <style scoped>
