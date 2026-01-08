@@ -1,271 +1,73 @@
 <template>
-  <div class="min-h-screen bg-background-light dark:bg-background-dark text-slate-700 dark:text-slate-300 font-sans antialiased flex flex-col transition-colors duration-300">
+  <div
+    class="min-h-screen bg-background-light dark:bg-background-dark text-slate-700 dark:text-slate-300 font-sans antialiased flex flex-col transition-colors duration-300">
     <Header variant="solid" />
-    
+
     <!-- Hero Section -->
-    <header class="relative h-[60vh] min-h-[450px] flex items-center justify-center overflow-hidden">
-      <div class="absolute inset-0 z-0">
-        <img 
-          alt="Sri Lankan Coastline" 
-          class="w-full h-full object-cover" 
-          src="/images/downloaded_d71015a3329c.avif"
-        />
-        <div class="absolute inset-0 bg-primary/20 dark:bg-primary/40 mix-blend-multiply"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-slate-900/30 to-slate-900/60"></div>
-      </div>
-      <div class="container mx-auto px-4 relative z-10 text-center text-white mt-10">
-        <div class="flex flex-col items-center justify-center gap-6">
-          <div class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/20 shadow-lg">
-            <span class="material-icons-round text-xl text-secondary">explore</span>
-            <span class="text-sm font-medium tracking-wide uppercase">Travel Essentials</span>
-          </div>
-          <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl font-bold drop-shadow-lg tracking-tight leading-tight">
-            Facilities Finder
-          </h1>
-          <p class="text-lg md:text-xl font-light text-blue-50/90 max-w-2xl mx-auto leading-relaxed drop-shadow-sm">
-            Discover community-rated restrooms, pristine beaches, and cultural attractions across the island.
-          </p>
-        </div>
-      </div>
-    </header>
+    <FacilitiesHero />
+
+    <!-- Filter Bar -->
+    <FacilitiesFilterBar :search-query="searchQuery" :sort-by="sortBy" :selected-city="selectedCity"
+      :active-filters="activeFilters" :has-location="!!userLocation" :results-count="filteredFacilities.length"
+      :free-count="freeCount" :avg-rating="avgRating" @update:search-query="searchQuery = $event"
+      @update:sort-by="sortBy = $event" @update:selected-city="selectedCity = $event"
+      @update:active-filters="activeFilters = $event" @near-me="findNearestRestroom"
+      @enable-location="requestLocation" />
 
     <!-- Main Content Area -->
-    <main class="relative z-20 -mt-24 px-4 pb-24">
-      <div class="container mx-auto max-w-5xl">
-        
-        <!-- Filter Tabs -->
-        <div class="bg-surface-light dark:bg-surface-dark p-2 rounded-2xl shadow-soft dark:shadow-none border border-slate-100 dark:border-slate-700 mx-auto max-w-3xl mb-8 transform translate-y-0 transition-transform hover:-translate-y-1 duration-300">
-          <div class="grid grid-cols-3 gap-2">
-            <button
-              v-for="type in facilityTypes"
-              :key="type.value"
-              @click="selectedType = type.value"
-              :class="[
-                'group flex flex-col md:flex-row items-center justify-center gap-2 py-4 md:py-5 rounded-xl transition-all font-medium relative overflow-hidden',
-                selectedType === type.value 
-                  ? 'bg-primary text-white shadow-lg' 
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-              ]"
-            >
-              <div v-if="selectedType === type.value" class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <span class="material-icons-round text-2xl" :class="type.iconClass">{{ type.iconName }}</span>
-              <span>{{ type.label }}</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Location Access Alert -->
-        <div v-if="!userLocation" class="flex items-center justify-center mb-8">
-          <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800/30 text-orange-600 dark:text-orange-400 text-sm font-medium shadow-sm">
-            <span class="material-icons-round text-lg animate-pulse">location_disabled</span>
-            <span>Location access unavailable • <button @click="requestLocation" class="underline hover:text-orange-700 dark:hover:text-orange-300">Enable location</button> for distance sorting</span>
-          </div>
-        </div>
-
-        <!-- Nearest Restroom Quick Action -->
-        <div class="flex justify-center mb-8">
-          <button
-            @click="findNearestRestroom"
-            :disabled="!userLocation || findingNearest"
-            :class="[
-              'inline-flex items-center gap-3 px-6 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg',
-              !userLocation 
-                ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
-                : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600 hover:scale-105 active:scale-95'
-            ]"
-          >
-            <span v-if="findingNearest" class="animate-spin">⏳</span>
-            <span v-else class="text-2xl">🚻</span>
-            <span>{{ findingNearest ? 'Finding...' : 'Nearest Restroom NOW' }}</span>
-          </button>
-        </div>
-
-        <!-- Nearest Restroom Results -->
-        <div v-if="nearestRestrooms.length > 0" class="mb-8 p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-lg text-blue-800 dark:text-blue-200 flex items-center gap-2">
-              🚻 Nearest {{ nearestRestrooms.length }} Restrooms
-            </h3>
-            <button @click="nearestRestrooms = []" class="text-blue-500 hover:text-blue-700 text-sm">
-              Clear
-            </button>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div
-              v-for="(restroom, idx) in nearestRestrooms"
-              :key="restroom.id"
-              :class="[
-                'bg-white dark:bg-surface-dark rounded-xl p-4 border shadow-sm cursor-pointer hover:shadow-md transition-shadow',
-                idx === 0 ? 'border-green-400 ring-2 ring-green-200' : 'border-gray-200 dark:border-white/10'
-              ]"
-              @click="openDetails(restroom.id)"
-            >
-              <div class="flex items-start justify-between mb-2">
-                <span class="text-2xl">{{ idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉' }}</span>
-                <span class="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-0.5 rounded-full font-semibold">
-                  {{ restroom.distance?.toFixed(1) }} km
-                </span>
-              </div>
-              <h4 class="font-bold text-sm text-slate-800 dark:text-white mb-1">{{ restroom.name }}</h4>
-              <p class="text-xs text-slate-500 mb-2">{{ restroom.location?.name }}</p>
-              <div class="flex items-center gap-1 text-amber-400 text-sm">
-                <span v-for="i in 5" :key="i">{{ i <= Math.round(restroom.cleanliness_rating || 0) ? '★' : '☆' }}</span>
-                <span class="text-xs text-slate-500 ml-1">Cleanliness</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
+    <main
+      class="flex-grow container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6 h-[calc(100vh-400px)] min-h-[600px]">
+      <!-- Facilities List -->
+      <div class="w-full lg:w-1/3 flex flex-col gap-4 overflow-y-auto pr-2 scrollbar-hide pb-10">
         <!-- Loading State -->
         <div v-if="isLoading" class="text-center py-16">
-          <div class="animate-spin size-10 border-3 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+          <div class="animate-spin size-10 border-3 border-primary border-t-transparent rounded-full mx-auto mb-4">
+          </div>
           <p class="text-slate-500 dark:text-slate-400">Finding facilities...</p>
         </div>
 
-        <!-- Facilities Grid -->
-        <div v-else-if="facilities.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div
-            v-for="facility in facilities"
-            :key="facility.id"
-            :id="`facility-${facility.id}`"
-            class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm hover:shadow-lg transition-all p-6 border border-slate-100 dark:border-white/10"
-          >
-            <!-- Type Icon & Distance Badge -->
-            <div class="flex items-start justify-between mb-4">
-              <div class="text-4xl">
-                {{ facilityTypes.find(t => t.value === facility.type)?.icon || '📍' }}
-              </div>
-              <div v-if="userLocation && facility.location?.latitude && facility.location?.longitude" class="text-xs bg-slate-100 dark:bg-white/10 px-2 py-1 rounded-full text-slate-600 dark:text-slate-300">
-                {{ getDistance(userLocation.lat, userLocation.lng, facility.location.latitude, facility.location.longitude).toFixed(1) }} km
-              </div>
-            </div>
-
-            <!-- Name & Location -->
-            <h3 class="font-bold text-lg mb-2 text-slate-800 dark:text-white">{{ facility.name }}</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 flex items-center gap-1">
-              <span class="material-icons-round text-sm">location_on</span>
-              {{ facility.location?.name || facility.location?.district || 'Sri Lanka' }}
-            </p>
-
-            <!-- Rating Display -->
-            <div class="flex items-center gap-2 mb-4">
-              <div class="flex text-amber-400">
-                <span v-for="i in 5" :key="i" class="text-lg">
-                  {{ i <= Math.round(facility.average_rating || 0) ? '★' : '☆' }}
-                </span>
-              </div>
-              <span class="text-sm text-slate-600 dark:text-slate-400">
-                {{ facility.average_rating?.toFixed(1) || 'No ratings' }}
-              </span>
-            </div>
-
-            <!-- Trust Badges -->
-            <div class="flex flex-wrap gap-2 mb-4">
-              <TrustBadge 
-                v-if="facility.rating_count"
-                type="confidence"
-                :value="facility.rating_count"
-                label="Community ratings"
-              />
-              <TrustBadge 
-                v-if="facility.type === 'RESTROOM' && facility.cleanliness_rating"
-                type="hygiene"
-                :value="facility.cleanliness_rating >= 4 ? 'A' : facility.cleanliness_rating >= 3 ? 'B' : 'C'"
-                label="Cleanliness rating"
-              />
-            </div>
-
-            <!-- Safety Badge (for beaches) -->
-            <div v-if="facility.type === 'BEACH' && facility.safety_rating" class="mb-4">
-              <span 
-                :class="[
-                  'px-3 py-1 rounded-full text-xs font-semibold',
-                  facility.safety_rating >= 4 ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' :
-                  facility.safety_rating >= 3 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' :
-                  'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
-                ]"
-              >
-                🏊 Safety: {{ facility.safety_rating }}/5
-              </span>
-            </div>
-
-            <!-- Amenities Tags -->
-            <div v-if="facility.amenities && facility.amenities.length" class="flex flex-wrap gap-1 mb-4">
-              <span 
-                v-for="amenity in facility.amenities.slice(0, 3)" 
-                :key="amenity"
-                class="text-xs bg-slate-100 dark:bg-white/10 px-2 py-0.5 rounded text-slate-600 dark:text-slate-400"
-              >
-                {{ amenity }}
-              </span>
-            </div>
-
-            <!-- Actions -->
-            <button
-              @click="openDetails(facility.id)"
-              class="w-full mb-2 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/5 py-2.5 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
-            >
-              <span class="material-icons-round text-lg">info</span>
-              View Details
-            </button>
-            <button 
-              @click="openRatingModal(facility)"
-              class="w-full bg-primary/10 dark:bg-primary/20 text-primary hover:bg-primary hover:text-white py-2.5 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
-            >
-              <span class="material-icons-round text-lg">star</span>
-              Rate This
-            </button>
-          </div>
-        </div>
+        <!-- Facility Cards -->
+        <template v-else-if="filteredFacilities.length > 0">
+          <FacilitiesFacilityCard v-for="facility in filteredFacilities" :key="facility.id" :name="facility.name"
+            :location-type="facility.location?.name || 'Location'" :rating="facility.average_rating || 0"
+            :review-count="facility.rating_count || 0" :is-free="!facility.price || facility.price === 0"
+            :price="facility.price ? `Rs ${facility.price}` : 'Free'"
+            :is-accessible="facility.amenities?.includes('Accessible') || false"
+            :city="facility.location?.district || 'Sri Lanka'"
+            :description="facility.description || getDefaultDescription(facility)"
+            :color-scheme="getColorScheme(facility)" @click="openDetails(facility.id)" />
+        </template>
 
         <!-- Empty State -->
-        <div v-else class="flex flex-col items-center justify-center text-center py-12 px-4 border border-dashed border-slate-200 dark:border-slate-700 rounded-3xl bg-slate-50/50 dark:bg-slate-800/20 max-w-4xl mx-auto">
-          <div class="relative mb-8">
-            <div class="absolute -inset-8 bg-blue-100 dark:bg-blue-900/30 rounded-full opacity-60 blur-2xl"></div>
-            <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-full shadow-soft relative inline-block">
-              <span class="material-icons-round text-6xl text-slate-400 dark:text-slate-500">travel_explore</span>
-              <div class="absolute bottom-0 right-0 bg-secondary text-white rounded-full p-1.5 shadow-md border-4 border-surface-light dark:border-surface-dark">
-                <span class="material-icons-round text-lg block">priority_high</span>
-              </div>
-            </div>
-          </div>
-          <h2 class="text-3xl font-serif font-bold text-slate-800 dark:text-slate-100 mb-4">
-            No locations found nearby
-          </h2>
-          <p class="text-slate-600 dark:text-slate-400 max-w-lg mx-auto text-lg leading-relaxed mb-8">
-            We couldn't find any {{ selectedTypeLabel }} in this specific area yet. Try selecting a different category above, or help fellow travelers by adding a spot you know.
+        <div v-else class="flex flex-col items-center justify-center text-center py-12 px-4">
+          <div class="text-6xl mb-4">🔍</div>
+          <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">No facilities found</h3>
+          <p class="text-slate-600 dark:text-slate-400 mb-4">
+            Try adjusting your filters or search criteria
           </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
-            <button 
-              @click="clearFilters"
-              class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium shadow-sm"
-            >
-              <span class="material-icons-round text-lg">filter_list</span>
-              Clear Filters
-            </button>
-            <button class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-primary text-white rounded-full hover:bg-primary/90 transition-all font-medium shadow-glow transform hover:-translate-y-0.5">
-              <span class="material-icons-round text-lg">add_location_alt</span>
-              Contribute a Location
-            </button>
-          </div>
+          <button @click="clearAllFilters"
+            class="px-6 py-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors">
+            Clear All Filters
+          </button>
         </div>
-
       </div>
+
+      <!-- Map -->
+      <FacilitiesMap :markers="mapMarkers" @marker-click="handleMarkerClick" @zoom-in="handleZoomIn"
+        @zoom-out="handleZoomOut" />
     </main>
 
     <!-- Rating Modal -->
     <Teleport to="body">
-      <div 
-        v-if="showRatingModal" 
-        class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
-        @click.self="showRatingModal = false"
-      >
+      <div v-if="showRatingModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+        @click.self="showRatingModal = false">
         <div class="bg-surface-light dark:bg-surface-dark rounded-2xl max-w-md w-full p-6 shadow-2xl">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-xl font-bold text-slate-800 dark:text-white">
               Rate {{ selectedFacility?.name }}
             </h3>
-            <button @click="showRatingModal = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+            <button @click="showRatingModal = false"
+              class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
               <span class="material-icons-round">close</span>
             </button>
           </div>
@@ -274,15 +76,10 @@
           <div class="mb-6">
             <label class="block text-sm font-medium mb-3 text-slate-700 dark:text-slate-300">Your Rating</label>
             <div class="flex gap-2 justify-center">
-              <button
-                v-for="i in 5"
-                :key="i"
-                @click="ratingForm.rating = i"
-                class="text-4xl hover:scale-110 transition-transform"
-              >
+              <button v-for="i in 5" :key="i" @click="ratingForm.rating = i"
+                class="text-4xl hover:scale-110 transition-transform">
                 <span :class="i <= ratingForm.rating ? 'text-amber-400' : 'text-slate-300'">
-                  {{ i <= ratingForm.rating ? '★' : '☆' }}
-                </span>
+                  {{ i <= ratingForm.rating ? '★' : '☆' }} </span>
               </button>
             </div>
             <p class="text-center text-sm text-slate-500 mt-2">
@@ -293,27 +90,19 @@
           <!-- Comment -->
           <div class="mb-6">
             <label class="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">Comment (optional)</label>
-            <textarea
-              v-model="ratingForm.comment"
-              rows="3"
+            <textarea v-model="ratingForm.comment" rows="3"
               class="w-full px-4 py-3 border border-slate-200 dark:border-white/10 rounded-xl resize-none bg-slate-50 dark:bg-white/5 focus:ring-2 focus:ring-primary outline-none text-slate-700 dark:text-white"
-              placeholder="Share your experience..."
-            />
+              placeholder="Share your experience..." />
           </div>
 
           <!-- Submit -->
           <div class="flex gap-3">
-            <button 
-              @click="showRatingModal = false"
-              class="flex-1 px-4 py-3 border border-slate-200 dark:border-white/10 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 font-medium text-slate-700 dark:text-white transition-colors"
-            >
+            <button @click="showRatingModal = false"
+              class="flex-1 px-4 py-3 border border-slate-200 dark:border-white/10 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 font-medium text-slate-700 dark:text-white transition-colors">
               Cancel
             </button>
-            <button 
-              @click="submitRating"
-              :disabled="submitting"
-              class="flex-1 px-4 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 font-medium transition-colors disabled:opacity-50"
-            >
+            <button @click="submitRating" :disabled="submitting"
+              class="flex-1 px-4 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 font-medium transition-colors disabled:opacity-50">
               {{ submitting ? 'Submitting...' : 'Submit Rating' }}
             </button>
           </div>
@@ -323,79 +112,174 @@
 
     <!-- Details Modal -->
     <Teleport to="body">
-      <div
-        v-if="showDetailsModal"
-        class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
-        @click.self="closeDetails"
-      >
-        <div class="bg-surface-light dark:bg-surface-dark rounded-2xl max-w-md w-full p-6 shadow-2xl">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-bold text-slate-800 dark:text-white">
-              {{ facilityDetails?.name || 'Facility Details' }}
-            </h3>
-            <button @click="closeDetails" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-              <span class="material-icons-round">close</span>
-            </button>
-          </div>
-          <div v-if="detailsLoading" class="text-sm text-slate-500">Loading details...</div>
-          <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
-          <div v-else-if="facilityDetails" class="space-y-3">
-            <p class="text-sm text-slate-600 dark:text-slate-400">
-              {{ facilityDetails.location?.name || facilityDetails.location?.district || 'Sri Lanka' }}
-            </p>
-            <div class="flex flex-wrap gap-2 text-xs">
-              <span class="px-2 py-1 rounded bg-primary/10 text-primary">{{ facilityDetails.type || facilityDetails.facility_type }}</span>
-              <span v-if="facilityDetails.average_rating" class="px-2 py-1 rounded bg-amber-100 text-amber-700">
-                {{ facilityDetails.average_rating.toFixed(1) }} / 5
-              </span>
-              <span v-if="facilityDetails.rating_count" class="px-2 py-1 rounded bg-slate-100 text-slate-700 dark:bg-white/10 dark:text-slate-200">
-                {{ facilityDetails.rating_count }} ratings
-              </span>
-            </div>
-            <div v-if="facilityDetails.photos?.length">
-              <img
-                :src="facilityDetails.photos[0]"
-                :alt="facilityDetails.name"
-                class="h-40 w-full object-cover rounded-xl"
-              />
-            </div>
-            <div class="grid grid-cols-3 gap-2 text-xs text-slate-600 dark:text-slate-300">
-              <div class="rounded-lg bg-slate-50 dark:bg-white/5 p-2 text-center">
-                <div class="font-semibold">{{ facilityDetails.cleanliness_rating.toFixed(1) }}</div>
-                <div class="text-[10px] uppercase tracking-wide text-slate-400">Clean</div>
+      <div v-if="showDetailsModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+        @click.self="closeDetails">
+        <div
+          class="bg-white rounded-3xl shadow-modal w-full max-w-lg max-h-[90vh] overflow-y-auto flex flex-col relative animate-in fade-in zoom-in duration-300">
+          <!-- Header -->
+          <div class="flex items-start justify-between p-6 pb-2">
+            <div class="flex gap-4">
+              <div :class="[
+                'w-12 h-12 rounded-xl flex items-center justify-center shrink-0',
+                getIconBgColor(facilityDetails)
+              ]">
+                <span class="material-icons">{{ getIconName(facilityDetails) }}</span>
               </div>
-              <div class="rounded-lg bg-slate-50 dark:bg-white/5 p-2 text-center">
-                <div class="font-semibold">{{ facilityDetails.safety_rating.toFixed(1) }}</div>
-                <div class="text-[10px] uppercase tracking-wide text-slate-400">Safety</div>
-              </div>
-              <div class="rounded-lg bg-slate-50 dark:bg-white/5 p-2 text-center">
-                <div class="font-semibold">{{ facilityDetails.average_rating.toFixed(1) }}</div>
-                <div class="text-[10px] uppercase tracking-wide text-slate-400">Overall</div>
-              </div>
-            </div>
-            <div v-if="facilityDetails.ratings?.length" class="pt-3 border-t border-slate-100 dark:border-white/10">
-              <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Recent ratings</h4>
-              <div class="space-y-2">
-                <div v-for="rating in facilityDetails.ratings.slice(0, 3)" :key="rating.id" class="text-xs text-slate-600 dark:text-slate-300">
-                  <div class="flex items-center justify-between">
-                    <span class="font-semibold">{{ rating.user_name || 'Traveler' }}</span>
-                    <span class="text-amber-600">{{ rating.overall_rating.toFixed(1) }}★</span>
-                  </div>
-                  <p v-if="rating.comment" class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{{ rating.comment }}</p>
+              <div>
+                <h2 class="font-bold text-gray-900 text-lg leading-tight">
+                  {{ facilityDetails?.name || 'Facility Details' }}
+                </h2>
+                <div class="flex items-center gap-1 text-sm text-gray-500 mt-1">
+                  <span class="material-icons text-[16px]">location_on</span>
+                  {{ facilityDetails?.location?.name || facilityDetails?.location?.district || 'Sri Lanka' }}
                 </div>
               </div>
             </div>
+            <button @click="closeDetails"
+              class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors">
+              <span class="material-icons">close</span>
+            </button>
           </div>
-          <div v-else class="text-sm text-slate-500">No details available.</div>
+
+          <!-- Loading State -->
+          <div v-if="detailsLoading" class="px-6 py-12 text-center">
+            <div class="animate-spin size-8 border-3 border-primary border-t-transparent rounded-full mx-auto mb-3">
+            </div>
+            <p class="text-sm text-gray-500">Loading details...</p>
+          </div>
+
+          <!-- Error State -->
+          <div v-else-if="detailsError" class="px-6 py-12 text-center">
+            <span class="material-icons text-red-500 text-4xl mb-3">error_outline</span>
+            <p class="text-sm text-red-600">{{ detailsError }}</p>
+          </div>
+
+          <!-- Content -->
+          <template v-else-if="facilityDetails">
+            <!-- Rating & Price Badges -->
+            <div class="px-6 flex gap-3 mb-6">
+              <div
+                class="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg text-sm font-semibold text-gray-700 border border-gray-100">
+                <span class="material-icons text-primary text-[16px]">star</span>
+                <span>{{ facilityDetails.average_rating?.toFixed(1) || 'N/A' }}/5</span>
+                <span class="text-gray-500 font-normal text-xs">({{ facilityDetails.rating_count || 0 }} reviews)</span>
+              </div>
+              <div v-if="facilityDetails.price !== undefined"
+                class="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg text-sm font-semibold text-gray-700 border border-gray-100">
+                <span class="material-icons text-gray-500 text-[16px]">
+                  {{ facilityDetails.price > 0 ? 'payments' : 'check_circle' }}
+                </span>
+                <span>{{ facilityDetails.price > 0 ? `Rs ${facilityDetails.price}` : 'Free' }}</span>
+              </div>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="px-6 overflow-y-auto space-y-5 pb-6">
+              <!-- Description / Community Notes -->
+              <div v-if="facilityDetails.description">
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Community Notes</h2>
+                <p class="text-sm text-gray-600 leading-relaxed">{{ facilityDetails.description }}</p>
+              </div>
+
+              <!-- Accessibility -->
+              <div v-if="facilityDetails.amenities?.length">
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Amenities</h2>
+                <div class="flex flex-wrap gap-2">
+                  <span v-for="amenity in facilityDetails.amenities" :key="amenity"
+                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-100">
+                    <span class="material-icons text-[14px]">check</span>
+                    {{ amenity }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Ratings Breakdown -->
+              <div v-if="facilityDetails.cleanliness_rating || facilityDetails.safety_rating">
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Ratings Breakdown</h2>
+                <div class="grid grid-cols-3 gap-2">
+                  <div v-if="facilityDetails.cleanliness_rating"
+                    class="rounded-lg bg-gray-50 p-3 text-center border border-gray-100">
+                    <div class="font-bold text-lg text-gray-900">{{ facilityDetails.cleanliness_rating.toFixed(1) }}
+                    </div>
+                    <div class="text-[10px] uppercase tracking-wide text-gray-500 mt-1">Cleanliness</div>
+                  </div>
+                  <div v-if="facilityDetails.safety_rating"
+                    class="rounded-lg bg-gray-50 p-3 text-center border border-gray-100">
+                    <div class="font-bold text-lg text-gray-900">{{ facilityDetails.safety_rating.toFixed(1) }}</div>
+                    <div class="text-[10px] uppercase tracking-wide text-gray-500 mt-1">Safety</div>
+                  </div>
+                  <div class="rounded-lg bg-gray-50 p-3 text-center border border-gray-100">
+                    <div class="font-bold text-lg text-gray-900">{{ facilityDetails.average_rating?.toFixed(1) || 'N/A'
+                    }}</div>
+                    <div class="text-[10px] uppercase tracking-wide text-gray-500 mt-1">Overall</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Reviews -->
+              <div v-if="facilityDetails.ratings?.length">
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Recent Reviews</h2>
+                <div class="space-y-3">
+                  <div v-for="rating in facilityDetails.ratings.slice(0, 3)" :key="rating.id"
+                    class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="font-semibold text-sm text-gray-900">{{ rating.user_name || 'Traveler' }}</span>
+                      <div class="flex items-center gap-1">
+                        <span class="material-icons text-yellow-500 text-[14px]">star</span>
+                        <span class="text-sm font-semibold text-gray-700">{{ rating.overall_rating.toFixed(1) }}</span>
+                      </div>
+                    </div>
+                    <p v-if="rating.comment" class="text-xs text-gray-600 leading-relaxed">{{ rating.comment }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Location Map Placeholder -->
+              <div>
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Location</h2>
+                <div class="w-full h-40 bg-gray-100 rounded-xl border border-gray-200 overflow-hidden relative">
+                  <div class="absolute inset-0 bg-blue-50/50 flex items-center justify-center">
+                    <span class="material-icons text-blue-200 text-4xl">map</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="p-6 border-t border-gray-100 bg-white sticky bottom-0 rounded-b-3xl">
+              <div class="flex gap-3 mb-4">
+                <button @click="getDirections"
+                  class="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 px-4 rounded-full shadow-sm flex items-center justify-center gap-2 transition-all">
+                  <span class="material-icons text-sm">directions</span> Get Directions
+                </button>
+                <button @click="closeDetails"
+                  class="flex-1 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold py-2.5 px-4 rounded-full shadow-sm flex items-center justify-center gap-2 transition-all">
+                  <span class="material-icons text-sm">close</span> Close
+                </button>
+              </div>
+              <button @click="reportIssue"
+                class="w-full text-center text-xs font-medium text-gray-500 hover:text-primary flex items-center justify-center gap-1.5 transition-colors">
+                <span class="material-icons text-[14px]">flag</span> Report Issue / Update
+              </button>
+            </div>
+          </template>
+
+          <!-- Empty State -->
+          <div v-else class="px-6 py-12 text-center">
+            <span class="material-icons text-gray-300 text-4xl mb-3">info</span>
+            <p class="text-sm text-gray-500">No details available.</p>
+          </div>
         </div>
       </div>
     </Teleport>
 
     <!-- AI Chat Widget -->
-    <button class="fixed bottom-6 right-6 bg-secondary hover:bg-orange-600 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 z-50 group">
+    <button
+      class="fixed bottom-6 right-6 bg-secondary hover:bg-orange-600 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 z-50 group">
       <span class="material-icons-round text-2xl group-hover:rotate-12 transition-transform">smart_toy</span>
       <span class="absolute top-2 right-3 w-3 h-3 bg-green-400 rounded-full border-2 border-secondary"></span>
-      <span class="absolute right-16 bg-white dark:bg-slate-800 text-slate-800 dark:text-white px-3 py-1 rounded-lg text-xs font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+      <span
+        class="absolute right-16 bg-white dark:bg-slate-800 text-slate-800 dark:text-white px-3 py-1 rounded-lg text-xs font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
         Ask AI Guide
       </span>
     </button>
@@ -436,6 +320,12 @@ const detailsLoading = ref(false)
 const detailsError = ref('')
 const facilityDetails = ref<Facility | null>(null)
 
+// New filter state
+const searchQuery = ref('')
+const sortBy = ref('recommended')
+const selectedCity = ref('all')
+const activeFilters = ref<string[]>(['all'])
+
 const ratingForm = ref({
   rating: 5,
   comment: ''
@@ -446,6 +336,82 @@ const findingNearest = ref(false)
 const nearestRestrooms = ref<(Facility & { distance?: number })[]>([])
 
 const ratingLabels = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent']
+
+// Computed: Filtered facilities based on search and filters
+const filteredFacilities = computed(() => {
+  let result = [...facilities.value]
+
+  // Search filter
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(f =>
+      f.name.toLowerCase().includes(query) ||
+      f.location?.name?.toLowerCase().includes(query) ||
+      f.location?.district?.toLowerCase().includes(query)
+    )
+  }
+
+  // City filter
+  if (selectedCity.value !== 'all') {
+    result = result.filter(f =>
+      f.location?.district?.toLowerCase() === selectedCity.value.toLowerCase()
+    )
+  }
+
+  // Active filters
+  if (!activeFilters.value.includes('all')) {
+    result = result.filter(f => {
+      if (activeFilters.value.includes('free') && (!f.price || f.price === 0)) return true
+      if (activeFilters.value.includes('paid') && f.price && f.price > 0) return true
+      if (activeFilters.value.includes('rated') && f.average_rating && f.average_rating >= 4) return true
+      if (activeFilters.value.includes('accessible') && f.amenities?.includes('Accessible')) return true
+      if (activeFilters.value.includes('transport') && f.location?.name?.toLowerCase().includes('transport')) return true
+      return false
+    })
+  }
+
+  // Sort
+  if (sortBy.value === 'rating') {
+    result.sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0))
+  } else if (sortBy.value === 'distance' && userLocation.value) {
+    result.sort((a, b) => {
+      const distA = a.location?.latitude && a.location?.longitude
+        ? getDistance(userLocation.value!.lat, userLocation.value!.lng, a.location.latitude, a.location.longitude)
+        : Infinity
+      const distB = b.location?.latitude && b.location?.longitude
+        ? getDistance(userLocation.value!.lat, userLocation.value!.lng, b.location.latitude, b.location.longitude)
+        : Infinity
+      return distA - distB
+    })
+  }
+
+  return result
+})
+
+// Computed: Stats
+const freeCount = computed(() =>
+  filteredFacilities.value.filter(f => !f.price || f.price === 0).length
+)
+
+const avgRating = computed(() => {
+  const rated = filteredFacilities.value.filter(f => f.average_rating)
+  if (rated.length === 0) return 0
+  const sum = rated.reduce((acc, f) => acc + (f.average_rating || 0), 0)
+  return Number((sum / rated.length).toFixed(1))
+})
+
+// Computed: Map markers
+const mapMarkers = computed(() => {
+  return filteredFacilities.value
+    .filter(f => f.location?.latitude && f.location?.longitude)
+    .slice(0, 10) // Limit to 10 markers for performance
+    .map((f, idx) => ({
+      id: f.id,
+      top: `${60 + (idx % 3) * 3}%`,
+      left: `${30 + (idx % 4) * 2}%`,
+      color: f.price && f.price > 0 ? 'bg-orange-500' : 'bg-primary'
+    }))
+})
 
 const { data: typesResponse } = await useFetch<{
   success: boolean
@@ -479,7 +445,7 @@ const facilityTypes = computed(() => {
   })
 })
 
-const selectedTypeLabel = computed(() => 
+const selectedTypeLabel = computed(() =>
   facilityTypes.value.find(t => t.value === selectedType.value)?.label.toLowerCase() || 'facilities'
 )
 
@@ -489,7 +455,7 @@ async function getUserLocation(): Promise<{ lat: number; lng: number } | null> {
       resolve(null)
       return
     }
-    
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         resolve({
@@ -515,10 +481,55 @@ function clearFilters() {
   selectedType.value = 'RESTROOM'
 }
 
+function clearAllFilters() {
+  searchQuery.value = ''
+  sortBy.value = 'recommended'
+  selectedCity.value = 'all'
+  activeFilters.value = ['all']
+  selectedType.value = 'RESTROOM'
+}
+
+function getDefaultDescription(facility: Facility): string {
+  if (facility.type === 'RESTROOM') {
+    return 'Community-rated restroom facility.'
+  } else if (facility.type === 'BEACH') {
+    return 'Beautiful beach location in Sri Lanka.'
+  } else {
+    return 'Tourist attraction in Sri Lanka.'
+  }
+}
+
+function getColorScheme(facility: Facility): 'green' | 'orange' | 'blue' | 'purple' {
+  if (facility.price && facility.price > 0) {
+    return 'orange'
+  }
+  if (facility.type === 'BEACH') {
+    return 'blue'
+  }
+  if (facility.type === 'ATTRACTION') {
+    return 'purple'
+  }
+  return 'green'
+}
+
+function handleMarkerClick(id: string) {
+  openDetails(id)
+}
+
+function handleZoomIn() {
+  // Map zoom functionality - can be implemented with actual map library
+  console.log('Zoom in')
+}
+
+function handleZoomOut() {
+  // Map zoom functionality - can be implemented with actual map library
+  console.log('Zoom out')
+}
+
 // Find nearest restroom function
 async function findNearestRestroom() {
   if (!userLocation.value) return
-  
+
   findingNearest.value = true
   try {
     const response = await $fetch<{ success: boolean; data: Facility[] }>(`${apiBase}/api/facilities`, {
@@ -529,21 +540,21 @@ async function findNearestRestroom() {
         radius: 50
       }
     })
-    
+
     const restrooms = (response.data || []).map(r => ({
       ...r,
       distance: r.location?.latitude && r.location?.longitude
         ? getDistance(userLocation.value!.lat, userLocation.value!.lng, r.location.latitude, r.location.longitude)
         : Infinity
     }))
-    
+
     // Sort by distance and take closest 3
     restrooms.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity))
     nearestRestrooms.value = restrooms.slice(0, 3)
-    
+
     // Also switch to restroom view
     selectedType.value = 'RESTROOM'
-    
+
   } catch (error) {
     console.error('Failed to find nearest restroom:', error)
     nearestRestrooms.value = []
@@ -558,32 +569,32 @@ async function loadFacilities() {
     const params: Record<string, any> = {
       type: selectedType.value
     }
-    
+
     if (userLocation.value) {
       params.lat = userLocation.value.lat
       params.lng = userLocation.value.lng
       params.radius = 50
     }
-    
+
     const response = await $fetch<{ success: boolean; data: Facility[] }>(`${apiBase}/api/facilities`, {
       params
     })
-    
+
     facilities.value = response.data || []
-    
+
     // Sort by distance if we have user location
     if (userLocation.value) {
       facilities.value.sort((a, b) => {
-        const distA = a.location?.latitude && a.location?.longitude 
+        const distA = a.location?.latitude && a.location?.longitude
           ? getDistance(userLocation.value!.lat, userLocation.value!.lng, a.location.latitude, a.location.longitude)
           : Infinity
-        const distB = b.location?.latitude && b.location?.longitude 
+        const distB = b.location?.latitude && b.location?.longitude
           ? getDistance(userLocation.value!.lat, userLocation.value!.lng, b.location.latitude, b.location.longitude)
           : Infinity
         return distA - distB
       })
     }
-    
+
   } catch (error) {
     console.error('Failed to load facilities:', error)
     facilities.value = []
@@ -596,7 +607,7 @@ function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): nu
   const R = 6371
   const dLat = (lat2 - lat1) * Math.PI / 180
   const dLng = (lng2 - lng1) * Math.PI / 180
-  const a = 
+  const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
     Math.sin(dLng / 2) * Math.sin(dLng / 2)
@@ -612,17 +623,17 @@ function openRatingModal(facility: Facility) {
 
 async function submitRating() {
   if (!selectedFacility.value) return
-  
+
   submitting.value = true
   try {
     await $fetch(`${apiBase}/api/facilities/${selectedFacility.value.id}/rate`, {
       method: 'POST',
       body: ratingForm.value
     })
-    
+
     showRatingModal.value = false
     await loadFacilities()
-    
+
   } catch (error) {
     console.error('Failed to submit rating:', error)
     alert('Failed to submit rating. Please try again.')
@@ -652,6 +663,41 @@ function closeDetails() {
   facilityDetails.value = null
 }
 
+function getIconBgColor(facility: Facility | null): string {
+  if (!facility) return 'bg-gray-50 text-gray-600'
+
+  const colorScheme = getColorScheme(facility)
+  const colorMap = {
+    green: 'bg-green-50 text-green-600',
+    orange: 'bg-orange-50 text-orange-600',
+    blue: 'bg-blue-50 text-blue-600',
+    purple: 'bg-purple-50 text-purple-600'
+  }
+  return colorMap[colorScheme]
+}
+
+function getIconName(facility: Facility | null): string {
+  if (!facility) return 'place'
+
+  if (facility.type === 'RESTROOM') return 'wc'
+  if (facility.type === 'BEACH') return 'beach_access'
+  if (facility.type === 'ATTRACTION') return 'attractions'
+  return 'place'
+}
+
+function getDirections() {
+  if (!facilityDetails.value?.location) return
+
+  const { latitude, longitude } = facilityDetails.value.location
+  const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`
+  window.open(url, '_blank')
+}
+
+function reportIssue() {
+  // Placeholder for report issue functionality
+  alert('Report issue functionality coming soon!')
+}
+
 watch(selectedType, loadFacilities)
 
 // Handle ?id= deep-link query param
@@ -673,7 +719,7 @@ function scrollToFacility(id: string) {
 onMounted(async () => {
   userLocation.value = await getUserLocation()
   await loadFacilities()
-  
+
   // Handle deep-link ?id= param
   const targetId = route.query.id as string
   if (targetId) {
