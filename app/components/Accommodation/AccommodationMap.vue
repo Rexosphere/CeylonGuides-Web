@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
 
 const props = defineProps<{
   accommodations: Array<{
@@ -12,46 +12,130 @@ const props = defineProps<{
     }
     category: string
     price_per_night_lkr?: number
+    price_per_night_usd?: number
     rating?: number
+    amenities?: string[]
+    safety_certified?: boolean
   }>
+  highlightedId?: string | number | null
 }>()
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
+  (e: 'hover', id: string | null): void
 }>()
 
 const mapContainer = ref<HTMLElement>()
 let L: any = null
 let map: any = null
-const markers: any[] = []
+const markers: Map<string, any> = new Map()
+const isMapReady = ref(false)
 
-// Category icons
-const categoryIcons: Record<string, string> = {
-  'LUXURY_HOTEL': '🏨',
-  'BOUTIQUE_HOTEL': '🏩',
-  'GUESTHOUSE': '🏠',
-  'HOMESTAY': '🏡',
-  'ECO_LODGE': '🌿',
-  'BEACH_RESORT': '🏖️',
-  'VILLA': '🏰',
-  'HOSTEL': '🛏️'
-}
-
-// Category colors
+// Category colors - distinct by type
 const categoryColors: Record<string, string> = {
+  'BOUTIQUE': '#ec4899',     // Pink
+  'GUESTHOUSE': '#10b981',   // Emerald
+  'HOTEL': '#8b5cf6',        // Purple
+  'RESORT': '#06b6d4',       // Cyan
+  'VILLA': '#6366f1',        // Indigo
+  'HOMESTAY': '#f59e0b',     // Amber
   'LUXURY_HOTEL': '#8b5cf6',
   'BOUTIQUE_HOTEL': '#ec4899',
-  'GUESTHOUSE': '#10b981',
-  'HOMESTAY': '#f59e0b',
   'ECO_LODGE': '#22c55e',
   'BEACH_RESORT': '#06b6d4',
-  'VILLA': '#6366f1',
-  'HOSTEL': '#f97316'
+  'HOSTEL': '#f97316',
 }
 
-function toUsd(lkr?: number) {
-  if (!lkr) return '?'
-  return `$${Math.round(lkr / 300)}`
+// Amenity icons
+const amenityIcons: Record<string, string> = {
+  wifi: '📶',
+  pool: '🏊',
+  spa: '💆',
+  breakfast: '🍳',
+  restaurant: '🍽️',
+  parking: '🅿️',
+  airport_shuttle: '✈️',
+  garden: '🌳',
+  gym: '💪',
+}
+
+function toUsd(usd?: number, lkr?: number) {
+  if (usd) return `$${usd}`
+  if (lkr) return `$${Math.round(lkr / 300)}`
+  return '$?'
+}
+
+// Count accommodations with valid coordinates
+const staysOnMapCount = computed(() => {
+  return props.accommodations.filter(a => a.location?.latitude && a.location?.longitude).length
+})
+
+function createMarkerIcon(acc: typeof props.accommodations[0], isHighlighted: boolean = false) {
+  const color = categoryColors[acc.category] || '#6b7280'
+  const price = toUsd(acc.price_per_night_usd, acc.price_per_night_lkr)
+  const scale = isHighlighted ? 1.2 : 1
+  const shadow = isHighlighted ? '0 0 20px rgba(59, 130, 246, 0.6), 0 4px 12px rgba(0,0,0,0.3)' : '0 2px 6px rgba(0,0,0,0.2)'
+  const borderWidth = isHighlighted ? 3 : 2
+  const animation = isHighlighted ? 'bounce 0.5s ease-in-out' : 'none'
+  
+  return L.divIcon({
+    className: `accommodation-marker ${isHighlighted ? 'highlighted' : ''}`,
+    html: `
+      <div class="marker-bubble" style="
+        background: ${isHighlighted ? color : 'white'};
+        border: ${borderWidth}px solid ${color};
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-weight: bold;
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: ${shadow};
+        cursor: pointer;
+        transform: scale(${scale});
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        color: ${isHighlighted ? 'white' : '#333'};
+        animation: ${animation};
+      ">
+        ${acc.safety_certified ? '<span style="font-size: 10px;">✓</span> ' : ''}${price}
+      </div>
+    `,
+    iconSize: [70, 30],
+    iconAnchor: [35, 15]
+  })
+}
+
+function createPopupContent(acc: typeof props.accommodations[0]) {
+  const color = categoryColors[acc.category] || '#6b7280'
+  const price = toUsd(acc.price_per_night_usd, acc.price_per_night_lkr)
+  
+  // Format amenities (show first 4)
+  const amenities = (acc.amenities || []).slice(0, 4)
+  const amenitiesHtml = amenities.length > 0
+    ? `<div style="margin-top: 8px; display: flex; gap: 4px; flex-wrap: wrap;">
+        ${amenities.map(a => `<span style="font-size: 14px;" title="${a}">${amenityIcons[a] || '•'}</span>`).join('')}
+       </div>`
+    : ''
+  
+  return `
+    <div style="min-width: 200px; padding: 4px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <strong style="font-size: 14px; flex: 1;">${acc.name}</strong>
+        ${acc.safety_certified ? '<span style="color: #10b981; font-size: 12px;" title="Safety Certified">✓</span>' : ''}
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="padding: 2px 8px; border-radius: 4px; background: ${color}15; color: ${color}; font-weight: 600; font-size: 11px;">
+          ${acc.category.replace(/_/g, ' ')}
+        </span>
+        ${acc.rating ? `<span style="color: #f59e0b; font-size: 12px; font-weight: 600;">⭐ ${acc.rating.toFixed(1)}</span>` : ''}
+      </div>
+      ${acc.location?.name ? `<div style="color: #666; font-size: 11px; margin-top: 6px;">📍 ${acc.location.name}</div>` : ''}
+      ${amenitiesHtml}
+      <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #eee;">
+        <span style="color: #10b981; font-weight: bold; font-size: 16px;">${price}</span>
+        <span style="color: #888; font-size: 11px;">/night</span>
+      </div>
+    </div>
+  `
 }
 
 async function initMap() {
@@ -72,10 +156,14 @@ async function initMap() {
   // Center on Sri Lanka
   map = L.map(mapContainer.value).setView([7.8731, 80.7718], 8)
   
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>'
+  // Use CartoDB Voyager for cleaner look
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
   }).addTo(map)
   
+  isMapReady.value = true
   updateMarkers()
 }
 
@@ -84,75 +172,101 @@ function updateMarkers() {
   
   // Clear existing markers
   markers.forEach(m => m.remove())
-  markers.length = 0
+  markers.clear()
   
   // Add new markers
   props.accommodations.forEach(acc => {
     if (!acc.location?.latitude || !acc.location?.longitude) return
     
-    const color = categoryColors[acc.category] || '#6b7280'
-    const icon = categoryIcons[acc.category] || '🏨'
-    const price = toUsd(acc.price_per_night_lkr)
-    
-    // Create custom div icon with price
-    const priceIcon = L.divIcon({
-      className: 'accommodation-marker',
-      html: `
-        <div style="
-          background: white;
-          border: 2px solid ${color};
-          padding: 4px 8px;
-          border-radius: 8px;
-          font-weight: bold;
-          font-size: 12px;
-          white-space: nowrap;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-          cursor: pointer;
-          transition: transform 0.2s;
-        " onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-          ${price}
-        </div>
-      `,
-      iconSize: [60, 30],
-      iconAnchor: [30, 15]
-    })
+    const isHighlighted = props.highlightedId === acc.id
+    const priceIcon = createMarkerIcon(acc, isHighlighted)
     
     const marker = L.marker([acc.location.latitude, acc.location.longitude], {
-      icon: priceIcon
+      icon: priceIcon,
+      zIndexOffset: isHighlighted ? 1000 : 0
     })
     
-    marker.bindPopup(`
-      <div style="min-width: 180px;">
-        <div style="font-size: 18px; margin-bottom: 4px;">${icon}</div>
-        <strong style="font-size: 14px;">${acc.name}</strong><br>
-        <span style="display: inline-block; margin-top: 4px; padding: 2px 8px; border-radius: 4px; background: ${color}20; color: ${color}; font-weight: bold; font-size: 11px;">
-          ${acc.category.replace(/_/g, ' ')}
-        </span>
-        ${acc.rating ? `<span style="color: #f59e0b; font-size: 12px; margin-left: 4px;">⭐ ${acc.rating.toFixed(1)}</span>` : ''}
-        ${acc.location.name ? `<br><span style="color: #888; font-size: 11px;">📍 ${acc.location.name}</span>` : ''}
-        <br><span style="color: #10b981; font-weight: bold; font-size: 13px;">${price}/night</span>
-      </div>
-    `)
+    marker.bindPopup(createPopupContent(acc), {
+      maxWidth: 280,
+      className: 'accommodation-popup'
+    })
     
     marker.on('click', () => {
       emit('select', acc.id)
     })
     
+    marker.on('mouseover', () => {
+      emit('hover', acc.id)
+    })
+    
+    marker.on('mouseout', () => {
+      emit('hover', null)
+    })
+    
     marker.addTo(map)
-    markers.push(marker)
+    markers.set(acc.id, marker)
   })
   
-  // Fit bounds if we have markers
-  if (markers.length > 1) {
-    const group = L.featureGroup(markers)
-    map.fitBounds(group.getBounds().pad(0.1))
-  } else if (markers.length === 1) {
+  // Auto fit bounds on initial load
+  fitBoundsToMarkers()
+}
+
+function updateHighlightedMarker() {
+  if (!map || !L) return
+  
+  markers.forEach((marker, id) => {
+    const acc = props.accommodations.find(a => a.id === id)
+    if (acc) {
+      const isHighlighted = props.highlightedId === id
+      const newIcon = createMarkerIcon(acc, isHighlighted)
+      marker.setIcon(newIcon)
+      marker.setZIndexOffset(isHighlighted ? 1000 : 0)
+      
+      // Bring highlighted marker to front
+      if (isHighlighted) {
+        marker.openPopup()
+      }
+    }
+  })
+}
+
+// Fit bounds to all markers
+function fitBoundsToMarkers() {
+  if (!map || !L || markers.size === 0) return
+  
+  if (markers.size > 1) {
+    const group = L.featureGroup(Array.from(markers.values()))
+    map.fitBounds(group.getBounds().pad(0.1), {
+      animate: true,
+      duration: 0.5
+    })
+  } else if (markers.size === 1) {
     const acc = props.accommodations.find(a => a.location?.latitude && a.location?.longitude)
     if (acc?.location) {
-      map.setView([acc.location.latitude, acc.location.longitude], 12)
+      map.setView([acc.location.latitude, acc.location.longitude], 12, {
+        animate: true
+      })
     }
   }
 }
+
+// Center map on specific accommodation
+function centerOnAccommodation(id: string | number) {
+  const acc = props.accommodations.find(a => a.id === id)
+  if (acc?.location?.latitude && acc?.location?.longitude && map) {
+    map.setView([acc.location.latitude, acc.location.longitude], 14, {
+      animate: true,
+      duration: 0.5
+    })
+    const marker = markers.get(String(id))
+    if (marker) {
+      marker.openPopup()
+    }
+  }
+}
+
+// Expose methods for parent
+defineExpose({ centerOnAccommodation, fitBoundsToMarkers })
 
 onMounted(() => {
   initMap()
@@ -161,6 +275,10 @@ onMounted(() => {
 watch(() => props.accommodations, () => {
   updateMarkers()
 }, { deep: true })
+
+watch(() => props.highlightedId, () => {
+  updateHighlightedMarker()
+})
 
 onUnmounted(() => {
   map?.remove()
@@ -175,41 +293,114 @@ onUnmounted(() => {
       class="w-full h-full"
     />
     
+    <!-- Stays Count Badge -->
+    <div class="absolute top-4 right-4 bg-white dark:bg-surface-dark rounded-xl shadow-lg px-4 py-2.5 z-[1000] flex items-center gap-2">
+      <span class="text-lg font-bold text-primary">{{ staysOnMapCount }}</span>
+      <span class="text-xs text-gray-500 dark:text-gray-400">stays on map</span>
+    </div>
+
+    <!-- Fit Bounds Button -->
+    <button
+      v-if="staysOnMapCount > 1"
+      class="absolute top-16 right-4 bg-white dark:bg-surface-dark rounded-xl shadow-lg px-3 py-2 z-[1000] flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
+      @click="fitBoundsToMarkers"
+    >
+      <span class="material-symbols-outlined text-[18px]">fit_screen</span>
+      Fit All
+    </button>
+    
     <!-- Map Legend -->
-    <div class="absolute bottom-4 left-4 bg-white dark:bg-surface-dark rounded-lg shadow-lg p-3 z-[1000]">
+    <div class="absolute bottom-4 left-4 bg-white dark:bg-surface-dark rounded-xl shadow-lg p-3 z-[1000]">
       <div class="text-xs font-bold text-gray-600 dark:text-gray-300 mb-2">Categories</div>
-      <div class="flex flex-col gap-1">
+      <div class="grid grid-cols-2 gap-x-4 gap-y-1">
         <div class="flex items-center gap-2 text-xs">
-          <span class="size-3 rounded-full bg-purple-500"></span>
-          <span class="text-gray-600 dark:text-gray-400">Luxury</span>
+          <span class="size-2.5 rounded-full bg-purple-500"></span>
+          <span class="text-gray-600 dark:text-gray-400">Hotel</span>
         </div>
         <div class="flex items-center gap-2 text-xs">
-          <span class="size-3 rounded-full bg-emerald-500"></span>
+          <span class="size-2.5 rounded-full bg-pink-500"></span>
+          <span class="text-gray-600 dark:text-gray-400">Boutique</span>
+        </div>
+        <div class="flex items-center gap-2 text-xs">
+          <span class="size-2.5 rounded-full bg-emerald-500"></span>
           <span class="text-gray-600 dark:text-gray-400">Guesthouse</span>
         </div>
         <div class="flex items-center gap-2 text-xs">
-          <span class="size-3 rounded-full bg-amber-500"></span>
+          <span class="size-2.5 rounded-full bg-amber-500"></span>
           <span class="text-gray-600 dark:text-gray-400">Homestay</span>
+        </div>
+        <div class="flex items-center gap-2 text-xs">
+          <span class="size-2.5 rounded-full bg-cyan-500"></span>
+          <span class="text-gray-600 dark:text-gray-400">Resort</span>
+        </div>
+        <div class="flex items-center gap-2 text-xs">
+          <span class="size-2.5 rounded-full bg-indigo-500"></span>
+          <span class="text-gray-600 dark:text-gray-400">Villa</span>
         </div>
       </div>
     </div>
-    
-    <!-- Accommodation count badge -->
-    <div class="absolute top-4 right-4 bg-white dark:bg-surface-dark rounded-lg shadow-lg px-3 py-2 z-[1000]">
-      <span class="text-sm font-bold text-gray-800 dark:text-white">{{ accommodations.filter(a => a.location?.latitude).length }}</span>
-      <span class="text-xs text-gray-500 ml-1">stays on map</span>
+
+    <!-- Interaction hint -->
+    <div class="absolute bottom-4 right-4 bg-white/90 dark:bg-surface-dark/90 rounded-lg shadow-lg px-3 py-2 z-[1000] backdrop-blur-sm">
+      <span class="text-xs text-gray-500 flex items-center gap-1">
+        <span class="material-symbols-outlined text-[14px]">touch_app</span>
+        Click marker for details
+      </span>
     </div>
   </div>
 </template>
 
 <style>
-/* Ensure Leaflet controls are visible */
+/* Marker animations */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0) scale(1.2); }
+  50% { transform: translateY(-8px) scale(1.2); }
+}
+
+.accommodation-marker.highlighted .marker-bubble {
+  animation: bounce 0.5s ease-in-out;
+}
+
+/* Leaflet control styling */
 .leaflet-control-zoom {
   border: none !important;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
 }
+
 .leaflet-control-zoom a {
   background: white !important;
   color: #333 !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #f3f4f6 !important;
+}
+
+/* Popup styling */
+.accommodation-popup .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.accommodation-popup .leaflet-popup-content {
+  margin: 12px;
+}
+
+.accommodation-popup .leaflet-popup-tip {
+  background: white;
+}
+
+/* Marker z-index */
+.accommodation-marker {
+  z-index: 10 !important;
+}
+
+.accommodation-marker.highlighted {
+  z-index: 1000 !important;
 }
 </style>
