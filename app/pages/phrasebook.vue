@@ -52,12 +52,12 @@
           <div v-else-if="detailsError" class="text-sm text-red-600">{{ detailsError }}</div>
           <div v-else-if="selectedPhrase">
             <p class="text-2xl font-bold text-charcoal">{{ selectedPhrase.english }}</p>
-            <p class="text-lg text-primary mt-2 sinhala-text">{{ selectedPhrase.sinhala }}</p>
-            <p class="text-lg text-primary">{{ selectedPhrase.tamil }}</p>
+            <p class="text-lg text-primary mt-2 sinhala-text">{{ selectedPhrase.sinhala || selectedPhrase.sinhala_native }}</p>
+            <p class="text-lg text-primary">{{ selectedPhrase.tamil || selectedPhrase.tamil_native }}</p>
             <p v-if="selectedPhrase.pronunciation" class="text-sm text-gray-500 mt-1">{{ selectedPhrase.pronunciation }}
             </p>
-            <p v-if="selectedPhrase.cultural_context" class="text-sm text-gray-500 mt-3">{{
-              selectedPhrase.cultural_context }}</p>
+            <p v-if="selectedPhrase.cultural_note || selectedPhrase.cultural_context" class="text-sm text-gray-500 mt-3">{{
+              selectedPhrase.cultural_note || selectedPhrase.cultural_context }}</p>
           </div>
           <div v-else class="text-sm text-gray-500">No details available.</div>
         </div>
@@ -83,25 +83,33 @@ import CulturalTips from '~/components/Shared/CulturalTips.vue'
 import CulturalNotes from '~/components/Shared/CulturalNotes.vue'
 
 // Types
+import type { Phrase as ApiPhrase } from '~/types/api'
+
 interface Phrase {
-  phraseId: string
-  category: string
+  id: string
+  phraseId?: string
+  sinhala_native?: string
+  sinhala_latin?: string
+  tamil_native?: string
+  tamil_latin?: string
+  native: string
+  romanized: string
+  phonetic: string
+  sinhala: string
+  tamil: string
   english: string
-  sinhala_native: string
-  sinhala_latin: string
-  tamil_native: string
-  tamil_latin: string
   pronunciation: string
+  category: string
+  cultural_context?: string
   cultural_note?: string
   usage_tips?: string
-  priority: number
-  emergency_flag: boolean
+  priority?: number
+  emergency_flag?: boolean
 }
 
 // Composables
 const speech = useSpeech()
 const toast = useToast()
-const route = useRoute()
 const router = useRouter()
 
 // Data
@@ -122,10 +130,7 @@ const searchQuery = ref('')
 const debouncedQuery = ref('')
 const selectedLanguage = ref<'sinhala' | 'tamil' | 'both'>('sinhala')
 const selectedCategory = ref<string | null>(null)
-const savedPhrases = ref<string[]>([])
 const favoritePhrases = ref<string[]>([])
-const showDetailsModal = ref(false)
-const selectedPhrase = ref<Phrase | null>(null)
 const progressTracker = ref<InstanceType<typeof PhraseProgress> | null>(null)
 const playingPhraseId = ref<string | null>(null)
 const quickLearnPhrases = ref<Phrase[]>([])
@@ -160,22 +165,24 @@ const { data: phrasesResponse, pending: phrasesPending } = await useFetch<{ succ
 )
 
 // Fetch etiquette tips from API
+import type { EtiquetteTip } from '~/types/api'
 const { data: tipsResponse } = await useFetch<{ success: boolean; data: EtiquetteTip[]; count: number }>(
   `${apiBase}/api/phrases/etiquette/tips?category=TEMPLE`
 )
 
-const phrases = computed(() => {
+const phrases = computed((): Phrase[] => {
   const data = phrasesResponse.value?.data || []
   return data.map(p => ({
     id: p.id,
     native: selectedLanguage.value === 'sinhala' ? p.sinhala : p.tamil,
-    romanized: p.pronunciation.split(' / ')[0] || p.pronunciation,
+    romanized: p.pronunciation?.split(' / ')[0] || p.pronunciation || '',
     sinhala: p.sinhala,
     tamil: p.tamil,
-    phonetic: p.pronunciation,
-    pronunciation: p.pronunciation,
+    phonetic: p.pronunciation || '',
+    pronunciation: p.pronunciation || '',
     english: p.english,
     category: p.category,
+    cultural_note: p.cultural_context,
     cultural_context: p.cultural_context,
   }))
 })
@@ -285,9 +292,13 @@ function getCategoryName(categoryId: string): string {
   return category?.name || categoryId
 }
 
+function formatCategoryLabel(category: string): string {
+  return category.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())
+}
+
 function highlightText(text: string, query: string): string {
   if (!query.trim()) return text
-  
+
   const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
   return text.replace(regex, '<mark class="bg-yellow-200 text-charcoal font-bold">$1</mark>')
 }
@@ -321,9 +332,17 @@ async function openDetails(id: string) {
   detailsLoading.value = true
   detailsError.value = ''
   try {
-    const response = await $fetch<{ success: boolean; data: Phrase }>(`${apiBase}/api/phrases/${id}`)
+    const response = await $fetch<{ success: boolean; data: ApiPhrase }>(`${apiBase}/api/phrases/${id}`)
     if (response.success) {
-      selectedPhrase.value = response.data
+      selectedPhrase.value = {
+        ...response.data,
+        native: selectedLanguage.value === 'sinhala' ? response.data.sinhala : response.data.tamil,
+        romanized: response.data.pronunciation?.split(' / ')[0] || response.data.pronunciation || '',
+        phonetic: response.data.pronunciation || '',
+        sinhala: response.data.sinhala,
+        tamil: response.data.tamil,
+        cultural_note: response.data.cultural_context
+      }
     }
   } catch (err: any) {
     detailsError.value = err?.data?.error || 'Failed to load phrase details.'
@@ -347,9 +366,9 @@ const handleSearch = (query: string) => {
 // Daily phrases for sidebar
 const dailyPhrases = computed(() => {
   return phrases.value.slice(0, 4).map(p => ({
-    id: p.id,
-    english: p.english,
-    pronunciation: p.pronunciation
+    id: p.id || '',
+    english: p.english || '',
+    pronunciation: p.pronunciation || ''
   }))
 })
 
@@ -412,9 +431,9 @@ const culturalTip = computed(() => {
 
 const relatedPhrases = computed(() => {
   return phrases.value.slice(0, 4).map(p => ({
-    id: p.id,
-    english: p.english,
-    pronunciation: p.pronunciation
+    id: p.id || '',
+    english: p.english || '',
+    pronunciation: p.pronunciation || ''
   }))
 })
 
@@ -429,7 +448,7 @@ const userProgress = computed(() => ({
 const categoryProgress = computed(() => {
   return categories.value.map(cat => {
     const totalInCategory = phrases.value.filter(p => p.category === cat.id).length
-    const completedInCategory = phrases.value.filter(p => p.category === cat.id && savedPhrases.value.includes(p.id)).length
+    const completedInCategory = phrases.value.filter(p => p.category === cat.id && p.id && savedPhrases.value.includes(p.id)).length
     return {
       name: cat.name,
       completed: completedInCategory,

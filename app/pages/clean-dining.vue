@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted, computed } from 'vue'
-import { useDining, type Restaurant, type DiningFilter, type SortOption } from '~/composables/useDining'
+import type { Restaurant } from '~/types/api'
 
 // Default layout enabled
 // definePageMeta({
@@ -183,22 +183,28 @@ const sortedRestaurants = computed(() => {
 
   if (sortBy.value === 'distance' && userLocation.value) {
     list.sort((a, b) => {
+      // Only calculate distance if location exists
+      if (!a.location || !b.location) return 0
       const distA = getDistance(
         userLocation.value!.lat,
         userLocation.value!.lng,
-        a.location?.latitude || 0,
-        a.location?.longitude || 0
+        a.location.latitude,
+        a.location.longitude
       )
       const distB = getDistance(
         userLocation.value!.lat,
         userLocation.value!.lng,
-        b.location?.latitude || 0,
-        b.location?.longitude || 0
+        b.location.latitude,
+        b.location.longitude
       )
       return distA - distB
     })
   } else if (sortBy.value === 'rating') {
-    list.sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    list.sort((a, b) => {
+      const aRating = a.rating || 0
+      const bRating = b.rating || 0
+      return bRating - aRating
+    })
   }
 
   return list

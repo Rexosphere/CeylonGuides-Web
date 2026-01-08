@@ -291,6 +291,7 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted } from 'vue'
 import { useFacilities, type Restroom, type RestroomFilter, type FacilitySortOption } from '~/composables/useFacilities'
+import type { Facility } from '~/types/api'
 
 // SEO Meta
 definePageMeta({
@@ -307,7 +308,7 @@ useHead({
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
 
-type Facility = ApiFacility
+type ApiFacility = Facility
 
 const selectedType = ref<string>('RESTROOM')
 const userLocation = ref<{ lat: number; lng: number } | null>(null)
@@ -585,7 +586,7 @@ async function loadFacilities() {
 
     // Sort by distance if we have user location
     if (userLocation.value) {
-      facilities.value.sort((a, b) => {
+      facilities.value.sort((a: ApiFacility, b: ApiFacility) => {
         const distA = a.location?.latitude && a.location?.longitude
           ? getDistance(userLocation.value!.lat, userLocation.value!.lng, a.location.latitude, a.location.longitude)
           : Infinity
@@ -617,8 +618,7 @@ function getDistance(lat1: number, lng1: number, lat2: number, lng2: number): nu
 }
 
 function clearSearch() {
-  searchInput.value = ''
-  setSearch('')
+  searchQuery.value = ''
 }
 
 async function submitRating() {
