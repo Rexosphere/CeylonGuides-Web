@@ -75,7 +75,7 @@
         <div>
           <h2 class="text-2xl font-bold tracking-tight text-text-main dark:text-white">Recommended Tourist Data Packages</h2>
           <p class="text-text-muted mt-1">
-            {{ selectedProvider ? `Showing ${getProviderById(selectedProvider)?.name} plans` : 'Find the perfect plan for your trip' }}
+            {{ selectedProviders.length > 0 ? `Showing filtered plans from ${selectedProviders.length} providers` : 'Find the perfect plan for your trip' }}
           </p>
         </div>
         
@@ -119,6 +119,26 @@
             <option value="medium">20 - 50 GB</option>
             <option value="high">50+ GB</option>
           </select>
+        </div>
+
+        <!-- Active Filters -->
+      <div 
+        v-if="selectedProviders.length > 0 || filterData !== 'all' || filterDuration !== 'all'"
+        class="flex flex-wrap items-center gap-2"
+      >
+        <span class="text-xs font-bold text-text-muted uppercase mr-1">Filters:</span>
+        
+        <!-- Provider Tag -->
+        <span 
+          v-for="pid in selectedProviders"
+          :key="pid"
+          class="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 text-xs font-medium shadow-sm"
+        >
+          {{ getProviderById(pid)?.name }}
+          <button @click="$emit('toggle-select', pid)" class="hover:text-red-500">
+            <span class="material-symbols-outlined text-[14px]">close</span>
+          </button>
+        </span>
         </div>
 
         <!-- Best For Filter -->
@@ -407,7 +427,7 @@ import { ref, computed, onMounted } from 'vue'
 import { touristPlans, getProviderById, getPlanById, getBestForTagLabel, type BestForTag } from '~/data/simData'
 
 const props = defineProps<{
-  selectedProvider: string | null
+  selectedProviders: string[]
   selectedPlans: string[]
   savedPlanIds: string[]
 }>()
@@ -416,6 +436,7 @@ const emit = defineEmits<{
   (e: 'toggle-plan', planId: string): void
   (e: 'clear-compare'): void
   (e: 'toggle-save', planId: string): void
+  (e: 'toggle-select', providerId: string): void
 }>()
 
 // Filters
@@ -474,18 +495,23 @@ function resetFilters() {
 
 const displayedPlans = computed(() => {
   let plans = [...touristPlans]
-  
-  // Filter by provider (prop)
-  if (props.selectedProvider) {
-    plans = plans.filter(p => p.providerId === props.selectedProvider)
+
+  // 1. Filter by Wizard Esim Preference
+  if (showEsimOnly.value) {
+     plans = plans.filter(p => {
+       const provider = getProviderById(p.providerId)
+       return (p.whereToBuy.includes('online')) && (provider?.esimAvailable || p.freebies.some(f => f.toLowerCase().includes('esim')))
+     })
   }
-  
-  // Filter by Duration
+
+  // 2. Filter by Providers (Multi-select)
+  if (props.selectedProviders.length > 0) {
+    plans = plans.filter(p => props.selectedProviders.includes(p.providerId))
+  }
+
+  // 3. Filter by Duration
   if (filterDuration.value !== 'all') {
     const dur = parseInt(filterDuration.value)
-    // Precise match for 7, 14, 30 days common plans
-    // Or we could do ranges, but the requirement said "7 days / 14 days / 30 days"
-    // I'll assume exact match or close enough (e.g. 28-30 for month)
     if (dur === 30) {
       plans = plans.filter(p => p.validityDays >= 28 && p.validityDays <= 31)
     } else {
@@ -493,7 +519,7 @@ const displayedPlans = computed(() => {
     }
   }
 
-  // Filter by Data
+  // 4. Filter by Data
   if (filterData.value !== 'all') {
     if (filterData.value === 'low') {
       plans = plans.filter(p => p.dataGB <= 20)
@@ -504,21 +530,11 @@ const displayedPlans = computed(() => {
     }
   }
   
-  // Filter by Tag
+  // 5. Filter by Tag
   if (filterTag.value) {
     plans = plans.filter(p => p.bestForTag === filterTag.value)
   }
-  
-  // Filter eSIM only
-  if (showEsimOnly.value) {
-    // Check if plan has 'eSIM' in freebies OR requires online (often eSIM)
-    // Better to rely on the provider's eSIM capability or the plan's specific freebie/note
-    plans = plans.filter(p => 
-      p.freebies.some(f => f.toLowerCase().includes('esim')) || 
-      (p.whereToBuy.includes('online') && getProviderById(p.providerId)?.esimAvailable)
-    )
-  }
-  
+
   return plans
 })
 </script>

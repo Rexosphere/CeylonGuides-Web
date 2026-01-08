@@ -111,34 +111,7 @@
       </Transition>
     </div>
 
-    <!-- Table Title and Sort Controls -->
-    <div class="mb-4 flex flex-wrap items-center justify-between gap-4">
-      <h2 class="text-2xl font-bold text-text-main dark:text-white">Top Mobile Providers</h2>
-      
-      <div class="flex items-center gap-2">
-          <span class="text-sm font-medium text-text-muted mr-2">Sort by:</span>
-          <button 
-            @click="sortBy = 'coverage'; selectedRegionId = null"
-            class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
-            :class="sortBy === 'coverage' && !selectedRegionId
-              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
-              : 'bg-gray-100 text-gray-600 dark:bg-neutral-800 dark:text-gray-400 hover:bg-gray-200'"
-          >
-            <span class="material-symbols-outlined text-sm">signal_cellular_alt</span>
-            Best Coverage
-          </button>
-          <button 
-            @click="sortBy = 'value'; selectedRegionId = null"
-            class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
-            :class="sortBy === 'value' && !selectedRegionId
-              ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' 
-              : 'bg-gray-100 text-gray-600 dark:bg-neutral-800 dark:text-gray-400 hover:bg-gray-200'"
-          >
-            <span class="material-symbols-outlined text-sm">savings</span>
-            Best Value
-          </button>
-      </div>
-    </div>
+    <!-- Table Section -->
       
     <!-- Table Section -->
       <div class="bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-neutral-700 overflow-hidden shadow-sm">
@@ -266,8 +239,8 @@
                   <label class="inline-flex items-center cursor-pointer p-2">
                     <input 
                       type="checkbox"
-                      :checked="selectedProvider === provider.id"
-                      @change="$emit('select', selectedProvider === provider.id ? null : provider.id)"
+                      :checked="selectedProviders.includes(provider.id)"
+                      @change="$emit('select', provider.id)"
                       class="size-5 rounded border-gray-300 text-primary focus:ring-primary"
                     >
                   </label>
@@ -278,7 +251,113 @@
         </div>
       </div>
     </div>
-</section>
+
+<!-- Details Drawer -->
+    <Transition
+      enter-active-class="transform transition ease-in-out duration-300 sm:duration-500"
+      enter-from-class="translate-x-full"
+      enter-to-class="translate-x-0"
+      leave-active-class="transform transition ease-in-out duration-300 sm:duration-500"
+      leave-from-class="translate-x-0"
+      leave-to-class="translate-x-full"
+    >
+      <div v-if="detailsProvider" class="fixed inset-y-0 right-0 z-50 w-full max-w-lg bg-white dark:bg-neutral-900 shadow-2xl overflow-y-auto border-l border-gray-200 dark:border-neutral-700">
+        <!-- Close Button -->
+        <button 
+          @click="detailsProvider = null"
+          class="absolute top-4 right-4 p-2 rounded-full bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 transition-colors z-10"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+
+        <!-- Header Image/Color -->
+        <div class="h-32 w-full relative overflow-hidden" :style="{ backgroundColor: detailsProvider.brandColor }">
+           <div class="absolute inset-0 bg-black/20"></div>
+           <div class="absolute bottom-4 left-6 text-white">
+             <h2 class="text-3xl font-bold">{{ detailsProvider.name }}</h2>
+             <span v-if="detailsProvider.esimAvailable" class="inline-flex items-center gap-1 text-xs font-medium bg-white/20 backdrop-blur px-2 py-0.5 rounded-full mt-1">
+               <span class="material-symbols-outlined text-[14px]">check_circle</span>
+               eSIM Ready
+             </span>
+           </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 space-y-8">
+           
+           <!-- Quick Stats -->
+           <div class="grid grid-cols-2 gap-4">
+             <div class="p-3 bg-gray-50 dark:bg-neutral-800 rounded-xl border border-gray-100 dark:border-neutral-700">
+               <div class="text-xs text-text-muted uppercase mb-1">Coverage Score</div>
+               <div class="flex items-center gap-1">
+                 <span class="text-xl font-bold text-green-600">{{ detailsProvider.coverageScore }}</span>
+                 <span class="text-sm text-text-muted">/ 5</span>
+               </div>
+               <div class="text-[10px] text-text-muted mt-1">Good for tracking/rural</div>
+             </div>
+             <div class="p-3 bg-gray-50 dark:bg-neutral-800 rounded-xl border border-gray-100 dark:border-neutral-700">
+               <div class="text-xs text-text-muted uppercase mb-1">Internet Speed</div>
+               <div class="flex items-center gap-1">
+                  <span class="text-xl font-bold text-blue-600">{{ detailsProvider.speedScore }}</span>
+                  <span class="text-sm text-text-muted">/ 5</span>
+               </div>
+               <div class="text-[10px] text-text-muted mt-1">4G/5G Availability</div>
+             </div>
+           </div>
+
+           <!-- Description -->
+           <div>
+             <h3 class="font-bold text-lg mb-2">About Network</h3>
+             <p class="text-text-muted text-sm leading-relaxed">
+               {{ detailsProvider.name }} is one of the leading providers in Sri Lanka...
+               <!-- (Real desc would come from data if added, simulating generic for now) -->
+               Known for strong connectivity in {{ detailsProvider.bestFor.join(', ').replace('_', ' ') }} areas.
+             </p>
+           </div>
+
+           <!-- Features -->
+           <div>
+             <h3 class="font-bold text-lg mb-3">Key Features</h3>
+             <ul class="space-y-2">
+               <li v-for="tag in detailsProvider.bestFor" :key="tag" class="flex items-start gap-3 text-sm text-text-muted capitalize">
+                 <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                 {{ tag.replace('_', ' ') }}
+               </li>
+               <li class="flex items-start gap-3 text-sm text-text-muted">
+                 <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                 Tourist plans include free WhatsApp
+               </li>
+             </ul>
+           </div>
+
+           <!-- Actions -->
+           <div class="pt-4 border-t border-gray-100 dark:border-neutral-800">
+             <button 
+               @click="$emit('select', detailsProvider.id); detailsProvider = null"
+               class="w-full py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary-dark transition-colors flex items-center justify-center gap-2"
+             >
+               View Plans & Pricing
+               <span class="material-symbols-outlined">arrow_forward</span>
+             </button>
+           </div>
+
+        </div>
+      </div>
+    </Transition>
+    
+    <!-- Backdrop -->
+    <Transition
+      enter-active-class="transition-opacity duration-300"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-300"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="detailsProvider" @click="detailsProvider = null" class="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"></div>
+    </Transition>
+
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -286,12 +365,13 @@ import { ref, computed } from 'vue'
 import { providers, touristPlans, getPlansByProvider, regionCoverage, getProviderById, type Provider } from '~/data/simData'
 
 const props = defineProps<{
-  selectedProvider: string | null
+  selectedProviders: string[]
 }>()
 
 const emit = defineEmits<{
-  (e: 'select', providerId: string | null): void
+  (e: 'select', providerId: string): void
 }>()
+
 
 const sortBy = ref<'coverage' | 'value'>('coverage')
 const selectedRegionId = ref<string | null>(null)
@@ -357,6 +437,8 @@ const sortedProviders = computed(() => {
 })
 
 function openDetails(provider: Provider) {
-  emit('select', props.selectedProvider === provider.id ? null : provider.id)
+  // If the user clicks the row, we show details.
+  // The 'Checkbox' handles selection.
+  detailsProvider.value = provider
 }
 </script>

@@ -1,89 +1,101 @@
 <template>
-  <div class="flex flex-col gap-4 h-full relative">
-    
-    <!-- Map Container -->
-    <div class="h-[400px] md:h-[350px] shrink-0 w-full rounded-2xl overflow-hidden border border-gray-200 dark:border-neutral-700 shadow-sm relative z-0">
-      <client-only>
-        <div id="coverage-map" class="w-full h-full bg-gray-100 dark:bg-neutral-800"></div>
-      </client-only>
+  <section class="py-12 px-4 md:px-10 max-w-7xl mx-auto w-full">
+    <div class="flex flex-col md:flex-row gap-8 h-[600px]">
       
-      <!-- Overlay User Loc Button -->
-      <button 
-        @click="requestLocation"
-        class="absolute bottom-4 right-4 z-[500] bg-white dark:bg-neutral-800 p-2 rounded-full shadow-md border border-gray-200 dark:border-neutral-600 text-primary hover:bg-gray-50 focus:outline-none"
-        :title="loadingLocation ? 'Locating...' : 'Find Near Me'"
-      >
-        <span class="material-symbols-outlined text-xl" :class="{'animate-spin': loadingLocation}">
-          {{ loadingLocation ? 'progress_activity' : 'my_location' }}
-        </span>
-      </button>
-    </div>
-
-    <!-- Controls -->
-    <div class="flex-grow flex flex-col gap-3 min-h-0">
-       
-       <!-- Layer Toggles (Horizontal Scroll or Compact Grid) -->
-       <div class="bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-neutral-700 p-3 shadow-sm shrink-0">
-          <h3 class="text-xs font-bold text-text-muted uppercase mb-2">Layers</h3>
-          <div class="flex flex-wrap gap-2 text-xs">
-            <button 
-              @click="layers.regions = !layers.regions"
-              class="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border transition-all"
-              :class="layers.regions ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300' : 'bg-gray-50 border-transparent text-text-muted dark:bg-neutral-800'"
-            >
-              <span class="material-symbols-outlined text-sm">public</span>
-              Coverage
-            </button>
-            <button 
-              @click="layers.wifi = !layers.wifi"
-              class="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border transition-all"
-              :class="layers.wifi ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300' : 'bg-gray-50 border-transparent text-text-muted dark:bg-neutral-800'"
-            >
-              <span class="material-symbols-outlined text-sm">wifi</span>
-              WiFi
-            </button>
-            <button 
-              @click="layers.coworking = !layers.coworking"
-              class="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border transition-all"
-              :class="layers.coworking ? 'bg-purple-50 border-purple-200 text-purple-700 dark:bg-purple-900/20 dark:border-purple-800 dark:text-purple-300' : 'bg-gray-50 border-transparent text-text-muted dark:bg-neutral-800'"
-            >
-              <span class="material-symbols-outlined text-sm">laptop_mac</span>
-              Nomad
-            </button>
-            <button 
-              @click="layers.sellers = !layers.sellers"
-              class="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border transition-all"
-              :class="layers.sellers ? 'bg-orange-50 border-orange-200 text-orange-700 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-300' : 'bg-gray-50 border-transparent text-text-muted dark:bg-neutral-800'"
-            >
-              <span class="material-symbols-outlined text-sm">store</span>
-              Shops
-            </button>
+      <!-- Sidebar / Controls -->
+      <div class="w-full md:w-1/3 flex flex-col gap-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold tracking-tight text-text-main dark:text-white">Connectivity Map</h2>
+            <p class="text-text-muted mt-1">Find coverage, WiFi, and SIM sellers</p>
           </div>
-       </div>
+          
+          <button 
+            @click="requestLocation"
+            class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+            :disabled="loadingLocation"
+          >
+            <span class="material-symbols-outlined text-[18px]">
+              {{ loadingLocation ? 'progress_activity' : 'my_location' }}
+            </span>
+            {{ loadingLocation ? 'Locating...' : 'Near Me' }}
+          </button>
+        </div>
 
-       <!-- Location List -->
-       <div class="flex-grow overflow-y-auto bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-neutral-700 p-3 shadow-sm min-h-[200px]">
+        <!-- Mobile Location Button -->
+        <button 
+          @click="requestLocation"
+          class="md:hidden w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-colors font-medium"
+        >
+          <span class="material-symbols-outlined">my_location</span>
+          Find Nearest Locations
+        </button>
+
+        <!-- Layer Toggles -->
+        <div class="bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-neutral-700 p-4 shadow-sm">
+          <h3 class="text-sm font-bold text-text-muted uppercase mb-3">Map Layers</h3>
+          <div class="space-y-3">
+            <label class="flex items-center gap-3 cursor-pointer group">
+              <input type="checkbox" v-model="layers.regions" class="size-4 rounded border-gray-300 text-primary focus:ring-primary">
+              <span class="flex items-center gap-2 p-1.5 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                <span class="material-symbols-outlined text-lg">public</span>
+              </span>
+              <span class="text-sm font-medium text-text-main dark:text-white group-hover:text-primary transition-colors">Network Coverage</span>
+            </label>
+            
+            <label class="flex items-center gap-3 cursor-pointer group">
+              <input type="checkbox" v-model="layers.wifi" class="size-4 rounded border-gray-300 text-primary focus:ring-primary">
+              <span class="flex items-center gap-2 p-1.5 rounded bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400">
+                <span class="material-symbols-outlined text-lg">wifi</span>
+              </span>
+              <span class="text-sm font-medium text-text-main dark:text-white group-hover:text-primary transition-colors">Public WiFi Zones</span>
+            </label>
+            
+            <label class="flex items-center gap-3 cursor-pointer group">
+              <input type="checkbox" v-model="layers.coworking" class="size-4 rounded border-gray-300 text-primary focus:ring-primary">
+              <span class="flex items-center gap-2 p-1.5 rounded bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400">
+                <span class="material-symbols-outlined text-lg">laptop_mac</span>
+              </span>
+              <span class="text-sm font-medium text-text-main dark:text-white group-hover:text-primary transition-colors">Coworking & Cafes</span>
+            </label>
+            
+            <label class="flex items-center gap-3 cursor-pointer group">
+              <input type="checkbox" v-model="layers.sellers" class="size-4 rounded border-gray-300 text-primary focus:ring-primary">
+              <span class="flex items-center gap-2 p-1.5 rounded bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400">
+                <span class="material-symbols-outlined text-lg">store</span>
+              </span>
+              <span class="text-sm font-medium text-text-main dark:text-white group-hover:text-primary transition-colors">SIM Sellers</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Locations List -->
+        <div class="flex-grow overflow-y-auto bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-neutral-700 p-4 shadow-sm">
           <div class="sticky top-0 bg-white dark:bg-surface-dark z-10 pb-2 mb-2 border-b border-gray-100 dark:border-neutral-700 flex justify-between items-center">
-            <h3 class="text-xs font-bold text-text-muted uppercase">
-              {{ userLocation ? `Nearby (${visibleLocations.length})` : `Locations (${visibleLocations.length})` }}
+            <h3 class="text-sm font-bold text-text-muted uppercase">
+              {{ userLocation ? 'Nearest Locations' : 'Browse Locations' }}
             </h3>
             <button 
               v-if="userLocation" 
               @click="clearLocation"
-              class="text-[10px] text-red-500 hover:text-red-600 font-medium"
+              class="text-xs text-red-500 hover:text-red-600 font-medium"
             >
-              Clear
+              Clear Location
             </button>
           </div>
           
+          <div v-if="visibleLocations.length === 0" class="text-sm text-text-muted text-center py-4">
+            No locations visible. Enable more layers.
+          </div>
+
           <div class="space-y-2">
             <button
-              v-for="(loc, idx) in visibleLocations.slice(0, 50)"
+              v-for="(loc, idx) in visibleLocations"
               :key="idx"
               @click="flyToLocation(loc)"
               class="w-full text-left p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors flex items-start gap-3 group relative"
             >
-               <span 
+              <span 
                 class="material-symbols-outlined text-lg mt-0.5 shrink-0"
                 :class="loc.iconClass"
               >
@@ -91,21 +103,35 @@
               </span>
               <div class="flex-grow min-w-0">
                 <div class="flex justify-between items-start gap-2">
-                   <div class="text-sm font-bold text-text-main dark:text-white group-hover:text-primary truncate">{{ loc.name }}</div>
-                   <span v-if="loc.distance !== undefined" class="text-[10px] font-bold bg-gray-100 dark:bg-neutral-700 text-text-muted px-1.5 py-0.5 rounded whitespace-nowrap">
-                    {{ loc.distance.toFixed(1) }}km
+                  <div class="text-sm font-bold text-text-main dark:text-white group-hover:text-primary truncate">{{ loc.name }}</div>
+                  <span v-if="loc.distance !== undefined" class="text-[10px] font-bold bg-gray-100 dark:bg-neutral-700 text-text-muted px-1.5 py-0.5 rounded whitespace-nowrap">
+                    {{ loc.distance.toFixed(1) }} km
                   </span>
                 </div>
                 <div class="text-xs text-text-muted line-clamp-1">{{ loc.desc }}</div>
               </div>
             </button>
-             <div v-if="visibleLocations.length === 0" class="text-xs text-text-muted text-center py-8">
-               No locations visible.
-             </div>
           </div>
-       </div>
+          
+          <!-- Disclaimer for Community Data -->
+          <div v-if="layers.wifi" class="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-700">
+             <p class="text-[10px] text-text-muted flex items-center gap-1">
+               <span class="material-symbols-outlined text-xs">info</span>
+               WiFi data is a curated community starter set.
+             </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Container -->
+      <div class="w-full md:w-2/3 h-full rounded-2xl overflow-hidden border border-gray-200 dark:border-neutral-700 shadow-lg relative z-0">
+        <client-only>
+          <div id="coverage-map" class="w-full h-full bg-gray-100 dark:bg-neutral-800"></div>
+        </client-only>
+      </div>
+    
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
