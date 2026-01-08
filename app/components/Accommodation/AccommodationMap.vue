@@ -14,16 +14,18 @@ const props = defineProps<{
     price_per_night_lkr?: number
     rating?: number
   }>
+  highlightedId?: string | number | null
 }>()
 
 const emit = defineEmits<{
   (e: 'select', id: string): void
+  (e: 'hover', id: string | null): void
 }>()
 
 const mapContainer = ref<HTMLElement>()
 let L: any = null
 let map: any = null
-const markers: any[] = []
+const markers: Map<string, any> = new Map()
 
 // Category icons
 const categoryIcons: Record<string, string> = {
@@ -34,7 +36,9 @@ const categoryIcons: Record<string, string> = {
   'ECO_LODGE': '🌿',
   'BEACH_RESORT': '🏖️',
   'VILLA': '🏰',
-  'HOSTEL': '🛏️'
+  'HOSTEL': '🛏️',
+  'HOTEL': '🏨',
+  'RESORT': '🏖️'
 }
 
 // Category colors
@@ -46,12 +50,48 @@ const categoryColors: Record<string, string> = {
   'ECO_LODGE': '#22c55e',
   'BEACH_RESORT': '#06b6d4',
   'VILLA': '#6366f1',
-  'HOSTEL': '#f97316'
+  'HOSTEL': '#f97316',
+  'HOTEL': '#8b5cf6',
+  'RESORT': '#06b6d4'
 }
 
 function toUsd(lkr?: number) {
   if (!lkr) return '?'
   return `$${Math.round(lkr / 300)}`
+}
+
+function createMarkerIcon(acc: typeof props.accommodations[0], isHighlighted: boolean = false) {
+  const color = categoryColors[acc.category] || '#6b7280'
+  const price = toUsd(acc.price_per_night_lkr)
+  const scale = isHighlighted ? 1.3 : 1
+  const zIndex = isHighlighted ? 1000 : 1
+  const shadow = isHighlighted ? '0 4px 12px rgba(0,0,0,0.4)' : '0 2px 6px rgba(0,0,0,0.2)'
+  const borderWidth = isHighlighted ? 3 : 2
+  
+  return L.divIcon({
+    className: 'accommodation-marker',
+    html: `
+      <div style="
+        background: ${isHighlighted ? color : 'white'};
+        border: ${borderWidth}px solid ${color};
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 12px;
+        white-space: nowrap;
+        box-shadow: ${shadow};
+        cursor: pointer;
+        transform: scale(${scale});
+        transition: all 0.2s ease;
+        color: ${isHighlighted ? 'white' : '#333'};
+        z-index: ${zIndex};
+      ">
+        ${price}
+      </div>
+    `,
+    iconSize: [60, 30],
+    iconAnchor: [30, 15]
+  })
 }
 
 async function initMap() {
@@ -84,7 +124,7 @@ function updateMarkers() {
   
   // Clear existing markers
   markers.forEach(m => m.remove())
-  markers.length = 0
+  markers.clear()
   
   // Add new markers
   props.accommodations.forEach(acc => {
@@ -93,32 +133,13 @@ function updateMarkers() {
     const color = categoryColors[acc.category] || '#6b7280'
     const icon = categoryIcons[acc.category] || '🏨'
     const price = toUsd(acc.price_per_night_lkr)
+    const isHighlighted = props.highlightedId === acc.id
     
-    // Create custom div icon with price
-    const priceIcon = L.divIcon({
-      className: 'accommodation-marker',
-      html: `
-        <div style="
-          background: white;
-          border: 2px solid ${color};
-          padding: 4px 8px;
-          border-radius: 8px;
-          font-weight: bold;
-          font-size: 12px;
-          white-space: nowrap;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-          cursor: pointer;
-          transition: transform 0.2s;
-        " onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-          ${price}
-        </div>
-      `,
-      iconSize: [60, 30],
-      iconAnchor: [30, 15]
-    })
+    const priceIcon = createMarkerIcon(acc, isHighlighted)
     
     const marker = L.marker([acc.location.latitude, acc.location.longitude], {
-      icon: priceIcon
+      icon: priceIcon,
+      zIndexOffset: isHighlighted ? 1000 : 0
     })
     
     marker.bindPopup(`
@@ -138,21 +159,61 @@ function updateMarkers() {
       emit('select', acc.id)
     })
     
+    marker.on('mouseover', () => {
+      emit('hover', acc.id)
+    })
+    
+    marker.on('mouseout', () => {
+      emit('hover', null)
+    })
+    
     marker.addTo(map)
-    markers.push(marker)
+    markers.set(acc.id, marker)
   })
   
   // Fit bounds if we have markers
-  if (markers.length > 1) {
-    const group = L.featureGroup(markers)
+  if (markers.size > 1) {
+    const group = L.featureGroup(Array.from(markers.values()))
     map.fitBounds(group.getBounds().pad(0.1))
-  } else if (markers.length === 1) {
+  } else if (markers.size === 1) {
     const acc = props.accommodations.find(a => a.location?.latitude && a.location?.longitude)
     if (acc?.location) {
       map.setView([acc.location.latitude, acc.location.longitude], 12)
     }
   }
 }
+
+function updateHighlightedMarker() {
+  if (!map || !L) return
+  
+  markers.forEach((marker, id) => {
+    const acc = props.accommodations.find(a => a.id === id)
+    if (acc) {
+      const isHighlighted = props.highlightedId === id
+      const newIcon = createMarkerIcon(acc, isHighlighted)
+      marker.setIcon(newIcon)
+      marker.setZIndexOffset(isHighlighted ? 1000 : 0)
+    }
+  })
+}
+
+// Center map on specific accommodation
+function centerOnAccommodation(id: string | number) {
+  const acc = props.accommodations.find(a => a.id === id)
+  if (acc?.location?.latitude && acc?.location?.longitude && map) {
+    map.setView([acc.location.latitude, acc.location.longitude], 14, {
+      animate: true,
+      duration: 0.5
+    })
+    const marker = markers.get(String(id))
+    if (marker) {
+      marker.openPopup()
+    }
+  }
+}
+
+// Expose method for parent
+defineExpose({ centerOnAccommodation })
 
 onMounted(() => {
   initMap()
@@ -161,6 +222,10 @@ onMounted(() => {
 watch(() => props.accommodations, () => {
   updateMarkers()
 }, { deep: true })
+
+watch(() => props.highlightedId, () => {
+  updateHighlightedMarker()
+})
 
 onUnmounted(() => {
   map?.remove()
@@ -191,6 +256,10 @@ onUnmounted(() => {
           <span class="size-3 rounded-full bg-amber-500"></span>
           <span class="text-gray-600 dark:text-gray-400">Homestay</span>
         </div>
+        <div class="flex items-center gap-2 text-xs">
+          <span class="size-3 rounded-full bg-cyan-500"></span>
+          <span class="text-gray-600 dark:text-gray-400">Beach Resort</span>
+        </div>
       </div>
     </div>
     
@@ -198,6 +267,14 @@ onUnmounted(() => {
     <div class="absolute top-4 right-4 bg-white dark:bg-surface-dark rounded-lg shadow-lg px-3 py-2 z-[1000]">
       <span class="text-sm font-bold text-gray-800 dark:text-white">{{ accommodations.filter(a => a.location?.latitude).length }}</span>
       <span class="text-xs text-gray-500 ml-1">stays on map</span>
+    </div>
+
+    <!-- Hover instruction -->
+    <div class="absolute bottom-4 right-4 bg-white/90 dark:bg-surface-dark/90 rounded-lg shadow-lg px-3 py-2 z-[1000] backdrop-blur-sm">
+      <span class="text-xs text-gray-500 flex items-center gap-1">
+        <span class="material-symbols-outlined text-[14px]">touch_app</span>
+        Click pin to view details
+      </span>
     </div>
   </div>
 </template>
@@ -211,5 +288,8 @@ onUnmounted(() => {
 .leaflet-control-zoom a {
   background: white !important;
   color: #333 !important;
+}
+.accommodation-marker {
+  z-index: 10 !important;
 }
 </style>
