@@ -1,39 +1,32 @@
 <template>
-  <div class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-display overflow-x-hidden min-h-screen flex flex-col group/design-root">
-    
-    <main class="flex h-full grow flex-col pb-20">
-      <VisaHero
-        :selected-country="visaInfo?.country_name"
-        :is-loading="visaPending"
-        @search="handleVisaSearch"
-      />
-      <VisaStats
-        :processing-time="visaInfo?.processing_time"
-        :fee="visaInfo?.fee"
-        :duration="visaInfo?.duration"
-      />
-      
-      <!-- Layout Grid -->
-      <div class="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 w-full">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <!-- Left Column (Main Content) -->
-          <div class="lg:col-span-8 flex flex-col gap-12">
-            <VisaProcess />
-            <VisaRegulations
-              :requirements="visaInfo?.requirements"
-              :notes="visaInfo?.notes || undefined"
-            />
-            <VisaExtension />
-          </div>
-          
-          <!-- Right Column (Sidebar) -->
-          <div class="lg:col-span-4 h-full">
-            <VisaSidebar :requirements="visaInfo?.requirements" />
-          </div>
+  <div
+    class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-display overflow-x-hidden min-h-screen flex flex-col group/design-root">
+    <main class="flex h-full grow flex-col">
+      <VisaHero :selected-country="visaInfo?.country_name" :is-loading="visaPending" @search="handleVisaSearch" />
+
+      <VisaStats :processing-time="visaInfo?.processing_time" :fee="visaInfo?.fee" :duration="visaInfo?.duration" />
+
+      <!-- Main Content -->
+      <div class="max-w-7xl mx-auto px-4 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left Column (Main Content) -->
+        <div class="lg:col-span-8 space-y-10">
+          <VisaFreeVisaBanner />
+
+          <VisaExtensionCalculator :nationality="visaInfo?.country_name" />
+
+          <VisaProcess />
+
+          <VisaRegulations :requirements="visaInfo?.requirements" :notes="visaInfo?.notes || undefined" />
+        </div>
+
+        <!-- Right Column (Sidebar) -->
+        <div class="lg:col-span-4 space-y-8">
+          <VisaSidebar :requirements="visaInfo?.requirements" />
         </div>
       </div>
-    </main>
 
+      <VisaExtension />
+    </main>
   </div>
 </template>
 
@@ -42,10 +35,12 @@ import type { VisaInfo } from '~/types/api'
 import { computed, ref } from 'vue'
 import VisaHero from '~/components/Visa/VisaHero.vue'
 import VisaStats from '~/components/Visa/VisaStats.vue'
+import VisaFreeVisaBanner from '~/components/Visa/VisaFreeVisaBanner.vue'
+import VisaExtensionCalculator from '~/components/Visa/VisaExtensionCalculator.vue'
 import VisaProcess from '~/components/Visa/VisaProcess.vue'
 import VisaRegulations from '~/components/Visa/VisaRegulations.vue'
-import VisaExtension from '~/components/Visa/VisaExtension.vue'
 import VisaSidebar from '~/components/Visa/VisaSidebar.vue'
+import VisaExtension from '~/components/Visa/VisaExtension.vue'
 
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
@@ -75,14 +70,3 @@ useHead({
   ]
 })
 </script>
-
-<style scoped>
-/* Override global theme for Visa page (Orange-Red Theme) */
-.group\/design-root {
-  --color-primary: #ee5f2b;
-  --color-bg-light: #f8f6f6;
-  --color-bg-dark: #221510;
-  --color-text-main: #181311;
-  /* Matching HTML: text-secondary/muted is #896c61 */
-}
-</style>

@@ -1,68 +1,74 @@
 <template>
   <section>
-    <div class="mb-6 flex items-center gap-3">
-      <div class="h-8 w-1 bg-primary rounded-full"></div>
-      <h2 class="text-2xl font-bold text-text-main dark:text-white">The ETA Process</h2>
+    <div class="flex items-center space-x-3 mb-8">
+      <div class="w-1 h-8 bg-primary rounded-full"></div>
+      <h2 class="text-2xl font-bold text-deep-charcoal dark:text-white">The ETA Process</h2>
     </div>
-    <!-- Timeline Component -->
-    <div class="bg-white dark:bg-card-dark rounded-xl border border-border-color dark:border-neutral-700 p-6 sm:p-8">
-      <div class="grid grid-cols-[40px_1fr] gap-x-4">
-        <!-- Step 1 -->
-        <div class="flex flex-col items-center gap-2 pt-1">
-          <div class="text-primary bg-primary/10 p-2 rounded-full">
-            <span class="material-symbols-outlined text-[20px]">laptop_mac</span>
+
+    <div
+      class="bg-white dark:bg-surface-dark rounded-2xl shadow-soft border border-stone-neutral dark:border-gray-700 p-8">
+      <div class="relative">
+        <div class="absolute left-6 top-8 bottom-8 w-0.5 bg-slate-200 dark:bg-slate-700"></div>
+
+        <div class="space-y-10">
+          <div class="relative flex items-start group">
+            <div
+              class="flex-shrink-0 w-12 h-12 bg-white dark:bg-surface-dark border-2 border-primary text-primary rounded-full flex items-center justify-center z-10 shadow-sm">
+              <span class="material-symbols-outlined">computer</span>
+            </div>
+            <div class="ml-6 pt-1">
+              <h3 class="text-lg font-bold text-deep-charcoal dark:text-white">Apply Online</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm mt-1 leading-relaxed">
+                Visit the official <a class="text-primary hover:underline font-medium" href="#">eta.gov.lk</a> portal.
+                Fill out the application form with your personal details and passport information.
+              </p>
+              <span
+                class="inline-block mt-3 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs px-2 py-1 rounded border border-slate-200 dark:border-slate-700">
+                Form ETA-01
+              </span>
+            </div>
           </div>
-          <div class="w-[2px] bg-border-color dark:bg-neutral-700 h-full grow rounded-full"></div>
-        </div>
-        <div class="flex flex-col pb-8">
-          <h3 class="text-lg font-bold text-text-main dark:text-white mb-1">Apply Online</h3>
-          <p class="text-text-secondary dark:text-gray-400 text-sm leading-relaxed mb-3">
-            Visit the official <a class="text-primary hover:underline decoration-primary/30 underline-offset-2" href="#">eta.gov.lk</a> portal. Fill out the application form with your personal details and passport information.
-          </p>
-          <div class="inline-flex gap-2">
-            <span class="text-xs font-medium bg-background-light dark:bg-white/5 px-2 py-1 rounded text-text-secondary border border-border-color dark:border-neutral-700">Form ETA-01</span>
+
+          <div class="relative flex items-start group">
+            <div
+              class="flex-shrink-0 w-12 h-12 bg-white dark:bg-surface-dark border-2 border-slate-200 dark:border-slate-600 text-slate-400 rounded-full flex items-center justify-center z-10 shadow-sm group-hover:border-primary group-hover:text-primary transition-colors">
+              <span class="material-symbols-outlined">credit_card</span>
+            </div>
+            <div class="ml-6 pt-1">
+              <h3 class="text-lg font-bold text-deep-charcoal dark:text-white">Pay Processing Fee</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm mt-1 leading-relaxed">
+                Securely pay the visa fee using a major Credit or Debit card (Visa, MasterCard, Amex).
+              </p>
+            </div>
           </div>
-        </div>
-        <!-- Step 2 -->
-        <div class="flex flex-col items-center gap-2">
-          <div class="w-[2px] bg-border-color dark:bg-neutral-700 h-4 rounded-full"></div>
-          <div class="text-primary bg-primary/10 p-2 rounded-full">
-            <span class="material-symbols-outlined text-[20px]">credit_card</span>
+
+          <div class="relative flex items-start group">
+            <div
+              class="flex-shrink-0 w-12 h-12 bg-white dark:bg-surface-dark border-2 border-slate-200 dark:border-slate-600 text-slate-400 rounded-full flex items-center justify-center z-10 shadow-sm group-hover:border-primary group-hover:text-primary transition-colors">
+              <span class="material-symbols-outlined">mark_email_read</span>
+            </div>
+            <div class="ml-6 pt-1">
+              <h3 class="text-lg font-bold text-deep-charcoal dark:text-white">Receive Approval</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm mt-1 leading-relaxed">
+                You will receive an acknowledgement email immediately, followed by the approval notice typically within
+                24-48 hours.
+              </p>
+            </div>
           </div>
-          <div class="w-[2px] bg-border-color dark:bg-neutral-700 h-full grow rounded-full"></div>
-        </div>
-        <div class="flex flex-col py-2 pb-8">
-          <h3 class="text-lg font-bold text-text-main dark:text-white mb-1">Pay Processing Fee</h3>
-          <p class="text-text-secondary dark:text-gray-400 text-sm leading-relaxed">
-            Securely pay the visa fee using a major Credit or Debit card (Visa, MasterCard, Amex).
-          </p>
-        </div>
-        <!-- Step 3 -->
-        <div class="flex flex-col items-center gap-2">
-          <div class="w-[2px] bg-border-color dark:bg-neutral-700 h-4 rounded-full"></div>
-          <div class="text-primary bg-primary/10 p-2 rounded-full">
-            <span class="material-symbols-outlined text-[20px]">mail</span>
+
+          <div class="relative flex items-start group">
+            <div
+              class="flex-shrink-0 w-12 h-12 bg-white dark:bg-surface-dark border-2 border-slate-200 dark:border-slate-600 text-slate-400 rounded-full flex items-center justify-center z-10 shadow-sm group-hover:border-primary group-hover:text-primary transition-colors">
+              <span class="material-symbols-outlined">flight_takeoff</span>
+            </div>
+            <div class="ml-6 pt-1">
+              <h3 class="text-lg font-bold text-deep-charcoal dark:text-white">Travel to Sri Lanka</h3>
+              <p class="text-slate-600 dark:text-slate-300 text-sm mt-1 leading-relaxed">
+                Print your ETA approval and present it at the immigration counter upon arrival in Colombo (CMB) or
+                Mattala (HRI).
+              </p>
+            </div>
           </div>
-          <div class="w-[2px] bg-border-color dark:bg-neutral-700 h-full grow rounded-full"></div>
-        </div>
-        <div class="flex flex-col py-2 pb-8">
-          <h3 class="text-lg font-bold text-text-main dark:text-white mb-1">Receive Approval</h3>
-          <p class="text-text-secondary dark:text-gray-400 text-sm leading-relaxed">
-            You will receive an acknowledgement email immediately, followed by the approval notice typically within 24-48 hours.
-          </p>
-        </div>
-        <!-- Step 4 -->
-        <div class="flex flex-col items-center gap-2">
-          <div class="w-[2px] bg-border-color dark:bg-neutral-700 h-4 rounded-full"></div>
-          <div class="text-primary bg-primary/10 p-2 rounded-full">
-            <span class="material-symbols-outlined text-[20px]">flight_takeoff</span>
-          </div>
-        </div>
-        <div class="flex flex-col py-2">
-          <h3 class="text-lg font-bold text-text-main dark:text-white mb-1">Travel to Sri Lanka</h3>
-          <p class="text-text-secondary dark:text-gray-400 text-sm leading-relaxed">
-            Print your ETA approval and present it at the immigration counter upon arrival in Colombo (CMB) or Mattala (HRI).
-          </p>
         </div>
       </div>
     </div>

@@ -1,75 +1,144 @@
 <template>
-  <div class="flex flex-col gap-6">
-    <!-- Checklist Card -->
-    <div class="bg-white dark:bg-card-dark rounded-xl border border-border-color dark:border-neutral-700 shadow-sm sticky top-24">
-      <div class="p-6 border-b border-border-color dark:border-neutral-700 bg-background-light/50 dark:bg-white/5">
-        <h3 class="font-bold text-lg text-text-main dark:text-white flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">checklist</span>
-          Document Checklist
-        </h3>
-        <p class="text-xs text-text-secondary dark:text-text-muted mt-1">Have these ready at immigration.</p>
+  <div class="space-y-8">
+    <!-- Document Checklist -->
+    <div
+      class="bg-white dark:bg-surface-dark rounded-2xl shadow-soft border border-stone-neutral dark:border-gray-700 p-6 sticky top-24">
+      <div class="flex items-center space-x-2 mb-6 border-b border-stone-100 dark:border-gray-700 pb-4">
+        <span class="material-symbols-outlined text-primary">checklist</span>
+        <h3 class="font-bold text-deep-charcoal dark:text-white">Document Checklist</h3>
       </div>
-      <div class="p-6 flex flex-col gap-4">
-        <label
-          v-for="(item, index) in checklistItems"
-          :key="item"
-          class="flex items-start gap-3 cursor-pointer group"
-        >
-          <input
-            :checked="index === 0"
-            class="mt-1 rounded border-border-color dark:border-neutral-600 text-primary focus:ring-primary/20"
-            type="checkbox"
-          />
-          <span class="text-sm text-text-secondary dark:text-text-muted group-hover:text-text-main dark:group-hover:text-white transition-colors">{{ item }}</span>
-        </label>
-      </div>
-      <div class="p-4 border-t border-border-color dark:border-neutral-700">
-        <button class="w-full flex items-center justify-center gap-2 text-primary font-bold text-sm py-2 hover:bg-primary/5 rounded-lg transition-colors">
-          <span class="material-symbols-outlined text-[18px]">download</span>
-          Download PDF Checklist
+
+      <p class="text-xs text-slate-400 uppercase font-bold mb-4">For India</p>
+
+      <ul class="space-y-4">
+        <li class="flex items-start">
+          <div class="flex items-center h-5">
+            <input class="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded" id="doc1" type="checkbox" />
+          </div>
+          <div class="ml-3 text-sm">
+            <label class="font-medium text-slate-700 dark:text-slate-300" for="doc1">
+              Passport valid for at least 6 months
+            </label>
+            <p class="text-xs text-slate-500 mt-0.5">from arrival.</p>
+          </div>
+        </li>
+
+        <li class="flex items-start">
+          <div class="flex items-center h-5">
+            <input class="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded" id="doc2" type="checkbox" />
+          </div>
+          <div class="ml-3 text-sm">
+            <label class="font-medium text-slate-700 dark:text-slate-300" for="doc2">
+              Confirmed return or onward ticket.
+            </label>
+          </div>
+        </li>
+
+        <li class="flex items-start">
+          <div class="flex items-center h-5">
+            <input class="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded" id="doc3" type="checkbox" />
+          </div>
+          <div class="ml-3 text-sm">
+            <label class="font-medium text-slate-700 dark:text-slate-300" for="doc3">
+              Proof of sufficient funds for the stay.
+            </label>
+          </div>
+        </li>
+
+        <li class="flex items-start">
+          <div class="flex items-center h-5">
+            <input class="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded" id="doc4" type="checkbox" />
+          </div>
+          <div class="ml-3 text-sm">
+            <label class="font-medium text-slate-700 dark:text-slate-300" for="doc4">
+              Printed copy of ETA approval
+            </label>
+            <p class="text-xs text-slate-500 mt-0.5">(recommended).</p>
+          </div>
+        </li>
+      </ul>
+
+      <div class="mt-8 flex justify-between">
+        <button
+          class="flex items-center text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors">
+          <span class="material-symbols-outlined text-base mr-1">content_copy</span> Copy List
+        </button>
+        <button
+          class="flex items-center text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors">
+          <span class="material-symbols-outlined text-base mr-1">save_alt</span> Save PDF
         </button>
       </div>
     </div>
-    <!-- Helpful Links -->
-    <div class="bg-white dark:bg-card-dark rounded-xl border border-border-color dark:border-neutral-700 p-6">
-      <h3 class="font-bold text-lg text-text-main dark:text-white mb-4">Official Resources</h3>
-      <div class="flex flex-col gap-3">
-        <a class="flex items-center justify-between p-3 rounded-lg border border-border-color dark:border-neutral-700 hover:border-primary/50 hover:bg-primary/5 transition-all group" href="#">
-          <div class="flex flex-col">
-            <span class="text-sm font-bold text-text-main dark:text-white">ETA Portal</span>
-            <span class="text-xs text-text-secondary dark:text-text-muted">www.eta.gov.lk</span>
+
+    <!-- Trusted Actions -->
+    <div class="bg-transparent space-y-4">
+      <div class="flex items-center space-x-2 mb-2">
+        <span class="material-symbols-outlined text-primary text-sm">verified</span>
+        <h3 class="font-bold text-deep-charcoal dark:text-white text-sm uppercase tracking-wide">Trusted Actions</h3>
+      </div>
+
+      <div class="bg-stone-50 dark:bg-stone-900 border-l-4 border-primary p-4 rounded-r-lg shadow-sm">
+        <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+          <span class="font-bold text-primary block mb-1">Official Only:</span>
+          Avoid third-party agents. Use only .gov.lk portals to ensure safety and standard fees.
+        </p>
+      </div>
+
+      <a class="block w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-4 transition-all group"
+        href="#">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div
+              class="bg-primary/10 p-2 rounded-lg text-primary mr-3 group-hover:bg-primary group-hover:text-white transition-colors">
+              <span class="material-symbols-outlined">play_arrow</span>
+            </div>
+            <div class="text-left">
+              <p class="font-bold text-deep-charcoal dark:text-white text-sm">Apply for ETA</p>
+              <p class="text-xs text-slate-500">Direct Official Portal</p>
+            </div>
           </div>
-          <span class="material-symbols-outlined text-text-secondary dark:text-text-muted group-hover:text-primary text-[20px]">open_in_new</span>
-        </a>
-        <a class="flex items-center justify-between p-3 rounded-lg border border-border-color dark:border-neutral-700 hover:border-primary/50 hover:bg-primary/5 transition-all group" href="#">
-          <div class="flex flex-col">
-            <span class="text-sm font-bold text-text-main dark:text-white">Immigration Dept</span>
-            <span class="text-xs text-text-secondary dark:text-text-muted">immigration.gov.lk</span>
+          <span class="material-symbols-outlined text-slate-400 text-sm">open_in_new</span>
+        </div>
+      </a>
+
+      <a class="block w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-4 transition-all group"
+        href="#">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div
+              class="bg-slate-200 dark:bg-slate-700 p-2 rounded-lg text-slate-600 dark:text-slate-300 mr-3 group-hover:text-primary transition-colors">
+              <span class="material-symbols-outlined">calendar_month</span>
+            </div>
+            <div class="text-left">
+              <p class="font-bold text-deep-charcoal dark:text-white text-sm">Online Extension</p>
+              <p class="text-xs text-slate-500">Extend your stay</p>
+            </div>
           </div>
-          <span class="material-symbols-outlined text-text-secondary dark:text-text-muted group-hover:text-primary text-[20px]">open_in_new</span>
-        </a>
+          <span class="material-symbols-outlined text-slate-400 text-sm">open_in_new</span>
+        </div>
+      </a>
+
+      <div class="pt-6">
+        <p class="text-xs font-bold text-slate-400 uppercase mb-3">Travel Safety</p>
+        <div class="grid grid-cols-2 gap-3">
+          <button
+            class="bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 py-3 px-2 rounded-xl text-xs font-medium flex flex-col items-center justify-center space-y-1 transition-colors border border-red-100 dark:border-red-900/20">
+            <span class="material-symbols-outlined text-lg">health_and_safety</span>
+            <span>Safety Mode</span>
+          </button>
+          <button
+            class="bg-blue-50 dark:bg-blue-900/10 hover:bg-blue-100 dark:hover:bg-blue-900/20 text-blue-600 dark:text-blue-400 py-3 px-2 rounded-xl text-xs font-medium flex flex-col items-center justify-center space-y-1 transition-colors border border-blue-100 dark:border-blue-900/20">
+            <span class="material-symbols-outlined text-lg">emergency</span>
+            <span>Emergency</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-
-const props = defineProps<{
-  requirements?: string[] | null
+defineProps<{
+  requirements?: string
 }>()
-
-const checklistItems = computed(() => {
-  return props.requirements && props.requirements.length
-    ? props.requirements
-    : [
-        'Passport (valid for 6 months)',
-        'Printed ETA Approval Notice',
-        'Return / Onward Ticket',
-        'Proof of Sufficient Funds',
-        'Hotel Booking Confirmation',
-        'Arrival Card (Filled)',
-      ]
-})
 </script>
