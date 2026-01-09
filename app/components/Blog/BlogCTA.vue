@@ -13,7 +13,7 @@
           Become a CeylonGuide Contributor and share your travel journals, photos, and tips with the world. Your perspective could inspire the next traveler.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 mt-4 justify-center md:justify-start">
-          <button class="flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-primary text-white text-base font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/30">
+          <button @click="showSubmissionModal = true" class="flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-primary text-white text-base font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/30">
             <span class="material-symbols-outlined">edit_note</span> Share Your Story
           </button>
           <button class="flex items-center justify-center gap-2 rounded-lg h-12 px-6 text-[#181311] dark:text-white font-bold hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
@@ -38,8 +38,14 @@
         </div>
       </div>
     </div>
+    
+    <BlogSubmissionModal v-model="showSubmissionModal" />
   </section>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import BlogSubmissionModal from '~/components/Blog/BlogSubmissionModal.vue'
+
+const showSubmissionModal = ref(false)
 </script>

@@ -10,16 +10,29 @@
       <!-- 2 Column Layout -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <!-- Left Column: Feed -->
-        <CommunityDiscussions />
+        <div class="lg:col-span-8 flex flex-col gap-6">
+           <button @click="showPostCreator = true" class="hidden sm:flex w-full items-center gap-3 p-4 bg-white dark:bg-card-dark rounded-xl border border-border-color dark:border-neutral-700 shadow-sm hover:border-primary/50 transition-colors group text-left">
+             <div class="w-10 h-10 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
+                <span class="material-symbols-outlined text-text-secondary">edit</span>
+             </div>
+             <div class="flex-1">
+               <span class="block text-sm font-bold text-text-muted group-hover:text-text-main dark:group-hover:text-white transition-colors">Start a discussion...</span>
+             </div>
+             <div class="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm font-bold">Post</div>
+           </button>
+
+           <CommunityDiscussions />
+        </div>
         
         <!-- Right Column: Sidebar -->
         <div class="lg:col-span-4 flex flex-col gap-6">
           <!-- Mobile CTA Button -->
-          <button class="sm:hidden w-full flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-xl font-bold shadow-md">
+          <button @click="showPostCreator = true" class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-orange-600 text-white py-3 rounded-xl font-bold shadow-md transition-colors active:scale-95">
             <span class="material-symbols-outlined">add</span> Start Discussion
           </button>
           
           <CommunityLocalGuides />
+          <CommunityStats />
           <CommunityActivityMap />
           <CommunityGuidelines />
         </div>
@@ -27,9 +40,11 @@
     </main>
     
     <!-- Floating Action Button (Mobile) -->
-    <button class="fixed bottom-8 right-8 bg-primary hover:bg-orange-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 z-40 lg:hidden">
+    <button @click="showPostCreator = true" class="fixed bottom-8 right-8 bg-primary hover:bg-orange-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 z-40 lg:hidden">
       <span class="material-symbols-outlined text-2xl">edit</span>
     </button>
+    
+    <CommunityPostCreator :is-open="showPostCreator" @close="showPostCreator = false" />
     
   </div>
 </template>
@@ -42,6 +57,11 @@ import CommunityDiscussions from '~/components/Community/CommunityDiscussions.vu
 import CommunityLocalGuides from '~/components/Community/CommunityLocalGuides.vue'
 import CommunityActivityMap from '~/components/Community/CommunityActivityMap.vue'
 import CommunityGuidelines from '~/components/Community/CommunityGuidelines.vue'
+import CommunityPostCreator from '~/components/Community/CommunityPostCreator.vue'
+import CommunityStats from '~/components/Community/CommunityStats.vue'
+import { ref } from 'vue'
+
+const showPostCreator = ref(false)
 
 useHead({
   title: 'CeylonGuide - Community',

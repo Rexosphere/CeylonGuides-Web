@@ -1,0 +1,102 @@
+{
+    "fees": {
+        "standard": {
+            "eta": 50,
+            "on_arrival": 60
+        },
+        "saarc": {
+            "eta": 20,
+            "on_arrival": 25
+        },
+        "free": {
+            "eta": 0,
+            "on_arrival": 0
+        },
+        "singapore_maldives_seychelles": {
+            "eta": 0,
+            "on_arrival": 0,
+            "note": "Reciprocal visa-free arrangement (30 days)"
+        }
+    },
+    "lists": {
+        "free_visa": [
+            "China",
+            "India",
+            "Russia",
+            "Japan",
+            "Thailand",
+            "Malaysia",
+            "Indonesia"
+        ],
+        "saarc": [
+            "Afghanistan",
+            "Bangladesh",
+            "Bhutan",
+            "India",
+            "Maldives",
+            "Nepal",
+            "Pakistan"
+        ],
+        "special_reciprocal": [
+            "Singapore",
+            "Maldives",
+            "Seychelles"
+        ],
+        "extension_group_a": [
+            "Australia",
+            "Austria",
+            "Belgium",
+            "Canada",
+            "Cyprus",
+            "Denmark",
+            "Finland",
+            "France",
+            "Germany",
+            "Greece",
+            "Ireland",
+            "Italy",
+            "Japan",
+            "Netherlands",
+            "New Zealand",
+            "Norway",
+            "Poland",
+            "Portugal",
+            "Spain",
+            "Sweden",
+            "Switzerland",
+            "United Kingdom"
+        ],
+        "extension_group_c": [
+            "Singapore",
+            "Maldives",
+            "Seychelles",
+            "Czech Republic"
+        ]
+    },
+    "extension_fees": {
+        "group_a": {
+            "30-90": 100,
+            "91-180": 150,
+            "181-270": 200
+        },
+        "usa": {
+            "30-90": 100,
+            "91-180": 200,
+            "181-270": 200
+        },
+        "group_c": {
+            "30-90": 0,
+            "91-180": 150,
+            "181-270": 200
+        },
+        "standard": {
+            "30-90": 60,
+            "91-180": 150,
+            "181-270": 200
+        }
+    },
+    "validity": {
+        "initial": 30,
+        "max_extension": 270
+    }
+}

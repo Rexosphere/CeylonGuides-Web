@@ -1,127 +1,202 @@
 <template>
-  <div class="lg:col-span-8 flex flex-col gap-4">
-    <h3 class="text-text-main dark:text-white text-xl font-bold mb-2">Latest Discussions</h3>
-    
-    <!-- Discussion Card 1 -->
-    <div class="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-border-light dark:border-border-dark hover:border-primary/30 transition-colors">
-      <div class="flex gap-4">
-        <div class="flex flex-col items-center gap-1 min-w-[40px]">
-          <div 
-            class="w-10 h-10 rounded-full bg-gray-200 bg-cover" 
-            style='background-image: url("/images/downloaded_78b24ca8ff52.avif")'
-          ></div>
+  <div class="lg:col-span-8 flex flex-col gap-6">
+    <!-- Filter Status -->
+    <div v-if="searchQuery" class="flex items-center justify-between bg-primary/5 p-4 rounded-xl border border-primary/10">
+      <p class="text-sm font-medium text-text-main dark:text-white">
+        Searching for <span class="font-bold text-primary">"{{ searchQuery }}"</span>
+        <span v-if="activeTab !== 'All Topics'"> in {{ activeTab }}</span>
+      </p>
+      <button @click="setSearch('')" class="text-xs font-bold text-text-secondary hover:text-red-500">Clear Search</button>
+    </div>
+
+    <!-- Empty State -->
+    <div v-if="posts.length === 0" class="flex flex-col items-center justify-center py-16 bg-white dark:bg-card-dark rounded-2xl border border-dashed border-border-color dark:border-neutral-700">
+       <span class="material-symbols-outlined text-4xl text-text-muted mb-3">search_off</span>
+       <h3 class="text-lg font-bold text-text-main dark:text-white">No discussions found</h3>
+       <p class="text-sm text-text-secondary dark:text-gray-400">Try adjusting your search or filters</p>
+       <button @click="setSearch('')" class="mt-4 px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm font-bold hover:bg-primary/20">
+         View All Posts
+       </button>
+    </div>
+
+    <!-- Feed -->
+    <div 
+      v-for="post in posts" 
+      :key="post.id"
+      class="bg-white dark:bg-card-dark rounded-2xl p-6 border border-border-color dark:border-neutral-700 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group"
+    > 
+      <!-- Type Badge -->
+      <div class="absolute top-0 right-0 px-4 py-1.5 bg-background-light dark:bg-neutral-800 rounded-bl-xl text-[10px] font-bold uppercase tracking-wider text-text-muted border-b border-l border-border-color dark:border-neutral-700">
+        {{ post.type === 'report' ? 'Trip Report' : post.type === 'qa' ? 'Q&A' : post.type === 'guide' ? 'Guide' : 'Buddy' }}
+      </div>
+
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <div class="relative">
+               <!-- Avatar Placeholder -->
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 dark:from-neutral-700 dark:to-neutral-600 flex items-center justify-center text-primary font-bold text-sm">
+                {{ getUser(post.authorId)?.name.charAt(0) }}
+              </div>
+              <!-- Online Indicator -->
+              <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-card-dark"></div>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm text-text-main dark:text-white hover:underline cursor-pointer">
+              {{ getUser(post.authorId)?.name }}
+              <span v-if="getUser(post.authorId)?.verified" class="material-symbols-outlined text-[14px] text-blue-500 align-text-bottom">verified</span>
+            </h4>
+            <p class="text-xs text-text-secondary dark:text-gray-400 flex items-center gap-2">
+              <span>{{ getUser(post.authorId)?.role }}</span>
+              <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+              <span>{{ post.date }}</span>
+            </p>
+          </div>
         </div>
-        <div class="flex-1">
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-sm font-bold text-text-main dark:text-white">Elena R.</span>
-            <span class="text-xs text-text-subtle">• 3h ago</span>
-            <span class="ml-auto px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-bold">Q&A</span>
-          </div>
-          <h4 class="text-lg font-bold text-text-main dark:text-white mb-2 cursor-pointer hover:text-primary transition-colors">Best cooking class in Kandy?</h4>
-          <p class="text-text-subtle dark:text-gray-300 text-sm mb-4 leading-relaxed">
-            Hi everyone! I'm visiting Kandy next month and would love to learn how to make authentic Sri Lankan curry. Has anyone tried a class they would highly recommend? Looking for something intimate and local.
-          </p>
-          <div class="flex items-center gap-6">
-            <button class="flex items-center gap-1.5 text-text-subtle hover:text-primary transition-colors text-sm font-medium">
-              <span class="material-symbols-outlined text-[18px]">thumb_up</span>
-              12               </button>
-            <button class="flex items-center gap-1.5 text-text-subtle hover:text-primary transition-colors text-sm font-medium">
-              <span class="material-symbols-outlined text-[18px]">chat_bubble</span>
-              8 Replies
-            </button>
-            <button class="flex items-center gap-1.5 text-text-subtle hover:text-primary transition-colors text-sm font-medium ml-auto">
-              <span class="material-symbols-outlined text-[18px]">share</span>
-              Share
-            </button>
-          </div>
+
+        <!-- Overflow Menu -->
+        <div class="relative" tabindex="0" @blur="closeMenu(post.id)">
+           <button @click.stop="toggleMenu(post.id)" class="p-1 rounded-full text-text-muted hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors">
+              <span class="material-symbols-outlined text-[20px]">more_vert</span>
+           </button>
+           
+           <div v-show="activeMenuId === post.id" class="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-card-dark rounded-xl shadow-xl border border-border-color dark:border-neutral-700 overflow-hidden z-20 animate-in">
+              <button @click="reportPost(post.id)" class="w-full text-left px-4 py-2.5 text-xs font-bold text-text-secondary hover:bg-neutral-50 dark:hover:bg-white/5 hover:text-red-500 flex items-center gap-2">
+                 <span class="material-symbols-outlined text-[16px]">flag</span> Report
+              </button>
+              <button @click="blockUser(post.authorId)" class="w-full text-left px-4 py-2.5 text-xs font-bold text-text-secondary hover:bg-neutral-50 dark:hover:bg-white/5 hover:text-text-main flex items-center gap-2">
+                 <span class="material-symbols-outlined text-[16px]">block</span> Block User
+              </button>
+              <button class="w-full text-left px-4 py-2.5 text-xs font-bold text-text-secondary hover:bg-neutral-50 dark:hover:bg-white/5 hover:text-text-main flex items-center gap-2">
+                 <span class="material-symbols-outlined text-[16px]">visibility_off</span> Hide
+              </button>
+           </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="mb-4">
+        <h3 class="text-lg font-bold text-text-main dark:text-white mb-2 leading-snug group-hover:text-primary transition-colors cursor-pointer">{{ post.title }}</h3>
+        <p class="text-sm text-text-secondary dark:text-gray-300 line-clamp-3 leading-relaxed">
+          {{ post.excerpt }}
+        </p>
+        <!-- Optional Image -->
+        <div v-if="post.image" class="mt-3 rounded-lg overflow-hidden h-48 w-full relative group/image">
+            <div class="absolute inset-0 bg-black/20 group-hover/image:bg-black/10 transition-colors"></div>
+            <!-- Placeholder for demo -->
+            <img :src="post.image" alt="Post image" class="w-full h-full object-cover transition-transform duration-500 group-hover/image:scale-105">
+        </div>
+      </div>
+
+      <!-- Tags & Footer -->
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <span 
+          v-for="tag in post.tags" 
+          :key="tag" 
+          class="px-2.5 py-1 rounded-lg bg-background-light dark:bg-white/5 text-xs text-text-secondary dark:text-gray-400 hover:bg-neutral-200 dark:hover:bg-white/10 transition-colors cursor-pointer"
+        >
+          #{{ tag }}
+        </span>
+      </div>
+
+      <div class="flex items-center justify-between pt-4 border-t border-border-color dark:border-neutral-700">
+        <div class="flex items-center gap-1 sm:gap-4">
+          <!-- Like Button -->
+          <button 
+            @click.stop="toggleLike(post.id)"
+            class="flex items-center gap-1.5 px-2 py-1 rounded-lg transition-colors group/btn"
+            :class="getEngagement(post.id).liked ? 'text-red-500 bg-red-50 dark:bg-red-900/10' : 'text-text-secondary hover:bg-neutral-100 dark:hover:bg-white/5 hover:text-red-500'"
+          >
+            <span class="material-symbols-outlined text-[20px] group-active/btn:scale-75 transition-transform" 
+              :class="getEngagement(post.id).liked ? 'filled' : ''">favorite</span>
+            <span class="text-xs font-bold">{{ post.likes }}</span>
+          </button>
+          
+          <!-- Reply CTA -->
+          <button class="flex items-center gap-1.5 px-2 py-1 rounded-lg text-text-secondary hover:bg-neutral-100 dark:hover:bg-white/5 hover:text-primary transition-colors">
+            <span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+            <span class="text-xs font-bold">{{ post.comments }} <span class="hidden sm:inline">Replies</span></span>
+          </button>
+          
+          <!-- Save -->
+          <button 
+            @click.stop="toggleSave(post.id)"
+            class="flex items-center gap-1.5 px-2 py-1 rounded-lg transition-colors"
+            :class="getEngagement(post.id).saved ? 'text-primary bg-primary/10' : 'text-text-secondary hover:bg-neutral-100 dark:hover:bg-white/5 hover:text-primary'"
+            :title="getEngagement(post.id).saved ? 'Saved' : 'Save Post'"
+          >
+            <span class="material-symbols-outlined text-[20px]" :class="getEngagement(post.id).saved ? 'filled' : ''">bookmark</span>
+          </button>
+
+          <!-- Follow -->
+           <button 
+            @click.stop="toggleFollow(post.id)"
+            class="flex items-center gap-1.5 px-2 py-1 rounded-lg transition-colors"
+            :class="getEngagement(post.id).following ? 'text-primary bg-primary/10' : 'text-text-secondary hover:bg-neutral-100 dark:hover:bg-white/5 hover:text-primary'"
+            :title="getEngagement(post.id).following ? 'Following Thread' : 'Follow Thread'"
+          >
+            <span class="material-symbols-outlined text-[20px]" :class="getEngagement(post.id).following ? 'filled' : ''">notifications</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-1 text-xs text-text-secondary opacity-60">
+          <span class="material-symbols-outlined text-[16px]">visibility</span>
+          {{ post.views }}
         </div>
       </div>
     </div>
-    
-    <!-- Discussion Card 2 -->
-    <div class="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-border-light dark:border-border-dark hover:border-primary/30 transition-colors">
-      <div class="flex gap-4">
-        <div class="flex flex-col items-center gap-1 min-w-[40px]">
-          <div 
-            class="w-10 h-10 rounded-full bg-gray-200 bg-cover" 
-            style='background-image: url("/images/downloaded_4024a3e6147a.avif")'
-          ></div>
-        </div>
-        <div class="flex-1">
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-sm font-bold text-text-main dark:text-white">James W.</span>
-            <span class="text-xs text-text-subtle">• 6h ago</span>
-            <span class="ml-auto px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold">Tips</span>
-          </div>
-          <h4 class="text-lg font-bold text-text-main dark:text-white mb-2 cursor-pointer hover:text-primary transition-colors">Don't forget your leech socks in Sinharaja!</h4>
-          <p class="text-text-subtle dark:text-gray-300 text-sm mb-4 leading-relaxed">
-            Just came back from a trek in the Sinharaja Rain Forest. It was absolutely stunning, but the leeches were out in full force due to the recent rains. Make sure to pack leech socks or salt!
-          </p>
-          <!-- Attached Image Preview -->
-          <div 
-            class="mb-4 rounded-lg overflow-hidden h-48 w-full md:w-2/3 bg-cover bg-center" 
-            style='background-image: url("/images/downloaded_2a958f931436.avif");'
-          ></div>
-          <div class="flex items-center gap-6">
-            <button class="flex items-center gap-1.5 text-text-subtle hover:text-primary transition-colors text-sm font-medium">
-              <span class="material-symbols-outlined text-[18px]">thumb_up</span>
-              45
-            </button>
-            <button class="flex items-center gap-1.5 text-text-subtle hover:text-primary transition-colors text-sm font-medium">
-              <span class="material-symbols-outlined text-[18px]">chat_bubble</span>
-              15 Replies
-            </button>
-            <button class="flex items-center gap-1.5 text-text-subtle hover:text-primary transition-colors text-sm font-medium ml-auto">
-              <span class="material-symbols-outlined text-[18px]">share</span>
-              Share
-            </button>
-          </div>
-        </div>
-      </div>
+
+    <!-- Load More (Mock) -->
+    <div v-if="posts.length > 0" class="text-center pt-4">
+      <button class="px-6 py-2.5 text-sm font-bold text-text-secondary hover:text-primary transition-colors">
+        Load More Discussions
+      </button>
     </div>
-    
-    <!-- Discussion Card 3 -->
-    <div class="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-border-light dark:border-border-dark hover:border-primary/30 transition-colors">
-      <div class="flex gap-4">
-        <div class="flex flex-col items-center gap-1 min-w-[40px]">
-          <div 
-            class="w-10 h-10 rounded-full bg-gray-200 bg-cover" 
-            style='background-image: url("/images/downloaded_516d80bf6b62.avif")'
-          ></div>
-        </div>
-        <div class="flex-1">
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-sm font-bold text-text-main dark:text-white">Priya D.</span>
-            <span class="text-xs text-text-subtle">• 1d ago</span>
-            <span class="ml-auto px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-bold">Meetup</span>
-          </div>
-          <h4 class="text-lg font-bold text-text-main dark:text-white mb-2 cursor-pointer hover:text-primary transition-colors">Solo traveler in Nuwara Eliya - 15th to 18th</h4>
-          <p class="text-text-subtle dark:text-gray-300 text-sm mb-4 leading-relaxed">
-            Hey community! I'll be in Nuwara Eliya for a few days. Planning to visit Horton Plains and some tea factories. If anyone wants to share a van or grab a coffee, hit me up!
-          </p>
-          <div class="flex items-center gap-6">
-            <button class="flex items-center gap-1.5 text-text-subtle hover:text-primary transition-colors text-sm font-medium">
-              <span class="material-symbols-outlined text-[18px]">thumb_up</span>
-              5
-            </button>
-            <button class="flex items-center gap-1.5 text-text-subtle hover:text-primary transition-colors text-sm font-medium">
-              <span class="material-symbols-outlined text-[18px]">chat_bubble</span>
-              2 Replies
-            </button>
-            <button class="flex items-center gap-1.5 text-text-subtle hover:text-primary transition-colors text-sm font-medium ml-auto">
-              <span class="material-symbols-outlined text-[18px]">share</span>
-              Share
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <button class="w-full py-3 mt-2 rounded-xl text-primary font-bold bg-primary/10 hover:bg-primary/20 transition-colors">
-      Load More Discussions
-    </button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import { useCommunity } from '~/composables/useCommunity'
+const { posts, users, searchQuery, setSearch, activeTab, toggleLike, toggleSave, toggleFollow, getEngagement } = useCommunity()
+
+const activeMenuId = ref<string | null>(null)
+
+function getUser(id: string) {
+  return users.value.find(u => u.id === id)
+}
+
+function toggleMenu(postId: string) {
+  activeMenuId.value = activeMenuId.value === postId ? null : postId
+}
+
+function closeMenu(postId: string) {
+  // Small delay to allow click events to register
+  setTimeout(() => {
+    if (activeMenuId.value === postId) activeMenuId.value = null
+  }, 200)
+}
+
+function reportPost(postId: string) {
+  alert(`Post ${postId} has been reported for review.`)
+  activeMenuId.value = null
+}
+
+function blockUser(userId: string) {
+  alert(`User ${userId} has been blocked.`)
+  activeMenuId.value = null
+}
 </script>
+
+<style scoped>
+.filled {
+  font-variation-settings: 'FILL' 1;
+}
+@keyframes in {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  animation: in 0.1s ease-out forwards;
+}
+</style>

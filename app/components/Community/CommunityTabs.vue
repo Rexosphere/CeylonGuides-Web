@@ -1,54 +1,34 @@
 <template>
-  <div class="flex flex-wrap items-center justify-between border-b border-border-light dark:border-border-dark mb-8 gap-4">
-    <div class="flex overflow-x-auto hide-scrollbar gap-8">
-      <a 
-        class="flex flex-col items-center justify-center border-b-[3px] border-primary text-text-main dark:text-white pb-3 pt-2 min-w-max" 
-        href="#"
-      >
-        <p class="text-sm font-bold leading-normal">All Topics</p>
-      </a>
-      <a 
-        class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-text-subtle dark:text-gray-400 hover:text-primary dark:hover:text-primary pb-3 pt-2 min-w-max transition-colors" 
-        href="#"
-      >
-        <p class="text-sm font-bold leading-normal">Trip Reports</p>
-      </a>
-      <a 
-        class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-text-subtle dark:text-gray-400 hover:text-primary dark:hover:text-primary pb-3 pt-2 min-w-max transition-colors" 
-        href="#"
-      >
-        <p class="text-sm font-bold leading-normal">Q&A</p>
-      </a>
-      <a 
-        class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-text-subtle dark:text-gray-400 hover:text-primary dark:hover:text-primary pb-3 pt-2 min-w-max transition-colors" 
-        href="#"
-      >
-        <p class="text-sm font-bold leading-normal">Find a Buddy</p>
-      </a>
-      <a 
-        class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-text-subtle dark:text-gray-400 hover:text-primary dark:hover:text-primary pb-3 pt-2 min-w-max transition-colors" 
-        href="#"
-      >
-        <p class="text-sm font-bold leading-normal">Local Guides</p>
-      </a>
-    </div>
-    
-    <button class="hidden sm:flex items-center gap-2 bg-text-main dark:bg-surface-dark text-white dark:text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors shadow-sm">
-      <span class="material-symbols-outlined text-[20px]">add</span>
-      Start Discussion
+  <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar scroll-smooth">
+    <button
+      v-for="tab in tabs"
+      :key="tab"
+      @click="setTab(tab)"
+      class="px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all border"
+      :class="activeTab === tab
+        ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-105'
+        : 'bg-white dark:bg-card-dark text-text-secondary dark:text-gray-400 border-border-color dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800'"
+    >
+      {{ tab }}
+      <span v-if="tabCounts[tab]" class="ml-1.5 opacity-80 text-xs bg-black/10 dark:bg-white/10 px-1.5 py-0.5 rounded-full">
+        {{ tabCounts[tab] }}
+      </span>
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useCommunity } from '~/composables/useCommunity'
+
+const tabs = ['All Topics', 'Trip Reports', 'Q&A', 'Find a Buddy', 'Local Guides']
+const { activeTab, setTab, tabCounts } = useCommunity()
 </script>
 
 <style scoped>
-.hide-scrollbar::-webkit-scrollbar {
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-
-.hide-scrollbar {
+.no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }

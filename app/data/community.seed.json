@@ -1,0 +1,161 @@
+{
+    "users": [
+        {
+            "id": "u1",
+            "name": "Sarah J.",
+            "avatar": "",
+            "role": "Explorer",
+            "points": 120,
+            "verified": false
+        },
+        {
+            "id": "u2",
+            "name": "Deepal K.",
+            "avatar": "",
+            "role": "Local Guide",
+            "verified": true,
+            "points": 4500,
+            "rating": 4.9,
+            "responseTime": "< 1 hr",
+            "specialties": [
+                "Culture",
+                "History",
+                "Kandy"
+            ],
+            "bio": "Certified guide with 10 years experience in Kandy & Central Highlands.",
+            "location": "Kandy"
+        },
+        {
+            "id": "u3",
+            "name": "Mike & Jen",
+            "avatar": "",
+            "role": "Travel Buddy",
+            "points": 80,
+            "verified": false
+        },
+        {
+            "id": "u4",
+            "name": "Kasun P.",
+            "avatar": "",
+            "role": "Local Expert",
+            "verified": true,
+            "points": 3200,
+            "rating": 5.0,
+            "responseTime": "Instant",
+            "specialties": [
+                "Surfing",
+                "Arugam Bay",
+                "Nightlife"
+            ],
+            "bio": "Surf instructor and party organizer on the East Coast. Let's catch waves!",
+            "location": "Arugam Bay"
+        },
+        {
+            "id": "u5",
+            "name": "Nimali S.",
+            "avatar": "",
+            "role": "Local Guide",
+            "verified": true,
+            "points": 2800,
+            "rating": 4.8,
+            "responseTime": "~ 2 hrs",
+            "specialties": [
+                "Wildlife",
+                "Yala",
+                "Photography"
+            ],
+            "bio": "Specialist in leopard tracking and wildlife photography tours.",
+            "location": "Yala"
+        }
+    ],
+    "posts": [
+        {
+            "id": "p1",
+            "type": "report",
+            "title": "Solo trip to Ella: Is the train ride worth the hype? 🚂",
+            "excerpt": "Just spent 3 days in Ella after taking the Kandy train. Here’s my honest breakdown of the journey, where I stayed, and if the 7-hour ride is really a must-do...",
+            "authorId": "u1",
+            "date": "2 hours ago",
+            "tags": [
+                "Ella",
+                "Train",
+                "Solo Travel"
+            ],
+            "likes": 45,
+            "comments": 12,
+            "views": 340,
+            "image": "/images/train_ride.png"
+        },
+        {
+            "id": "p2",
+            "type": "qa",
+            "title": "Best place to spot leopards in Yala right now?",
+            "excerpt": "Planning a safari for next week. Heard Block 1 is crowded. Should I try Block 5? Any recent sightings?",
+            "authorId": "u3",
+            "date": "5 hours ago",
+            "tags": [
+                "Yala",
+                "Safari",
+                "Wildlife"
+            ],
+            "likes": 18,
+            "comments": 8,
+            "views": 120
+        },
+        {
+            "id": "p3",
+            "type": "guide",
+            "title": "Hidden Waterfalls near Nuwara Eliya 瀑布",
+            "excerpt": "Tourist spots are great, but these 3 hidden gems are completely empty and swimmable. Map coordinates inside.",
+            "authorId": "u2",
+            "date": "1 day ago",
+            "tags": [
+                "Nuwara Eliya",
+                "Nature",
+                "Hidden Gems"
+            ],
+            "likes": 156,
+            "comments": 34,
+            "views": 1500,
+            "image": "/images/waterfall.png"
+        },
+        {
+            "id": "p4",
+            "type": "buddy",
+            "title": "Surfing in Arugam Bay - July 15-20",
+            "excerpt": "Heading to Arugam Bay mid-July. Intermediate surfer looking for people to split accommodation and tuk-tuks.",
+            "authorId": "u4",
+            "date": "3 days ago",
+            "tags": [
+                "Surfing",
+                "Arugam Bay",
+                "Travel Buddy"
+            ],
+            "likes": 8,
+            "comments": 3,
+            "views": 85
+        }
+    ],
+    "trending": [
+        {
+            "id": "t1",
+            "topic": "#EllaTrain",
+            "posts": 142
+        },
+        {
+            "id": "t2",
+            "topic": "#VisaUpdate",
+            "posts": 89
+        },
+        {
+            "id": "t3",
+            "topic": "#SigiriyaSunrise",
+            "posts": 56
+        },
+        {
+            "id": "t4",
+            "topic": "#SurfingSeason",
+            "posts": 44
+        }
+    ]
+}
