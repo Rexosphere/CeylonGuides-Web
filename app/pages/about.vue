@@ -191,8 +191,8 @@ function parseYaml(yamlStr: string): any {
         const nextIdx = i + 1
         let isArray = false
         if (nextIdx < lines.length) {
-          const nextLine = lines[nextIdx]!.trim()
-          if (nextLine.startsWith('- ')) {
+          const nextLine = lines[nextIdx]
+          if (nextLine && nextLine.trim().startsWith('- ')) {
             isArray = true
           }
         }
