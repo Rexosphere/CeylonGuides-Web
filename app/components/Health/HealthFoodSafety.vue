@@ -18,23 +18,46 @@
         <div class="md:w-1/2">
           <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Food & Water Safety</h2>
           <p class="text-gray-600 dark:text-gray-400 mb-8">
-            Sri Lankan food is delicious, but travelers' stomachs can be sensitive. Follow these simple rules to avoid "Bali Belly".
+            Sri Lankan food is delicious, but travelers' stomachs can be sensitive. Follow these simple rules to stay healthy.
           </p>
           
-          <div class="space-y-6">
-            <div
-              v-for="tip in tipsList"
-              :key="tip.title"
-              class="flex gap-4"
-            >
-              <div class="w-12 h-12 shrink-0 rounded-full bg-background-light dark:bg-gray-800 flex items-center justify-center text-primary">
-                <span class="material-symbols-outlined">{{ tip.icon }}</span>
-              </div>
-              <div>
-                <h4 class="font-bold text-gray-900 dark:text-gray-100">{{ tip.title }}</h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ tip.content }}</p>
-              </div>
+          <!-- Water Safety -->
+          <div class="mb-8">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="material-symbols-outlined text-blue-500">water_drop</span>
+              <h3 class="font-bold text-gray-900 dark:text-white">Water Safety</h3>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-medium">
+                Tap water NOT safe
+              </span>
             </div>
+            <ul class="space-y-2">
+              <li 
+                v-for="(tip, index) in waterRecommendations" 
+                :key="index"
+                class="text-sm text-gray-600 dark:text-gray-400 flex items-start gap-2"
+              >
+                <span class="text-blue-500 mt-0.5">💧</span>
+                <span>{{ tip }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Food Safety -->
+          <div>
+            <div class="flex items-center gap-2 mb-4">
+              <span class="material-symbols-outlined text-green-500">restaurant</span>
+              <h3 class="font-bold text-gray-900 dark:text-white">Food Tips</h3>
+            </div>
+            <ul class="space-y-2">
+              <li 
+                v-for="(tip, index) in foodTips" 
+                :key="index"
+                class="text-sm text-gray-600 dark:text-gray-400 flex items-start gap-2"
+              >
+                <span class="text-green-500 mt-0.5">✓</span>
+                <span>{{ tip }}</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -44,25 +67,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { HealthInfo } from '~/types/api'
+import { waterSafety, foodSafety } from '~/data/medicalDirectoryData'
 
-const props = defineProps<{
-  tips?: HealthInfo[]
-}>()
-
-const defaultTips: HealthInfo[] = [
-  { id: 'f1', title: 'Drink Bottled Water Only', content: 'Tap water is not safe for drinking. Ensure the seal on your bottle is intact.', category: 'FOOD_SAFETY' },
-  { id: 'f2', title: 'Eat Cooked Food', content: 'Ensure street food is cooked piping hot in front of you. Avoid raw salads in budget places.', category: 'FOOD_SAFETY' },
-  { id: 'f3', title: 'Avoid Ice', content: 'Unless you are in a high-end hotel, it is safer to skip ice in your drinks.', category: 'FOOD_SAFETY' },
-]
-
-const iconMap = ['local_drink', 'restaurant', 'icecream']
-
-const tipsList = computed(() => {
-  const list = props.tips && props.tips.length ? props.tips : defaultTips
-  return list.map((item, index) => ({
-    ...item,
-    icon: iconMap[index % iconMap.length],
-  }))
-})
+const waterRecommendations = computed(() => waterSafety.recommendations)
+const foodTips = computed(() => foodSafety)
 </script>
