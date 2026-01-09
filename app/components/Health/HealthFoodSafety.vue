@@ -1,63 +1,69 @@
 <template>
-  <section class="w-full bg-white dark:bg-[#1f1612] py-20 scroll-mt-24" id="safety">
-    <div class="max-w-[1000px] mx-auto px-6">
-      <div class="flex flex-col md:flex-row gap-12 items-center">
-        <div class="md:w-1/2">
-          <div class="relative h-[400px] w-full rounded-2xl overflow-hidden shadow-xl">
-            <img 
-              alt="Fresh tropical fruits" 
-              class="object-cover w-full h-full" 
-              src="/images/downloaded_3b676fb7ea7e.avif"
-            />
-            <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
-              <p class="text-white font-bold text-lg">Eat Fresh, Eat Safe.</p>
-            </div>
+  <section class="scroll-mt-24 container mx-auto px-6 py-12" id="food">
+    <div
+      class="bg-surface-light dark:bg-surface-dark rounded-2xl overflow-hidden shadow-sm border border-border-light dark:border-border-dark">
+      <div class="grid grid-cols-1 lg:grid-cols-2">
+        <div class="relative h-64 lg:h-auto">
+          <img alt="Fresh Fruit" class="absolute inset-0 w-full h-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrc4y2YwV8PU3CWnXKhtLGjwUfs_4fYeLyhUVfnVtJQYppuAC5MmCkt_DcPvlDKL0H3IGpa5Kxy0qjPBWcVEhgvEGyAB-PtEW33B2r7PDtQviDYtwRrflEow5J_pceqiCkomUpsdiPSc8Ka3Odb5vpQpvruqKpAudQu7yosfg8eyCcDAIHhY0ctq-H2hQKMX49-TIgVC56yJuM70_J_z6SIuWVtfxk2QPRSWqar_vSM75sI1eO7-8fNFnKowe4PcZpa6vevzGkFk8" />
+          <div
+            class="absolute bottom-6 left-6 bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm font-medium">
+            Eat Fresh, Eat Safe.
           </div>
         </div>
-        
-        <div class="md:w-1/2">
-          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Food & Water Safety</h2>
-          <p class="text-gray-600 dark:text-gray-400 mb-8">
-            Sri Lankan food is delicious, but travelers' stomachs can be sensitive. Follow these simple rules to stay healthy.
+        <div class="p-8 lg:p-12">
+          <h2 class="text-2xl font-bold mb-4">Food &amp; Water Safety</h2>
+          <p class="text-text-sub-light dark:text-text-sub-dark mb-8 leading-relaxed">
+            Sri Lankan food is delicious, but travelers' stomachs can be sensitive. Follow these simple rules to stay
+            healthy.
           </p>
-          
-          <!-- Water Safety -->
-          <div class="mb-8">
-            <div class="flex items-center gap-2 mb-4">
-              <span class="material-symbols-outlined text-blue-500">water_drop</span>
-              <h3 class="font-bold text-gray-900 dark:text-white">Water Safety</h3>
-              <span class="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-medium">
-                Tap water NOT safe
-              </span>
-            </div>
-            <ul class="space-y-2">
-              <li 
-                v-for="(tip, index) in waterRecommendations" 
-                :key="index"
-                class="text-sm text-gray-600 dark:text-gray-400 flex items-start gap-2"
-              >
-                <span class="text-blue-500 mt-0.5">💧</span>
-                <span>{{ tip }}</span>
-              </li>
-            </ul>
-          </div>
 
-          <!-- Food Safety -->
-          <div>
-            <div class="flex items-center gap-2 mb-4">
-              <span class="material-symbols-outlined text-green-500">restaurant</span>
-              <h3 class="font-bold text-gray-900 dark:text-white">Food Tips</h3>
+          <div class="space-y-6">
+            <div>
+              <h4 class="font-bold flex items-center gap-2 mb-3 text-primary">
+                <span class="material-icons">water_drop</span> Water Safety
+                <span
+                  class="text-[10px] bg-secondary/10 text-secondary px-2 py-0.5 rounded border border-secondary/20 uppercase ml-2">
+                  Tap Water Not Safe
+                </span>
+              </h4>
+              <ul class="space-y-2 text-sm text-text-sub-light dark:text-text-sub-dark ml-1">
+                <li class="flex items-start gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></span>
+                  Drink only bottled water—check the seal.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></span>
+                  Use bottled water for brushing teeth.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></span>
+                  Be careful with ice cubes in small cafes.
+                </li>
+              </ul>
             </div>
-            <ul class="space-y-2">
-              <li 
-                v-for="(tip, index) in foodTips" 
-                :key="index"
-                class="text-sm text-gray-600 dark:text-gray-400 flex items-start gap-2"
-              >
-                <span class="text-green-500 mt-0.5">✓</span>
-                <span>{{ tip }}</span>
-              </li>
-            </ul>
+
+            <div class="h-px bg-border-light dark:bg-border-dark"></div>
+
+            <div>
+              <h4 class="font-bold flex items-center gap-2 mb-3 text-primary">
+                <span class="material-icons">restaurant</span> Food Tips
+              </h4>
+              <ul class="space-y-2 text-sm text-text-sub-light dark:text-text-sub-dark ml-1">
+                <li class="flex items-start gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></span>
+                  Eat cooked food served hot.
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></span>
+                  Peel fruit yourself (bananas, mangoes).
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></span>
+                  Avoid raw salads in budget eateries.
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -66,9 +72,4 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { waterSafety, foodSafety } from '~/data/medicalDirectoryData'
-
-const waterRecommendations = computed(() => waterSafety.recommendations)
-const foodTips = computed(() => foodSafety)
 </script>
