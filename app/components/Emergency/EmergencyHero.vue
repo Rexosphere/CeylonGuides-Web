@@ -1,67 +1,46 @@
 <template>
-  <section class="relative w-full bg-neutral-dark py-12 md:py-20 overflow-hidden">
-    <!-- Background Image (decorative - hidden in safety mode) -->
-    <div 
-      class="absolute inset-0 z-0 bg-cover bg-center decorative-element" 
-      style="background-image: url('/images/downloaded_76b4f2112848.avif');"
-    ></div>
-    <div class="absolute inset-0 z-10 bg-gradient-to-r from-neutral-dark/80 via-neutral-dark/50 to-transparent"></div>
-    
-    <div class="relative z-20 max-w-[960px] mx-auto px-5 lg:px-0 flex flex-col md:flex-row items-center justify-between gap-8">
-      <div class="flex flex-col gap-4 max-w-lg">
-        <div class="flex items-center gap-2 text-primary font-bold tracking-wide uppercase text-xs">
-          <span class="w-2 h-2 rounded-full bg-primary" :class="{ 'animate-pulse': !isSafetyModeEnabled }"></span>
-          24/7 Assistance
-        </div>
-        <h1 class="text-white text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
-          Emergency Support
-        </h1>
-        <p class="text-gray-300 text-lg leading-relaxed non-essential-ui">
-          Stay safe in Sri Lanka. Access immediate help, find consular services, and locate nearby medical facilities instantly.
+  <section class="hero-bg h-[380px] flex items-center relative">
+    <div class="max-w-7xl mx-auto px-6 w-full flex justify-between items-end pb-16">
+      <div class="text-white">
+        <p class="text-xs font-bold uppercase tracking-widest mb-3 opacity-90 text-slate-200">24/7 Assistance</p>
+        <h1 class="text-5xl font-bold mb-4 tracking-tight text-white">Emergency Support</h1>
+        <p class="max-w-xl text-lg text-slate-200 leading-relaxed font-light">
+          Stay safe in Sri Lanka. Access immediate help, find consular services, and locate nearby medical facilities
+          instantly.
         </p>
       </div>
-      
-      <!-- Right side: Safety Mode Toggle & Download -->
-      <div class="flex flex-col gap-4 flex-shrink-0">
-        <!-- Safety Mode Toggle -->
-        <div 
-          v-if="showSafetyToggle"
-          class="flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 text-white px-6 py-4 rounded-xl transition-all"
-        >
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined" :class="isSafetyModeEnabled ? 'text-red-400' : 'text-primary'">
-              {{ isSafetyModeEnabled ? 'emergency' : 'shield' }}
-            </span>
-            <div class="text-left">
-              <div class="text-xs font-medium opacity-80">Emergency Mode</div>
-              <div class="text-sm font-bold">Safety Mode</div>
+      <div class="flex flex-col gap-4">
+        <div class="glass-card p-5 rounded-2xl flex items-center justify-between min-w-[320px]">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+              <span class="material-symbols-outlined text-white">shield</span>
+            </div>
+            <div>
+              <p class="text-slate-200 text-xs font-semibold">Emergency Mode</p>
+              <p class="text-white font-bold">Safety Mode</p>
             </div>
           </div>
-          
-          <!-- Toggle Switch -->
-          <button
-            @click="toggleSafetyMode"
-            class="safety-mode-toggle"
-            :data-enabled="isSafetyModeEnabled"
-            :aria-label="isSafetyModeEnabled ? 'Disable Safety Mode' : 'Enable Safety Mode'"
-            role="switch"
-            :aria-checked="isSafetyModeEnabled"
-          >
-            <span class="toggle-knob"></span>
-          </button>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input class="sr-only peer" type="checkbox" :checked="showSafetyToggle" @change="$emit('toggle-safety')" />
+            <div
+              class="w-11 h-6 bg-slate-600/50 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary">
+            </div>
+          </label>
         </div>
-
-        <!-- Download Offline PDF (non-essential) -->
-        <button 
-          @click="$emit('download-pdf')"
-          class="group flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white px-6 py-4 rounded-xl transition-all non-essential-ui"
-        >
-          <span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">download</span>
-          <div class="text-left">
-            <div class="text-xs font-medium opacity-80">No Internet?</div>
-            <div class="text-sm font-bold">Download Offline PDF</div>
+        <div
+          class="glass-card p-5 rounded-2xl flex items-center justify-between min-w-[320px] cursor-pointer hover:bg-white/10 transition-colors"
+          @click="$emit('download-pdf')">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+              <span class="material-symbols-outlined text-white">download_for_offline</span>
+            </div>
+            <div>
+              <p class="text-slate-200 text-xs font-semibold">No Internet?</p>
+              <p class="text-white font-bold">Download Offline PDF</p>
+            </div>
           </div>
-        </button>
+          <span class="material-symbols-outlined text-white/60">arrow_forward_ios</span>
+        </div>
       </div>
     </div>
   </section>
@@ -69,11 +48,40 @@
 
 <script setup lang="ts">
 defineProps<{
-  showSafetyToggle?: boolean
+  showSafetyToggle: boolean
   isOffline?: boolean
 }>()
 
-defineEmits(['download-pdf'])
-
-const { isSafetyModeEnabled, toggleSafetyMode } = useSafetyMode()
+defineEmits<{
+  'toggle-safety': []
+  'download-pdf': []
+}>()
 </script>
+
+<style scoped>
+.hero-bg {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2000');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.15;
+  mix-blend-mode: overlay;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+</style>

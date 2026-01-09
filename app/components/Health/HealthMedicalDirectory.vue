@@ -1,64 +1,125 @@
 <template>
-  <section class="w-full max-w-[1200px] px-6 py-20 scroll-mt-24" id="hospitals">
-    <div class="text-center mb-10">
-      <h2 class="text-[#181311] dark:text-white text-3xl font-bold">Medical Directory</h2>
-      <p class="text-gray-600 dark:text-gray-400 mt-2">Private hospitals in major cities offer excellent standards of care.</p>
+  <section class="scroll-mt-24 container mx-auto px-6 py-12" id="medical">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-text-main-light dark:text-text-main-dark mb-2">
+        Medical Directory
+      </h2>
+      <p class="text-text-sub-light dark:text-text-sub-dark">
+        Find hospitals, clinics, and emergency services across Sri Lanka.
+      </p>
     </div>
-    
-    <div class="flex flex-col lg:flex-row gap-6 h-[600px] lg:h-[500px]">
-      <!-- Sidebar List -->
-      <div class="lg:w-1/3 flex flex-col gap-4 overflow-y-auto pr-2">
-        <div class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 p-4 rounded-xl flex items-center gap-4 mb-2">
-          <div class="bg-red-500 text-white p-2 rounded-full shrink-0">
-            <span class="material-symbols-outlined">call</span>
-          </div>
-          <div>
-            <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase">{{ emergencyInfo.label }}</p>
-            <p class="text-2xl font-black text-gray-900 dark:text-white">{{ emergencyInfo.phone }}</p>
-            <p class="text-xs text-gray-500 dark:text-gray-400">{{ emergencyInfo.note }}</p>
-          </div>
+
+    <!-- Emergency Banner -->
+    <div
+      class="bg-secondary text-white rounded-xl p-4 flex flex-col md:flex-row justify-between items-center gap-4 mb-8 shadow-md">
+      <div class="flex items-center gap-4">
+        <div class="bg-white/20 p-2 rounded-lg">
+          <span class="material-icons text-2xl">local_hospital</span>
         </div>
-        
-        <div
-          v-for="hospital in hospitalsList"
-          :key="hospital.name"
-          class="bg-white dark:bg-[#2a1d18] p-4 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm cursor-pointer hover:border-primary transition-colors"
-        >
-          <div class="flex justify-between items-start">
+        <div>
+          <h3 class="font-bold text-lg">Medical Emergency?</h3>
+          <p class="text-white/80 text-sm">Suwa Seriya Ambulance Service</p>
+        </div>
+      </div>
+      <div class="flex gap-4">
+        <button
+          class="bg-white text-secondary px-6 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-slate-100 transition shadow-sm">
+          <span class="material-icons">call</span> Call 1990
+        </button>
+        <button
+          class="bg-secondary border border-white/30 px-6 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-white/10 transition">
+          Alt: 011-2691111
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+      <!-- Left Sidebar - Search & Filters -->
+      <div class="lg:col-span-2 space-y-4">
+        <div class="relative">
+          <span class="absolute left-3 top-3 text-text-sub-light material-icons">search</span>
+          <input v-model="searchQuery"
+            class="w-full pl-10 pr-4 py-3 rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none shadow-sm"
+            placeholder="Search hospitals, cities..." type="text" />
+        </div>
+
+        <div class="flex gap-2 mb-4">
+          <select v-model="selectedCity"
+            class="flex-1 p-2 rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark text-sm text-text-sub-light">
+            <option value="">All Cities</option>
+            <option value="Colombo">Colombo</option>
+            <option value="Kandy">Kandy</option>
+            <option value="Galle">Galle</option>
+          </select>
+          <select v-model="selectedType"
+            class="flex-1 p-2 rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark text-sm text-text-sub-light">
+            <option value="">All Types</option>
+            <option value="Private">Private Hospital</option>
+            <option value="Public">Public Hospital</option>
+          </select>
+        </div>
+
+        <!-- Hospital Cards -->
+        <div v-for="(hospital, index) in filteredHospitals" :key="index"
+          class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-border-light dark:border-border-dark shadow-sm hover:border-primary transition group cursor-pointer">
+          <div class="flex justify-between items-start mb-2">
             <div>
-              <h4 class="font-bold text-gray-900 dark:text-gray-100">{{ hospital.name }}</h4>
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ hospital.address }}</p>
+              <h4 class="font-bold text-text-main-light dark:text-text-main-dark group-hover:text-primary transition">
+                {{ hospital.name }}
+              </h4>
+              <p class="text-xs text-text-sub-light flex items-center gap-1 mt-1">
+                <span class="material-icons text-xs">location_on</span> {{ hospital.location }}
+              </p>
             </div>
-            <span class="material-symbols-outlined text-gray-400 text-sm">open_in_new</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded uppercase" :class="hospital.typeClass">
+              {{ hospital.type }}
+            </span>
           </div>
-          <div class="mt-3 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <span class="material-symbols-outlined text-primary text-base">phone</span>
-            {{ hospital.phone }}
+          <div class="flex gap-2 mt-3">
+            <span v-for="(feature, fIndex) in hospital.features" :key="fIndex"
+              class="text-[10px] bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-text-sub-light">
+              {{ feature }}
+            </span>
+          </div>
+          <div class="mt-3 pt-3 border-t border-border-light dark:border-border-dark flex justify-between items-center">
+            <button class="text-xs font-medium text-text-sub-light flex items-center gap-1 hover:text-primary">
+              <span class="material-icons text-sm">directions</span> Directions
+            </button>
+            <button
+              class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 p-1.5 rounded-full text-text-sub-light">
+              <span class="material-icons text-sm">call</span>
+            </button>
           </div>
         </div>
       </div>
-      
-      <!-- Map Area -->
-      <div class="lg:w-2/3 h-full rounded-2xl overflow-hidden shadow-md bg-gray-200 dark:bg-gray-800 relative group">
-        <!-- Static Map Image Placeholder -->
-        <div 
-          class="absolute inset-0 bg-cover bg-center" 
-          style='background-image: url("/images/downloaded_81656699918e.avif");'
-        ></div>
-        <div class="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
-        
-        <!-- Interactive Overlay Hint -->
-        <div class="absolute bottom-6 right-6 bg-white dark:bg-gray-900 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">map</span>
-          <span class="text-sm font-bold text-gray-800 dark:text-gray-200">Open Interactive Map</span>
+
+      <!-- Right Side - Map -->
+      <div
+        class="lg:col-span-3 relative h-96 lg:h-auto rounded-2xl overflow-hidden border border-border-light dark:border-border-dark shadow-sm bg-slate-200 dark:bg-slate-800">
+        <img alt="Map of Colombo Hospitals"
+          class="w-full h-full object-cover opacity-80 dark:opacity-60 grayscale-[20%]"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEhKHXzH6KEngfb05jWlGIm-mTjvhYaFdcgk5pxT_NHgTu_DqU0REldAwzl3SyUEwIgRkqJdrYBhEYpvCE0y_rvSwYF_elLIzdYkpEUf5mu_TLFh9A-MloABbwMQFQehAoN8KwuEaFsCv4KdmLODTblMCgsGcTqkWmbCTMP2qjLSeLJJjfkoekb1g3_4T0HtqFHZnbXfFqNyNlrHV5LoaAGu9lWW4RBZI1mxosE8UILgxsHDfj6ntIFf1JHgCc7Q89DlyjnNSK75I" />
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div class="relative group">
+            <div class="bg-primary text-white p-2 rounded-lg shadow-lg flex items-center gap-2 cursor-pointer">
+              <span class="material-icons text-sm">local_hospital</span>
+              <span class="text-xs font-bold">Asiri Central</span>
+            </div>
+            <div
+              class="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-primary">
+            </div>
+          </div>
         </div>
-        
-        <!-- Fake Pins -->
-        <div class="absolute top-[30%] left-[20%]">
-          <span class="material-symbols-outlined text-red-600 text-4xl drop-shadow-md cursor-pointer hover:scale-110 transition-transform">location_on</span>
-        </div>
-        <div class="absolute top-[40%] left-[25%]">
-          <span class="material-symbols-outlined text-red-600 text-4xl drop-shadow-md cursor-pointer hover:scale-110 transition-transform">location_on</span>
+        <div class="absolute bottom-4 right-4 flex flex-col gap-2">
+          <button class="bg-white dark:bg-surface-dark p-2 rounded shadow text-text-sub-light hover:text-primary">
+            <span class="material-icons">my_location</span>
+          </button>
+          <button class="bg-white dark:bg-surface-dark p-2 rounded shadow text-text-sub-light hover:text-primary">
+            <span class="material-icons">add</span>
+          </button>
+          <button class="bg-white dark:bg-surface-dark p-2 rounded shadow text-text-sub-light hover:text-primary">
+            <span class="material-icons">remove</span>
+          </button>
         </div>
       </div>
     </div>
@@ -66,25 +127,50 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 
-const props = defineProps<{
-  hospitals?: Array<{ name: string; address: string; phone: string }>
-  emergency?: { name: string; phone: string; note?: string } | null
-}>()
+interface Hospital {
+  name: string
+  location: string
+  type: string
+  typeClass: string
+  features: string[]
+}
 
-const fallbackHospitals = [
-  { name: 'Asiri Central Hospital', address: 'Colombo 10', phone: '+94 11 466 5500' },
-  { name: 'Lanka Hospitals', address: 'Colombo 05', phone: '+94 11 543 0000' },
-  { name: 'Ruhunu Hospital', address: 'Galle', phone: '+94 91 223 4059' },
-  { name: 'Suwasewana Hospital', address: 'Kandy', phone: '+94 81 222 2404' },
-]
+const searchQuery = ref('')
+const selectedCity = ref('')
+const selectedType = ref('')
 
-const hospitalsList = computed(() => props.hospitals && props.hospitals.length ? props.hospitals : fallbackHospitals)
+const hospitals = ref<Hospital[]>([
+  {
+    name: 'Lanka Hospitals',
+    location: 'Colombo 05',
+    type: 'Private',
+    typeClass: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+    features: ['24/7 ER', 'English Spoken']
+  },
+  {
+    name: 'Asiri Central Hospital',
+    location: 'Colombo 10',
+    type: 'Private',
+    typeClass: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+    features: ['24/7 ER', 'Cardiac Care']
+  }
+])
 
-const emergencyInfo = computed(() => {
-  return props.emergency
-    ? { label: props.emergency.name, phone: props.emergency.phone, note: props.emergency.note || '' }
-    : { label: 'Emergency Ambulance', phone: '1990', note: 'Suwa Seriya (Free Service)' }
+const filteredHospitals = computed(() => {
+  return hospitals.value.filter(hospital => {
+    const matchesSearch = searchQuery.value === '' ||
+      hospital.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      hospital.location.toLowerCase().includes(searchQuery.value.toLowerCase())
+
+    const matchesCity = selectedCity.value === '' ||
+      hospital.location.includes(selectedCity.value)
+
+    const matchesType = selectedType.value === '' ||
+      hospital.type === selectedType.value
+
+    return matchesSearch && matchesCity && matchesType
+  })
 })
 </script>

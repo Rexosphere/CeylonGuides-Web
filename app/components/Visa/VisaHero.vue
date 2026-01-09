@@ -1,133 +1,66 @@
 <template>
-  <div class="relative w-full">
-    <div class="relative flex min-h-[520px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-6 lg:p-12" 
-         role="img" 
-         aria-label="Misty tea plantations in Sri Lanka with golden sunrise light" 
-         style='background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%), url("/images/downloaded_de679f9bc051.avif");'>
-      <div class="max-w-3xl w-full flex flex-col items-center gap-5 text-center z-10 animate-fade-in-up">
-        
-        <!-- Badge -->
-        <span class="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md px-4 py-1.5 text-xs font-bold text-white ring-1 ring-inset ring-white/20 uppercase tracking-wider">
-          <span class="material-symbols-outlined text-[16px] text-primary-400">assistant_navigation</span> 
-          Visa Assistant 2026
-        </span>
+  <header class="relative h-[500px] flex flex-col justify-center items-center text-center px-4 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img alt="Sri Lanka Tea Plantation" class="w-full h-full object-cover"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZhZSNv569yUw9En6M3VlcQjFiCsGb9x42drSb75depLAtnfrGTQPSeGJ2kVOMUYswiPy-MeMfoKb6gnRfDRoAWzzYBZbrhbXs5Luynz6NWgxZP1YnU5Y364zI7kEENgDar6J-9Y5e4dvBBzp5cKxXXKcLkfR0Emx0Ym6dQLwyMpZvQPKDq1N4RJSlXU0r8qpjygsE0Q9XE054LztXvr_xFdq8YpJL7OpVle_xeGDkA2rxYd2DEAsD4ErzCtZhl4rIFrzwmF76szY" />
+      <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80"></div>
+    </div>
 
-        <h1 class="text-white text-4xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight drop-shadow-sm">
-          Visa & Entry<br class="hidden sm:block" /> Requirements
-        </h1>
-        
-        <p class="text-white/90 text-base sm:text-xl max-w-2xl font-normal leading-relaxed drop-shadow-md">
-          Check the latest fees, ETA rules, and exemption status for your nationality.
-        </p>
+    <div class="relative z-10 max-w-3xl mx-auto mt-16">
+      <div
+        class="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20 mb-6">
+        <span class="material-symbols-outlined text-primary text-sm">verified_user</span>
+        <span class="text-xs text-gray-200 font-medium tracking-wide uppercase">Visa Assistant 2025</span>
+      </div>
 
-        <!-- Search Box Container -->
-        <div class="w-full max-w-md mt-6 relative" v-click-outside="closeDropdown">
-          <label class="relative flex items-center w-full h-16 bg-white dark:bg-card-dark rounded-2xl shadow-2xl overflow-visible group focus-within:ring-4 focus-within:ring-primary/20 transition-all z-20">
-            <div class="pl-5 pr-3 text-text-secondary flex items-center justify-center">
-              <span class="material-symbols-outlined text-2xl group-focus-within:text-primary transition-colors">public</span>
-            </div>
-            <input
-              v-model="searchInput"
-              @input="handleInput"
-              @focus="showDropdown = true"
-              class="w-full h-full border-none bg-transparent text-text-main dark:text-white placeholder:text-text-secondary/60 focus:ring-0 text-lg font-medium"
-              placeholder="I am a citizen of..."
-              autocomplete="off"
-            />
-            <div class="pr-2" v-if="searchInput">
-              <button 
-                @click="clearSearch"
-                class="p-2 text-text-secondary hover:text-red-500 transition-colors rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800"
-              >
-                <span class="material-symbols-outlined text-xl">close</span>
-              </button>
-            </div>
-          </label>
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight">
+        Visa &amp; Entry Requirements
+      </h1>
 
-          <!-- Autocomplete Dropdown -->
-          <div 
-            v-if="showDropdown && filteredCountries.length > 0"
-            class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-card-dark rounded-xl shadow-xl max-h-64 overflow-y-auto z-30 border border-neutral-100 dark:border-neutral-800 divide-y divide-neutral-100 dark:divide-neutral-800"
-          >
-            <button
-              v-for="country in filteredCountries"
-              :key="country"
-              @click="selectCountry(country)"
-              class="w-full px-5 py-3 text-left hover:bg-bg-light dark:hover:bg-neutral-800 transition-colors flex items-center justify-between group"
-            >
-              <span class="text-text-main dark:text-white font-medium">{{ country }}</span>
-              <span class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
-            </button>
-          </div>
-        </div>
+      <p class="text-gray-200 text-lg mb-8 font-light">
+        Check the latest fees, ETA rules, and exemption status for your nationality.
+      </p>
 
+      <div
+        class="bg-white dark:bg-surface-dark rounded-full p-2 pl-6 flex items-center w-full max-w-md mx-auto shadow-xl">
+        <span class="material-symbols-outlined text-gray-400 dark:text-gray-500 mr-3">public</span>
+        <input v-model="searchQuery"
+          class="flex-grow bg-transparent border-none text-gray-800 dark:text-gray-200 focus:ring-0 placeholder-gray-400 font-medium"
+          placeholder="Select your nationality" type="text" @keyup.enter="handleSearch" />
+        <button v-if="searchQuery" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2"
+          @click="clearSearch">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
       </div>
     </div>
-  </div>
+  </header>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { countries } from '~/data/countries'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
-  selectedCountry?: string | null
+  selectedCountry?: string
+  isLoading?: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'search', query: string): void
+  search: [query: string]
 }>()
 
-const searchInput = ref(props.selectedCountry || '')
-const showDropdown = ref(false)
+const searchQuery = ref(props.selectedCountry || '')
 
-const filteredCountries = computed(() => {
-  if (!searchInput.value) return []
-  const query = searchInput.value.toLowerCase()
-  return countries.filter(c => c.toLowerCase().includes(query)).slice(0, 8)
+watch(() => props.selectedCountry, (newVal) => {
+  searchQuery.value = newVal || ''
 })
 
-function handleInput() {
-  showDropdown.value = true
-}
-
-function selectCountry(country: string) {
-  searchInput.value = country
-  showDropdown.value = false
-  emit('search', country)
-  // Scroll to stats
-  setTimeout(() => {
-    const statsEl = document.getElementById('visa-stats')
-    if (statsEl) statsEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, 100)
+function handleSearch() {
+  emit('search', searchQuery.value)
 }
 
 function clearSearch() {
-  searchInput.value = ''
-  showDropdown.value = false
+  searchQuery.value = ''
   emit('search', '')
-}
-
-function closeDropdown() {
-  // Delay to allow click to register
-  setTimeout(() => {
-    showDropdown.value = false
-  }, 200)
-}
-
-// Directive for click outside (simple implementation)
-const vClickOutside = {
-  mounted(el: any, binding: any) {
-    el.clickOutsideEvent = (event: Event) => {
-      if (!(el === event.target || el.contains(event.target))) {
-        binding.value()
-      }
-    }
-    document.body.addEventListener('click', el.clickOutsideEvent)
-  },
-  unmounted(el: any) {
-    document.body.removeEventListener('click', el.clickOutsideEvent)
-  }
 }
 </script>
 

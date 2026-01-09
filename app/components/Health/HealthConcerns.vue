@@ -1,174 +1,112 @@
 <template>
-  <section class="w-full max-w-[1000px] px-6 py-20 scroll-mt-24" id="concerns">
-    <!-- Header -->
+  <section class="scroll-mt-24 container mx-auto px-6 py-12" id="concerns">
     <div class="text-center mb-10">
-      <div class="flex items-center justify-center gap-2 text-primary font-bold uppercase tracking-wider text-xs mb-3">
-        <span class="material-symbols-outlined text-lg">health_and_safety</span>
-        <span>Stay Safe</span>
+      <div class="flex items-center justify-center gap-2 mb-2">
+        <span class="material-icons text-primary">verified_user</span>
+        <p class="text-xs font-bold uppercase tracking-widest text-text-sub-light dark:text-text-sub-dark">
+          Stay Safe
+        </p>
       </div>
-      <h2 class="text-[#181311] dark:text-white text-3xl font-bold mb-3">Common Health Concerns</h2>
-      <p class="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+      <h2 class="text-3xl font-bold text-text-main-light dark:text-text-main-dark mb-4">
+        Common Health Concerns
+      </h2>
+      <p class="text-text-sub-light dark:text-text-sub-dark max-w-2xl mx-auto">
         Be aware of these health risks and how to prevent them. Most are easily avoidable with proper precautions.
       </p>
     </div>
-    
-    <!-- Concern Cards -->
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div
-        v-for="concern in healthAlertsList"
-        :key="concern.id"
-        class="bg-white dark:bg-[#2a1d18] rounded-xl border overflow-hidden transition-all duration-300 hover:shadow-lg"
-        :class="getBorderClass(concern.severity)"
-      >
-        <!-- Header with severity -->
-        <div 
-          class="p-4 flex items-center justify-between"
-          :class="getHeaderBgClass(concern.severity)"
-        >
+      <div v-for="(concern, index) in healthConcerns" :key="index"
+        class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm hover:shadow-md transition">
+        <div class="flex justify-between items-start mb-4">
           <div class="flex items-center gap-3">
-            <span class="text-2xl">{{ concern.icon }}</span>
-            <h3 class="font-bold text-gray-900 dark:text-white">{{ concern.title }}</h3>
+            <div class="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-primary">
+              <span class="material-icons">{{ concern.icon }}</span>
+            </div>
+            <h3 class="font-bold text-lg">{{ concern.title }}</h3>
           </div>
-          <span 
-            class="text-[10px] px-2 py-1 rounded-full font-bold uppercase"
-            :class="getSeverityClass(concern.severity)"
-          >
-            {{ concern.severity }} Risk
+          <span class="text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded" :class="concern.riskClass">
+            {{ concern.risk }}
           </span>
         </div>
-
-        <!-- Content -->
-        <div class="p-4 space-y-4">
-          <!-- Description -->
-          <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-            {{ concern.description }}
-          </p>
-
-          <!-- Prevention Tips -->
-          <div>
-            <h4 class="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2 flex items-center gap-1">
-              <span class="material-symbols-outlined text-sm text-green-500">shield</span>
-              Prevention
-            </h4>
-            <ul class="space-y-1.5">
-              <li 
-                v-for="(tip, index) in concern.prevention.slice(0, 3)" 
-                :key="index"
-                class="text-sm text-gray-600 dark:text-gray-400 flex items-start gap-2"
-              >
-                <span class="text-green-500 mt-0.5">✓</span>
-                <span>{{ tip }}</span>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Seasonal Info -->
-          <div v-if="concern.seasonalInfo" class="pt-3 border-t border-gray-100 dark:border-gray-700">
-            <p class="text-xs text-amber-600 dark:text-amber-400 flex items-start gap-1">
-              <span class="material-symbols-outlined text-sm">calendar_month</span>
-              {{ concern.seasonalInfo }}
-            </p>
-          </div>
-
-          <!-- When to Seek Help -->
-          <div 
-            class="pt-3 border-t border-gray-100 dark:border-gray-700 bg-red-50/50 dark:bg-red-900/10 -mx-4 -mb-4 p-4 mt-4"
-          >
-            <h4 class="text-xs font-bold text-red-700 dark:text-red-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-              <span class="material-symbols-outlined text-sm">emergency</span>
-              When to Seek Help
-            </h4>
-            <p class="text-xs text-red-600 dark:text-red-400">
-              {{ getWhenToSeekHelp(concern) }}
-            </p>
+        <p class="text-sm text-text-sub-light dark:text-text-sub-dark mb-4 leading-relaxed">
+          {{ concern.description }}
+        </p>
+        <div class="space-y-2">
+          <div v-for="(tip, tipIndex) in concern.tips" :key="tipIndex"
+            class="flex gap-2 items-start text-xs text-text-sub-light dark:text-text-sub-dark">
+            <span class="material-icons text-sm text-primary">{{ tip.icon }}</span>
+            <span>{{ tip.text }}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- General Advice -->
-    <div class="mt-10 p-6 bg-gradient-to-r from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/20 rounded-xl border border-primary/20">
-      <div class="flex items-start gap-4">
-        <div class="p-3 bg-primary/10 rounded-full">
-          <span class="material-symbols-outlined text-primary text-2xl">info</span>
-        </div>
-        <div>
-          <h3 class="font-bold text-gray-900 dark:text-white mb-2">General Health Advice</h3>
-          <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <li class="flex items-center gap-2">
-              <span class="text-primary">•</span>
-              Drink only bottled or purified water
-            </li>
-            <li class="flex items-center gap-2">
-              <span class="text-primary">•</span>
-              Apply sunscreen regularly (SPF 50+)
-            </li>
-            <li class="flex items-center gap-2">
-              <span class="text-primary">•</span>
-              Use insect repellent 24/7
-            </li>
-            <li class="flex items-center gap-2">
-              <span class="text-primary">•</span>
-              Carry your travel insurance details
-            </li>
-          </ul>
-        </div>
+    <div
+      class="mt-8 bg-slate-100 dark:bg-slate-800/50 rounded-xl p-6 border border-border-light dark:border-border-dark flex flex-col md:flex-row items-center gap-6">
+      <div class="p-3 bg-white dark:bg-surface-dark rounded-full shadow-sm text-primary">
+        <span class="material-icons text-2xl">info</span>
+      </div>
+      <div class="flex-1 text-center md:text-left">
+        <h4 class="font-bold text-text-main-light dark:text-text-main-dark mb-1">
+          General Health Advice
+        </h4>
+        <p class="text-sm text-text-sub-light dark:text-text-sub-dark">
+          Drink only bottled water. Use insect repellent 24/7. Carry your travel insurance details everywhere.
+        </p>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { healthAlerts } from '~/data/medicalDirectoryData'
-import type { HealthAlert } from '~/types/medical'
-
-// Data
-const healthAlertsList = computed(() => healthAlerts)
-
-// Style helpers
-function getSeverityClass(severity: string): string {
-  switch (severity) {
-    case 'high': return 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400'
-    case 'medium': return 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400'
-    case 'low': return 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400'
-    default: return 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400'
-  }
+interface HealthTip {
+  icon: string
+  text: string
 }
 
-function getBorderClass(severity: string): string {
-  switch (severity) {
-    case 'high': return 'border-red-200 dark:border-red-800'
-    case 'medium': return 'border-amber-200 dark:border-amber-800'
-    case 'low': return 'border-green-200 dark:border-green-800'
-    default: return 'border-gray-100 dark:border-gray-700'
-  }
+interface HealthConcern {
+  icon: string
+  title: string
+  risk: string
+  riskClass: string
+  description: string
+  tips: HealthTip[]
 }
 
-function getHeaderBgClass(severity: string): string {
-  switch (severity) {
-    case 'high': return 'bg-red-50 dark:bg-red-900/20'
-    case 'medium': return 'bg-amber-50 dark:bg-amber-900/20'
-    case 'low': return 'bg-green-50 dark:bg-green-900/20'
-    default: return 'bg-gray-50 dark:bg-gray-800'
+const healthConcerns: HealthConcern[] = [
+  {
+    icon: 'pest_control',
+    title: 'Dengue Fever',
+    risk: 'High Risk',
+    riskClass: 'bg-secondary/10 text-secondary border border-secondary/20',
+    description: 'Mosquito-borne viral infection common in urban and semi-urban areas.',
+    tips: [
+      { icon: 'shield', text: 'Use DEET repellent (20-30%)' },
+      { icon: 'checkroom', text: 'Wear long sleeves at dawn/dusk' }
+    ]
+  },
+  {
+    icon: 'wb_sunny',
+    title: 'Sun Exposure',
+    risk: 'High Risk',
+    riskClass: 'bg-secondary/10 text-secondary border border-secondary/20',
+    description: 'UV index is extreme year-round. Sunburn can happen in < 15 mins.',
+    tips: [
+      { icon: 'beach_access', text: 'Wear hat & sunglasses always' },
+      { icon: 'schedule', text: 'Avoid direct sun 11am-3pm' }
+    ]
+  },
+  {
+    icon: 'water_drop',
+    title: 'Leptospirosis',
+    risk: 'Medium Risk',
+    riskClass: 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300',
+    description: 'Bacterial infection spread through water. Risk in paddy fields/lakes.',
+    tips: [
+      { icon: 'do_not_step', text: 'Avoid wading in stagnant water' },
+      { icon: 'healing', text: 'Cover cuts with waterproof bandages' }
+    ]
   }
-}
-
-// Generate "when to seek help" based on concern type
-function getWhenToSeekHelp(concern: HealthAlert): string {
-  switch (concern.id) {
-    case 'dengue':
-      return 'Seek immediate medical help if you develop high fever, severe headache, pain behind eyes, or bleeding gums.'
-    case 'chikungunya':
-      return 'See a doctor if you have fever with severe joint pain lasting more than a few days.'
-    case 'sun-heat':
-      return 'Get medical attention if you experience confusion, rapid pulse, or stop sweating despite heat.'
-    case 'leeches':
-      return 'Consult a doctor if a bite becomes infected (swelling, pus, or increasing pain).'
-    case 'leptospirosis':
-      return 'Seek help for high fever, muscle aches, or jaundice after water exposure.'
-    default:
-      return 'Consult a doctor if symptoms persist or worsen.'
-  }
-}
+]
 </script>

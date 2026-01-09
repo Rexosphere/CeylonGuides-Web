@@ -1,56 +1,41 @@
 <template>
-  <section class="flex flex-col gap-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <h2 class="text-lg font-bold text-neutral-dark dark:text-white">Embassies & Consulates</h2>
-      <div class="relative w-full sm:w-64">
-        <span class="material-symbols-outlined absolute left-3 top-2 text-neutral-soft text-[18px]">search</span>
-        <input 
-          class="w-full pl-9 pr-3 py-1.5 bg-white dark:bg-[#2a1d18] border border-neutral-200 dark:border-[#3a2d28] rounded-lg text-sm focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder-neutral-soft" 
-          placeholder="Search by country or city..." 
-          type="text"
-          v-model="searchQuery"
-        />
+  <section>
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold text-charcoal dark:text-white">Embassies & Consulates</h2>
+      <div class="relative">
+        <span
+          class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+        <input v-model="searchQuery"
+          class="pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all w-64 shadow-sm"
+          placeholder="Search by country or city..." type="text" />
       </div>
     </div>
 
-    <!-- Embassy List -->
-    <div class="bg-white dark:bg-[#2a1d18] rounded-xl border border-neutral-100 dark:border-[#3a2d28] overflow-hidden">
-      <div class="divide-y divide-neutral-100 dark:divide-[#3a2d28] max-h-[250px] overflow-y-auto custom-scrollbar">
-        <div 
-          v-for="embassy in filteredEmbassies" 
-          :key="`${embassy.country}-${embassy.city}`"
-          class="p-3 hover:bg-neutral-50 dark:hover:bg-[#32241e] transition-colors flex gap-3 items-center cursor-pointer"
-          :class="{ 'bg-primary/5 dark:bg-primary/10 border-l-4 border-l-primary': isSelected(embassy) }"
-          @click="selectEmbassy(embassy)"
-        >
-          <div class="w-8 h-8 rounded-full bg-neutral-100 dark:bg-[#3a2d28] flex items-center justify-center text-sm flex-shrink-0">{{ getCountryFlag(embassy.country) }}</div>
-          <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-sm text-neutral-dark dark:text-white truncate">{{ embassy.country }}</h4>
-            <p class="text-xs text-neutral-soft truncate">{{ embassy.missionType.charAt(0).toUpperCase() + embassy.missionType.slice(1) }} • {{ embassy.city }}</p>
+    <div class="space-y-3 mb-8">
+      <div v-for="embassy in filteredEmbassies" :key="embassy.id"
+        class="flex items-center justify-between p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-primary/30 transition-all cursor-pointer group shadow-sm hover:shadow-md"
+        @click="selectEmbassy(embassy)">
+        <div class="flex items-center gap-4">
+          <div
+            class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-slate-100 dark:border-slate-700">
+            <img :alt="`${embassy.country} Flag`" class="w-full h-full object-cover" :src="embassy.flagUrl" />
           </div>
-          <div class="flex gap-1 flex-shrink-0">
-            <button 
-              @click.stop="selectEmbassy(embassy)"
-              class="p-1.5 rounded bg-neutral-100 dark:bg-[#3a2d28] text-neutral-600 dark:text-neutral-400 hover:bg-primary hover:text-white transition-colors" 
-              title="View on Map"
-            >
-              <span class="material-symbols-outlined text-[16px]">location_on</span>
-            </button>
-            <a 
-              :href="`tel:${embassy.phone}`"
-              @click.stop
-              class="p-1.5 rounded bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors" 
-              title="Call"
-            >
-              <span class="material-symbols-outlined text-[16px]">call</span>
-            </a>
+          <div>
+            <h4 class="font-bold text-sm text-charcoal dark:text-white">{{ embassy.country }}</h4>
+            <p class="text-xs text-slate-500">{{ embassy.type }} • {{ embassy.city }}</p>
           </div>
         </div>
-
-        <!-- Empty State -->
-        <div v-if="filteredEmbassies.length === 0" class="p-6 text-center">
-          <span class="material-symbols-outlined text-3xl text-neutral-soft mb-2">search_off</span>
-          <p class="text-neutral-soft text-sm">No embassies found for "{{ searchQuery }}"</p>
+        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            class="w-9 h-9 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors border border-slate-100 dark:border-slate-600"
+            @click.stop="showLocation(embassy)">
+            <span class="material-symbols-outlined text-lg">place</span>
+          </button>
+          <button
+            class="w-9 h-9 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors border border-slate-100 dark:border-slate-600"
+            @click.stop="callEmbassy(embassy)">
+            <span class="material-symbols-outlined text-lg">call</span>
+          </button>
         </div>
       </div>
     </div>
@@ -59,7 +44,17 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { embassies, type Embassy } from '~/data/emergency'
+
+interface Embassy {
+  id: string
+  country: string
+  city: string
+  type: string
+  flagUrl: string
+  phone?: string
+  lat?: number
+  lng?: number
+}
 
 const props = defineProps<{
   isOffline?: boolean
@@ -67,57 +62,79 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'select-embassy', embassy: Embassy): void
+  'select-embassy': [embassy: Embassy]
 }>()
 
 const searchQuery = ref('')
 
-// Country flag emoji mapping
-const countryFlags: Record<string, string> = {
-  'United States': '🇺🇸',
-  'United Kingdom': '🇬🇧',
-  'Australia': '🇦🇺',
-  'Canada': '🇨🇦',
-  'India': '🇮🇳',
-}
+// Sample embassy data - replace with actual data
+const embassies = ref<Embassy[]>([
+  {
+    id: 'usa-colombo',
+    country: 'United States',
+    city: 'Colombo',
+    type: 'Embassy',
+    flagUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcsH_jvy889D50RIJ4p0-fEk-nr9d86zPXWdg9CD0GHGnIaCVvI0FknxQ9tY4n8PkR8ut_Yh1or8YSuPapMKvozfNJNRR3mW-jkXqc4cdXN8-_RcVEI1jmsXUeLlOE_LNpz7EdXmfyYlxXr0Yvw2gdIvg0l9vaAUNGJFCtcw5FGV2V1O6T6sVfwV133YA02TTixe1q14dOie0LOvO1egsl_UPU2aQQ95XXFslZv842yQjikZ6Y73RAA9Su9gstqPMSN0Y50Xgl-uA',
+    phone: '+94112498500'
+  },
+  {
+    id: 'uk-colombo',
+    country: 'United Kingdom',
+    city: 'Colombo',
+    type: 'High commission',
+    flagUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBqWWwksL83PvO-RlvNnCZ4dyj4agELxPPERSyLSmPHm2VfpEJxG75p51c91hwQ-DRl9ZjS9SWLVoyn5-AnH2s3qUWMcj2DoC7IOqaQ-QmAf8ulaAiy7Jr3TVOmrXhYwjMUsyKSh62kNF753YWGBVH5Lss7ppzqpnOiBWnnyxHzFjJYYs2pPmlmbAFfPXGkhBB8BqlwAEEvlsC93wnNQ0PD03tPQpBa-Wnw1XI5mTnUWrcris7IjUb6BhChsVPkdQJdk4Hb7rfShFY',
+    phone: '+94112389639'
+  },
+  {
+    id: 'australia-colombo',
+    country: 'Australia',
+    city: 'Colombo',
+    type: 'High commission',
+    flagUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDMcq6PJ9Skl8sEMrJeCR5XSanmC252i3d_Rr0tXuQ-xsiaqJgeTbS9fhwAoTkHN2IvIIdMck4tVWbDWWcJUlO3B6V3ZUDOkYqbODYsvruWuXHKMz2M7M0gwkmNvPBS_r_i-xeDEuksOaz8y9NpF9o5Hk05FCQ3DH8sf6vhps9RpTvPJEvFHnaKazdgldEDAyd8CKwEzltqkc_s6E6cP2YFqmuTrwmT19EdWXa7yy32_9g5g9jdTjFCcM0pwHKwJSGimuY7sRicvgw',
+    phone: '+94115246200'
+  },
+  {
+    id: 'canada-colombo',
+    country: 'Canada',
+    city: 'Colombo',
+    type: 'High commission',
+    flagUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDVqoDyBaoGF-8F5j9E3HpH9uTmCrp44KlCXQIw6dwSy8StdTcSG_dxtL76W4-FO96hKyJAR_qzViv2u_Gym1_ZrEk-dkltzCNxrMRdUbO--thDb0wdj-rvFQG86ro-Ur7St9nIiYk4VI7aqUspJFKUc-fTosSD4ihmxkx76ODMyXDOS_I8FyWutUvo-K-YcaqdwGOktz1s8vFkhqiCWTL4lPepjA6GrsUGmrg9KapIyHhHVoyH_AiL4n129uDlozMq7OlMVhANh8I',
+    phone: '+94115220841'
+  }
+])
 
-function getCountryFlag(country: string): string {
-  return countryFlags[country] || '🏛️'
-}
-
-function isSelected(embassy: Embassy): boolean {
-  return props.selectedEmbassyId === `${embassy.country}-${embassy.city}`
-}
-
-// Filter embassies by country OR city
 const filteredEmbassies = computed(() => {
-  if (!searchQuery.value) return embassies
+  if (!searchQuery.value) return embassies.value
+
   const query = searchQuery.value.toLowerCase()
-  return embassies.filter(e => 
-    e.country.toLowerCase().includes(query) ||
-    e.city.toLowerCase().includes(query)
+  return embassies.value.filter(embassy =>
+    embassy.country.toLowerCase().includes(query) ||
+    embassy.city.toLowerCase().includes(query)
   )
 })
 
-// Select embassy and emit event
 function selectEmbassy(embassy: Embassy) {
   emit('select-embassy', embassy)
+}
+
+function showLocation(embassy: Embassy) {
+  // Emit event to show location on map
+  emit('select-embassy', embassy)
+}
+
+function callEmbassy(embassy: Embassy) {
+  if (embassy.phone) {
+    window.location.href = `tel:${embassy.phone}`
+  }
 }
 </script>
 
 <style scoped>
-.custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+.text-charcoal {
+  color: #1e293b;
 }
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #e5e5e5;
-    border-radius: 20px;
-}
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #3a2d28;
+
+.shadow-soft {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 }
 </style>
-
