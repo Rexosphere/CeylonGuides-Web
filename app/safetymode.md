@@ -134,10 +134,10 @@ Dress modestly when visiting religious sites, always covering shoulders and legs
 
 **1. Emergency Numbers Section - CRITICAL FIXES:**
 ```
-Police Emergency: 119
+Police Emergency: 119 (Alternative: 118)
 Ambulance (Suwa Seriya): 1990
-Tourism Hotline: 1912 (24/7 English)
-Fire Emergency: 119
+Tourism Hotline / Tourist Police: 1912 (Alternative: 011-2421052)
+Fire & Rescue: 110 (Alternate Emergency Line)
 Disaster Management: 177
 ```
 
