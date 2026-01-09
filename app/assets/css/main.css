@@ -155,3 +155,89 @@ html {
 .skip-link:focus {
     top: 0;
 }
+
+/* ============================================================================
+   SAFETY MODE STYLES
+   Applied when safety mode is enabled globally via useSafetyMode composable
+   ============================================================================ */
+
+/* Safety Mode: Reduce all non-essential animations */
+html.safety-mode *,
+html.safety-mode *::before,
+html.safety-mode *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.1s !important;
+}
+
+/* Safety Mode: Preserve essential call animations */
+html.safety-mode .animate-pulse-call {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+}
+
+/* Safety Mode: Increase button sizes for emergency actions */
+html.safety-mode .emergency-action-btn {
+    @apply py-5 text-xl;
+    min-height: 60px;
+}
+
+html.safety-mode .emergency-card {
+    @apply py-8;
+}
+
+html.safety-mode .emergency-number {
+    @apply text-3xl;
+}
+
+/* Safety Mode: High visibility indicator */
+html.safety-mode .safety-mode-indicator {
+    display: flex !important;
+}
+
+/* Safety Mode: Reduce visual clutter */
+html.safety-mode .non-essential-ui {
+    @apply opacity-50;
+}
+
+html.safety-mode .decorative-element {
+    display: none !important;
+}
+
+/* Safety Mode: Focus on emergency elements */
+html.safety-mode .emergency-priority {
+    @apply ring-2 ring-primary ring-offset-2;
+}
+
+/* Safety Mode banner */
+.safety-mode-banner {
+    @apply fixed top-0 left-0 right-0 z-50 bg-red-600 text-white py-2 px-4 text-center font-bold text-sm flex items-center justify-center gap-2;
+}
+
+.safety-mode-banner .material-symbols-outlined {
+    @apply animate-pulse text-lg;
+}
+
+/* Safety Mode Toggle Button */
+.safety-mode-toggle {
+    @apply relative inline-flex h-8 w-14 items-center rounded-full transition-colors;
+}
+
+.safety-mode-toggle[data-enabled="true"] {
+    @apply bg-red-500;
+}
+
+.safety-mode-toggle[data-enabled="false"] {
+    @apply bg-gray-300 dark:bg-gray-600;
+}
+
+.safety-mode-toggle .toggle-knob {
+    @apply inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform;
+}
+
+.safety-mode-toggle[data-enabled="true"] .toggle-knob {
+    @apply translate-x-7;
+}
+
+.safety-mode-toggle[data-enabled="false"] .toggle-knob {
+    @apply translate-x-1;
+}
