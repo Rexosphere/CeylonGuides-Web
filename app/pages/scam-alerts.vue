@@ -1,336 +1,56 @@
 <template>
   <div class="scam-alerts-page">
-    <!-- Compact Header -->
     <!-- Hero Section -->
-    <ScamHero
-      :stats="scamStats"
-      :report-count="userReports.length"
-      @report="showReportModal = true"
-      @toggle-reports="showMyReports = !showMyReports"
-    />
+    <ScamAlertsHero :stats="scamStats" @report="showReportModal = true" />
 
-    <!-- Mobile Tabs -->
-    <div class="mobile-tabs">
-      <button 
-        :class="['tab-btn', { active: activeTab === 'alerts' }]"
-        @click="activeTab = 'alerts'"
-      >
-        ⚠️ Alerts
-      </button>
-      <button 
-        :class="['tab-btn', { active: activeTab === 'map' }]"
-        @click="activeTab = 'map'"
-      >
-        📍 Map
-      </button>
-      <button 
-        :class="['tab-btn', { active: activeTab === 'assistant' }]"
-        @click="activeTab = 'assistant'"
-      >
-        🤖 Assistant
-      </button>
-    </div>
-
-    <div class="main-container">
-      <!-- Warning Banner (Full Width) -->
-      <WarningBanner
-        :show="showWarningBanner"
-        :severity="warningBannerSeverity"
-        :title="warningBannerTitle"
-        :message="warningBannerMessage"
-        :nearby-scams="nearbyHighRiskScams"
-        @close="showWarningBanner = false"
-      />
-
-      <!-- My Reports Section (Full Width, Collapsible) -->
-      <section v-if="showMyReports && userReports.length > 0" class="my-reports-section">
-        <div class="section-header-inline">
-          <h2 class="section-title-sm">📋 Your Reports</h2>
-          <button class="close-btn-sm" @click="showMyReports = false">✕</button>
-        </div>
-        <div class="reports-grid-compact">
-          <div
-            v-for="report in userReports"
-            :key="report.id"
-            class="report-card-compact"
-          >
-            <div class="report-header-compact">
-              <span :class="['severity-badge-sm', report.severity]">
-                {{ report.severity }}
-              </span>
-              <button class="delete-btn-sm" @click="deleteReport(report.id)">🗑️</button>
-            </div>
-            <h3 class="report-title-sm">{{ getScamTitle(report.scamType) }}</h3>
-            <p class="report-meta">📍 {{ formatReportTime(report.timestamp) }}</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Desktop: Two Column Layout | Mobile: Tabbed Content -->
-      <div class="layout-grid">
-        <!-- LEFT COLUMN: Filters + Scam List -->
-        <div :class="['left-column', { hidden: activeTab !== 'alerts' }]">
-          <!-- Filters -->
-          <div class="filters-compact">
-            <ScamFilters
-              :severity="selectedSeverity"
-              :location="selectedLocation"
-              :category="selectedCategory"
-              :search-query="searchQuery"
-              :selected-tags="selectedTags"
-              :traveler-type="travelerType"
-              :locations="adaptedLocations"
-              :categories="categories"
-              :result-count="filteredScams.length"
-              :nearby-mode="nearbyMode"
-              :nearby-loading="nearbyLoading"
-              :nearby-distance="nearbyDistance"
-              :nearby-error="nearbyError"
-              @update:severity="selectedSeverity = $event"
-              @update:location="handleLocationFilter"
-              @update:category="selectedCategory = $event"
-              @update:searchQuery="searchQuery = $event"
-              @update:selectedTags="selectedTags = $event"
-              @update:travelerType="travelerType = $event"
-              @toggleNearby="handleNearbyToggle"
-              @reset="resetFilters"
-            />
-          </div>
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 lg:px-6 -mt-12 pb-24 relative z-20">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left Column: Filters + Scam List -->
+        <div class="lg:col-span-7 xl:col-span-8 space-y-6">
+          <ScamAlertsSearchFilter :search-query="searchQuery" :severity="selectedSeverity" :location="selectedLocation"
+            :category="selectedCategory" :traveler-type="travelerType" :locations="adaptedLocations"
+            :categories="categories" :result-count="filteredScams.length" :nearby-mode="nearbyMode"
+            :nearby-loading="nearbyLoading" @update:searchQuery="searchQuery = $event"
+            @update:severity="selectedSeverity = $event as 'all' | 'high' | 'medium' | 'low'"
+            @update:location="handleLocationFilter" @update:category="selectedCategory = $event"
+            @update:travelerType="travelerType = $event as TravelerType" @toggleNearby="handleNearbyToggle" />
 
           <!-- Scam Alerts List -->
-          <div class="scams-list">
-            <div v-if="filteredScams.length === 0" class="no-results-compact">
-              <p>🔍 No scams match your filters</p>
-              <button @click="resetFilters" class="btn-reset-sm">Reset Filters</button>
-            </div>
+          <div class="space-y-5">
+            <!-- First scam - expanded by default -->
+            <ScamAlertCardExpanded v-if="filteredScams.length > 0 && filteredScams[0]" :scam="filteredScams[0]!"
+              :get-location-name="getLocationName" @collapse="toggleCard(filteredScams[0]!.id)" />
 
-            <article
-              v-for="scam in filteredScams"
-              :key="scam.id"
-              :id="`scam-${scam.id}`"
-              class="scam-card-compact"
-              :class="[`severity-${scam.severity}`, { expanded: expandedCards.has(scam.id) }]"
-            >
-              <!-- Scam Header -->
-            <div class="scam-header">
-              <div class="scam-title-row">
-                <h3 class="scam-title">{{ scam.title }}</h3>
-                <button 
-                  class="expand-btn"
-                  @click.stop="toggleCard(scam.id)"
-                  :aria-label="expandedCards.has(scam.id) ? 'Collapse' : 'Expand'"
-                >
-                  {{ expandedCards.has(scam.id) ? '▼' : '▶' }}
-                </button>
-              </div>
-              <span :class="['severity-badge', `badge-${scam.severity}`]">
-                {{ getSeverityIcon(scam.severity) }} {{ scam.severity.toUpperCase() }} RISK
-              </span>
-            </div>
+            <!-- Rest of scams - collapsed -->
+            <ScamAlertCardCollapsed v-for="scam in filteredScams.slice(1)" :key="scam.id" :scam="scam"
+              :get-location-name="getLocationName" @expand="toggleCard(scam.id)" />
 
-            <!-- Scam Description -->
-            <p class="scam-description">{{ scam.description }}</p>
-
-            <!-- Location Chips -->
-            <div v-if="getAffectedLocations(scam.id).length > 0" class="location-chips">
-              <button
-                v-for="location in getAffectedLocations(scam.id)"
-                :key="location.id"
-                @click.stop="focusOnLocation(location.id)"
-                class="location-chip"
-              >
-                📍 {{ location.name }}
+            <!-- No results -->
+            <div v-if="filteredScams.length === 0" class="text-center py-12">
+              <p class="text-slate-500 dark:text-slate-400">🔍 No scams match your filters</p>
+              <button @click="resetFilters"
+                class="mt-4 px-6 py-2 bg-secondary text-white rounded-lg hover:bg-slate-700 transition">
+                Reset Filters
               </button>
             </div>
-
-            <!-- Expanded Content -->
-            <Transition name="expand">
-              <div v-if="expandedCards.has(scam.id)" class="expanded-content">
-                <!-- Real Examples -->
-                <div v-if="scam.realExamples && scam.realExamples.length > 0" class="scam-examples">
-                  <strong class="section-label">⚠️ Real Examples:</strong>
-                  <ul class="examples-list">
-                    <li v-for="(example, index) in scam.realExamples" :key="index">
-                      {{ example }}
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Protection Tips -->
-                <div v-if="scam.preventionTips && scam.preventionTips.length > 0" class="scam-tips">
-                  <strong class="section-label">
-                    {{ (scam.severity === 'critical' || scam.severity === 'high') ? '🛡️ Prevention (Critical):' : '🛡️ How to Protect Yourself:' }}
-                  </strong>
-                  <ul class="tips-list">
-                    <li v-for="(tip, index) in scam.preventionTips" :key="index">
-                      {{ tip }}
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- What to do if confronted (Critical/High only) -->
-                <div v-if="(scam.severity === 'critical' || scam.severity === 'high')" class="confrontation-guide">
-                  <strong class="section-label urgent">🚨 If You're Confronted:</strong>
-                  <ul class="emergency-steps">
-                    <li><strong>Stay Calm:</strong> Don't panic or show fear. Remain polite but firm.</li>
-                    <li><strong>Refuse Firmly:</strong> Say "No thank you" clearly and walk away. Don't negotiate.</li>
-                    <li><strong>Seek Help:</strong> Move toward populated areas, police, or your accommodation.</li>
-                    <li><strong>Document:</strong> If safe, take photos/videos and note details (names, vehicle numbers).</li>
-                    <li><strong>Report Immediately:</strong> Contact tourist police or your embassy if threatened.</li>
-                  </ul>
-                </div>
-
-                <!-- Reporting Contacts (Critical/High only) -->
-                <div v-if="(scam.severity === 'critical' || scam.severity === 'high')" class="reporting-section">
-                  <strong class="section-label urgent">📞 Report This Scam:</strong>
-                  <div class="contact-cards">
-                    <div class="contact-card">
-                      <div class="contact-icon">👮</div>
-                      <div class="contact-info">
-                        <strong>Tourist Police (24/7)</strong>
-                        <a href="tel:1912" class="contact-number">1912</a>
-                        <span class="contact-note">English speaking officers</span>
-                      </div>
-                    </div>
-                    <div class="contact-card">
-                      <div class="contact-icon">🚔</div>
-                      <div class="contact-info">
-                        <strong>Emergency Police</strong>
-                        <a href="tel:119" class="contact-number">119</a>
-                        <span class="contact-note">Immediate assistance</span>
-                      </div>
-                    </div>
-                    <div class="contact-card">
-                      <div class="contact-icon">🏛️</div>
-                      <div class="contact-info">
-                        <strong>Your Embassy</strong>
-                        <span class="contact-number">Keep contact handy</span>
-                        <span class="contact-note">For serious incidents</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Medium Severity Caution -->
-                <div v-if="scam.severity === 'medium'" class="caution-notice">
-                  <div class="caution-icon">⚠️</div>
-                  <div class="caution-text">
-                    <strong>Exercise Caution:</strong> While not immediately dangerous, this scam can result in financial loss. 
-                    Follow prevention tips carefully and stay alert.
-                  </div>
-                </div>
-
-                <!-- Low Severity Info -->
-                <div v-if="scam.severity === 'low'" class="info-notice">
-                  <div class="info-icon">ℹ️</div>
-                  <div class="info-text">
-                    <strong>Low Risk:</strong> This is a minor inconvenience but good to be aware of. 
-                    Simple awareness is usually sufficient protection.
-                  </div>
-                </div>
-
-                <!-- Traveler-Specific Warnings -->
-                <div 
-                  v-if="travelerType !== 'all' && scam.travelerWarnings && scam.travelerWarnings[travelerType]" 
-                  class="traveler-warnings"
-                  :class="`traveler-${travelerType}`"
-                >
-                  <div class="traveler-warning-header">
-                    <span class="warning-icon">
-                      {{ getTravelerIcon(travelerType) }}
-                    </span>
-                    <strong class="section-label">{{ getTravelerLabel(travelerType) }} Alert</strong>
-                  </div>
-                  <ul class="warning-list">
-                    <li v-for="(warning, idx) in scam.travelerWarnings[travelerType]" :key="idx">
-                      {{ warning }}
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Common in these places -->
-                <div v-if="scam.commonLocations && scam.commonLocations.length > 0" class="common-places">
-                  <strong class="section-label">📍 Common in these places:</strong>
-                  <div class="places-grid">
-                    <button
-                      v-for="locId in scam.commonLocations"
-                      :key="locId"
-                      @click.stop="focusOnLocation(locId)"
-                      class="place-btn"
-                    >
-                      {{ getLocationName(locId) }}
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Tags -->
-                <div v-if="scam.tags && scam.tags.length > 0" class="scam-tags">
-                  <strong class="section-label">🏷️ Tags:</strong>
-                  <div class="tags-list">
-                    <span v-for="tag in scam.tags" :key="tag" class="tag">
-                      {{ tag }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Transition>
-
-            <!-- Category Tag -->
-            <div class="scam-footer">
-              <span class="category-tag-sm">
-                {{ getCategoryIcon(scam.category) }} {{ scam.category }}
-              </span>
-            </div>
-          </article>
           </div>
         </div>
 
-        <!-- RIGHT COLUMN: Sticky Map + Assistant + Location Panel -->
-        <div :class="['right-column', { hidden: activeTab === 'alerts' }]">
-          <!-- Location Risk Panel (if location selected) -->
-          <div v-if="selectedLocationData" class="risk-panel-sticky">
-            <LocationRiskPanel
-              :location="selectedLocationData"
-              :scams="allScams"
-              @close="handleLocationPanelClose"
-              @scam-selected="handleScamSelected"
-            />
-          </div>
-
+        <!-- Right Column: Map + Safety Assistant -->
+        <div class="lg:col-span-5 xl:col-span-4 space-y-6">
           <!-- Map -->
-          <div v-if="activeTab !== 'assistant'" class="map-sticky">
-            <h3 class="panel-title">📍 Scam Risk Map</h3>
-            <ClientOnly>
-              <ScamMap
-                :locations="filteredLocations"
-                :selected-location-id="selectedLocationForMap"
-                :nearby-mode="nearbyMode"
-                :user-location="userLocation"
-                @location-selected="handleMapLocationSelect"
-                @view-location-details="scrollToScamDetails"
-              />
-              <template #fallback>
-                <div class="map-loading-sm">Loading map...</div>
-              </template>
-            </ClientOnly>
-          </div>
+          <ScamAlertsMapPanel />
 
           <!-- Safety Assistant -->
-          <div v-if="activeTab !== 'map'" class="assistant-sticky">
-            <h3 class="panel-title">🤖 Safety Assistant</h3>
-            <ScamSafetyAssistantV2 />
-          </div>
+          <ScamAlertsSafetyAssistant />
         </div>
       </div>
-    </div>
+    </main>
 
     <!-- Report Scam Modal -->
-    <ReportScamModal
-      :show="showReportModal"
-      :scam-types="scamTypes"
-      @close="showReportModal = false"
-      @submit="handleReportSubmit"
-    />
+    <ReportScamModal :show="showReportModal" :scam-types="scamTypes" @close="showReportModal = false"
+      @submit="handleReportSubmit" />
   </div>
 </template>
 
@@ -445,33 +165,33 @@ const selectedLocationData = computed(() => {
 // Computed filtered data
 const filteredScams = computed(() => {
   let scams = [...allScams]
-  
+
   // Filter by severity
   if (selectedSeverity.value !== 'all') {
     scams = scams.filter(s => s.severity === selectedSeverity.value)
   }
-  
+
   // Filter by location
   if (selectedLocation.value !== 'all') {
     scams = scams.filter(s => s.commonLocations.includes(selectedLocation.value))
   }
-  
+
   // Filter by category
   if (selectedCategory.value !== 'all') {
     scams = scams.filter(s => s.category === selectedCategory.value)
   }
-  
+
   // Filter by tags
   if (selectedTags.value.length > 0) {
-    scams = scams.filter(s => 
+    scams = scams.filter(s =>
       selectedTags.value.some(tag => s.tags?.includes(tag))
     )
   }
-  
+
   // Filter by search query
   if (searchQuery.value.trim()) {
     const query = searchQuery.value.toLowerCase()
-    scams = scams.filter(s => 
+    scams = scams.filter(s =>
       s.title.toLowerCase().includes(query) ||
       s.description.toLowerCase().includes(query) ||
       s.tags?.some((tag: string) => tag.toLowerCase().includes(query))
@@ -480,11 +200,11 @@ const filteredScams = computed(() => {
 
   // Filter by nearby mode
   if (nearbyMode.value && nearbyLocationIds.value.length > 0) {
-    scams = scams.filter(s => 
+    scams = scams.filter(s =>
       s.commonLocations.some((locId: string) => nearbyLocationIds.value.includes(locId))
     )
   }
-  
+
   return scams
 })
 
@@ -492,7 +212,7 @@ const filteredLocations = computed(() => {
   if (nearbyMode.value && nearbyLocationIds.value.length > 0) {
     return allLocations.filter((l: any) => nearbyLocationIds.value.includes(l.id))
   }
-  
+
   if (selectedLocation.value !== 'all') {
     const location = allLocations.find((l: any) => l.id === selectedLocation.value)
     return location ? [location] : []
@@ -502,15 +222,15 @@ const filteredLocations = computed(() => {
 
 // Categories
 const categories = computed(() => [
-  { id: 'transport', name: 'Transport', label: 'Transport', icon: '🚕' },
-  { id: 'shopping', name: 'Shopping', label: 'Shopping', icon: '🛍️' },
-  { id: 'tourism', name: 'Tourism', label: 'Tourism', icon: '📸' },
-  { id: 'accommodation', name: 'Accommodation', label: 'Accommodation', icon: '🏨' },
-  { id: 'wildlife', name: 'Wildlife', label: 'Wildlife', icon: '🦁' },
-  { id: 'beach', name: 'Beach & Water', label: 'Beach & Water', icon: '🏖️' },
-  { id: 'nightlife', name: 'Nightlife', label: 'Nightlife', icon: '🍺' },
-  { id: 'temple', name: 'Temple & Culture', label: 'Temple & Culture', icon: '🛕' },
-  { id: 'money', name: 'Money & Banking', label: 'Money & Banking', icon: '💰' }
+  { id: 'transport', name: 'Transport', label: 'Transport', icon: 'directions_car' },
+  { id: 'shopping', name: 'Shopping', label: 'Shopping', icon: 'shopping_bag' },
+  { id: 'tourism', name: 'Tourism', label: 'Tourism', icon: 'camera_alt' },
+  { id: 'accommodation', name: 'Accommodation', label: 'Accommodation', icon: 'hotel' },
+  { id: 'wildlife', name: 'Wildlife', label: 'Wildlife', icon: 'forest' },
+  { id: 'beach', name: 'Beach & Water', label: 'Beach & Water', icon: 'beach_access' },
+  { id: 'nightlife', name: 'Nightlife', label: 'Nightlife', icon: 'nightlife' },
+  { id: 'temple', name: 'Temple & Culture', label: 'Temple & Culture', icon: 'temple_buddhist' },
+  { id: 'money', name: 'Money & Banking', label: 'Money & Banking', icon: 'payments' }
 ])
 
 // Stats
@@ -563,7 +283,7 @@ const handleLocationFilter = (locationId: string) => {
 
 const handleMapLocationSelect = (locationId: string) => {
   selectedLocation.value = locationId
-  
+
   // Scroll to scam list
   const scamsSection = document.querySelector('.scams-section')
   if (scamsSection) {
@@ -574,7 +294,7 @@ const handleMapLocationSelect = (locationId: string) => {
 const focusOnLocation = (locationId: string) => {
   selectedLocationForMap.value = locationId
   selectedLocation.value = locationId
-  
+
   // Scroll to map
   const mapSection = document.querySelector('.map-section')
   if (mapSection) {
@@ -589,7 +309,7 @@ const scrollToScamDetails = (locationId: string) => {
 const getAffectedLocations = (scamId: string) => {
   const scam = allScams.find((s: any) => s.id === scamId)
   if (!scam) return []
-  
+
   return scam.commonLocations
     .map((locId: string) => allLocations.find((l: any) => l.id === locId))
     .filter((location): location is NonNullable<typeof location> => location !== undefined)
@@ -648,7 +368,7 @@ const handleNearbyToggle = async () => {
   try {
     // Request user location
     const location = await getUserLocation()
-    
+
     if (!location) {
       nearbyError.value = 'Location access denied. Please enable location services to use this feature.'
       nearbyLoading.value = false
@@ -680,14 +400,14 @@ const handleNearbyToggle = async () => {
     nearbyMode.value = true
 
     // Check for high-risk nearby locations
-    const highRiskNearby = nearby.filter((loc: any) => 
+    const highRiskNearby = nearby.filter((loc: any) =>
       loc.riskLevel === 'high' || loc.riskLevel === 'critical'
     )
 
     if (highRiskNearby.length > 0) {
       // Show warning banner
       const criticalCount = highRiskNearby.filter((loc: any) => loc.riskLevel === 'critical').length
-      
+
       if (criticalCount > 0) {
         warningBannerSeverity.value = 'critical'
         warningBannerTitle.value = '🚨 Critical Risk Area Nearby!'
@@ -731,7 +451,7 @@ const handleScamCardClick = (scamId: string) => {
   if (scam && scam.commonLocations && scam.commonLocations.length > 0) {
     // Focus on first common location
     selectedLocationForMap.value = scam.commonLocations[0] || null
-    
+
     // Scroll to map
     setTimeout(() => {
       const mapSection = document.querySelector('.map-section')
@@ -1047,10 +767,25 @@ const formatReportTime = (timestamp: string): string => {
   text-transform: uppercase;
 }
 
-.severity-badge-sm.critical { background: #dc2626; color: white; }
-.severity-badge-sm.high { background: #ea580c; color: white; }
-.severity-badge-sm.medium { background: #f59e0b; color: white; }
-.severity-badge-sm.low { background: #10b981; color: white; }
+.severity-badge-sm.critical {
+  background: #dc2626;
+  color: white;
+}
+
+.severity-badge-sm.high {
+  background: #ea580c;
+  color: white;
+}
+
+.severity-badge-sm.medium {
+  background: #f59e0b;
+  color: white;
+}
+
+.severity-badge-sm.low {
+  background: #10b981;
+  color: white;
+}
 
 .delete-btn-sm {
   border: none;
@@ -1134,10 +869,21 @@ const formatReportTime = (timestamp: string): string => {
   transform: translateX(2px);
 }
 
-.scam-card-compact.severity-critical { border-left-color: #dc2626; }
-.scam-card-compact.severity-high { border-left-color: #ea580c; }
-.scam-card-compact.severity-medium { border-left-color: #f59e0b; }
-.scam-card-compact.severity-low { border-left-color: #10b981; }
+.scam-card-compact.severity-critical {
+  border-left-color: #dc2626;
+}
+
+.scam-card-compact.severity-high {
+  border-left-color: #ea580c;
+}
+
+.scam-card-compact.severity-medium {
+  border-left-color: #f59e0b;
+}
+
+.scam-card-compact.severity-low {
+  border-left-color: #10b981;
+}
 
 .scam-card-compact.expanded {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
@@ -1430,6 +1176,7 @@ const formatReportTime = (timestamp: string): string => {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1590,18 +1337,24 @@ const formatReportTime = (timestamp: string): string => {
 }
 
 @keyframes highlight {
-  0%, 100% {
+
+  0%,
+  100% {
     background: white;
   }
+
   50% {
     background: #fef3c7;
   }
 }
 
 @keyframes highlight-flash {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   }
+
   50% {
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5), 0 8px 24px rgba(59, 130, 246, 0.3);
   }
@@ -1672,8 +1425,15 @@ const formatReportTime = (timestamp: string): string => {
 }
 
 @keyframes pulse-critical {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
 }
 
 .badge-high {
@@ -2226,6 +1986,7 @@ const formatReportTime = (timestamp: string): string => {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
