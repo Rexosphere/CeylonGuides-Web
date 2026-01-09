@@ -169,21 +169,75 @@ faqs:
   - question: "How do I book a guide?"
     answer: "Simply navigate to the \"Guides\" section, browse profiles, and click \"Book Now\" on your chosen guide's page."
     tab: "general"
+    topics: ["tour", "guide", "booking"]
   - question: "Are payments secure?"
     answer: "Yes, all transactions are encrypted and processed through secure global payment gateways."
     tab: "general"
+    topics: ["payment", "pricing"]
   - question: "Can I cancel a tour?"
     answer: "Cancellations made 48 hours prior to the scheduled tour are eligible for a full refund."
     tab: "general"
+    topics: ["booking", "tour"]
+  - question: "How do I modify my booking?"
+    answer: "Log into your account, go to 'My Bookings', and click 'Modify' on the booking you wish to change. You can update dates, add services, or change guides."
+    tab: "general"
+    topics: ["booking", "modifications"]
+  - question: "What's included in a tour package?"
+    answer: "Tour packages typically include the guide's service, transportation within the tour area, and entrance fees. Meals and accommodation arrangements vary by package."
+    tab: "general"
+    topics: ["tour", "itinerary"]
+  - question: "Do guides speak English?"
+    answer: "Yes, all our verified guides are fluent in English. Many also speak other languages including German, French, Mandarin, and Japanese."
+    tab: "general"
+    topics: ["guide"]
   - question: "What if I have an emergency during my trip?"
     answer: "Contact our 24/7 emergency hotline immediately. We have staff available around the clock to assist with urgent situations."
     tab: "issue"
+    topics: ["safety", "emergency"]
   - question: "How do I report a problem with my guide?"
     answer: "Use the Report Issue tab above or email us directly. All complaints are reviewed within 24 hours."
     tab: "issue"
+    topics: ["guide", "complaint"]
+  - question: "My payment failed, what should I do?"
+    answer: "Try again with a different payment method. If the issue persists, contact us with your booking reference and we'll help resolve it within 1 hour."
+    tab: "issue"
+    topics: ["payment", "booking"]
+  - question: "The website isn't working properly"
+    answer: "Try clearing your browser cache and refreshing. If problems continue, please describe the issue in detail and we'll investigate immediately."
+    tab: "issue"
+    topics: ["website", "technical"]
+  - question: "I was scammed, what should I do?"
+    answer: "Contact us immediately via WhatsApp or our emergency line. We take fraud seriously and will help you report the incident and seek resolution."
+    tab: "issue"
+    topics: ["scam", "safety"]
   - question: "How can I leave a review for my guide?"
     answer: "After your tour, you'll receive an email with a link to leave a review. You can also find the review option in your booking history."
     tab: "feedback"
+    topics: ["guide", "review"]
+  - question: "Can I suggest a new destination or experience?"
+    answer: "Absolutely! We love hearing new ideas. Share your suggestions through the feedback form and our content team will review them."
+    tab: "feedback"
+    topics: ["suggestion", "improvement"]
+  - question: "How do I rate my overall experience?"
+    answer: "You can rate your experience through the post-tour survey sent to your email, or use the feedback form above to share your thoughts."
+    tab: "feedback"
+    topics: ["review"]
+  - question: "How do I become a partner guide?"
+    answer: "Fill out the partnership application with your credentials, experience, and services. We'll review and contact you within 3-5 business days."
+    tab: "partnerships"
+    topics: ["guide", "partner"]
+  - question: "What are the requirements for hotel partners?"
+    answer: "Hotels should be registered businesses with valid licenses, maintain good reviews, and commit to our quality standards and pricing transparency."
+    tab: "partnerships"
+    topics: ["hotel", "guesthouse"]
+  - question: "How does payment work for partners?"
+    answer: "Partners receive payments weekly via bank transfer. We handle all payment processing and provide detailed earnings reports."
+    tab: "partnerships"
+    topics: ["partner"]
+  - question: "Can media/press contact you for stories?"
+    answer: "Yes! We welcome media inquiries. Select 'Media/press inquiry' in the topic dropdown and our PR team will respond within 24 hours."
+    tab: "partnerships"
+    topics: ["media", "press"]
 
 partnership:
   title: "Join our network"

@@ -33,8 +33,9 @@
           <ContactSidebar 
             v-if="data.contactMethods"
             :contact-methods="data.contactMethods"
-            :faqs="currentFaqs"
+            :faqs="data.faqs ?? []"
             :partnership="data.partnership"
+            :active-tab="activeTab"
           />
         </div>
       </div>
@@ -105,6 +106,7 @@ interface FAQ {
   question: string
   answer: string
   tab?: string
+  topics?: string[]
 }
 
 interface Partnership {
