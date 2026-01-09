@@ -282,7 +282,8 @@ async function initMap() {
   
   // Import marker clustering
   try {
-    const MarkerCluster = await import('leaflet.markercluster')
+    // @ts-ignore - leaflet.markercluster types are not available
+    await import('leaflet.markercluster')
     await import('leaflet.markercluster/dist/MarkerCluster.css')
     await import('leaflet.markercluster/dist/MarkerCluster.Default.css')
     console.log('✅ Marker clustering loaded')

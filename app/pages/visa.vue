@@ -46,6 +46,15 @@ const apiBase = config.public.apiBase
 
 const selectedCountryQuery = ref('')
 
+interface VisaInfo {
+  country_name: string
+  processing_time: string
+  fee: string
+  duration: string
+  requirements: string[]
+  notes?: string
+}
+
 const { data: visaResponse, pending: visaPending } = await useFetch<{
   success: boolean
   data: VisaInfo
@@ -56,12 +65,10 @@ const { data: visaResponse, pending: visaPending } = await useFetch<{
   return `${apiBase}/api/visa${queryStr ? `?${queryStr}` : ''}`
 }, { watch: [selectedCountryQuery] })
 
-const displayDuration = computed(() => {
-  return `${visaDetails.value.duration} Days (Extendable)`
-})
+const visaInfo = computed(() => visaResponse.value?.data)
 
 function handleVisaSearch(query: string) {
-  selectedNationality.value = query
+  selectedCountryQuery.value = query
 }
 
 const requirements = [

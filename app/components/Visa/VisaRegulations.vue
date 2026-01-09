@@ -22,8 +22,11 @@
           </span>
         </button>
         <div v-if="openSection === 'entry'" class="px-6 pb-6 pt-2">
-          <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-            {{ requirements || 'All visitors must have a valid passport with at least 6 months validity from the date of arrival.' }}
+          <ul v-if="requirements && requirements.length > 0" class="list-disc list-inside text-sm text-slate-600 dark:text-slate-300 space-y-2">
+            <li v-for="(req, index) in requirements" :key="index">{{ req }}</li>
+          </ul>
+          <p v-else class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            All visitors must have a valid passport with at least 6 months validity from the date of arrival.
           </p>
         </div>
       </div>
@@ -134,7 +137,7 @@
 import { ref } from 'vue'
 
 defineProps<{
-  requirements?: string
+  requirements?: string[]
   notes?: string
 }>()
 

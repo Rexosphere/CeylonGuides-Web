@@ -89,7 +89,8 @@ onMounted(async () => {
     await import('leaflet/dist/leaflet.css')
     
     // Import marker cluster
-    const MarkerClusterGroup = await import('leaflet.markercluster')
+    // @ts-ignore - leaflet.markercluster types are not available
+    await import('leaflet.markercluster')
     await import('leaflet.markercluster/dist/MarkerCluster.css')
     await import('leaflet.markercluster/dist/MarkerCluster.Default.css')
     

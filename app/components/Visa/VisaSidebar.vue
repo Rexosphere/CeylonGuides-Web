@@ -8,9 +8,20 @@
         <h3 class="font-bold text-deep-charcoal dark:text-white">Document Checklist</h3>
       </div>
 
-      <p class="text-xs text-slate-400 uppercase font-bold mb-4">For India</p>
+      <ul v-if="props.requirements && props.requirements.length > 0" class="space-y-4">
+        <li v-for="(req, index) in props.requirements" :key="index" class="flex items-start">
+          <div class="flex items-center h-5">
+            <input class="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded" :id="`doc${index}`" type="checkbox" />
+          </div>
+          <div class="ml-3 text-sm">
+            <label class="font-medium text-slate-700 dark:text-slate-300" :for="`doc${index}`">
+              {{ req }}
+            </label>
+          </div>
+        </li>
+      </ul>
 
-      <ul class="space-y-4">
+      <ul v-else class="space-y-4">
         <li class="flex items-start">
           <div class="flex items-center h-5">
             <input class="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded" id="doc1" type="checkbox" />
@@ -153,7 +164,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  requirements?: string
+const props = defineProps<{
+  requirements?: string[]
 }>()
 </script>

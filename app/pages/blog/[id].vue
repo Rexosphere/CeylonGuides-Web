@@ -136,6 +136,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
+// @ts-ignore - marked types are available but import resolution issue
 import { marked } from 'marked'
 import { useBlog } from '~/composables/useBlog'
 import Toast from '~/components/UI/Toast.vue'
