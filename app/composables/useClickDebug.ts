@@ -14,17 +14,10 @@ export const useClickDebug = () => {
                     classes: target.className
                 })
 
-                addToast({
-                    message: `Clicked: ${label.substring(0, 20)}`,
-                    type: 'info',
-                    duration: 2000
-                })
+                addToast(`Clicked: ${label.substring(0, 20)}`, 'info', 2000)
             }, { capture: true }) // Capture phase to see even if stopped? Or bubble? Capture is better for debugging audits.
 
-            addToast({
-                message: 'Click Debug Mode Enabled',
-                type: 'success'
-            })
+            addToast('Click Debug Mode Enabled', 'success')
         }
     })
 }

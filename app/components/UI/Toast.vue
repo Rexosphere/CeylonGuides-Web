@@ -1,33 +1,76 @@
-<template>
-  <Transition
-    enter-active-class="transform ease-out duration-300 transition"
-    enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-    enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
-    leave-active-class="transition ease-in duration-100"
-    leave-from-class="opacity-100"
-    leave-to-class="opacity-0"
-  >
-    <div 
-      v-if="isVisible" 
-      class="fixed bottom-4 left-1/2 -translate-x-1/2 sm:left-auto sm:-translate-x-0 sm:bottom-6 sm:right-6 z-[100] flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl backdrop-blur-md border border-white/10"
-      :class="type === 'success' ? 'bg-primary text-white' : 'bg-[#1a1a1a] text-white'"
-    >
-      <span class="material-symbols-outlined text-[20px] filled">
-        {{ type === 'success' ? 'check_circle' : 'info' }}
-      </span>
-      <span class="text-sm font-bold tracking-wide">{{ message }}</span>
-    </div>
-  </Transition>
-</template>
-
 <script setup lang="ts">
-import { useToast } from '~/composables/useToast'
+import { useToast, type Toast } from '~/composables/useToast'
 
-const { isVisible, message, type } = useToast()
+const { toasts, removeToast } = useToast()
+
+const icons: Record<Toast['type'], string> = {
+  success: 'check_circle',
+  error: 'error',
+  warning: 'warning',
+  info: 'info'
+}
+
+const colors: Record<Toast['type'], string> = {
+  success: 'bg-green-500',
+  error: 'bg-red-500',
+  warning: 'bg-amber-500',
+  info: 'bg-blue-500'
+}
 </script>
 
+<template>
+  <Teleport to="body">
+    <div class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none">
+      <TransitionGroup name="toast">
+        <div
+          v-for="toast in toasts"
+          :key="toast.id"
+          :class="[
+            colors[toast.type],
+            'flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-white pointer-events-auto min-w-[280px] max-w-[400px]'
+          ]"
+        >
+          <span class="material-symbols-outlined text-xl">{{ icons[toast.type] }}</span>
+          <span class="flex-1 text-sm font-medium">{{ toast.message }}</span>
+          <button 
+            @click="removeToast(toast.id)"
+            class="opacity-70 hover:opacity-100 transition-opacity"
+          >
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+      </TransitionGroup>
+    </div>
+  </Teleport>
+</template>
+
 <style scoped>
-.filled {
-  font-variation-settings: 'FILL' 1;
+.toast-enter-active {
+  animation: toast-in 0.3s ease-out;
+}
+.toast-leave-active {
+  animation: toast-out 0.2s ease-in;
+}
+
+@keyframes toast-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 }
 </style>
