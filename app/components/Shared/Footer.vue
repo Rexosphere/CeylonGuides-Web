@@ -7,7 +7,7 @@
         <div>
           <div class="flex items-center gap-2 mb-6">
             <span class="material-icons text-white text-2xl">travel_explore</span>
-            <span class="text-xl font-bold font-display text-white">CeylonGuide</span>
+            <span class="text-xl font-bold font-display text-white">CeylonWiki</span>
           </div>
           <p class="mb-6 leading-relaxed text-gray-500">
             Your trusted virtual tour guide for Sri Lanka. Navigate with confidence, safety, and cultural respect.
@@ -116,7 +116,7 @@
       <!-- Bottom Bar -->
       <div
         class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600">
-        <p>© {{ currentYear }} CeylonGuide. All rights reserved.</p>
+        <p>© {{ currentYear }} CeylonWiki. All rights reserved.</p>
         <p class="mt-2 md:mt-0 flex items-center gap-1">
           Made with <span class="text-accent-danger material-icons text-xs">favorite</span> for travelers exploring Sri
           Lanka

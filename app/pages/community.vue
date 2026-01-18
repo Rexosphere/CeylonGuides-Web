@@ -64,7 +64,7 @@ import { ref } from 'vue'
 const showPostCreator = ref(false)
 
 useHead({
-  title: 'CeylonGuide - Community',
+  title: 'CeylonWiki - Community',
   meta: [
     { name: 'description', content: 'Connect with fellow Ceylon travelers. Share experiences, ask questions, and find local guides for your Sri Lankan adventure.' }
   ]

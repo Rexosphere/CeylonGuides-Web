@@ -10,7 +10,7 @@
           Have a story to tell?
         </h2>
         <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-          Become a CeylonGuide Contributor and share your travel journals, photos, and tips with the world. Your perspective could inspire the next traveler.
+          Become a CeylonWiki Contributor and share your travel journals, photos, and tips with the world. Your perspective could inspire the next traveler.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 mt-4 justify-center md:justify-start">
           <button @click="showSubmissionModal = true" class="flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-primary text-white text-base font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/30">

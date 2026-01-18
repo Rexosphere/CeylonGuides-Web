@@ -9,7 +9,7 @@
     </div>
     <div class="max-w-4xl mx-auto text-center relative z-10 px-4">
       <h2 class="font-serif text-3xl md:text-5xl text-white font-bold mb-6">Ready to experience the Pearl of the Indian Ocean?</h2>
-      <p class="text-white/80 text-lg mb-10 max-w-2xl mx-auto">Join thousands of travelers who plan safer, smarter trips with CeylonGuide.</p>
+      <p class="text-white/80 text-lg mb-10 max-w-2xl mx-auto">Join thousands of travelers who plan safer, smarter trips with CeylonWiki.</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <button class="bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-full font-bold text-lg transition-colors shadow-lg">
           Create Free Account

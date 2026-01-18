@@ -11,7 +11,7 @@
         Ready to experience the Pearl of the<br />Indian Ocean?
       </h2>
       <p class="text-lg text-white/80 mb-10 max-w-2xl mx-auto font-light">
-        Join thousands of travelers who plan safer, smarter trips with CeylonGuide.
+        Join thousands of travelers who plan safer, smarter trips with CeylonWiki.
       </p>
 
       <!-- CTA Buttons -->

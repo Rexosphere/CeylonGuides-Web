@@ -447,7 +447,7 @@ export function useTransportRoutes() {
         try {
             const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Sri Lanka')}&format=json&limit=1`
             const response = await $fetch<any[]>(url, {
-                headers: { 'User-Agent': 'CeylonGuides/1.0' }
+                headers: { 'User-Agent': 'CeylonWiki/1.0' }
             })
 
             if (response.length > 0) {

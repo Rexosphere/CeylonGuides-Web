@@ -18,7 +18,7 @@
       <!-- Hero Content -->
       <div class="container mx-auto px-6 relative z-10 text-center pt-20">
         <h1 class="text-5xl md:text-7xl font-display font-bold text-white mb-4 drop-shadow-lg tracking-tight">
-          CeylonGuide
+          CeylonWiki
         </h1>
         <p class="text-xl md:text-2xl text-white/90 font-light mb-12 drop-shadow-md">
           Your Trusted Virtual Tour Guide for Sri Lanka

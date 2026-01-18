@@ -19,7 +19,7 @@ import SearchResults from '~/components/Search/SearchResults.vue'
 import SearchSidebar from '~/components/Search/SearchSidebar.vue'
 
 useHead({
-  title: 'Search Results - CeylonGuide',
+  title: 'Search Results - CeylonWiki',
   meta: [
     { name: 'description', content: 'Search for destinations, attractions, accommodations, and articles about Sri Lanka. Find everything you need for your Ceylon adventure.' }
   ]

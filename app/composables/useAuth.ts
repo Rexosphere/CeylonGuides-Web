@@ -1,5 +1,5 @@
 /**
- * Auth Composable for CeylonGuide
+ * Auth Composable for CeylonWiki
  * Provides authentication state management and API calls
  */
 
@@ -45,7 +45,7 @@ const useAuthState = () => {
   const token = useState<string | null>('auth_token', () => null)
   const loading = useState<boolean>('auth_loading', () => false)
   const initialized = useState<boolean>('auth_initialized', () => false)
-  
+
   return { user, token, loading, initialized }
 }
 
@@ -56,18 +56,18 @@ export function useAuth() {
   const config = useRuntimeConfig()
   const baseUrl = config.public.apiBase
   const router = useRouter()
-  
+
   const { user, token, loading, initialized } = useAuthState()
-  
+
   // Computed property for authentication status
   const isAuthenticated = computed(() => !!token.value && !!user.value)
-  
+
   /**
    * Initialize auth state from localStorage (client-side only)
    */
   const initAuth = async () => {
     if (import.meta.server || initialized.value) return
-    
+
     const storedToken = localStorage.getItem('auth_token')
     if (storedToken) {
       token.value = storedToken
@@ -75,13 +75,13 @@ export function useAuth() {
     }
     initialized.value = true
   }
-  
+
   /**
    * Fetch current user from API
    */
   const fetchUser = async (): Promise<User | null> => {
     if (!token.value) return null
-    
+
     loading.value = true
     try {
       const response = await $fetch<UserResponse>(`${baseUrl}/api/auth/me`, {
@@ -89,7 +89,7 @@ export function useAuth() {
           'Authorization': `Bearer ${token.value}`
         }
       })
-      
+
       if (response.success && response.data?.user) {
         user.value = response.data.user
         return response.data.user
@@ -104,7 +104,7 @@ export function useAuth() {
       loading.value = false
     }
   }
-  
+
   /**
    * Login with email and password
    */
@@ -118,19 +118,19 @@ export function useAuth() {
         },
         body: credentials
       })
-      
+
       if (response.success && response.data) {
         user.value = response.data.user
         token.value = response.data.token
-        
+
         // Persist token in localStorage
         if (import.meta.client) {
           localStorage.setItem('auth_token', response.data.token)
         }
-        
+
         return { success: true }
       }
-      
+
       return { success: false, error: 'Login failed' }
     } catch (error: any) {
       console.error('Login error:', error)
@@ -140,7 +140,7 @@ export function useAuth() {
       loading.value = false
     }
   }
-  
+
   /**
    * Register new user
    */
@@ -154,19 +154,19 @@ export function useAuth() {
         },
         body: data
       })
-      
+
       if (response.success && response.data) {
         user.value = response.data.user
         token.value = response.data.token
-        
+
         // Persist token in localStorage
         if (import.meta.client) {
           localStorage.setItem('auth_token', response.data.token)
         }
-        
+
         return { success: true }
       }
-      
+
       return { success: false, error: 'Registration failed' }
     } catch (error: any) {
       console.error('Registration error:', error)
@@ -176,34 +176,34 @@ export function useAuth() {
       loading.value = false
     }
   }
-  
+
   /**
    * Logout user
    */
   const logout = async () => {
     user.value = null
     token.value = null
-    
+
     if (import.meta.client) {
       localStorage.removeItem('auth_token')
     }
-    
+
     // Redirect to home
     await router.push('/')
   }
-  
+
   // Initialize auth on client-side
   if (import.meta.client) {
     initAuth()
   }
-  
+
   return {
     // State
     user: readonly(user),
     token: readonly(token),
     loading: readonly(loading),
     isAuthenticated,
-    
+
     // Methods
     login,
     register,

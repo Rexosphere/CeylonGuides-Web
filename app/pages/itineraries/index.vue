@@ -19,7 +19,7 @@ import TripBuilder from '~/components/Itineraries/TripBuilder.vue'
 import ItineraryNewsletter from '~/components/Itineraries/ItineraryNewsletter.vue'
 
 useHead({
-  title: 'Itineraries & Trip Planner - CeylonGuide',
+  title: 'Itineraries & Trip Planner - CeylonWiki',
   meta: [
     { name: 'description', content: 'Craft your perfect Sri Lankan journey with our curated guides and trip builder tool.' }
   ]

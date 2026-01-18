@@ -130,7 +130,7 @@
 <script setup lang="ts">
 // Components are auto-imported by Nuxt
 useHead({
-  title: 'Weather & Best Times - CeylonGuide',
+  title: 'Weather & Best Times - CeylonWiki',
   meta: [
     { name: 'description', content: 'Navigate the dual monsoons and discover the perfect season for your island getaway.' }
   ]

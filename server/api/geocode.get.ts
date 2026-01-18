@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
 
         const response = await fetch(nominatimUrl.toString(), {
             headers: {
-                'User-Agent': 'CeylonGuides/1.0 (https://ceylonguides.com)'
+                'User-Agent': 'CeylonWiki/1.0 (https://ceylonwiki.com)'
             }
         })
 

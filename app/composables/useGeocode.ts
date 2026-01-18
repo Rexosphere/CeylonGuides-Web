@@ -111,7 +111,7 @@ export function useGeocode() {
             const response = await $fetch<any[]>(
                 `https://nominatim.openstreetmap.org/search?${params}`,
                 {
-                    headers: { 'User-Agent': 'CeylonGuides/1.0' },
+                    headers: { 'User-Agent': 'CeylonWiki/1.0' },
                     retry: 1 // Simple retry
                 }
             )

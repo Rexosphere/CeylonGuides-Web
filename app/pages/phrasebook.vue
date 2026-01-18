@@ -502,7 +502,7 @@ const onLearningModeComplete = () => {
 
 // Add custom font for Sinhala text
 useHead({
-  title: 'Phrasebook - Learn Sinhala & Tamil | CeylonGuides',
+  title: 'Phrasebook - Learn Sinhala & Tamil | CeylonWiki',
   meta: [
     { name: 'description', content: 'Master essential Sinhala and Tamil phrases for your Sri Lanka trip. Interactive audio, cultural tips, and emergency phrases.' }
   ],

@@ -50,7 +50,7 @@
           </div>
           <div class="flex-1">
             <p class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">Email</p>
-            <p class="text-xs text-white/60">hello@ceylonguide.com</p>
+            <p class="text-xs text-white/60">hello@ceylonwiki.com</p>
           </div>
           <div class="flex gap-1">
             <button 
@@ -61,7 +61,7 @@
               <span class="material-symbols-outlined text-sm">{{ emailCopied ? 'check' : 'content_copy' }}</span>
             </button>
             <a 
-              href="mailto:hello@ceylonguide.com"
+              href="mailto:hello@ceylonwiki.com"
               class="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/60 hover:text-blue-400 transition-colors"
               title="Send email"
               @click.stop
@@ -355,7 +355,7 @@ const displayedFaqs = computed(() => {
 // Copy email
 async function copyEmail() {
   try {
-    await navigator.clipboard.writeText('hello@ceylonguide.com')
+    await navigator.clipboard.writeText('hello@ceylonwiki.com')
     emailCopied.value = true
     setTimeout(() => {
       emailCopied.value = false

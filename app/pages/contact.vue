@@ -278,9 +278,9 @@ const currentFaqs = computed(() => {
 console.log('Parsed contact data:', JSON.stringify(data, null, 2))
 
 useHead({
-  title: 'Contact & Support - CeylonGuide',
+  title: 'Contact & Support - CeylonWiki',
   meta: [
-    { name: 'description', content: 'Get in touch with CeylonGuide for support, inquiries, feedback, or partnership opportunities. We are here to help you explore Sri Lanka.' }
+    { name: 'description', content: 'Get in touch with CeylonWiki for support, inquiries, feedback, or partnership opportunities. We are here to help you explore Sri Lanka.' }
   ]
 })
 </script>

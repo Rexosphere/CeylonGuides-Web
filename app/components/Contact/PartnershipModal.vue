@@ -165,7 +165,7 @@
                 </div>
                 <h3 class="text-xl font-bold text-[#181311] dark:text-white mb-2">Application Submitted!</h3>
                 <p class="text-gray-600 dark:text-gray-400 mb-4">
-                  Thank you for your interest in partnering with CeylonGuide.
+                  Thank you for your interest in partnering with CeylonWiki.
                 </p>
                 <div class="bg-gray-100 dark:bg-[#221510] rounded-xl p-4 mb-4">
                   <p class="text-sm text-gray-500 dark:text-gray-400">Expected Review Time</p>

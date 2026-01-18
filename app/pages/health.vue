@@ -21,7 +21,7 @@ import HealthFoodSafety from '~/components/Health/HealthFoodSafety.vue'
 import HealthMedicalDirectory from '~/components/Health/HealthMedicalDirectory.vue'
 
 useHead({
-  title: 'Travel Insurance & Health - CeylonGuide',
+  title: 'Travel Insurance & Health - CeylonWiki',
   meta: [
     { name: 'description', content: 'Your comprehensive guide to health, vaccinations, and insurance for a worry-free journey through Sri Lanka. Stay safe in paradise.' }
   ]

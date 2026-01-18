@@ -4,7 +4,7 @@
       <div class="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-6">
         <span class="material-icons text-secondary text-2xl">mail_outline</span>
       </div>
-      <h2 class="text-3xl font-display font-bold text-primary dark:text-white mb-4">Join the CeylonGuide Community</h2>
+      <h2 class="text-3xl font-display font-bold text-primary dark:text-white mb-4">Join the CeylonWiki Community</h2>
       <p class="text-text-muted dark:text-gray-400 mb-8 max-w-lg mx-auto">
         Get exclusive travel tips, hidden gems, and special offers for your next Sri Lankan adventure delivered to your
         inbox.

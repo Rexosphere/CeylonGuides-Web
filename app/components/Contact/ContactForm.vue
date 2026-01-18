@@ -405,7 +405,7 @@ const isFormValid = computed(() => {
 })
 
 // Draft saving
-const DRAFT_KEY = 'ceylonguide_contact_draft'
+const DRAFT_KEY = 'ceylonwiki_contact_draft'
 const draftSaved = ref(false)
 const draftTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 

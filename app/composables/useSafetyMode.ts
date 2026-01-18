@@ -6,7 +6,7 @@
 import { ref, computed, watch } from 'vue'
 
 // Global state - persists across component instances
-const STORAGE_KEY = 'ceylonguides-safety-mode'
+const STORAGE_KEY = 'ceylonwiki-safety-mode'
 const isSafetyModeEnabled = ref(false)
 const isInitialized = ref(false)
 

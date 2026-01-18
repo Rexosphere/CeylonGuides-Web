@@ -3,7 +3,7 @@
     <div class="flex items-end justify-between mb-6">
       <div>
         <h2 class="text-2xl font-bold text-[#181311] dark:text-white tracking-tight">Trending on Social</h2>
-        <p class="text-[#896c61] dark:text-[#a0908a] mt-1">#CeylonGuide spots with the most engagement.</p>
+        <p class="text-[#896c61] dark:text-[#a0908a] mt-1">#CeylonWiki spots with the most engagement.</p>
       </div>
     </div>
     

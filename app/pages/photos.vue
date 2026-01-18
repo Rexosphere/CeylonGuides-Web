@@ -250,7 +250,7 @@ onUnmounted(() => {
 })
 
 useHead({
-  title: 'Photo Spots Guide - CeylonGuide',
+  title: 'Photo Spots Guide - CeylonWiki',
   meta: [
     { name: 'description', content: 'Discover the best photography locations in Sri Lanka. Complete guide with lighting conditions, drone regulations, and trending spots.' }
   ]

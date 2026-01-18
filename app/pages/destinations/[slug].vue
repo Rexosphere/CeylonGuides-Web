@@ -301,7 +301,7 @@ const getHeroImage = (imagePath: string) => {
 
 // Meta Tags
 useHead({
-  title: destination.value ? `${destination.value.name} - CeylonGuide` : 'Destination Not Found',
+  title: destination.value ? `${destination.value.name} - CeylonWiki` : 'Destination Not Found',
   meta: [
     { name: 'description', content: destination.value?.overview || 'Explore stunning destinations in Sri Lanka.' }
   ]

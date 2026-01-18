@@ -1,5 +1,5 @@
 /**
- * Safe HTML utilities for CeylonGuide
+ * Safe HTML utilities for CeylonWiki
  * Prevents XSS attacks while allowing basic formatting
  */
 

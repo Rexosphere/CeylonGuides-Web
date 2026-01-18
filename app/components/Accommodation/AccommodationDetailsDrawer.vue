@@ -75,7 +75,7 @@
                   <!-- Tooltip -->
                   <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-64 z-20">
                     <div class="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg">
-                      <div class="font-semibold mb-1">✓ CeylonGuides Verified</div>
+                      <div class="font-semibold mb-1">✓ CeylonWiki Verified</div>
                       <ul class="space-y-0.5 text-gray-300">
                         <li>• Fire safety equipment checked</li>
                         <li>• 24/7 security on premises</li>

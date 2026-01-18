@@ -5,7 +5,7 @@
       <!-- Logo and Brand -->
       <NuxtLink to="/" class="flex items-center gap-2">
         <span class="material-icons text-white text-3xl">travel_explore</span>
-        <span class="text-2xl font-bold font-display text-white">CeylonGuide</span>
+        <span class="text-2xl font-bold font-display text-white">CeylonWiki</span>
       </NuxtLink>
 
       <!-- Desktop Navigation Links -->

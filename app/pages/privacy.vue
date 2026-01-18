@@ -19,7 +19,7 @@
           <div class="space-y-6 text-gray-700 dark:text-gray-300">
             <div>
               <h3 class="text-xl font-semibold mb-3 text-charcoal dark:text-white">Information We Collect</h3>
-              <p class="mb-3">CeylonGuides collects minimal information necessary to provide our services:</p>
+              <p class="mb-3">CeylonWiki collects minimal information necessary to provide our services:</p>
               <ul class="list-disc pl-6 space-y-2">
                 <li>User-submitted scam reports and safety alerts</li>
                 <li>Location data (only when you explicitly enable "Near Me" features)</li>
@@ -87,7 +87,7 @@
           <div class="space-y-6 text-gray-700 dark:text-gray-300">
             <div>
               <h3 class="text-xl font-semibold mb-3 text-charcoal dark:text-white">Acceptance of Terms</h3>
-              <p>By accessing and using CeylonGuides, you accept and agree to be bound by these terms and conditions.</p>
+              <p>By accessing and using CeylonWiki, you accept and agree to be bound by these terms and conditions.</p>
             </div>
 
             <div>
@@ -104,7 +104,7 @@
             <div>
               <h3 class="text-xl font-semibold mb-3 text-charcoal dark:text-white">Disclaimer</h3>
               <div class="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 p-4 rounded">
-                <p class="font-medium">CeylonGuides provides information for educational and safety purposes. While we strive for accuracy:</p>
+                <p class="font-medium">CeylonWiki provides information for educational and safety purposes. While we strive for accuracy:</p>
                 <ul class="list-disc pl-6 space-y-1 mt-2">
                   <li>Information is community-sourced and may not always be current</li>
                   <li>We cannot guarantee the accuracy of all reports</li>
@@ -117,7 +117,7 @@
 
             <div>
               <h3 class="text-xl font-semibold mb-3 text-charcoal dark:text-white">Prohibited Uses</h3>
-              <p>You may not use CeylonGuides to:</p>
+              <p>You may not use CeylonWiki to:</p>
               <ul class="list-disc pl-6 space-y-2 mt-2">
                 <li>Post false or malicious reports</li>
                 <li>Harass or defame individuals or businesses</li>
@@ -129,7 +129,7 @@
 
             <div>
               <h3 class="text-xl font-semibold mb-3 text-charcoal dark:text-white">Intellectual Property</h3>
-              <p>All content, design, and functionality of CeylonGuides is owned by us or our licensors and is protected by copyright and trademark laws.</p>
+              <p>All content, design, and functionality of CeylonWiki is owned by us or our licensors and is protected by copyright and trademark laws.</p>
             </div>
 
             <div>
@@ -163,9 +163,9 @@
 
 <script setup lang="ts">
 useSeoMeta({
-  title: 'Privacy Policy & Terms of Service - CeylonGuides',
-  description: 'Learn about how CeylonGuides protects your privacy and our terms of service for using the platform.',
-  ogTitle: 'Privacy Policy & Terms - CeylonGuides',
+  title: 'Privacy Policy & Terms of Service - CeylonWiki',
+  description: 'Learn about how CeylonWiki protects your privacy and our terms of service for using the platform.',
+  ogTitle: 'Privacy Policy & Terms - CeylonWiki',
   ogDescription: 'Your privacy matters. Read about our data protection practices and terms of service.',
 })
 </script>

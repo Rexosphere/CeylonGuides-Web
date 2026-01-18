@@ -152,7 +152,7 @@ async function reverseGeocode(lat: number, lon: number) {
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
     const response = await $fetch<any>(url, {
-      headers: { 'User-Agent': 'CeylonGuides/1.0' }
+      headers: { 'User-Agent': 'CeylonWiki/1.0' }
     })
     
     const name = response.display_name?.split(',')[0] 

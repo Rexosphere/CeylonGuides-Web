@@ -243,7 +243,7 @@ onUnmounted(() => {
 })
 
 useHead({
-    title: post.value ? `${post.value.title} - CeylonGuide` : 'Story Not Found',
+    title: post.value ? `${post.value.title} - CeylonWiki` : 'Story Not Found',
 })
 </script>
 

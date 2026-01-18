@@ -1143,7 +1143,7 @@ onMounted(() => {
   } else if (tripState.days.length === 0) initializeDays(3)
 })
 
-useHead({ title: 'Trip Builder - CeylonGuide' })
+useHead({ title: 'Trip Builder - CeylonWiki' })
 </script>
 
 <style scoped>

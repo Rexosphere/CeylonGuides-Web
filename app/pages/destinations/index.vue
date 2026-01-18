@@ -41,6 +41,6 @@ const categories = computed(() => {
 
 // Page metadata
 useHead({
-  title: 'CeylonGuide - Explore Destinations'
+  title: 'CeylonWiki - Explore Destinations'
 })
 </script>

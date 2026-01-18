@@ -23,7 +23,7 @@ import { useBlog } from '~/composables/useBlog'
 const { featuredPost, filteredPosts } = useBlog()
 
 useHead({
-  title: 'CeylonGuide - Blog & Travel Stories',
+  title: 'CeylonWiki - Blog & Travel Stories',
   meta: [
     { name: 'description', content: 'Read inspiring travel stories, hidden gems, and community experiences from Sri Lanka. Join our community of travelers sharing their Ceylon adventures.' }
   ]

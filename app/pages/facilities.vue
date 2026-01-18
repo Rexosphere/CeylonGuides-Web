@@ -299,7 +299,7 @@ definePageMeta({
 })
 
 useHead({
-  title: 'Restrooms Finder - CeylonGuide',
+  title: 'Restrooms Finder - CeylonWiki',
   meta: [
     { name: 'description', content: 'Find and rate clean restrooms, safe beaches, and tourist attractions across Sri Lanka' }
   ]

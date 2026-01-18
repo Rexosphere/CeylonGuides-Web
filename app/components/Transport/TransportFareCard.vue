@@ -228,7 +228,7 @@ async function shareFare() {
   if (shareSupported.value) {
     try {
       await navigator.share({
-        title: 'Fair Transport Fare - CeylonGuides',
+        title: 'Fair Transport Fare - CeylonWiki',
         text
       })
     } catch (err) {

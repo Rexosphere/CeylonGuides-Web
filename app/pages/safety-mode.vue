@@ -48,7 +48,7 @@ import SafetyAIAssistant from '~/components/Safety/SafetyAIAssistant.vue'
 
 // Meta configuration
 useHead({
-  title: 'Safety Mode - CeylonGuide',
+  title: 'Safety Mode - CeylonWiki',
   meta: [
     { name: 'description', content: 'Emergency assistance and safety information for travelers in Sri Lanka. Emergency contacts, location sharing, and helpful phrases.' },
     { name: 'theme-color', content: '#DC2626' }

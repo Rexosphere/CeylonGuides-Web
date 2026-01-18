@@ -36,7 +36,7 @@ import CulturalDosDonts from '~/components/Culture/CulturalDosDonts.vue'
 import CulturalCalendar from '~/components/Culture/CulturalCalendar.vue'
 
 useHead({
-  title: 'Cultural Etiquette Guide - CeylonGuide',
+  title: 'Cultural Etiquette Guide - CeylonWiki',
   meta: [
     { name: 'description', content: 'Essential cultural etiquette for temples, photography, dress code, and social customs in Sri Lanka.' }
   ]

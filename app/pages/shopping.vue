@@ -10,7 +10,7 @@ import ShoppingGuide from '~/components/Shopping/ShoppingGuide.vue'
 import ShoppingVatRefund from '~/components/Shopping/ShoppingVatRefund.vue'
 
 useHead({
-  title: 'Shopping Guide - CeylonGuide',
+  title: 'Shopping Guide - CeylonWiki',
   meta: [
     { name: 'description', content: 'The ultimate guide to authentic souvenirs, bustling markets, and smart shopping in Sri Lanka. From Ceylon tea to sapphires.' }
   ]

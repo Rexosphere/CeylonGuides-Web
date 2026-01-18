@@ -38,7 +38,7 @@
             </defs>
           </svg>
         </div>
-        <h2 class="text-[#181311] dark:text-white text-lg font-bold tracking-tight">CeylonGuide</h2>
+        <h2 class="text-[#181311] dark:text-white text-lg font-bold tracking-tight">CeylonWiki</h2>
       </div>
 
       <!-- Main Content Container -->

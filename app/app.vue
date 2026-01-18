@@ -30,7 +30,7 @@ onMounted(async () => {
 
 useHead({
   titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} - CeylonGuides` : 'CeylonGuides'
+    return titleChunk ? `${titleChunk} - CeylonWiki` : 'CeylonWiki'
   },
   link: [
     { rel: 'stylesheet', href: 'https://fonts.googleapis.com' },

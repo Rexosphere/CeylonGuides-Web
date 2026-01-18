@@ -308,9 +308,9 @@ const data = parseFrontmatter(aboutMd)
 console.log('Parsed data:', JSON.stringify(data, null, 2))
 
 useHead({
-  title: 'About & Mission - CeylonGuide',
+  title: 'About & Mission - CeylonWiki',
   meta: [
-    { name: 'description', content: 'Learn about CeylonGuide\'s mission to simplify travel planning and unveil the authentic soul of Sri Lanka. Meet our team of passionate explorers.' }
+    { name: 'description', content: 'Learn about CeylonWiki\'s mission to simplify travel planning and unveil the authentic soul of Sri Lanka. Meet our team of passionate explorers.' }
   ]
 })
 </script>

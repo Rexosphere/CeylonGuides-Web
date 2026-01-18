@@ -20,7 +20,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'CeylonGuide - Your Trusted Virtual Tour Guide for Sri Lanka',
+      title: 'CeylonWiki - Your Trusted Virtual Tour Guide for Sri Lanka',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },

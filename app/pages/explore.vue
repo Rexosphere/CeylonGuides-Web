@@ -268,7 +268,7 @@ const getItineraryImage = (slug: string) => {
 }
 
 useHead({
-  title: 'Explore Sri Lanka - CeylonGuide',
+  title: 'Explore Sri Lanka - CeylonWiki',
   meta: [
     { name: 'description', content: 'Plan your perfect Sri Lankan adventure with curated itineraries and a custom trip builder.' }
   ]

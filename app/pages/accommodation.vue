@@ -301,7 +301,7 @@ definePageMeta({
 })
 
 useHead({
-  title: 'Accommodation Finder - CeylonGuide',
+  title: 'Accommodation Finder - CeylonWiki',
   meta: [
     { name: 'description', content: 'Discover curated hotels, guesthouses, and homestays verified for safety and comfort in Sri Lanka.' }
   ]

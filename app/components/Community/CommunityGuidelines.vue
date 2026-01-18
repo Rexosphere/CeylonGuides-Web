@@ -5,7 +5,7 @@
       <div>
         <h3 class="font-bold text-sm text-text-main dark:text-white mb-1">Community Guidelines</h3>
         <p class="text-xs text-text-secondary dark:text-gray-400 leading-relaxed">
-          CeylonGuide is a friendly space. Be respectful, share helpful tips, and keep promotional content to the designated areas. 
+          CeylonWiki is a friendly space. Be respectful, share helpful tips, and keep promotional content to the designated areas. 
           <button @click="showModal = true" class="text-primary hover:underline font-bold">Read full rules</button>.
         </p>
       </div>

@@ -305,7 +305,7 @@ const customizeDates = () => {
 
 // SEO
 useHead({
-  title: computed(() => `${itinerary.value?.title || 'Itinerary'} - CeylonGuide`),
+  title: computed(() => `${itinerary.value?.title || 'Itinerary'} - CeylonWiki`),
   meta: [
     { name: 'description', content: computed(() => itinerary.value?.whyYouWillLoveIt || '') }
   ]

@@ -7,7 +7,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import type { GeolocationState, GeolocationStatus } from '../types/safetyMode'
 
-const STORAGE_KEY = 'ceylonguide_geolocation'
+const STORAGE_KEY = 'ceylonwiki_geolocation'
 const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 
 interface CachedLocation {
@@ -177,7 +177,7 @@ export function useGeolocation() {
         const accuracy = state.value.accuracy ? `±${Math.round(state.value.accuracy)}m` : 'Unknown'
         const time = new Date().toLocaleString()
 
-        return `🚨 I need help!\n\n📍 My Location:\n${mapsLink}\n\nCoordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}\nAccuracy: ${accuracy}\nTime: ${time}\n\nSent via CeylonGuide Safety Mode`
+        return `🚨 I need help!\n\n📍 My Location:\n${mapsLink}\n\nCoordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}\nAccuracy: ${accuracy}\nTime: ${time}\n\nSent via CeylonWiki Safety Mode`
     }
 
     // Share via WhatsApp

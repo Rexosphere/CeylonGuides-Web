@@ -22,7 +22,7 @@ import MoneyBudget from '~/components/Money/MoneyBudget.vue'
 import MoneyScamAlert from '~/components/Money/MoneyScamAlert.vue'
 
 useHead({
-  title: 'Money & Currency - CeylonGuide',
+  title: 'Money & Currency - CeylonWiki',
   meta: [
     { name: 'description', content: 'Essential guide to Money & Currency in Sri Lanka. Rupee (LKR) exchange rates, ATM locations, daily budgets, and tipping etiquette.' }
   ]

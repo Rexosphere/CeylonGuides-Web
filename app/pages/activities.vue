@@ -42,7 +42,7 @@ function handleCategoryChange(category: string | null) {
 }
 
 useHead({
-  title: 'Activities & Experiences - CeylonGuide',
+  title: 'Activities & Experiences - CeylonWiki',
   meta: [
     { name: 'description', content: 'Curated adventures in the Pearl of the Indian Ocean. From misty peaks to golden shores, discover authentic experiences.' }
   ]

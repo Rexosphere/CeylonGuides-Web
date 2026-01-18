@@ -15,7 +15,7 @@ useHead({
   meta: [
     { 
       name: 'description', 
-      content: 'CeylonGuide - Your trusted virtual tour guide for Sri Lanka. Explore destinations, stay safe, communicate with locals, and experience the Pearl of the Indian Ocean with confidence.'
+      content: 'CeylonWiki - Your trusted virtual tour guide for Sri Lanka. Explore destinations, stay safe, communicate with locals, and experience the Pearl of the Indian Ocean with confidence.'
     }
   ]
 })

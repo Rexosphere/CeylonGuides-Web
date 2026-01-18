@@ -114,7 +114,7 @@ function downloadPDF() {
 }
 
 useHead({
-  title: 'Emergency Contacts - CeylonGuide',
+  title: 'Emergency Contacts - CeylonWiki',
   meta: [
     { name: 'description', content: 'Stay safe in Sri Lanka. Access immediate help, find consular services, and locate nearby medical facilities instantly.' }
   ]

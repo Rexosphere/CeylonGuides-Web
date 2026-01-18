@@ -80,7 +80,7 @@ const requirements = [
 ]
 
 useHead({
-  title: 'Visa Assistant 2026 - CeylonGuide',
+  title: 'Visa Assistant 2026 - CeylonWiki',
   meta: [
     { name: 'description', content: 'Check Sri Lanka visa fees, ETA requirements, and entry rules for your nationality. Updated 2026.' }
   ]

@@ -16,7 +16,7 @@
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center justify-center gap-2 mb-8 group">
         <span class="material-symbols-outlined text-4xl text-white group-hover:scale-110 transition-transform">travel_explore</span>
-        <h1 class="font-serif text-3xl font-bold text-white tracking-tight">CeylonGuide</h1>
+        <h1 class="font-serif text-3xl font-bold text-white tracking-tight">CeylonWiki</h1>
       </NuxtLink>
       
       <!-- Auth card -->
