@@ -13,11 +13,11 @@
         <span class="text-xs text-gray-200 font-medium tracking-wide uppercase">Visa Assistant 2025</span>
       </div>
 
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight drop-shadow-lg">
         Visa &amp; Entry Requirements
       </h1>
 
-      <p class="text-gray-200 text-lg mb-8 font-light">
+      <p class="text-gray-200 text-lg mb-8 font-light drop-shadow-md">
         Check the latest fees, ETA rules, and exemption status for your nationality.
       </p>
 

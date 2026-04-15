@@ -3,25 +3,26 @@
     <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div v-for="(dest, index) in destinations" :key="index"
-          class="group bg-white dark:bg-card-dark rounded-2xl overflow-hidden shadow-soft hover:shadow-card transition-all duration-300 hover:-translate-y-1">
+          class="group bg-white dark:bg-surface-base rounded-2xl overflow-hidden shadow-soft hover:shadow-card transition-all duration-300 hover:-translate-y-1">
           <!-- Image Section -->
           <div class="relative h-64 overflow-hidden">
             <img :alt="dest.alt"
               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               :src="dest.image" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
             <div class="absolute top-4 left-4">
               <span
                 class="bg-white/90 dark:bg-black/70 backdrop-blur-md text-primary dark:text-white text-[10px] font-bold px-3 py-1 uppercase tracking-wider rounded-full shadow-sm">
                 {{ dest.category }}
               </span>
             </div>
+            <h3 class="absolute bottom-4 left-4 right-4 text-white font-semibold drop-shadow-md text-xl font-display">
+              {{ dest.title }}
+            </h3>
           </div>
 
           <!-- Content Section -->
-          <div class="p-6">
-            <h3 class="text-xl font-display font-bold text-primary dark:text-white mb-2">
-              {{ dest.title }}
-            </h3>
+          <div class="p-6 bg-white dark:bg-surface-base">
             <p class="text-text-muted dark:text-gray-400 text-sm mb-4 line-clamp-2">
               {{ dest.description }}
             </p>

@@ -5,10 +5,10 @@
       :style="{ backgroundImage: `linear-gradient(rgba(34, 21, 16, 0.4), rgba(34, 21, 16, 0.6)), url('${image}')` }"
     ></div>
     <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-10">
-      <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight mb-4 drop-shadow-sm">
+      <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight mb-4 drop-shadow-lg">
         {{ title }}
       </h1>
-      <p class="text-white/90 text-base md:text-lg font-medium leading-relaxed max-w-2xl mx-auto drop-shadow-sm">
+      <p class="text-white/90 text-base md:text-lg font-medium leading-relaxed max-w-2xl mx-auto drop-shadow-md">
         {{ subtitle }}
       </p>
       

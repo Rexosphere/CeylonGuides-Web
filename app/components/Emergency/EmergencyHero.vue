@@ -3,8 +3,8 @@
     <div class="max-w-7xl mx-auto px-6 w-full flex justify-between items-end pb-16">
       <div class="text-white">
         <p class="text-xs font-bold uppercase tracking-widest mb-3 opacity-90 text-slate-200">24/7 Assistance</p>
-        <h1 class="text-5xl font-bold mb-4 tracking-tight text-white">Emergency Support</h1>
-        <p class="max-w-xl text-lg text-slate-200 leading-relaxed font-light">
+        <h1 class="text-5xl font-bold mb-4 tracking-tight text-white drop-shadow-lg">Emergency Support</h1>
+        <p class="max-w-xl text-lg text-slate-200 leading-relaxed font-light drop-shadow-md">
           Stay safe in Sri Lanka. Access immediate help, find consular services, and locate nearby medical facilities
           instantly.
         </p>

@@ -9,11 +9,11 @@
       </div>
       
       <div class="relative z-10 flex flex-col items-center max-w-4xl text-center gap-6">
-        <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+        <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight drop-shadow-lg">
           Stay Connected in Paradise
         </h1>
         
-        <p class="text-white/90 text-lg md:text-xl font-medium max-w-2xl">
+        <p class="text-white/90 text-lg md:text-xl font-medium max-w-2xl drop-shadow-md">
           From Colombo's bustling streets to Ella's quiet peaks, find the best SIM cards, data plans, and WiFi spots for your Sri Lankan journey.
         </p>
         
@@ -21,14 +21,14 @@
         <div class="flex flex-wrap justify-center gap-4 mt-4">
           <button 
             @click="scrollToPlans"
-            class="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg transition-all flex items-center gap-2"
+            class="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-md transition-all flex items-center gap-2"
           >
             <span class="material-symbols-outlined">sim_card</span>
             Compare Plans
           </button>
           <button 
             @click="scrollToNomad"
-            class="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-bold rounded-lg border border-white/30 transition-all flex items-center gap-2"
+            class="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-bold rounded-lg border border-white/30 transition-all flex items-center gap-2 shadow-md"
           >
             <span class="material-symbols-outlined">wifi</span>
             Find WiFi

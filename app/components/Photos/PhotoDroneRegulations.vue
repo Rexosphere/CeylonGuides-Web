@@ -11,8 +11,8 @@
           <span class="material-icons text-accent-danger text-xl">flight_takeoff</span>
           <span class="text-accent-danger font-bold uppercase tracking-widest text-xs">Drone Safety & Regulations</span>
         </div>
-        <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-6">Fly Responsibly in Paradise</h2>
-        <p class="text-gray-400 text-lg leading-relaxed mb-8 font-light">
+        <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-6 drop-shadow-lg">Fly Responsibly in Paradise</h2>
+        <p class="text-gray-400 text-lg leading-relaxed mb-8 font-light drop-shadow-md">
           Sri Lanka has strict drone laws to protect its heritage sites and wildlife. All drones must be registered with
           the Civil Aviation Authority (CAA) before arrival. Respect privacy and sacred airspace.
         </p>
@@ -37,7 +37,7 @@
           </div>
         </div>
         <button
-          class="bg-secondary hover:bg-white hover:text-primary text-white px-8 py-3 rounded-full font-bold transition-all shadow-lg flex items-center gap-2">
+          class="bg-secondary hover:bg-white hover:text-primary text-white px-8 py-3 rounded-full font-bold transition-all shadow-md flex items-center gap-2">
           Learn More
         </button>
       </div>

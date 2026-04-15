@@ -12,21 +12,21 @@
           Featured {{ post.category }} Story
         </span>
         
-        <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight max-w-4xl drop-shadow-sm">
+        <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight max-w-4xl drop-shadow-lg">
           {{ post.title }}
         </h1>
         
-        <p class="text-white/90 text-base md:text-lg max-w-2xl font-light leading-relaxed line-clamp-3">
+        <p class="text-white/90 text-base md:text-lg max-w-2xl font-light leading-relaxed line-clamp-3 drop-shadow-md">
           {{ post.excerpt }}
         </p>
         
         <div class="flex flex-wrap gap-4 mt-2">
-          <button class="flex items-center gap-2 rounded-lg h-12 px-6 bg-primary text-white text-sm font-bold tracking-wide hover:bg-primary/90 transition-all hover:translate-x-1 shadow-lg shadow-primary/30">
+          <button class="flex items-center gap-2 rounded-lg h-12 px-6 bg-primary text-white text-sm font-bold tracking-wide hover:bg-primary/90 transition-all hover:translate-x-1 shadow-md shadow-primary/30">
             Read Story <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
           </button>
           <button 
             @click="toggleSave(post.id)"
-            class="flex items-center gap-2 rounded-lg h-12 px-6 backdrop-blur-md text-white border text-sm font-bold tracking-wide transition-colors"
+            class="flex items-center gap-2 rounded-lg h-12 px-6 backdrop-blur-md text-white border text-sm font-bold tracking-wide transition-colors shadow-md"
             :class="isSaved(post.id) ? 'bg-primary border-primary hover:bg-primary/90' : 'bg-white/10 border-white/30 hover:bg-white/20'"
           >
             <span class="material-symbols-outlined text-[18px]" :class="isSaved(post.id) ? 'filled' : ''">

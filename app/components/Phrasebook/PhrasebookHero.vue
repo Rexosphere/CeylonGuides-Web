@@ -6,7 +6,7 @@
         </div>
 
         <div class="relative z-10 max-w-3xl mx-auto space-y-6 mt-12">
-            <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-sm">
+            <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-lg">
                 Speak Like a Local
             </h1>
             <p class="text-lg md:text-xl text-slate-100 font-light max-w-2xl mx-auto drop-shadow-md">

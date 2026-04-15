@@ -8,10 +8,10 @@
     
     <div class="relative z-10 max-w-3xl w-full flex flex-col items-center gap-6 mt-12">
       <div class="space-y-2">
-        <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight">
+        <h1 class="text-4xl md:text-5xl font-bold text-white tracking-tight drop-shadow-lg">
           Join the <span class="text-primary">Ceylon</span> Community
         </h1>
-        <p class="text-gray-300 text-lg md:text-xl font-light max-w-xl mx-auto">
+        <p class="text-gray-300 text-lg md:text-xl font-light max-w-xl mx-auto drop-shadow-md">
           Connect with travelers, find buddies, and get tips from locals.
         </p>
       </div>
@@ -66,18 +66,20 @@
       </div>
       
       <!-- Filter Chips -->
-      <div class="flex flex-wrap justify-center gap-2">
-        <button 
-          v-for="filter in ['All', 'Posts', 'People', 'Guides']"
-          :key="filter"
-          @click="searchFilter = filter as any"
-          class="px-4 py-1.5 rounded-full text-sm font-medium transition-all backdrop-blur-sm border"
-          :class="searchFilter === filter 
-            ? 'bg-white text-primary border-white' 
-            : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10'"
-        >
-          {{ filter }}
-        </button>
+      <div class="backdrop-blur-md bg-white/80 dark:bg-black/40 border border-white/20 rounded-xl shadow-md px-3 py-2">
+        <div class="flex flex-wrap justify-center gap-2">
+          <button
+            v-for="filter in ['All', 'Posts', 'People', 'Guides']"
+            :key="filter"
+            @click="searchFilter = filter as any"
+            class="px-4 py-2 rounded-full text-sm font-medium transition-all shadow-md"
+            :class="searchFilter === filter
+              ? 'bg-brand-primary-700 text-white'
+              : 'bg-white/70 text-black hover:bg-white'"
+          >
+            {{ filter }}
+          </button>
+        </div>
       </div>
     </div>
   </section>

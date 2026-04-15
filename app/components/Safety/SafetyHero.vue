@@ -5,8 +5,8 @@
                 class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent mb-6 shadow-xl shadow-red-900/30 ring-4 ring-white/10">
                 <span class="material-icons text-white text-3xl">medical_services</span>
             </div>
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">Safety Mode</h1>
-            <p class="text-lg text-slate-300 max-w-2xl mx-auto font-light">Emergency assistance ready. You are protected
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight drop-shadow-lg">Safety Mode</h1>
+            <p class="text-lg text-slate-300 max-w-2xl mx-auto font-light drop-shadow-md">Emergency assistance ready. You are protected
                 with verified contacts and location services.</p>
         </div>
         <div

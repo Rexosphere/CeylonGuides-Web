@@ -6,8 +6,8 @@
       <div class="absolute inset-0 bg-gradient-to-b from-primary/60 to-primary/90"></div>
     </div>
     <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center text-white">
-      <h1 class="text-5xl md:text-6xl font-display font-bold mb-6 drop-shadow-md">Craft Your Ceylon Journey</h1>
-      <p class="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light mb-10">Perfect Sri Lankan adventure with
+      <h1 class="text-5xl md:text-6xl font-display font-bold mb-6 drop-shadow-lg">Craft Your Ceylon Journey</h1>
+      <p class="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light mb-10 drop-shadow-md">Perfect Sri Lankan adventure with
         our curated guides and custom tools.</p>
       <div class="bg-white p-2 rounded-full shadow-card max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-2">
         <div class="flex-1 flex items-center gap-4 px-6 border-r border-gray-100 w-full md:w-auto py-2 md:py-0">

@@ -6,17 +6,14 @@
       :action-link="alertLink" />
 
     <section class="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
-      <!-- Background Image with Overlay -->
-      <div class="absolute inset-0 z-0">
-        <img alt="Sri Lanka Coastline" class="w-full h-full object-cover" src="/images/downloaded_870c30a3afb8.avif" />
-        <div
-          class="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-background-light dark:to-background-dark">
-        </div>
-        <div class="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
-      </div>
+      <!-- Background Image -->
+      <img alt="Sri Lanka Coastline" class="absolute inset-0 w-full h-full object-cover" src="/images/downloaded_870c30a3afb8.avif" />
+
+      <!-- Dark Gradient Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
 
       <!-- Hero Content -->
-      <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center pt-20">
+      <div class="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-white text-center pt-20">
         <h1 class="text-5xl md:text-7xl font-display font-bold text-white mb-4 drop-shadow-lg tracking-tight">
           CeylonWiki
         </h1>
@@ -39,12 +36,12 @@
         <!-- CTA Buttons -->
         <div class="flex flex-col sm:flex-row justify-center gap-4">
           <NuxtLink to="/safety-mode"
-            class="bg-accent-danger hover:bg-red-700 text-white px-8 py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+            class="bg-brand-primary-700 hover:bg-brand-primary-800 text-white px-8 py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
             <span class="material-icons">warning</span>
             Safety Mode
           </NuxtLink>
           <NuxtLink to="/destinations"
-            class="bg-secondary hover:bg-secondary/90 text-white px-8 py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+            class="bg-white/90 hover:bg-white text-black px-8 py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
             Start Exploring
             <span class="material-icons text-sm">arrow_forward</span>
           </NuxtLink>

@@ -5,10 +5,10 @@
             <div class="absolute inset-0 bg-gradient-to-b from-slate-900/40 via-slate-900/20 to-slate-900/60"></div>
         </div>
         <div class="relative z-10 text-center max-w-4xl px-4 mt-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-3 tracking-tight drop-shadow-sm">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-3 tracking-tight drop-shadow-lg">
                 Transport Assistant
             </h1>
-            <div class="flex items-center justify-center gap-3 text-base md:text-lg text-white/90 font-medium">
+            <div class="flex items-center justify-center gap-3 text-base md:text-lg text-white/90 font-medium drop-shadow-md">
                 <span>Plan smart</span>
                 <span class="text-[#fbbf24]">•</span>
                 <span>Avoid scams</span>
