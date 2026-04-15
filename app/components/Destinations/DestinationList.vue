@@ -1,6 +1,6 @@
 <template>
   <section class="pb-24 bg-background-light dark:bg-background-dark">
-    <div class="container mx-auto px-6">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div v-for="(dest, index) in destinations" :key="index"
           class="group bg-white dark:bg-card-dark rounded-2xl overflow-hidden shadow-soft hover:shadow-card transition-all duration-300 hover:-translate-y-1">

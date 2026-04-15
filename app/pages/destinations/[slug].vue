@@ -19,7 +19,7 @@
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
           <div class="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
         </div>
-        <div class="container mx-auto px-6 relative z-10">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div class="mb-4 flex items-center gap-2 text-white/80 text-sm font-medium tracking-wide uppercase">
             <span>Sri Lanka</span>
             <span class="material-icons text-[10px]">fiber_manual_record</span>
@@ -42,7 +42,7 @@
       <!-- Key Facts Bar -->
       <section
         class="bg-white dark:bg-card-dark border-b border-gray-100 dark:border-gray-800 shadow-sm relative z-20 -mt-10 mx-6 rounded-xl hidden md:block">
-        <div class="container mx-auto px-8 py-6">
+        <div class="mx-auto w-full max-w-7xl px-8 py-6">
           <div class="flex justify-between divide-x divide-gray-100 dark:divide-gray-700">
             <div class="flex items-center gap-4 px-4 w-1/3">
               <div
@@ -80,7 +80,7 @@
 
       <!-- Main Content -->
       <section class="py-16 md:py-24 bg-background-light dark:bg-background-dark">
-        <div class="container mx-auto px-6">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
             <!-- Left Column -->
             <div class="lg:col-span-8">
@@ -214,7 +214,7 @@
 
       <!-- Continue Your Journey -->
       <section class="py-16 bg-white dark:bg-card-dark border-t border-gray-100 dark:border-gray-800">
-        <div class="container mx-auto px-6">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div class="flex items-center justify-between mb-10">
             <h2 class="text-3xl font-display font-bold text-primary dark:text-white">Continue Your Journey</h2>
             <div class="flex gap-2">
@@ -250,7 +250,7 @@
       <section class="py-24 relative overflow-hidden bg-primary">
         <div class="absolute inset-0 opacity-10"
           style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
-        <div class="container mx-auto px-6 relative z-10 text-center text-white">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center text-white">
           <h2 class="text-3xl md:text-5xl font-display font-bold mb-6 leading-tight">
             Ready to visit {{ destination.name }}?
           </h2>

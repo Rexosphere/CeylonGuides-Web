@@ -1,6 +1,6 @@
 <template>
     <section class="py-16 bg-white dark:bg-card-dark border-y border-gray-200 dark:border-gray-800">
-        <div class="container mx-auto px-6">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             <h2 class="text-2xl font-bold text-primary dark:text-white mb-4">Connectivity Essentials</h2>
             <p class="text-text-muted text-sm mb-10">Everything you need to know about getting connected</p>
 

@@ -6,7 +6,7 @@
         <div
             class="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/95 to-background-light dark:to-background-dark pointer-events-none">
         </div>
-        <div class="container mx-auto px-4 lg:px-6 relative z-10 text-center">
+        <div class="mx-auto w-full max-w-7xl px-4 lg:px-6 relative z-10 text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-white drop-shadow-sm font-sans">
                 Scam Alerts
             </h1>

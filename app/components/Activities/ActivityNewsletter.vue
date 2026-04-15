@@ -1,6 +1,6 @@
 <template>
   <section class="py-24 bg-background-light dark:bg-background-dark">
-    <div class="container mx-auto px-6 text-center">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
       <div class="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-6">
         <span class="material-icons text-secondary text-2xl">mail_outline</span>
       </div>

@@ -1,7 +1,7 @@
 <template>
   <section
     class="py-8 bg-white dark:bg-card-dark border-b border-gray-100 dark:border-gray-800 sticky top-0 z-40 shadow-sm">
-    <div class="container mx-auto px-6">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex flex-wrap items-center justify-center gap-3">
         <button @click="$emit('update:category', null)"
           :class="selectedCategory === null ? 'bg-primary text-white shadow-md hover:shadow-lg' : 'bg-background-light dark:bg-background-dark hover:bg-gray-200 dark:hover:bg-gray-700 text-text-muted dark:text-gray-300 border border-gray-200 dark:border-gray-700'"

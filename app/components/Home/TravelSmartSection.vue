@@ -1,7 +1,7 @@
 <template>
   <!-- Travel Smart Section (Asymmetric Layout) -->
   <section class="py-24 px-4 bg-white dark:bg-background-dark">
-    <div class="max-w-7xl mx-auto">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         <!-- Text Content -->
         <div class="lg:col-span-5 order-2 lg:order-1 space-y-8">

@@ -1,6 +1,6 @@
 <template>
   <section class="py-16 bg-white dark:bg-card-dark">
-    <div class="container mx-auto px-6">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid lg:grid-cols-2 gap-16">
         <div>
           <h2 class="text-2xl font-bold text-primary dark:text-white mb-2">Daily Budget Estimator</h2>

@@ -6,7 +6,7 @@
       <div class="absolute inset-0 bg-black/40"></div>
       <div class="absolute inset-0 bg-primary/30 mix-blend-multiply"></div>
     </div>
-    <div class="container mx-auto px-6 relative z-10 text-center pt-20">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center pt-20">
       <span class="text-white/90 text-sm font-bold tracking-widest uppercase mb-4 block">The Wonder of Asia</span>
       <h1
         class="text-4xl md:text-6xl font-display font-bold text-white mb-6 drop-shadow-lg leading-tight max-w-4xl mx-auto">

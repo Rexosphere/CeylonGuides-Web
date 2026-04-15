@@ -5,7 +5,7 @@
         src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1YiC7YVXGt-xuGkViSLL7V1J6pGQ4HtWRQB80jgm6vCBH5nlpqcXbVdolhv_QkznZwBtRM6w0QdJmyi0ERRlSWtxDGEbASd9SxoYTENDXchan4g2yEoHbTuYa3G7YJ0qeTe69qqbuVXXnHl9hQjsMm4n4U5CQ38dFpRHqQZVaRyyDFQAnhJ73d4xTxlvcYiC961g5D-YxTxc0AFQzGXX2N5lhws0ZF1w5bLF-SGRi1HDKnwb0L28HL0Qdr4zstG9qBUJX__AffTg" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-primary/80 to-primary/40"></div>
     </div>
-    <div class="container mx-auto px-6 relative z-10 text-center text-white">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center text-white">
       <h1 class="text-4xl md:text-6xl font-display font-bold mb-4 drop-shadow-lg leading-tight">Navigate Your Finances
         in Paradise</h1>
       <p class="text-lg md:text-xl text-white/90 mb-12 max-w-3xl mx-auto font-light">Essential guide to Rupee (LKR),

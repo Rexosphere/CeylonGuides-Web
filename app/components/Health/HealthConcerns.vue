@@ -1,5 +1,5 @@
 <template>
-  <section class="scroll-mt-24 container mx-auto px-6 py-12" id="concerns">
+  <section class="scroll-mt-24 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-12" id="concerns">
     <div class="text-center mb-10">
       <div class="flex items-center justify-center gap-2 mb-2">
         <span class="material-icons text-primary">verified_user</span>

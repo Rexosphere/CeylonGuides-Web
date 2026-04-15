@@ -5,7 +5,7 @@
         src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVcdptXDRTK1OUzu1bt-XkF7u5tyNAMRpQ5K4TTqO7MTBIcHHyAOkkRSaPHQJEm_Vd_EeXxiDTBvI2WefntJZveYfw9f5Pw9BVkVCr59o2pj63jPM7T9z314gJ2lhW1HhnvxAPjAWAlcmiE1ERfG1JkV6w0ZLK-3ma6PkH_Jerny_5GaDl0vWBO8sQFuCV_xQnYztdmYIE1t46T0dOQ2H7Qy9QKYMPTvVpoL5i9-Vq-D78jGk51dIdUMrNWDXf8oFv0903ayRpVJU" />
       <div class="absolute inset-0 bg-gradient-to-b from-primary/60 to-primary/90"></div>
     </div>
-    <div class="container mx-auto px-6 relative z-10 text-center text-white">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center text-white">
       <h1 class="text-5xl md:text-6xl font-display font-bold mb-6 drop-shadow-md">Craft Your Ceylon Journey</h1>
       <p class="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light mb-10">Perfect Sri Lankan adventure with
         our curated guides and custom tools.</p>

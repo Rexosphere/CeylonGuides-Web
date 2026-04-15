@@ -1,5 +1,5 @@
 <template>
-  <section class="container mx-auto px-4 md:px-6 lg:px-20 py-16 my-8">
+  <section class="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-20 py-16 my-8">
     <div class="bg-primary/5 dark:bg-white/5 rounded-3xl p-8 md:p-12 lg:p-16 text-center max-w-5xl mx-auto relative overflow-hidden backdrop-blur-sm border border-primary/10 dark:border-white/10">
       
       <!-- Decorative Elements -->

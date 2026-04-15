@@ -1,5 +1,5 @@
 <template>
-  <section class="scroll-mt-24 container mx-auto px-6 py-12" id="medical">
+  <section class="scroll-mt-24 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-12" id="medical">
     <div class="text-center mb-8">
       <h2 class="text-3xl font-bold text-text-main-light dark:text-text-main-dark mb-2">
         Medical Directory

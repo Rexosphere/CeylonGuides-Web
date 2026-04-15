@@ -16,7 +16,7 @@
 
     <!-- Main Content Area -->
     <main
-      class="flex-grow container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6 h-[calc(100vh-400px)] min-h-[600px]">
+      class="flex-grow mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6 h-[calc(100vh-400px)] min-h-[600px]">
       <!-- Facilities List -->
       <div class="w-full lg:w-1/3 flex flex-col gap-4 overflow-y-auto pr-2 scrollbar-hide pb-10">
         <!-- Loading State -->

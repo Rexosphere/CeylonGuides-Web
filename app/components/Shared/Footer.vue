@@ -1,6 +1,6 @@
 <template>
-  <footer class="bg-surface-inverse text-text-soft py-14 md:py-16 text-sm rounded-t-lg shadow-md">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+  <footer class="bg-surface-inverse text-text-soft py-14 md:py-16 text-sm shadow-md">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <!-- Main Footer Content -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-10 md:mb-12">
         <!-- Brand Section -->

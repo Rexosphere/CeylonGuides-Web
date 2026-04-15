@@ -7,7 +7,7 @@
       </div>
       <div class="absolute inset-0 bg-black/30"></div>
     </div>
-    <div class="container mx-auto px-6 relative z-10 pt-20 text-center">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 pt-20 text-center">
       <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg tracking-tight leading-tight">
         Stay Connected in Paradise
       </h1>

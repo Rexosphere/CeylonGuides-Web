@@ -92,7 +92,7 @@
       </section>
 
       <!-- Curated Itineraries Section -->
-      <section class="py-16 px-4 sm:px-10 layout-container">
+      <section class="py-16 px-4 sm:px-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex items-end justify-between mb-8 px-2">
           <div>
             <h2 class="text-text-main dark:text-white text-3xl font-bold leading-tight tracking-tight mb-2">Curated Itineraries</h2>
@@ -147,7 +147,7 @@
 
       <!-- Trip Builder CTA -->
       <section class="py-16 px-4 sm:px-10 bg-gradient-to-r from-primary/10 to-orange-100 dark:from-primary/20 dark:to-orange-900/20">
-        <div class="layout-container text-center">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           <span class="material-symbols-outlined text-5xl text-primary mb-4">edit_calendar</span>
           <h2 class="text-3xl font-bold mb-4">Build Your Custom Trip</h2>
           <p class="text-text-muted dark:text-neutral-400 max-w-xl mx-auto mb-8">

@@ -6,7 +6,7 @@
       style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
 
     <!-- Content -->
-    <div class="container mx-auto px-6 relative z-10 text-center text-white">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center text-white">
       <h2 class="text-3xl md:text-5xl font-display font-bold mb-6 leading-tight">
         Ready to experience the Pearl of the<br />Indian Ocean?
       </h2>

@@ -1,6 +1,6 @@
 <template>
   <section class="py-20 relative bg-accent-info/10 dark:bg-accent-info/5">
-    <div class="container mx-auto px-6 relative z-10">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
       <!-- Section Header -->
       <span
         class="inline-block px-3 py-1 rounded bg-secondary/20 text-secondary text-xs font-bold uppercase tracking-wider mb-4">Priority</span>

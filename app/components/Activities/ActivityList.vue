@@ -1,6 +1,6 @@
 <template>
   <section class="py-12 bg-background-light dark:bg-background-dark">
-    <div class="container mx-auto px-6">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <h2 class="text-3xl font-display font-bold text-primary dark:text-white mb-2">Trending Experiences</h2>
       <p class="text-text-muted mb-8">Top-rated adventures loved by travelers this week.</p>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

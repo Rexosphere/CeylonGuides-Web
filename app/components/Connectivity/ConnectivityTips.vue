@@ -1,6 +1,6 @@
 <template>
   <section class="py-16 bg-white dark:bg-card-dark border-t border-gray-200 dark:border-gray-800">
-    <div class="container mx-auto px-6">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <!-- Power Warning -->
       <ConnectivityPowerWarning />
 

@@ -1,5 +1,5 @@
 <template>
-  <section class="scroll-mt-24 container mx-auto px-6 py-12" id="food">
+  <section class="scroll-mt-24 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-12" id="food">
     <div
       class="bg-surface-light dark:bg-surface-dark rounded-2xl overflow-hidden shadow-sm border border-border-light dark:border-border-dark">
       <div class="grid grid-cols-1 lg:grid-cols-2">

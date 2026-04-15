@@ -2,8 +2,8 @@
   <div class="flex flex-col bg-background-light dark:bg-background-dark font-display text-charcoal dark:text-white min-h-screen">
     <Header variant="solid" />
     
-    <main class="flex-1 py-20 px-4">
-      <div class="max-w-4xl mx-auto">
+    <main class="flex-1 py-20">
+      <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="mb-12">
           <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">Privacy Policy & Terms</h1>
           <p class="text-lg text-gray-600 dark:text-gray-400">Last updated: {{ new Date().toLocaleDateString() }}</p>

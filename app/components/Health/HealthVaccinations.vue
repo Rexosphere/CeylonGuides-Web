@@ -1,5 +1,5 @@
 <template>
-  <main class="container mx-auto px-6 py-12 space-y-20">
+  <main class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-20">
     <section id="vaccinations">
       <div class="flex flex-col md:flex-row justify-between items-start mb-8">
         <div>

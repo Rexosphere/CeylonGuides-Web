@@ -22,7 +22,7 @@
           <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-black/30 mix-blend-multiply">
           </div>
         </div>
-        <div class="container mx-auto px-6 relative z-10 text-center pt-20">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center pt-20">
           <div class="flex justify-center gap-3 mb-6">
             <span v-for="tag in itinerary.style.slice(0, 3)" :key="tag"
               class="bg-white/20 backdrop-blur-md text-white text-xs font-semibold px-3 py-1 rounded-full border border-white/30">
@@ -48,7 +48,7 @@
 
       <!-- Quick Stats Card -->
       <section class="relative z-20 -mt-10 mb-12">
-        <div class="container mx-auto px-6">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div
             class="bg-white dark:bg-card-dark rounded-xl shadow-card p-6 border border-gray-100 dark:border-gray-800 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
             <div class="flex flex-col gap-1 border-r border-gray-100 dark:border-gray-700 last:border-0 pr-4">
@@ -85,7 +85,7 @@
 
       <!-- Main Content -->
       <section class="bg-background-light dark:bg-background-dark pb-20">
-        <div class="container mx-auto px-6">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
             <!-- Day-by-Day Itinerary -->
             <div class="lg:col-span-8">
@@ -198,7 +198,7 @@
       </section>
 
       <!-- Back Link -->
-      <div class="container mx-auto px-6 pb-12">
+      <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pb-12">
         <NuxtLink to="/itineraries" class="inline-flex items-center gap-2 text-primary font-semibold hover:underline">
           <span class="material-icons">arrow_back</span>
           Back to All Itineraries

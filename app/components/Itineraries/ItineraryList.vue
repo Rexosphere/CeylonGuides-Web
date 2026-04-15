@@ -1,6 +1,6 @@
 <template>
   <section class="py-16 md:py-24 bg-background-light dark:bg-background-dark">
-    <div class="container mx-auto px-6">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between mb-10">
         <div>
           <h2 class="text-3xl font-display font-bold text-primary dark:text-white mb-2">Curated Itineraries</h2>

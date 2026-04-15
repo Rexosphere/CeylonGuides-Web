@@ -1,6 +1,6 @@
 <template>
   <section class="py-20 bg-background-light dark:bg-background-dark">
-    <div class="container mx-auto px-6">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
       <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
         <div>

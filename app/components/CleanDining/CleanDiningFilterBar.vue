@@ -1,7 +1,7 @@
 <template>
     <section
         class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 dark:bg-card-dark/95 shadow-sm">
-        <div class="container mx-auto px-6 py-4">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex flex-col lg:flex-row gap-4 lg:items-center justify-between">
                 <!-- Search Input -->
                 <div class="relative flex-grow max-w-xl">

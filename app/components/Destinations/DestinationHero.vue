@@ -7,7 +7,7 @@
         class="absolute inset-0 bg-gradient-to-b from-black/50 via-primary/30 to-background-light dark:to-background-dark">
       </div>
     </div>
-    <div class="container mx-auto px-6 relative z-10 text-center pt-20">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center pt-20">
       <h1 class="text-5xl md:text-7xl font-display font-bold text-white mb-4 drop-shadow-lg tracking-tight">
         Wander through
       </h1>

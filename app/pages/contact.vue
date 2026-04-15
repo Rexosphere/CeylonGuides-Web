@@ -10,7 +10,7 @@
     />
     
     <main class="flex-grow">
-      <div class="layout-container flex flex-col items-center px-4 sm:px-10 lg:px-40 -mt-16 relative z-20 pb-20">
+      <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center -mt-16 relative z-20 pb-20">
         <ContactTabs 
           v-if="data.tabs"
           :tabs="data.tabs"

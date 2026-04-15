@@ -9,7 +9,7 @@
 
     <!-- Main Content Section -->
     <section class="py-8 bg-background-light dark:bg-background-dark min-h-screen">
-      <div class="container mx-auto px-6">
+      <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <!-- Restaurant List -->
           <div class="lg:col-span-8 space-y-6">

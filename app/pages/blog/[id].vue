@@ -41,7 +41,7 @@
        <div class="text-xl">Loading story...</div>
     </div>
 
-    <div v-if="post" class="container mx-auto px-4 md:px-6 lg:px-20 py-12 flex flex-col lg:flex-row gap-12 relative">
+    <div v-if="post" class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-12 flex flex-col lg:flex-row gap-12 relative">
       
       <!-- Table of Contents (Desktop Sticky) -->
       <aside class="hidden lg:block w-64 flex-shrink-0">

@@ -1,6 +1,6 @@
 <template>
   <section class="py-20 bg-background-light dark:bg-background-dark">
-    <div class="container mx-auto px-6">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
       <div class="mb-10">
         <span class="text-xs font-bold tracking-widest text-secondary uppercase mb-2 block">Discover Ceylon</span>
@@ -11,10 +11,12 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <!-- Destinations Card (Large) -->
         <div class="lg:col-span-2 relative h-96 rounded-2xl overflow-hidden group shadow-card cursor-pointer">
-          <img alt="Sri Lanka Nine Arch Bridge"
+          <img
+            alt="Sri Lanka Nine Arch Bridge"
             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            src="/images/downloaded_9f15b6f18e06.avif" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            src="/images/downloaded_9f15b6f18e06.avif"
+          >
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
           <div class="absolute top-6 left-6">
             <span
               class="bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/30">TOP
@@ -27,8 +29,10 @@
               beaches.
             </p>
             <div class="flex items-center gap-4">
-              <NuxtLink to="/destinations"
-                class="bg-secondary hover:bg-white hover:text-secondary text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all flex items-center gap-2">
+              <NuxtLink
+                to="/destinations"
+                class="bg-secondary hover:bg-white hover:text-secondary text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all flex items-center gap-2"
+              >
                 Explore All
                 <span class="material-icons text-sm">arrow_forward</span>
               </NuxtLink>
@@ -53,8 +57,10 @@
               Custom trip plans for every type of traveler. From 3-day cultural bursts to 2-week island loops.
             </p>
           </div>
-          <NuxtLink to="/itineraries"
-            class="text-secondary font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all mt-6">
+          <NuxtLink
+            to="/itineraries"
+            class="text-secondary font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all mt-6"
+          >
             Start Planning
             <span class="material-icons text-sm">chevron_right</span>
           </NuxtLink>
@@ -74,8 +80,10 @@
               </div>
             </div>
             <p class="text-white/80 text-sm mb-6">Hiking, Surfing, Tea Tasting, Safari, and more.</p>
-            <NuxtLink to="/activities"
-              class="text-white font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all">
+            <NuxtLink
+              to="/activities"
+              class="text-white font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all"
+            >
               View Activities
               <span class="material-icons text-sm">arrow_forward</span>
             </NuxtLink>
@@ -93,8 +101,10 @@
             <div>
               <h3 class="text-2xl font-display font-bold text-primary dark:text-white mb-2">Photo Spots</h3>
               <p class="text-text-muted dark:text-gray-400 text-sm">Instagrammable locations mapped for you.</p>
-              <NuxtLink to="/photos"
-                class="text-secondary font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all mt-4">
+              <NuxtLink
+                to="/photos"
+                class="text-secondary font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all mt-4"
+              >
                 View Gallery
                 <span class="material-icons text-sm">arrow_forward</span>
               </NuxtLink>

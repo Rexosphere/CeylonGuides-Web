@@ -6,7 +6,7 @@
       <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30"></div>
       <div class="absolute inset-0 bg-primary/30 mix-blend-multiply"></div>
     </div>
-    <div class="container mx-auto px-6 relative z-10 text-center pt-20">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center pt-20">
       <div
         class="inline-flex items-center gap-2 text-white/90 text-xs font-bold tracking-widest uppercase mb-4 border border-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
         <span>Photography Guide</span>

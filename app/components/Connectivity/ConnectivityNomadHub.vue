@@ -1,6 +1,6 @@
 <template>
     <section class="py-16 bg-background-light dark:bg-background-dark">
-        <div class="container mx-auto px-6">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             <h2 class="text-2xl font-bold text-primary dark:text-white mb-1">Digital Nomad Hub</h2>
             <p class="text-text-muted text-sm mb-6">Coworking spaces and remote work infrastructure across Sri Lanka</p>
 

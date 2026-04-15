@@ -11,32 +11,47 @@ const icons: Record<Toast['type'], string> = {
 }
 
 const colors: Record<Toast['type'], string> = {
-  success: 'bg-green-500',
-  error: 'bg-red-500',
-  warning: 'bg-amber-500',
-  info: 'bg-blue-500'
+  success: 'bg-semantic-success text-text-inverse',
+  error: 'bg-semantic-danger text-text-inverse',
+  warning: 'bg-semantic-warning text-text-inverse',
+  info: 'bg-semantic-info text-text-inverse'
+}
+
+const dismissClasses: Record<Toast['type'], string> = {
+  success: 'text-text-inverse/80 hover:text-text-inverse focus-visible:ring-surface-base/70 focus-visible:ring-offset-semantic-success',
+  error: 'text-text-inverse/80 hover:text-text-inverse focus-visible:ring-surface-base/70 focus-visible:ring-offset-semantic-danger',
+  warning: 'text-text-inverse/80 hover:text-text-inverse focus-visible:ring-text-strong/40 focus-visible:ring-offset-semantic-warning',
+  info: 'text-text-inverse/80 hover:text-text-inverse focus-visible:ring-surface-base/70 focus-visible:ring-offset-semantic-info'
 }
 </script>
 
 <template>
   <Teleport to="body">
-    <div class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none">
+    <div class="fixed inset-x-0 bottom-0 sm:bottom-6 sm:right-6 sm:left-auto z-[9999] flex flex-col gap-3 px-4 sm:px-0 pb-6 pointer-events-none max-w-sm w-full">
       <TransitionGroup name="toast">
         <div
           v-for="toast in toasts"
           :key="toast.id"
+          :role="toast.type === 'error' || toast.type === 'warning' ? 'alert' : 'status'"
+          :aria-live="toast.type === 'error' || toast.type === 'warning' ? 'assertive' : 'polite'"
+          aria-atomic="true"
           :class="[
             colors[toast.type],
-            'flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-white pointer-events-auto min-w-[280px] max-w-[400px]'
+            'flex items-center gap-3 px-4 py-3 rounded-sm shadow-sm pointer-events-auto min-w-full sm:min-w-max transition-opacity duration-200'
           ]"
         >
-          <span class="material-symbols-outlined text-xl">{{ icons[toast.type] }}</span>
-          <span class="flex-1 text-sm font-medium">{{ toast.message }}</span>
+          <span class="material-symbols-outlined text-xl flex-shrink-0">{{ icons[toast.type] }}</span>
+          <span class="flex-1 text-sm font-medium leading-snug">{{ toast.message }}</span>
           <button 
             @click="removeToast(toast.id)"
-            class="opacity-70 hover:opacity-100 transition-opacity"
+            type="button"
+            :class="[
+              'flex-shrink-0 rounded-xs p-0.5 leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 transition-colors',
+              dismissClasses[toast.type]
+            ]"
+            aria-label="Dismiss notification"
           >
-            <span class="material-symbols-outlined text-lg">close</span>
+            <span class="material-symbols-outlined text-lg leading-none">close</span>
           </button>
         </div>
       </TransitionGroup>
@@ -54,7 +69,7 @@ const colors: Record<Toast['type'], string> = {
 
 @keyframes toast-in {
   from {
-    transform: translateX(100%);
+    transform: translateX(24px);
     opacity: 0;
   }
   to {
@@ -69,7 +84,7 @@ const colors: Record<Toast['type'], string> = {
     opacity: 1;
   }
   to {
-    transform: translateX(100%);
+    transform: translateX(24px);
     opacity: 0;
   }
 }

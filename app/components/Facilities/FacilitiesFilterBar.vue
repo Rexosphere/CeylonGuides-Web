@@ -2,7 +2,7 @@
     <div>
         <!-- Sticky Filter Bar -->
         <div class="sticky top-[72px] z-40 bg-surface-light border-b border-gray-200 shadow-sm">
-            <div class="container mx-auto px-4 py-4 space-y-4">
+            <div class="mx-auto w-full max-w-7xl px-4 py-4 space-y-4">
                 <!-- Search and Sort Row -->
                 <div class="flex flex-col md:flex-row gap-4 items-center">
                     <!-- Search Input -->
@@ -91,7 +91,7 @@
 
         <!-- Location Alert -->
         <div v-if="!hasLocation" class="bg-blue-50 border-b border-blue-100 py-2.5 px-4">
-            <div class="container mx-auto flex items-center justify-center gap-2 text-sm text-blue-800">
+            <div class="mx-auto w-full max-w-7xl flex items-center justify-center gap-2 text-sm text-blue-800">
                 <span class="material-icons text-blue-500 text-base">my_location</span>
                 <span class="font-bold">Location not available</span>
                 <span class="mx-1 text-blue-300">|</span>
@@ -103,7 +103,7 @@
 
         <!-- Stats Bar -->
         <div class="bg-white border-b border-gray-200 py-3">
-            <div class="container mx-auto px-4 flex gap-6 text-sm">
+            <div class="mx-auto w-full max-w-7xl px-4 flex gap-6 text-sm">
                 <div class="flex items-center gap-2">
                     <span class="material-icons text-gray-400 text-lg">format_list_bulleted</span>
                     <span class="font-bold text-gray-900">{{ resultsCount }}</span>

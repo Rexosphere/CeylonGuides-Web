@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-6 -mt-8 relative z-20 mb-12">
+  <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 mb-12">
     <div
       class="bg-white dark:bg-card-dark rounded-xl shadow-card p-4 flex overflow-x-auto gap-4 items-center justify-start md:justify-center no-scrollbar">
       <button v-for="filter in filters" :key="filter.name"

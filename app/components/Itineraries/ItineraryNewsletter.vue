@@ -1,6 +1,6 @@
 <template>
   <section class="py-16 bg-background-light dark:bg-background-dark">
-    <div class="container mx-auto px-6 text-center">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
       <div class="max-w-2xl mx-auto">
         <span class="material-icons text-secondary text-4xl mb-4">mail_outline</span>
         <h2 class="text-3xl font-display font-bold text-primary dark:text-white mb-4">Get Travel Inspiration Weekly</h2>

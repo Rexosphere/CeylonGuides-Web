@@ -6,7 +6,7 @@
       <div class="absolute inset-0 bg-primary/40 mix-blend-multiply"></div>
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
     </div>
-    <div class="container mx-auto px-6 relative z-10 text-center text-white pt-10">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center text-white pt-10">
       <h1 class="text-4xl md:text-5xl font-bold mb-3 tracking-tight">Stay in Serenity</h1>
       <p class="text-lg md:text-xl text-white/90 font-light max-w-2xl mx-auto">
         Discover curated hotels, guesthouses, and homestays verified for safety and comfort.

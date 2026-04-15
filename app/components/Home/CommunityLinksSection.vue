@@ -1,6 +1,6 @@
 <template>
   <section class="py-12 bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800">
-    <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8">
       <!-- Community Forum -->
       <NuxtLink to="/community"
         class="group flex flex-col items-start p-4 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-colors">

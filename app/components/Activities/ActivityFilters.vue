@@ -1,7 +1,7 @@
 <template>
   <section
     class="bg-white dark:bg-surface-dark border-b border-gray-100 dark:border-gray-800 sticky top-0 z-40 shadow-sm">
-    <div class="container mx-auto px-6 py-4 overflow-x-auto no-scrollbar">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-4 overflow-x-auto no-scrollbar">
       <div class="flex items-center gap-3 min-w-max">
         <button @click="$emit('update:category', null)"
           :class="category === null ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-800 text-text-muted dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"

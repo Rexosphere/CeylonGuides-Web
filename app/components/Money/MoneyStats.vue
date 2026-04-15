@@ -1,7 +1,7 @@
 <template>
   <!-- Live Exchange Rates Section -->
   <section class="py-12 bg-background-light dark:bg-background-dark border-b border-gray-200 dark:border-gray-800">
-    <div class="container mx-auto px-6">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col md:flex-row justify-between items-end md:items-center mb-8 gap-4">
         <h2 class="text-2xl font-bold text-primary dark:text-white">Live Exchange Rates</h2>
         <div class="flex items-center gap-4 text-xs font-medium text-text-muted">
@@ -82,7 +82,7 @@
 
   <!-- Currency Converter Section -->
   <section class="py-12 bg-white dark:bg-card-dark">
-    <div class="container mx-auto px-6">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-bold text-primary dark:text-white mb-8">Currency Converter</h2>
       <div
         class="bg-background-light dark:bg-gray-900/50 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-700">

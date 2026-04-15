@@ -3,7 +3,7 @@
     
     <SearchBar />
     
-    <main class="flex-grow layout-container max-w-7xl mx-auto px-6 lg:px-12 py-10 w-full">
+    <main class="flex-grow mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto px-6 lg:px-12 py-10 w-full">
       <div class="flex flex-col lg:flex-row gap-12">
         <SearchResults />
         <SearchSidebar />

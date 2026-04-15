@@ -4,7 +4,7 @@
     <ScamAlertsHero :stats="scamStats" @report="showReportModal = true" />
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 lg:px-6 -mt-12 pb-24 relative z-20">
+    <main class="mx-auto w-full max-w-7xl px-4 lg:px-6 -mt-12 pb-24 relative z-20">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <!-- Left Column: Filters + Scam List -->
         <div class="lg:col-span-7 xl:col-span-8 space-y-6">

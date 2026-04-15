@@ -1,5 +1,5 @@
 <template>
-  <section class="scroll-mt-24 container mx-auto px-6 py-12" id="insurance">
+  <section class="scroll-mt-24 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-12" id="insurance">
     <div class="text-center mb-10">
       <p class="text-xs font-bold uppercase tracking-widest text-text-sub-light dark:text-text-sub-dark mb-2">
         Peace of Mind

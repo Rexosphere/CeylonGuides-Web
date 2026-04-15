@@ -2,7 +2,7 @@
     <div
         class="bg-white dark:bg-card-dark border-b border-gray-200 dark:border-gray-800 py-3 shadow-sm sticky top-0 z-40">
         <div
-            class="container mx-auto px-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs md:text-sm">
+            class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs md:text-sm">
             <span class="uppercase tracking-wider font-bold text-text-muted text-[10px]">Quick Picks:</span>
             <div class="flex items-center gap-2">
                 <span class="material-icons text-primary text-base">recommend</span>

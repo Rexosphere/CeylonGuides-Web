@@ -1,6 +1,6 @@
 <template>
   <section class="py-16 bg-white dark:bg-card-dark">
-    <div class="container mx-auto px-6">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col md:flex-row gap-12 items-center">
         <div class="w-full md:w-1/2">
           <div class="rounded-2xl overflow-hidden shadow-card">
