@@ -12,6 +12,56 @@ export default {
     theme: {
         extend: {
             colors: {
+                // Unified design-system semantic palette (additive only; legacy keys remain below)
+                brand: {
+                    primary: {
+                        50: "#EAF3F8",
+                        100: "#D5E7F1",
+                        200: "#AACEE4",
+                        300: "#7FB4D6",
+                        400: "#4F8FBD",
+                        500: "#1B6A8F",
+                        600: "#14506F",
+                        700: "#0E3A52",
+                        800: "#0A2A3B",
+                        900: "#071F2C",
+                    },
+                    secondary: {
+                        100: "#F3E8DC",
+                        300: "#D8BB99",
+                        500: "#B88A5B",
+                        600: "#96724B",
+                        700: "#7A5A3A",
+                    },
+                    accent: {
+                        100: "#FDE7DD",
+                        300: "#F8B295",
+                        400: "#F28A5C",
+                        500: "#EE6A35",
+                        600: "#D85C2E",
+                    },
+                },
+                semantic: {
+                    success: "#1D7A46",
+                    warning: "#C98212",
+                    danger: "#C43D2F",
+                    info: "#2B6CB0",
+                },
+                surface: {
+                    canvas: "#F7F5F1",
+                    subtle: "#F1EEE8",
+                    base: "#FFFFFF",
+                    elevated: "#FFFCF8",
+                    inverse: "#0F1720",
+                },
+                text: {
+                    strong: "#16212B",
+                    default: "#273546",
+                    muted: "#5E6C79",
+                    soft: "#7F8B96",
+                    inverse: "#F5F8FB",
+                },
+
                 // New Design Theme Colors
                 "primary": "#264653", // Deep Teal/Ocean Slate
                 "secondary": "#457B9D", // Muted Blue-Gray
@@ -67,13 +117,20 @@ export default {
                 "sand": "#F0EBD8", // Warm Sand for safety mode
             },
             fontFamily: {
+                // Unified design-system type tokens (additive, keeps legacy family keys intact)
+                "heading": ["Fraunces", "serif"],
                 "display": ["Inter", "sans-serif"],
-                "body": ["Inter", "sans-serif"],
+                "body": ["Manrope", "sans-serif"],
+                "cultural": ["Noto Serif Sinhala", "serif"],
                 "serif": ["Playfair Display", "serif"],
                 "manrope": ["Manrope", "sans-serif"],
                 "lato": ["Lato", "sans-serif"],
             },
             borderRadius: {
+                // Added semantic radius scale while preserving existing DEFAULT/lg/xl values
+                "xs": "0.375rem",
+                "sm": "0.625rem",
+                "md": "0.875rem",
                 "DEFAULT": "0.5rem",
                 "lg": "1rem",
                 "xl": "1.5rem",
@@ -81,6 +138,11 @@ export default {
                 "full": "9999px"
             },
             boxShadow: {
+                // Design-system shadow tokens (added without removing existing custom shadows)
+                "sm": "0 2px 8px rgba(14, 58, 82, 0.08)",
+                "md": "0 8px 22px rgba(14, 58, 82, 0.12)",
+                "lg": "0 14px 36px rgba(14, 58, 82, 0.18)",
+                "focus": "0 0 0 3px rgba(242, 138, 92, 0.35)",
                 "soft": "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)",
                 "card": "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)",
                 "glow": "0 0 15px rgba(217, 78, 59, 0.3)",
