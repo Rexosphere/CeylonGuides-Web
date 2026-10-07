@@ -4,33 +4,44 @@
     <div class="fixed top-0 left-0 h-1 bg-primary z-50 transition-all duration-300" :style="{ width: `${progress}%` }"></div>
     
     <!-- Hero Section -->
-    <div v-if="post" class="relative h-[60vh] min-h-[400px] w-full bg-neutral-900">
+    <div v-if="post" class="relative h-[65vh] min-h-[440px] w-full bg-neutral-900">
       <div 
-        class="absolute inset-0 bg-cover bg-center opacity-70"
+        class="absolute inset-0 bg-cover bg-center opacity-75"
         :style="{ backgroundImage: `url(${post.image})` }"
       ></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-background-light dark:from-background-dark via-transparent to-black/30"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-background-light dark:from-background-dark via-black/40 to-black/60"></div>
       
-      <div class="absolute bottom-0 left-0 w-full px-4 md:px-6 lg:px-20 py-12 flex flex-col gap-4 max-w-5xl">
+      <!-- Back to Stories Nav Button -->
+      <div class="absolute top-6 left-4 md:left-6 lg:left-20 z-20">
+        <NuxtLink 
+          to="/" 
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md text-white text-xs font-bold transition-all border border-white/20 shadow-md"
+        >
+          <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+          <span>Back to Stories</span>
+        </NuxtLink>
+      </div>
+
+      <div class="absolute bottom-0 left-0 w-full px-4 md:px-6 lg:px-20 py-10 flex flex-col gap-4 max-w-5xl">
         <div class="flex flex-wrap items-center gap-3">
-          <span class="px-3 py-1 bg-primary text-white text-xs font-bold uppercase rounded-md tracking-wider">
+          <span class="px-3 py-1 bg-primary text-white text-xs font-bold uppercase rounded-full tracking-wider shadow-sm">
             {{ post.category }}
           </span>
-          <span class="text-white/80 text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+          <span class="text-white/80 text-xs font-medium uppercase tracking-wider flex items-center gap-1">
              <span class="material-symbols-outlined text-[16px]">schedule</span> {{ post.readTime }}
           </span>
         </div>
         
-        <h1 class="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight drop-shadow-sm">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight drop-shadow-sm">
           {{ post.title }}
         </h1>
         
-        <div class="flex items-center gap-4 mt-2">
-           <div class="size-10 rounded-full bg-white/10 backdrop-blur border border-white/20 p-0.5" v-if="post.author.avatar">
-               <img :src="post.author.avatar" class="w-full h-full rounded-full object-cover">
+        <div class="flex items-center gap-3 mt-1">
+           <div class="size-10 rounded-full bg-white/10 backdrop-blur border border-white/20 p-0.5 overflow-hidden" v-if="post.author.avatar">
+               <img :src="post.author.avatar" :alt="post.author.name" class="w-full h-full rounded-full object-cover">
            </div>
            <div class="flex flex-col text-white">
-             <span class="text-sm font-bold">{{ post.author.name }}</span>
+             <span class="text-sm font-semibold">{{ post.author.name }}</span>
              <span class="text-xs text-white/70">{{ post.date }}</span>
            </div>
         </div>
@@ -38,21 +49,24 @@
     </div>
     
     <div v-else class="h-[50vh] flex items-center justify-center">
-       <div class="text-xl">Loading story...</div>
+       <div class="text-xl font-serif">Loading story...</div>
     </div>
 
     <div v-if="post" class="container mx-auto px-4 md:px-6 lg:px-20 py-12 flex flex-col lg:flex-row gap-12 relative">
       
       <!-- Table of Contents (Desktop Sticky) -->
       <aside class="hidden lg:block w-64 flex-shrink-0">
-         <div class="sticky top-24">
-            <h4 class="font-bold text-sm uppercase tracking-wider text-text-muted mb-4">Table of Contents</h4>
-            <ul class="space-y-3 border-l-2 border-gray-100 dark:border-neutral-800 pl-4">
+         <div class="sticky top-28 bg-white dark:bg-card-dark p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+            <h4 class="font-bold text-xs uppercase tracking-wider text-primary mb-4 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm">toc</span>
+              In This Story
+            </h4>
+            <ul class="space-y-3 border-l-2 border-gray-100 dark:border-neutral-800 pl-3">
                <li v-for="heading in toc" :key="heading.id">
                  <a 
                    :href="`#${heading.id}`" 
-                   class="text-sm hover:text-primary transition-colors block"
-                   :class="activeHeading === heading.id ? 'text-primary font-bold' : 'text-text-secondary'"
+                   class="text-xs hover:text-primary transition-colors block leading-relaxed"
+                   :class="activeHeading === heading.id ? 'text-primary font-bold' : 'text-gray-600 dark:text-gray-400'"
                    @click.prevent="scrollToHeading(heading.id)"
                  >
                     {{ heading.text }}
@@ -60,71 +74,84 @@
                </li>
             </ul>
             
-            <div class="mt-8 pt-6 border-t border-gray-100 dark:border-neutral-800">
-               <div class="flex items-center gap-2">
+            <div class="mt-6 pt-6 border-t border-gray-100 dark:border-neutral-800">
+               <div class="flex items-center gap-3">
                   <button 
                     @click="toggleSave(post.id)"
-                    class="size-10 flex items-center justify-center rounded-full border border-gray-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-white/5 transition-colors"
-                    :class="isSaved(post.id) ? 'bg-primary/10 border-primary text-primary' : 'text-text-secondary'"
+                    class="flex-1 h-10 flex items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-neutral-700 text-xs font-bold transition-all"
+                    :class="isSaved(post.id) ? 'bg-primary/10 border-primary text-primary' : 'hover:bg-neutral-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300'"
                   >
-                    <span class="material-symbols-outlined text-[20px]" :class="isSaved(post.id) ? 'filled' : ''">
+                    <span class="material-symbols-outlined text-[18px]" :class="isSaved(post.id) ? 'filled' : ''">
                       {{ isSaved(post.id) ? 'bookmark' : 'bookmark_add' }}
                     </span>
-                  </button>
-                  <button class="size-10 flex items-center justify-center rounded-full border border-gray-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-white/5 text-text-secondary transition-colors">
-                     <span class="material-symbols-outlined text-[20px]">share</span>
+                    <span>{{ isSaved(post.id) ? 'Saved' : 'Save Story' }}</span>
                   </button>
                </div>
             </div>
          </div>
       </aside>
 
-      <!-- Main Content -->
+      <!-- Main Article Content -->
       <main class="flex-1 max-w-3xl">
-         <div class="prose prose-lg dark:prose-invert prose-headings:font-bold prose-headings:text-text-main dark:prose-headings:text-white prose-p:text-text-secondary dark:prose-p:text-gray-300 prose-img:rounded-xl">
+         <div class="prose prose-lg dark:prose-invert prose-headings:font-serif prose-headings:font-bold prose-headings:text-charcoal dark:prose-headings:text-white prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-img:rounded-2xl prose-img:shadow-lg prose-a:text-primary">
             <div v-html="renderedContent"></div>
          </div>
 
-         <!-- Mobile TOC (Button + Modal/Dropdown could act here, simpler: just actions) -->
+         <!-- Mobile TOC & Bottom Actions -->
          <div class="lg:hidden mt-12 pt-8 border-t border-gray-200 dark:border-neutral-800 flex justify-between items-center">
              <button 
                 @click="toggleSave(post.id)"
-                class="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-neutral-700 font-bold text-sm"
-                :class="isSaved(post.id) ? 'bg-primary/10 border-primary text-primary' : 'text-text-secondary'"
+                class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-gray-200 dark:border-neutral-700 font-bold text-xs"
+                :class="isSaved(post.id) ? 'bg-primary/10 border-primary text-primary' : 'text-charcoal dark:text-white'"
              >
-                <span class="material-symbols-outlined text-[20px]" :class="isSaved(post.id) ? 'filled' : ''">
+                <span class="material-symbols-outlined text-[18px]" :class="isSaved(post.id) ? 'filled' : ''">
                   {{ isSaved(post.id) ? 'bookmark' : 'bookmark_add' }}
                 </span>
-                {{ isSaved(post.id) ? 'Saved' : 'Save Story' }}
+                {{ isSaved(post.id) ? 'Saved in Reading List' : 'Save Story' }}
              </button>
-             <button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-neutral-700 text-text-secondary font-bold text-sm hover:bg-neutral-50 dark:hover:bg-white/5">
-                <span class="material-symbols-outlined text-[20px]">share</span> Share
-             </button>
+             
+             <NuxtLink 
+               to="/"
+               class="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-primary text-white font-bold text-xs hover:bg-primary/90"
+             >
+               <span>More Stories</span>
+               <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+             </NuxtLink>
          </div>
       </main>
 
     </div>
 
     <!-- Related Stories -->
-    <section v-if="relatedPosts.length > 0" class="bg-neutral-50 dark:bg-background-dark border-t border-gray-200 dark:border-neutral-800 py-16 px-4 md:px-6 lg:px-20 mt-12">
+    <section v-if="relatedPosts.length > 0" class="bg-white/60 dark:bg-card-dark/40 border-t border-gray-200 dark:border-neutral-800 py-16 px-4 md:px-6 lg:px-20 mt-12">
        <div class="max-w-6xl mx-auto">
-          <h2 class="text-2xl font-bold mb-8">Read Next</h2>
+          <div class="flex items-center justify-between mb-8">
+            <h2 class="font-serif text-2xl font-bold">More from {{ post?.category }}</h2>
+            <NuxtLink to="/" class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+              Explore All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </NuxtLink>
+          </div>
+          
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-             <a 
+             <NuxtLink 
                v-for="rel in relatedPosts" 
                :key="rel.id" 
-               :href="`/blog/${rel.id}`"
-               class="group block bg-white dark:bg-card-dark rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all"
+               :to="`/blog/${rel.id}`"
+               class="group block bg-white dark:bg-card-dark rounded-2xl overflow-hidden border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all"
              >
-                 <div class="h-48 overflow-hidden">
-                    <div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" :style="{ backgroundImage: `url(${rel.image})` }"></div>
+                 <div class="h-44 overflow-hidden relative">
+                    <div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" :style="{ backgroundImage: `url(${rel.image})` }"></div>
                  </div>
                  <div class="p-5">
-                    <span class="text-xs font-bold text-primary uppercase tracking-wider">{{ rel.category }}</span>
-                    <h3 class="font-bold text-lg leading-snug mt-2 mb-2 group-hover:text-primary transition-colors">{{ rel.title }}</h3>
-                    <span class="text-xs text-text-muted">{{ rel.readTime }}</span>
+                    <span class="text-[11px] font-bold text-primary uppercase tracking-wider">{{ rel.category }}</span>
+                    <h3 class="font-serif font-bold text-base leading-snug mt-1.5 mb-2 text-charcoal dark:text-white group-hover:text-primary transition-colors">
+                      {{ rel.title }}
+                    </h3>
+                    <span class="text-xs text-gray-400 flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[13px]">schedule</span> {{ rel.readTime }}
+                    </span>
                  </div>
-             </a>
+             </NuxtLink>
           </div>
        </div>
     </section>
@@ -136,7 +163,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-// @ts-ignore - marked types are available but import resolution issue
+// @ts-ignore
 import { marked } from 'marked'
 import { useBlog } from '~/composables/useBlog'
 import Toast from '~/components/UI/Toast.vue'
@@ -157,28 +184,19 @@ const toc = ref<{ id: string, text: string }[]>([])
 const activeHeading = ref('')
 const progress = ref(0)
 
-// Scroll Handling
 const handleScroll = () => {
-    // 1. Progress Bar
     const totalHeight = document.documentElement.scrollHeight - window.innerHeight
     const scrolled = window.scrollY
     if (totalHeight > 0) {
         progress.value = Math.min(100, Math.max(0, (scrolled / totalHeight) * 100))
     }
 
-    // 2. Active Heading
-    // Simple heuristic: find last heading above center of screen
     const headings = toc.value.map(t => document.getElementById(t.id)).filter(h => h) as HTMLElement[]
     for (const h of headings) {
         const rect = h.getBoundingClientRect()
-        if (rect.top < 150) { // 150px form top
+        if (rect.top < 150) {
             activeHeading.value = h.id
         }
-    }
-    
-    // 3. Save Position (Debounced ideally, but simple check here)
-    if (scrolled % 50 < 5 && import.meta.client) { // Only save occasionally
-        localStorage.setItem(`blog-scroll-${postId.value}`, scrolled.toString())
     }
 }
 
@@ -186,7 +204,7 @@ const scrollToHeading = (id: string) => {
     const el = document.getElementById(id)
     if (el) {
         window.scrollTo({
-            top: el.offsetTop - 100, // Offset for sticky header if exists, or breathing room
+            top: el.offsetTop - 100,
             behavior: 'smooth'
         })
         activeHeading.value = id
@@ -195,42 +213,17 @@ const scrollToHeading = (id: string) => {
 
 onMounted(async () => {
     if (post.value?.content) {
-        // Parse markdown
         renderedContent.value = await marked(post.value.content)
         
-        // Generate TOC manually after render (nextTick)
         setTimeout(() => {
-            const tempDiv = document.createElement('div')
-            tempDiv.innerHTML = renderedContent.value
-            
-            const headings = tempDiv.querySelectorAll('h2, h3')
-            toc.value = Array.from(headings).map((h, index) => {
-               const id = `heading-${index}`
-               h.id = id // Note: This doesn't apply to the v-html DOM unless we modify that string or do DOM manipulation on the actual elements
-               return { id, text: h.textContent || '' }
-            })
-
-            // We need to inject IDs into the actual rendered HTML for anchor links to work
-            // Let's do a simple string replacement for IDs in the markdown render if possible, 
-            // or just modify DOM after mount. DOM mod is easier here.
-            
             const contentDiv = document.querySelector('.prose')
             if (contentDiv) {
                 const liveHeadings = contentDiv.querySelectorAll('h2, h3')
-                liveHeadings.forEach((h, i) => {
-                    h.id = `heading-${i}`
+                toc.value = Array.from(liveHeadings).map((h, i) => {
+                    const id = `heading-${i}`
+                    h.id = id
+                    return { id, text: h.textContent || '' }
                 })
-            }
-            
-            // Restore Scroll Position
-            if (import.meta.client) {
-                const savedScroll = localStorage.getItem(`blog-scroll-${postId.value}`)
-                if (savedScroll) {
-                    window.scrollTo({
-                        top: parseInt(savedScroll),
-                        behavior: 'smooth'
-                    })
-                }
             }
         }, 100)
     }
@@ -243,7 +236,7 @@ onUnmounted(() => {
 })
 
 useHead({
-    title: post.value ? `${post.value.title} - CeylonWiki` : 'Story Not Found',
+    title: computed(() => post.value ? `${post.value.title} - CeylonGuide` : 'Story Not Found'),
 })
 </script>
 
@@ -251,12 +244,11 @@ useHead({
 .filled {
   font-variation-settings: 'FILL' 1;
 }
-/* Custom Prose Styles for consistency */
 :deep(blockquote) {
-    border-left-color: #FA5725; /* Primary */
+    border-left-color: #ee5f2b;
     font-style: italic;
-    background: rgba(250, 87, 37, 0.05);
-    padding: 1rem;
-    border-radius: 0 0.5rem 0.5rem 0;
+    background: rgba(238, 95, 43, 0.05);
+    padding: 1rem 1.5rem;
+    border-radius: 0 0.75rem 0.75rem 0;
 }
 </style>

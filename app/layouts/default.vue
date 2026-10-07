@@ -1,22 +1,11 @@
-<script setup lang="ts">
-import { useClickDebug } from '~/composables/useClickDebug'
-useClickDebug()
-</script>
-
 <template>
-  <div class="min-h-screen flex flex-col bg-background-light dark:bg-background-dark">
+  <div class="min-h-screen flex flex-col bg-background-light dark:bg-background-dark text-text-main dark:text-white">
     <Header variant="solid" />
-
-    <main class="flex-1">
+    
+    <main class="flex-1 mt-[72px]">
       <slot />
     </main>
 
     <Footer />
-
-    <!-- Global AI Chat Widget -->
-    <AIChatWidget />
-
-    <!-- Global Toast Notifications -->
-    <ToastContainer />
   </div>
 </template>

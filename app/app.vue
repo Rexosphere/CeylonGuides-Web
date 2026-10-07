@@ -2,7 +2,6 @@
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
-  <AIChatWidget />
   <NotificationContainer />
 </template>
 
@@ -24,19 +23,18 @@ onMounted(async () => {
     const response = await $fetch<{ success: boolean }>(`${config.public.apiBase}/api/auth/ping`)
     console.info('Auth ping:', response.success ? 'ok' : 'failed')
   } catch (error) {
-    console.warn('Auth ping failed:', error)
+    // Auth backend is optional in articles-first mode
   }
 })
 
 useHead({
   titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} - CeylonWiki` : 'CeylonWiki'
+    return titleChunk ? `${titleChunk} - CeylonGuide` : 'CeylonGuide - Travel Stories & Journals from Sri Lanka'
   },
   link: [
     { rel: 'stylesheet', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap' },
-    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons' },
+    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap' },
     { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap' }
   ]
 })
